@@ -232,12 +232,12 @@ PORTAL EXIBIDOR. Balanço 2024: cinemas superam expectativas e público aumenta 
 
 COREDAÇÃO. O desafio de reduzir a desigualdade no acesso ao teatro no Brasil. Disponível em: https://coredacao.com/temas-de-redacao/o-desafio-de-reduzir-a-desigualdade-no-acesso-ao-teatro-no-brasil/. Acesso em: 23 abr. 2026.
 
-- ANAFIMA. *PIB da Música no Brasil*. 2024. Disponível em: https://valorcultural.com.br/mercado-da-musica-fatura-r-116-bilhoes-mas-carece-de-valorizacao-institucional/
+ANAFIMA. *PIB da Música no Brasil*. Valor Cultural, 2024. Disponível em: https://valorcultural.com.br/mercado-da-musica-fatura-r-116-bilhoes-mas-carece-de-valorizacao-institucional/. Acesso em: 23 abr. 2026.
 
-- ESPM. *Teatro Musical no Rio de Janeiro: Uma pesquisa com consumidores cariocas*. Diálogo com a Economia Criativa, 2018. Disponível em: https://dialogo.espm.br/revistadcec-rj/article/view/155
+ESPM. Teatro Musical no Rio de Janeiro: Uma pesquisa com consumidores cariocas. *Diálogo com a Economia Criativa*, 2018. Disponível em: https://dialogo.espm.br/revistadcec-rj/article/view/155. Acesso em: 23 abr. 2026.
 
-- Infoteatro. *O Impacto do Teatro Musical no Cenário Brasileiro*. 2025. Disponível em: https://infoteatro.com.br/o-impacto-do-teatro-musical-no-cenario-brasileiro/
+INFOTEATRO. O Impacto do Teatro Musical no Cenário Brasileiro. 2025. Disponível em: https://infoteatro.com.br/o-impacto-do-teatro-musical-no-cenario-brasileiro/. Acesso em: 23 abr. 2026.
 
-- Infoteatro. *Afinal, o que é a Lei Rouanet e como funciona?* 2025. Disponível em: https://infoteatro.com.br/afinal-o-que-e-a-lei-rouanet-e-como-funciona/
+INFOTEATRO. Afinal, o que é a Lei Rouanet e como funciona? 2025. Disponível em: https://infoteatro.com.br/afinal-o-que-e-a-lei-rouanet-e-como-funciona/. Acesso em: 23 abr. 2026.
 
-- Inteli & Aventura. *TAPI — ESMD6: Plataforma digital baseada em arquitetura orientada a serviços*. 2024.
+INTELI; AVENTURA. TAPI — ESMD6: Plataforma digital baseada em arquitetura orientada a serviços. 2024.

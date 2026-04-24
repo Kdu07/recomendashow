@@ -56,7 +56,17 @@ Dessa forma, a solução proposta não apenas responde a uma lacuna tecnológica
 
 ## 3. Visão e Objetivos do Produto
 
-> Apresente a visão do produto e seus objetivos, alinhados ao problema identificado, às necessidades do negócio e ao valor esperado para os usuários.
+### 3.1 Visão do Produto
+
+A visão do produto é transformar o Portal Aventura de uma vitrine estática em uma plataforma inteligente e personalizada. Através de um motor de recomendação orientado a dados, o sistema conectará o público ao vasto catálogo da produtora, antecipando interesses e sugerindo espetáculos de forma fluida. O propósito é criar uma jornada digital que retenha o usuário no ecossistema da marca, convertendo esse engajamento contínuo em um aumento real na venda de ingressos.
+
+### 3.2 Objetivos do Produto
+O desenvolvimento desta solução tem metas claras, alinhadas diretamente às necessidades de negócio da Aventura Teatros e ao valor entregue aos usuários:
+
+* **Maximizar a Retenção e Conversão de Vendas:** Atuar como o principal motor de direcionamento estratégico da empresa. Ao sugerir de forma inteligente novos espetáculos antes que o usuário abandone a página, o sistema visa reter o cliente no portal, transformando o tempo de navegação em aumento direto na venda de ingressos.
+* **Personalizar a Jornada de Descoberta:** Transformar a experiência do usuário de reativa para proativa. O objetivo é que cada visitante sinta que o portal entende suas preferências, recebendo recomendações assertivas que reduzem o atrito na busca por entretenimento.
+* **Integrar o Ecossistema Aventura:** Quebrar os silos entre as diferentes produções (teatro musical, festivais, ballet, etc.). O sistema deve criar pontes fluidas, incentivando o público de um nicho a descobrir e consumir a multiplicidade artística da produtora.
+* **Implementar Arquitetura Escalável:** Entregar uma base tecnológica moderna através de uma Arquitetura Orientada a Serviços (SOA), capaz de processar os dados de interesse do usuário em tempo real e fornecer as recomendações de forma ágil, escalável e com alto desempenho.
 
 ---
 

@@ -26,7 +26,16 @@
 
 ## 2. Contexto da Indústria do Parceiro
 
-> Contextualize o setor em que o parceiro atua. Utilize a técnica das **5 Forças de Porter** para identificar aspectos, tendências, desafios e oportunidades relevantes ao projeto.
+Para compreender o ambiente competitivo em que a Aventura Teatros está inserida, é fundamental analisar a estrutura da indústria de produção teatral sob a ótica do modelo das 5 Forças de Porter. Essa abordagem permite avaliar não apenas a concorrência direta, mas também as dinâmicas que envolvem novos entrantes, fornecedores, clientes e produtos substitutos, oferecendo uma visão sistêmica do setor.
+
+A figura a seguir apresenta uma síntese dessas forças aplicadas ao contexto da Aventura Teatros, servindo como base para a análise detalhada de cada dimensão competitiva nas seções seguintes. A partir dessa estrutura, torna-se possível identificar os principais fatores que influenciam a competitividade da empresa, bem como os riscos e oportunidades que impactam sua atuação nos mercados de São Paulo e Rio de Janeiro.
+
+<div align="center">
+<sub>Imagem 01 - Cinco Forças de Porter</sub><br>
+  <img src="../assets/5-forcas-de-porter.png" width="100%" alt="Porter´s Five Forces"><br>
+  <sup>Source: Material produced by the authors, 2026.</sup>
+</div>
+
 
 ### 2.1 Rivalidade entre concorrentes
 
@@ -49,9 +58,13 @@ Por outro lado, as barreiras regulatórias são baixas: não há exigências de 
 
 ### 2.3 Poder de barganha dos fornecedores
 
+**Risco: Médio-Alto**
+
 O poder de barganha dos fornecedores da Aventura é classificado como médio-alto. A cadeia produtiva de seus espetáculos depende de atores, diretores, cenógrafos e músicos com reconhecimento público, profissionais escassos num mercado que comporta apenas dez a doze grandes produções musicais em cartaz simultaneamente (Infoteatro, 2025). Esse cenário eleva o custo de troca para a Aventura e é agravado pela dinâmica da Lei Rouanet, que ao injetar patrocínio privado via renúncia fiscal elevou os preços de cachês e serviços técnicos ao longo dos anos (Infoteatro, 2025). Adicionalmente, títulos licenciados da Broadway presentes no portfólio da empresa, como "Mamma Mia!" e "A Noviça Rebelde" (Inteli & Aventura, 2024), criam dependência de licenciadores estrangeiros com poder de negociação elevado.
 
 ### 2.4 Poder de barganha dos clientes
+
+**Risco: Médio**
 
 O poder de barganha dos compradores da Aventura é classificado como médio. O alto grau de diferenciação de suas produções, com mais de 5 milhões de espectadores históricos e parcerias exclusivas com Disney-Pixar (Inteli & Aventura, 2024), limita o poder de negociação do consumidor individual ao dificultar a substituição por concorrentes. Ainda assim, a sensibilidade ao preço é uma variável relevante: o ticket médio dos espetáculos ao vivo no Brasil atingiu R$ 432 em 2024 (Anafima, 2024), e pesquisa da Revista Diálogo com a Economia Criativa (ESPM, 2018) aponta a política de preços como um dos fatores mais determinantes na decisão de consumo de teatro musical no país.
 

@@ -186,16 +186,13 @@ Essencial para coletar os dados iniciais que alimentarão o sistema de recomenda
     * Tipos de preferência (Show musical, stand-up, espetáculo, espetáculo musical).
     * Seleção de gêneros favoritos.
 
-### 2.2 Estrutura de Navegação (Público Geral)
+### 2.2 Estrutura de Navegação
 * **Home:** Visão geral e destaques.
 * **Componentes de Descoberta:** Carrosséis e "Prateleiras" de recomendações personalizadas.
 * **Filtros Regionais:** Seleção rápida entre São Paulo (SP) e Rio de Janeiro (RJ).
 * **Retenção:** Seção "Assista Novamente" e acesso rápido à Wishlist.
 * **Perfil:** Gestão de dados e preferências do usuário.
 * **Teatro:** Páginas com informações fixas sobre os equipamentos geridos pela Aventura.
-
-### 2.3 Visão Administrativa (Gestores e Analistas)
-* **Dashboard Geral:** Painel para acompanhamento de métricas de acesso e eficácia das recomendações.
 
 
 ### 3. Funcionalidades Core

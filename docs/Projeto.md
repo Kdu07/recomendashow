@@ -279,7 +279,7 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Aplicação publicada em ambiente de homologação, dispositivos disponíveis com larguras de 360px, 414px e 768px. |
+| Pré-condição | Aplicação publicada em ambiente de homologação, dispositivos disponíveis com larguras de 480px e 720px. |
 | Procedimento de teste | Realizar teste de usabilidade com 5 usuários, solicitando: completar o onboarding, buscar um espetáculo, adicionar à wishlist, acessar perfil e seguir para a bilheteria. Medir taxa de conclusão e SUS (System Usability Scale). |
 | Resultado esperado | Taxa de conclusão ≥ 90% das tarefas sem ajuda externa; pontuação SUS ≥ 70; nenhum elemento cortado ou inacessível nas resoluções testadas. |
 | Pós-condição | Relatório de usabilidade documentado; eventuais ajustes de UI registrados como backlog. |
@@ -343,13 +343,13 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 
 | RNF | RF relacionados | Justificativa |
 |---|---|---|
-| RNF01 | RF01, RF02, RF04, RF06 | |
-| RNF02 | RF03, RF08 | |
-| RNF03 | RF03, RF08 | |
-| RNF04 |  | |
-| RNF05 | RF02, RF04, RF07, RF09 | |
-| RNF06 | RF01, RF02, RF04, RF06 | |
-| RNF07 | RF02, RF04 | |
+| RNF01 | RF01, RF02, RF04, RF06 | O tempo de resposta impacta diretamente as funcionalidades de descoberta e personalização: o questionário de onboarding (RF01), as sugestões por geolocalização (RF02), a navegação pelo catálogo de espetáculos (RF04) e a interação com a Wishlist (RF06) dependem de carregamento ágil para que o usuário não abandone o fluxo antes de receber as recomendações. |
+| RNF02 | RF03, RF08 | A proteção criptográfica de credenciais e dados pessoais sustenta diretamente o cadastro/login (RF03), em que senhas trafegam e são armazenadas, e a gestão de perfil e preferências (RF08), que manipula dados sensíveis como idade, gênero e CEP coletados no onboarding. |
+| RNF03 | RF03, RF08 | A conformidade com a LGPD é o que dá validade legal ao cadastro do usuário (RF03) e operacionaliza o direito de visualizar, editar e excluir dados pessoais e preferências previsto na gestão de perfil (RF08), garantindo transparência e controle sobre as informações coletadas. |
+| RNF04 | RF01, RF04, RF09 | A responsividade mobile é crítica nos pontos de maior fricção da jornada: o onboarding (RF01), em que o usuário responde ao questionário inicial pelo celular; a exploração do catálogo (RF04); e o redirecionamento para a bilheteria externa (RF09), em que qualquer falha de layout pode interromper a conversão em venda. |
+| RNF05 | RF02, RF04, RF07, RF09 | A disponibilidade da plataforma sustenta toda a jornada de descoberta e conversão: recomendações regionais (RF02), exploração do catálogo (RF04), consulta de informações dos teatros (RF07) e direcionamento à bilheteria (RF09) precisam estar ativos especialmente em horários de pico, como vésperas de estreia. |
+| RNF06 | RF01, RF02, RF04, RF06 | A escalabilidade garante que o motor de recomendação mantenha o desempenho mesmo com muitos usuários simultâneos realizando onboarding (RF01), recebendo sugestões por geolocalização (RF02), navegando pelo catálogo (RF04) e atualizando a Wishlist (RF06) — funcionalidades que dependem de processamento personalizado por usuário. |
+| RNF07 | RF02, RF04 | A precisão da geolocalização é pré-requisito direto da filtragem regional (RF02), que prioriza eventos da cidade do usuário (RJ ou SP), e influencia a organização do catálogo (RF04), em que prateleiras regionais aparecem como destaque na home. |
 
 ---
 
@@ -363,6 +363,11 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 | RNF | Requisito Não Funcional |
 | MVP | Minimum Viable Product (Produto Mínimo Viável) |
 | BPMN | Business Process Model and Notation |
+| HTTPS | HyperText Transfer Protocol Secure |
+| TLS | Transport Layer Security |
+| Wishlist | Lista de desejos (conjunto de espetáculos que o cliente quer assistir) |
+| LGPD | Lei Geral de Proteção de Dados Pessoais |
+
 
 ## Referências
 

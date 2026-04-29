@@ -333,78 +333,20 @@ A retrospectiva da Sprint 1 tem como objetivo analisar o desempenho da equipe, i
 
 ## 9.1 - Pontos fortes
 
-| Ponto forte | Descrição |
-|------|------|
-| Organização inicial do repositório | A equipe estruturou o repositório com separação entre documentação, código e arquivos de apoio, facilitando a navegação e manutenção. |
-| Definição inicial do fluxo de branches | Foram estabelecidas branches principais e de suporte, permitindo maior controle sobre o desenvolvimento. |
-| Colaboração entre integrantes | Houve divisão de responsabilidades e participação dos membros na construção dos artefatos da sprint. |
-| Registro das práticas de configuração | A equipe iniciou a documentação das políticas de Git e controle de versão, atendendo à necessidade de padronização. |
-| Entrega incremental | O artefato foi construído progressivamente, permitindo ajustes ao longo da sprint. |
+- Boa priorização de tarefas, garantindo fluxo contínuo de trabalho sem ociosidade da equipe  
+- Quebra adequada das tarefas, evitando commits muito grandes e facilitando revisão  
+- Colaboração entre áreas, com membros atuando tanto em dados quanto em documentação  
+- Uso consistente de issues e commits seguindo o padrão Conventional Commits  
+- Estruturação inicial organizada do repositório, facilitando o entendimento do projeto  
 
 ## 9.2 - Pontos fracos
 
-| Ponto fraco | Impacto |
-|------|------|
-| Falta de detalhamento em alguns procedimentos | Algumas práticas estavam descritas de forma geral, sem explicitar comandos e etapas completas de execução. |
-| Pouca evidência prática do uso das políticas | O documento apresentava conceitos, mas ainda não demonstrava com clareza como o time aplicava essas políticas no projeto. |
-| Planejamento inicial pouco detalhado | Algumas atividades não estavam suficientemente quebradas em tarefas menores, dificultando acompanhamento e priorização. |
-| Risco de inconsistência nos commits | A ausência de exemplos mais claros poderia gerar mensagens de commit e branches fora do padrão definido. |
-| Retrospectiva não consolidada desde o início | Os aprendizados da Sprint 1 precisaram ser organizados posteriormente, em vez de serem registrados continuamente. |
+- Falta de validação contínua com professores devido ao curto tempo da sprint  
+- Demora na aprovação de Merge Requests, impactando o fluxo de integração   
 
 ## 9.3 - Ações de melhoria
 
-| Problema identificado | Ação de melhoria |
-|------|------|
-| Procedimentos pouco explícitos | Criar uma seção formal com comandos para criação, atualização, merge e exclusão de branches. |
-| Falta de exemplos reais | Adicionar exemplos práticos conectados ao projeto, incluindo fluxo de documentação e desenvolvimento. |
-| Tasks amplas demais | Quebrar as entregas da Sprint 2 em tarefas menores e estimadas com t-shirt sizing. |
-| Risco de baixa rastreabilidade | Padronizar commits e exigir referência à issue ou atividade relacionada no Pull Request. |
-| Registro tardio de aprendizados | Registrar pontos de melhoria ao longo da sprint, facilitando a retrospectiva final. |
-
-# 10 - Planejamento da Sprint 2
-
-O planejamento da Sprint 2 organiza as próximas entregas em tarefas claras, priorizadas e estimadas com t-shirt sizing.
-
-Critério de estimativa utilizado:
-
-| Tamanho | Tempo estimado |
-|------|------|
-| P | Até 30 minutos |
-| M | Entre 30 e 60 minutos |
-| G | Entre 60 e 120 minutos |
-
-## 10.1 - Lista priorizada de tarefas
-
-| Prioridade | Tarefa | Descrição | Estimativa | Dependência |
-|------|------|------|------|------|
-| 1 | Revisar políticas de Git | Conferir se o fluxo de branches, PRs, merges e deleção está documentado corretamente. | M | Nenhuma |
-| 2 | Formalizar procedimentos operacionais | Adicionar comandos e passos explícitos para criar, atualizar, mergear e deletar branches. | M | Revisão das políticas |
-| 3 | Adicionar exemplos práticos | Inserir exemplos reais de fluxo de documentação e funcionalidade no contexto do projeto. | M | Procedimentos operacionais |
-| 4 | Consolidar retrospectiva da Sprint 1 | Documentar pontos fortes, pontos fracos e ações de melhoria da sprint anterior. | G | Nenhuma |
-| 5 | Quebrar entregas da Sprint 2 em tasks | Transformar os objetivos da sprint em tarefas menores e acompanháveis. | M | Retrospectiva |
-| 6 | Estimar tasks com t-shirt sizing | Classificar cada tarefa como P, M ou G conforme esforço esperado. | P | Lista de tasks |
-| 7 | Sequenciar atividades da Sprint 2 | Ordenar as tarefas de acordo com prioridade e dependências. | P | Estimativas definidas |
-| 8 | Validar conformidade com critérios do Escritório de Projetos | Conferir se o documento atende aos critérios exigidos para o artefato. | M | Documento consolidado |
-| 9 | Revisar escrita e formatação Markdown | Ajustar clareza, padronização de títulos, tabelas, listas e exemplos. | M | Conteúdo completo |
-| 10 | Abrir Pull Request final | Enviar a branch, abrir PR para develop e solicitar revisão de outro integrante. | P | Revisão concluída |
-
-## 10.2 - Sequenciamento lógico
-
-1. Revisar o documento atual e identificar lacunas
-2. Completar as políticas operacionais de Git
-3. Adicionar exemplos práticos aplicados ao projeto
-4. Consolidar a retrospectiva da Sprint 1
-5. Planejar a Sprint 2 com tasks, estimativas e prioridades
-6. Revisar o Markdown final
-7. Abrir Pull Request para validação da equipe
-
-## 10.3 - Critérios de conclusão da Sprint 2
-
-A Sprint 2 será considerada concluída quando:
-
-- O documento `Gestao_Projeto_Configuracao.md` estiver completo
-- As políticas de Git estiverem claras e aplicáveis
-- A retrospectiva da Sprint 1 estiver registrada
-- O planejamento da Sprint 2 estiver priorizado e estimado
-- O arquivo estiver armazenado na pasta `docs` do GitLab
-- O Pull Request tiver sido aberto, revisado e aprovado
+- Planejar validações com professores antes das entregas finais  
+- Estabelecer tempo máximo para revisão de Merge Requests (ex: até 24h)  
+- Priorizar abertura antecipada de PRs, mesmo que parciais, para acelerar feedback  
+- Manter granularidade das tarefas e commits, garantindo continuidade do bom fluxo de trabalho  

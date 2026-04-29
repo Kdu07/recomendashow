@@ -176,8 +176,6 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 
 ## 5. Personas e Jornada do Usuário
 
-> Caracterize os principais perfis de usuários e represente sua jornada, destacando necessidades, dores, expectativas e interações relevantes com a solução.
-
 ### 5.1 Personas
 
 **5.1.2: Marcos Abrantes - a persona do cliente**

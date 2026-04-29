@@ -328,6 +328,21 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
+### RF10 — Recomendação Inteligente
+
+**User story:** Como usuário, quero receber sugestões personalizadas com base no meu comportamento e preferências, para descobrir novos espetáculos relevantes de forma mais rápida e intuitiva.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição |O usuário possui preferências registradas no sistema (via Onboarding ou interações prévias). |
+| Procedimento de teste | 1. Acessar a página inicial (Home).<br> 2. Localizar a seção de recomendações personalizadas.<br>3. Comparar o gênero e temática dos espetáculos sugeridos com o perfil do usuário.|
+| Resultado esperado |As sugestões exibidas são condizentes com os interesses do usuário, apresentando espetáculos que correspondam ao seu perfil de consumo cultural. |
+| Pós-condição |O sistema mantém a personalização da interface ativa para a conta do usuário. |
+
+---
+
 
 
 ## 10. Requisitos Não Funcionais

@@ -159,7 +159,54 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 
 ## 7. Brainstorming de Features
 
-> Registre todas as ideias geradas durante o workshop, incluindo as features levantadas pelo grupo.
+Para o projeto de plataforma digital baseada em arquitetura orientada a serviços, desenvolvido em parceria com a **Aventura Teatros**, o desafio central identificado é a ausência de um sistema estruturado de recomendação no Portal Aventura. Isso limita o potencial de descoberta de novos conteúdos e impacta diretamente a conversão em vendas de ingressos.
+
+Esta documentação detalha o brainstorm de *features* realizado em grupo.
+
+
+### 1. Visão Geral do Modelo (Backend & Inteligência)
+
+O motor de recomendação será alimentado por dados demográficos e comportamentais para personalizar a experiência do usuário no portal.
+
+* **Geolocalização:** Filtragem baseada na localização do usuário.
+* **Perfil Demográfico:** Segmentação por idade e gênero.
+* **Rastreio de Ações:** Monitoramento do comportamento de navegação dentro da plataforma.
+* **Indicadores de Interesse:** Gatilhos de conversão, como o clique no link da ticketeira (venda de ingressos).
+* **Integração com Wishlist:** O sistema deve reconhecer se o espetáculo já está na lista de desejos para refinar as sugestões.
+
+
+### 2. Interface do Usuário (Front-end)
+
+### 2.1 Fluxo de Cadastro e Onboarding
+Essencial para coletar os dados iniciais que alimentarão o sistema de recomendação inteligente.
+* **Credenciais:** E-mail e senha.
+* **Dados Pessoais:** Nome, Idade, Gênero e CEP.
+* **Questionário de Preferências:**
+    * Frequência de ida ao teatro.
+    * Tipos de preferência (Show musical, stand-up, espetáculo, espetáculo musical).
+    * Seleção de gêneros favoritos.
+
+### 2.2 Estrutura de Navegação
+* **Home:** Visão geral e destaques.
+* **Componentes de Descoberta:** Carrosséis e "Prateleiras" de recomendações personalizadas.
+* **Filtros Regionais:** Seleção rápida entre São Paulo (SP) e Rio de Janeiro (RJ).
+* **Retenção:** Seção "Assista Novamente" e acesso rápido à Wishlist.
+* **Perfil:** Gestão de dados e preferências do usuário.
+* **Teatro:** Páginas com informações fixas sobre os equipamentos geridos pela Aventura.
+
+
+### 3. Funcionalidades Core
+
+* **Direcionamento para Compra:** Link direto e facilitado para a aquisição de ingressos.
+* **Busca:** Sistema de pesquisa interna de conteúdos e espetáculos.
+* **Gestão de Wishlist:** Botão para salvar experiências de interesse futuro.
+
+
+### 4. Roadmap: Funcionalidades Adicionais (Futuro)
+
+* **Sistema de Feedback:** Avaliação de espetáculos por meio de "Like/Dislike" para aprimorar o algoritmo.
+* **Notificações Push:** Alertas automáticos quando um espetáculo salvo na Wishlist entrar em cartaz ou tiver novas datas disponíveis.
+
 
 ---
 

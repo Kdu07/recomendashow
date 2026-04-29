@@ -197,7 +197,15 @@ Marcos Abrantes representa um perfil crescente de consumidores culturais urbanos
 
 ## 6. Fluxo do Negócio
 
-> Modele a cadeia de valor dos processos de negócio e o fluxo principal relacionado ao contexto do projeto, com uso de notação BPMN.
+Nesta seção, apresentamos o fluxo de negócios da Plataforma Aventura modelado em BPMN (Business Process Model and Notation). O diagrama mapeia as interações entre três participantes principais — o Cliente, o Sistema de Recomendação e a Gestão de Conteúdo — demonstrando como esses processos se integram para oferecer uma experiência personalizada ao usuário. A notação BPMN foi escolhida por permitir uma leitura clara e padronizada dos fluxos, facilitando tanto a comunicação entre equipes técnicas quanto a compreensão por stakeholders de negócio.
+
+<div align="center">
+<sub>Imagem 03 - Fluxo de Negócio (BPMN)</sub><br>
+  <img src="../assets/fluxo-negocios-bpmn.png" width="100%" alt="Fluxo de Negócio (BPMN)"><br>
+  <sup>Source: Material produced by the authors, 2026.</sup>
+</div>
+
+O diagrama revela uma arquitetura de processos bem estruturada e orientada à personalização. O fluxo do cliente é direto e centrado na tomada de decisão: após acessar o portal e visualizar as recomendações, o sistema captura um ponto crítico — o interesse do usuário — que determina se há conversão ou abandono. Em paralelo, o Sistema de Recomendação opera de forma contínua, retroalimentado pelo catálogo preparado pela Gestão de Conteúdo, o que garante que as sugestões exibidas ao cliente sejam sempre baseadas em dados atualizados. Esse desenho evidencia uma preocupação com a experiência do usuário desde a entrada até a conversão, minimizando fricções e maximizando a relevância do conteúdo apresentado.
 
 ---
 

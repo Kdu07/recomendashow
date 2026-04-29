@@ -22,7 +22,7 @@ Utilizada para o desenvolvimento de novas funcionalidades.
 
 **Exemplo:**
 
-feature/user-authentication
+ feature/user-authentication
 
 feature/api-endpoints
 

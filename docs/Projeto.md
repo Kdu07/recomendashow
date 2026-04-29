@@ -183,11 +183,36 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 
 ## 9. Requisitos Funcionais
 
-> Especificação dos requisitos funcionais em formato de user story: *"Como \<perfil\>, eu quero \<realizar uma ação\>"*.
+A fim de garantir a excelência e o rigor técnico no desenvolvimento do ecossistema digital, o processo de levantamento e documentação seguiu as diretrizes da Área de Conhecimento de Requisitos de Software (KA 1 - Software Requirements) do guia internacional SWEBOK V3 (IEEE). Essa adoção assegura que o projeto não apenas atenda aos objetivos de negócio do parceiro, mas que seja estruturado de forma rastreável, modular e pronta para um ciclo de desenvolvimento de software de qualidade.
 
-### RF01 — \<Nome do requisito\>
+### 9.1.  Elicitação e Análise de Requisitos
+A fase de elicitação buscou compreender profundamente a jornada do consumidor cultural. O foco principal foi alinhar o vasto catálogo de produções da Aventura Teatros às expectativas de um público diversificado e exigente. Utilizamos a técnica ágil de User Stories (Histórias de Usuário) para mapear o comportamento do espectador, desde a descoberta de seu perfil no primeiro contato (Onboarding) até o redirecionamento seguro para a compra do ingresso (Hand-off).
 
-**User story:** Como , eu quero .
+Durante a etapa de análise, delimitamos estrategicamente o escopo do sistema para focar 100% na experiência do usuário final. Concluiu-se que o maior valor do produto reside na capacidade de oferecer uma curadoria ativa e personalizada. Dessa forma, todos os esforços de definição de requisitos foram direcionados para desenhar uma plataforma de alta usabilidade, onde o sistema atue de forma inteligente e orgânica na sugestão de espetáculos, maximizando o engajamento e a conversão de vendas.
+
+### 9.2. Especificação e Validação de Requisitos Funcionais
+Conforme as premissas do SWEBOK, a especificação tem o papel de traduzir as necessidades do negócio em comportamentos claros e executáveis para o sistema, enquanto a validação garante que o produto construído seja plenamente testável.
+
+Para a especificação, adotamos o padrão estruturado de User Stories ("Como perfil, eu quero ação, para motivação"), garantindo que o desenvolvimento seja continuamente guiado pelo valor entregue ao usuário. Paralelamente, para a etapa de validação, foram definidos Casos de Teste de Usuário para cada funcionalidade descrita. Esses testes estabelecem critérios de aceitação rigorosos — contemplando pré-condições, procedimentos de execução e os resultados sistêmicos e visuais esperados —, assegurando que todas as ações e comportamentos do software possam ser homologados com precisão técnica antes de serem disponibilizados ao público. Os requisitos detalhados sob esta ótica são apresentados a seguir.
+
+### RF01 — Onboarding de Interesses
+
+**User story:** Como novo usuário, eu quero responder a um questionário de interesses (onboarding), para que o sistema recomende o catálogo de acordo com minhas preferências (gênero, frequência, localização).
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | |
+| Procedimento de teste | |
+| Resultado esperado | |
+| Pós-condição | |
+
+---
+
+### RF02 — Recomendação por Geolocalização
+
+**User story:** Como usuário, eu quero receber sugestões baseadas na minha localização (Geolocalização), para priorizar eventos que acontecem na minha cidade (RJ ou SP).
 
 **Testes de usuário:**
 
@@ -200,9 +225,9 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 
 ---
 
-### RF02 — \<Nome do requisito\>
+### RF03 — Autenticação e Persistência
 
-**User story:** Como , eu quero .
+**User story:** Como usuário, eu quero me cadastrar e realizar login (E-mail/Senha), para que minhas preferências e minha Wishlist sejam salvas entre diferentes sessões e dispositivos.
 
 **Testes de usuário:**
 
@@ -214,6 +239,96 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 | Pós-condição | |
 
 ---
+
+### RF04 — Catálogo Categorizado
+
+**User story:** Como usuário, eu quero visualizar o catálogo completo de espetáculos organizado por categorias, para que eu tenha uma visão geral da multiplicidade artística da Aventura de forma estruturada.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | |
+| Procedimento de teste | |
+| Resultado esperado | |
+| Pós-condição | |
+
+---
+### RF05 — Busca Específica
+
+**User story:** Como usuário, eu quero pesquisar por termos específicos (teatro, título), para encontrar rapidamente informações sobre uma produção específica.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | |
+| Procedimento de teste | |
+| Resultado esperado | |
+| Pós-condição | |
+
+---
+### RF06 — Gestão de Wishlist
+
+**User story:** Como espectador, eu quero adicionar ou remover espetáculos da minha Wishlist, para sinalizar ao algoritmo meus interesses reais e salvar peças para consulta futura.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | |
+| Procedimento de teste | |
+| Resultado esperado | |
+| Pós-condição | |
+
+---
+
+### RF07 — Informações de Teatros
+
+**User story:** Como espectador, eu quero encontrar informações de localização e horário de funcionamento sobre os teatros Aventura, para me preparar para assistir a um espetáculo.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | |
+| Procedimento de teste | |
+| Resultado esperado | |
+| Pós-condição | |
+
+---
+
+### RF08 — Gestão de Perfil e Preferências
+
+**User story:** Como usuário, quero gerenciar e editar meus dados de perfil e preferências a qualquer momento, para garantir transparência e privacidade.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | |
+| Procedimento de teste | |
+| Resultado esperado | |
+| Pós-condição | |
+
+---
+
+### RF09 — Redirecionamento de Compra
+
+**User story:** Como usuário, quero ser direcionado para a bilheteria oficial via link externo, para realizar a compra do ingresso com segurança.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | |
+| Procedimento de teste | |
+| Resultado esperado | |
+| Pós-condição | |
+
+---
+
+
 
 ## 10. Requisitos Não Funcionais
 

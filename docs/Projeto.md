@@ -6,7 +6,6 @@
 - [2. Contexto da Indústria do Parceiro](#2-contexto-da-indústria-do-parceiro)
 - [3. Visão e Objetivos do Produto](#3-visão-e-objetivos-do-produto)
 - [4. O que o Produto Faz e o que Não Faz](#4-o-que-o-produto-faz-e-o-que-não-faz)
-- [5. Personas e Jornada do Usuário](#5-personas-e-jornada-do-usuário)
 - [6. Fluxo do Negócio](#6-fluxo-do-negócio)
 - [7. Brainstorming de Features](#7-brainstorming-de-features)
 - [8. Business Model Canvas do MVP](#8-business-model-canvas-do-mvp)
@@ -180,6 +179,17 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 > Caracterize os principais perfis de usuários e represente sua jornada, destacando necessidades, dores, expectativas e interações relevantes com a solução.
 
 ### 5.1 Personas
+
+**5.1.2: Marcos Abrantes - a persona do cliente**
+
+Marcos Abrantes representa um perfil crescente de consumidores culturais urbanos: jovens adultos com rotina intensa, que buscam no lazer uma forma de descanso e inspiração, mas ainda têm uma relação pouco estruturada com o consumo de teatro. Seu contato com espetáculos acontece de forma reativa, mediado por redes sociais e indicações, o que torna sua jornada fragmentada. Apesar do interesse genuíno e do potencial de consumo, Marcos enfrenta dificuldades para descobrir novas produções com confiança, revelando uma oportunidade clara para soluções que organizem, personalizem e qualifiquem sua experiência de decisão.
+
+<div align="center">
+  <img src="../assets/Persona-cliente.png" width="100%" alt="Persona do cliente"><br>
+  <sub>Imagem 02 - Persona do cliente</sub><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+
 
 ### 5.2 Jornada do usuário
 

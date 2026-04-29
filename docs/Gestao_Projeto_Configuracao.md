@@ -350,3 +350,93 @@ A retrospectiva da Sprint 1 tem como objetivo analisar o desempenho da equipe, i
 - Estabelecer tempo máximo para revisão de Merge Requests (ex: até 24h)  
 - Priorizar abertura antecipada de PRs, mesmo que parciais, para acelerar feedback  
 - Manter granularidade das tarefas e commits, garantindo continuidade do bom fluxo de trabalho  
+
+
+
+
+# 10 - Planejamento da Sprint 2
+
+O planejamento da Sprint 2 organiza as entregas com base nos artefatos definidos, estruturando as tarefas de forma detalhada, priorizada e com estimativas realistas.
+
+## 10.1 - Critério de estimativa
+
+| Tamanho | Tempo estimado |
+|------|------|
+| PP | Até 15 minutos |
+| P | Até 30 minutos |
+| M | Até 1 hora |
+| G | Até 2 horas |
+| GG | Acima de 2 horas  |
+
+
+## 10.2 - Lista priorizada de tarefas
+
+| Prioridade | Artefato | Task | Descrição | Estimativa | Dependência |
+|------|------|------|------|------|------|
+| 1 | Modelagem de Dados | Identificar entidades do domínio | Levantar entidades principais com base no problema | M | Nenhuma |
+| 1 | Projeto Visual | Definir estrutura do app | Organizar telas e navegação | M | Nenhuma |
+| 1 | Solução Técnica | Definir atores do sistema | Identificar usuários do sistema | P | Nenhuma |
+| 2 | Modelagem de Dados | Definir atributos das entidades | Listar atributos relevantes | M | Entidades |
+| 2 | Projeto Visual | Criar wireframes | Desenhar estrutura das telas mobile | G | Estrutura |
+| 2 | Solução Técnica | Criar casos de uso | Mapear interações usuário-sistema | M | Atores |
+| 3 | Modelagem de Dados | Definir relacionamentos | Mapear relações entre entidades | M | Entidades |
+| 3 | Solução Técnica | Escrever user stories | Detalhar casos de uso | M | Casos de uso |
+| 3 | Projeto Visual | Ajustar layout mobile | Garantir usabilidade mobile | M | Wireframe |
+| 4 | Modelagem de Dados | Converter para modelo lógico | Transformar entidades em tabelas | M | Modelo conceitual |
+| 4 | Recomendação | Revisar dataset da Sprint 1 | Avaliar qualidade dos dados | M | Nenhuma |
+| 4 | Solução Técnica | Definir tecnologias | Justificar stack utilizada | M | Nenhuma |
+| 5 | Modelagem de Dados | Definir PKs e FKs | Garantir integridade referencial | P | Modelo lógico |
+| 5 | Recomendação | Limpar dados | Tratar inconsistências | M | Dataset |
+| 5 | Projeto Visual | Criar mockup navegável | Desenvolver protótipo visual | G | Wireframe |
+| 6 | Modelagem de Dados | Aplicar normalização | Ajustar redundâncias | M | Modelo lógico |
+| 6 | Recomendação | Criar estrutura user-item | Transformar base para recomendação | G | Dados limpos |
+| 6 | Projeto Visual | Aplicar identidade visual | Definir cores e estilo | M | Mockup |
+| 7 | Recomendação | Implementar KNN | Aplicar algoritmo | G | Matriz pronta |
+| 7 | Solução Técnica | Criar diagrama de classes | Representar domínio | G | Modelagem |
+| 7 | Projeto Visual | Documentar decisões | Explicar escolhas de design | M | Mockup |
+| 8 | Recomendação | Implementar SVD | Aplicar decomposição | G | Matriz pronta |
+| 8 | Solução Técnica | Criar diagrama de componentes | Representar arquitetura | G | Tecnologias |
+| 9 | Recomendação | Comparar modelos | Avaliar desempenho | M | Modelos |
+| 9 | Recomendação | Calcular métricas | Aplicar RMSE, MAE etc | M | Modelos |
+| 10 | Recomendação | Exportar modelo | Salvar modelo treinado | P | Modelo final |
+| 10 | Recomendação | Criar função de inferência | Gerar recomendações | M | Modelo exportado |
+| 11 | Gestão | Revisar entregas | Conferir artefatos | M | Todas |
+| 11 | Gestão | Ajustar documentação | Padronizar Markdown | M | Revisão |
+| 12 | Gestão | Validar critérios | Conferir requisitos | P | Documento |
+| 12 | Gestão | Abrir Pull Request | Subir branch final | P | Finalização |
+
+
+## 10.3 - Sequenciamento lógico
+
+A execução da Sprint 2 será realizada de forma paralela entre os diferentes artefatos, respeitando as dependências entre tarefas para garantir produtividade e consistência das entregas.
+
+### Passo 1
+Inicialmente, a equipe deve iniciar simultaneamente três frentes principais: a modelagem de dados, com a identificação de entidades e atributos do domínio; o projeto visual, com a definição da estrutura do aplicativo e criação dos wireframes; e a solução técnica, com a definição dos atores do sistema e elaboração dos primeiros casos de uso.
+
+### Passo 2
+Com a evolução da modelagem de dados, o grupo deve avançar até a construção do modelo lógico, permitindo que outras frentes utilizem essa base estruturada. Em paralelo, deve-se iniciar a análise e preparação do dataset da Sprint 1, incluindo limpeza e tratamento dos dados.
+
+### Passo 3
+Na sequência, a equipe pode continuar em paralelo com o desenvolvimento dos mockups navegáveis no projeto visual e com a construção dos diagramas UML na solução técnica, garantindo alinhamento entre interface, arquitetura e domínio do problema.
+
+### Passo 4
+Após a preparação dos dados, deve-se construir a matriz usuário-item e, em seguida, implementar os modelos de recomendação utilizando as abordagens KNN e SVD. Com os modelos implementados, é necessário realizar a avaliação por meio de métricas adequadas e definir o modelo com melhor desempenho.
+
+### Passo 5
+Com os resultados consolidados, a equipe deve finalizar os artefatos técnicos, incluindo a exportação do modelo treinado, a implementação da função de inferência e a consolidação dos diagramas e documentações.
+
+### Passo 6
+Por fim, deve ser realizada uma revisão geral do projeto, verificando a consistência entre os artefatos e realizando ajustes necessários na documentação. Após essa etapa, a equipe deve validar o atendimento aos critérios da entrega e realizar a abertura do Pull Request para revisão final.
+
+
+## 10.4 - Critérios de conclusão da Sprint 2
+
+A Sprint 2 será considerada concluída quando:
+
+- Todos os artefatos estiverem desenvolvidos conforme especificação  
+- O modelo de recomendação estiver funcional e avaliado  
+- Os diagramas UML estiverem completos e coerentes  
+- O projeto visual estiver navegável e documentado  
+- A modelagem de dados estiver consistente e normalizada  
+- O documento estiver estruturado em Markdown na pasta `docs`  
+- O Pull Request tiver sido aberto, revisado e aprovado  

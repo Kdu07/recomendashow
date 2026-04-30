@@ -176,8 +176,6 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 
 ## 5. Personas e Jornada do Usuário
 
-> Caracterize os principais perfis de usuários e represente sua jornada, destacando necessidades, dores, expectativas e interações relevantes com a solução.
-
 ### 5.1 Personas
 
 **5.1.2: Marcos Abrantes - a persona do cliente**
@@ -205,7 +203,9 @@ Nesta seção, apresentamos o fluxo de negócios da Plataforma Aventura modelado
   <sup>Source: Material produced by the authors, 2026.</sup>
 </div>
 
-O diagrama revela uma arquitetura de processos bem estruturada e orientada à personalização. O fluxo do cliente é direto e centrado na tomada de decisão: após acessar o portal e visualizar as recomendações, o sistema captura um ponto crítico — o interesse do usuário — que determina se há conversão ou abandono. Em paralelo, o Sistema de Recomendação opera de forma contínua, retroalimentado pelo catálogo preparado pela Gestão de Conteúdo, o que garante que as sugestões exibidas ao cliente sejam sempre baseadas em dados atualizados. Esse desenho evidencia uma preocupação com a experiência do usuário desde a entrada até a conversão, minimizando fricções e maximizando a relevância do conteúdo apresentado.
+O fluxo de negócios é composto por duas pools distintas. Na pool do Cliente, o processo tem início com o acesso ao portal Aventura, seguido da recepção de recomendações. O gateway exclusivo "Se interessa?" determina o caminho seguinte: caso haja interesse, o cliente é direcionado à ticketera, encerrando o processo; caso contrário, o fluxo retorna à etapa de recepção de recomendações.
+
+Na pool da Plataforma Aventura, dois fluxos paralelos operam de forma independente. O Sistema de Recomendação é disparado a cada 24 horas, executando a captura de interações, o tratamento dos dados e o encaminhamento ao gateway inclusivo. A Gestão de Conteúdo, por sua vez, é disparada semanalmente, realizando a coleta de dados dos espetáculos e a população do banco de dados, finalizando com o evento "Catálogo pronto", que também alimenta o gateway inclusivo. Esse gateway OR garante que a geração de recomendações ocorra assim que ao menos uma das entradas estiver disponível, enviando o resultado ao cliente via evento de mensagem "Recomendações geradas".
 
 ---
 

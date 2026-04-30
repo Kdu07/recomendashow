@@ -288,37 +288,167 @@ O Business Model Canvas apresentado a seguir sintetiza a estratégia do MVP da P
 
 ## 9. Requisitos Funcionais
 
-> Especificação dos requisitos funcionais em formato de user story: *"Como \<perfil\>, eu quero \<realizar uma ação\>"*.
+A fim de garantir a excelência e o rigor técnico no desenvolvimento do ecossistema digital, o processo de levantamento e documentação seguiu as diretrizes da Área de Conhecimento de Requisitos de Software (KA 1 - Software Requirements) do guia internacional SWEBOK V3 (IEEE). Essa adoção assegura que o projeto não apenas atenda aos objetivos de negócio do parceiro, mas que seja estruturado de forma rastreável, modular e pronta para um ciclo de desenvolvimento de software de qualidade.
 
-### RF01 — \<Nome do requisito\>
+### 9.1.  Elicitação e Análise de Requisitos
+A fase de elicitação buscou compreender profundamente a jornada do consumidor cultural. O foco principal foi alinhar o vasto catálogo de produções da Aventura Teatros às expectativas de um público diversificado e exigente. Utilizamos a técnica ágil de User Stories (Histórias de Usuário) para mapear o comportamento do espectador, desde a descoberta de seu perfil no primeiro contato (Onboarding) até o redirecionamento seguro para a compra do ingresso (Hand-off).
 
-**User story:** Como , eu quero .
+Durante a etapa de análise, delimitamos estrategicamente o escopo do sistema para focar 100% na experiência do usuário final. Concluiu-se que o maior valor do produto reside na capacidade de oferecer uma curadoria ativa e personalizada. Dessa forma, todos os esforços de definição de requisitos foram direcionados para desenhar uma plataforma de alta usabilidade, onde o sistema atue de forma inteligente e orgânica na sugestão de espetáculos, maximizando o engajamento e a conversão de vendas.
 
-**Testes de usuário:**
+### 9.2. Especificação e Validação de Requisitos Funcionais
+Conforme as premissas do SWEBOK, a especificação tem o papel de traduzir as necessidades do negócio em comportamentos claros e executáveis para o sistema, enquanto a validação garante que o produto construído seja plenamente testável.
 
-| Campo | Descrição |
-|---|---|
-| Pré-condição | |
-| Procedimento de teste | |
-| Resultado esperado | |
-| Pós-condição | |
+Para a especificação, adotamos o padrão estruturado de User Stories ("Como perfil, eu quero ação, para motivação"), garantindo que o desenvolvimento seja continuamente guiado pelo valor entregue ao usuário. Paralelamente, para a etapa de validação, foram definidos Casos de Teste de Usuário para cada funcionalidade descrita. Esses testes estabelecem critérios de aceitação rigorosos, contemplando pré-condições, procedimentos de execução e os resultados sistêmicos e visuais esperados, assegurando que todas as ações e comportamentos do software possam ser homologados com precisão técnica antes de serem disponibilizados ao público. Os requisitos detalhados sob esta ótica são apresentados a seguir.
 
----
+### RF01 — Onboarding de Interesses
 
-### RF02 — \<Nome do requisito\>
-
-**User story:** Como , eu quero .
+**User story:** Como novo usuário, eu quero responder a um questionário de interesses (onboarding), para que o sistema recomende o catálogo de acordo com minhas preferências (gênero, frequência, localização).
 
 **Testes de usuário:**
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | |
-| Procedimento de teste | |
-| Resultado esperado | |
-| Pós-condição | |
+| Pré-condição |O usuário acabou de criar a conta e está no seu primeiro acesso (sem preferências salvas). |
+| Procedimento de teste | 1. Acessar a tela de Onboarding. <br> 2. Selecionar o gênero "Musical" e a cidade "São Paulo". <br>3. Clicar no botão "Salvar e Continuar". |
+| Resultado esperado | O sistema redireciona o usuário para a Home, exibindo primariamente espetáculos da categoria "Musical" localizados em "SP". |
+| Pós-condição |As preferências de gênero e localização são gravadas no perfil do Usuário no banco de dados.|
 
 ---
+
+### RF02 — Recomendação por Geolocalização
+
+**User story:** Como usuário, eu quero receber sugestões baseadas na minha localização (Geolocalização), para priorizar eventos que acontecem na minha cidade (RJ ou SP).
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | O usuário está logado e possui a localização definida (ex: São Paulo).|
+| Procedimento de teste |1. Acessar a página inicial (Home).<br>2. Rolar a página até a seção "Em Cartaz Perto de Você". <br> 3. Verificar os locais dos espetáculos exibidos. |
+| Resultado esperado |A prateleira exibe exclusivamente espetáculos vinculados a teatros localizados na cidade de São Paulo. |
+| Pós-condição |O sistema registra a visualização para refinar o algoritmo de engajamento local. |
+
+---
+
+### RF03 — Autenticação e Persistência
+
+**User story:** Como usuário, eu quero me cadastrar e realizar login (E-mail/Senha), para que minhas preferências e minha Wishlist sejam salvas entre diferentes sessões e dispositivos.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição |O usuário possui um cadastro válido, tem itens salvos na Wishlist, mas está deslogado do sistema. |
+| Procedimento de teste |1. Acessar a tela de Login.<br>2. Inserir E-mail e Senha e confirmar.<br> 3. Navegar até a aba "Minha Wishlist". |
+| Resultado esperado |O sistema autentica o usuário com sucesso e carrega todos os espetáculos que haviam sido salvos anteriormente. |
+| Pós-condição |Uma sessão ativa (token) é gerada e armazenada de forma segura para manter o acesso durante a navegação. |
+
+---
+
+### RF04 — Catálogo Categorizado
+
+**User story:** Como usuário, eu quero visualizar o catálogo completo de espetáculos organizado por categorias, para que eu tenha uma visão geral da multiplicidade artística da Aventura de forma estruturada.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição |O sistema possui espetáculos ativos cadastrados e vinculados a diferentes categorias de Gênero. |
+| Procedimento de teste | 1. Acessar a página principal de Catálogo.<br>2. Clicar no filtro ou aba da categoria "Comédia".|
+| Resultado esperado |A interface é atualizada, exibindo apenas os cards de espetáculos que contêm a tag do gênero "Comédia". |
+| Pós-condição | O sistema processa a filtragem sem realizar alterações nos dados salvos do usuário.|
+
+---
+### RF05 — Busca Específica
+
+**User story:** Como usuário, eu quero pesquisar por termos específicos (teatro, título), para encontrar rapidamente informações sobre uma produção específica.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | O espetáculo "Mamma Mia" e o teatro "Riachuelo" estão devidamente cadastrados e ativos no banco de dados.|
+| Procedimento de teste | 1. Clicar no ícone de pesquisa (lupa).<br>2. Digitar o termo "Riachuelo" e pressionar Enter.|
+| Resultado esperado | A página de resultados exibe uma lista contendo o espetáculo "Mamma Mia" e outras peças em cartaz no referido teatro. |
+| Pós-condição |O termo pesquisado é registrado temporariamente em log para métricas de interesse da plataforma. |
+
+---
+### RF06 — Gestão de Wishlist
+
+**User story:** Como espectador, eu quero adicionar ou remover espetáculos da minha Wishlist, para sinalizar ao algoritmo meus interesses reais e salvar peças para consulta futura.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição |O usuário está logado e acessa a página de um espetáculo que não está em sua Wishlist. |
+| Procedimento de teste |1. Clicar no botão "Adicionar à Wishlist".<br>2. Acessar a página "Minha Wishlist" para validar a inclusão.<br>3. Voltar e clicar no mesmo botão para remover. |
+| Resultado esperado | O botão muda de estado visual. O espetáculo aparece na página Wishlist (passo 2) e desaparece ao ser removido (passo 3).|
+| Pós-condição |O banco de dados insere (Create) ou deleta (Delete) o relacionamento entre as entidades Usuário e Espetáculo. |
+
+---
+
+### RF07 — Informações de Teatros
+
+**User story:** Como espectador, eu quero encontrar informações de localização e horário de funcionamento sobre os teatros Aventura, para me preparar para assistir a um espetáculo.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição |O sistema possui o cadastro do teatro com metadados preenchidos (endereço, horários) vinculado ao espetáculo selecionado. |
+| Procedimento de teste |1. Acessar a página de detalhes de um espetáculo qualquer.<br> 2. Rolar a página até a seção de informações do local. |
+| Resultado esperado |O nome do teatro, o endereço físico completo e os dias/horários de funcionamento da bilheteria são exibidos corretamente. |
+| Pós-condição |Nenhuma alteração no estado do sistema; os dados são consumidos em modo de apenas leitura. |
+
+---
+
+### RF08 — Gestão de Perfil e Preferências
+
+**User story:** Como usuário, quero gerenciar e editar meus dados de perfil e preferências a qualquer momento, para garantir transparência e privacidade.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição |O usuário está logado no sistema e acessa a área de configurações do próprio perfil. |
+| Procedimento de teste |1. Acessar "Meu Perfil" > "Gêneros Favoritos".<br> 2. Desmarcar o gênero "Comédia" e selecionar "Drama".<br> 3. Clicar em "Salvar Alterações". |
+| Resultado esperado |O sistema exibe um alerta de sucesso e o motor de recomendação ajusta as próximas sugestões na Home para priorizar "Drama". |
+| Pós-condição |O vetor de interesses atrelado ao Usuário é atualizado (Update) permanentemente no banco de dados.|
+
+---
+
+### RF09 — Redirecionamento de Compra
+
+**User story:** Como usuário, quero ser direcionado para a bilheteria oficial via link externo, para realizar a compra do ingresso com segurança.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição |O espetáculo selecionado possui uma URL externa de bilheteria válida cadastrada no sistema (ex: link do Sympla). |
+| Procedimento de teste | 1. Acessar a página de detalhes do espetáculo em cartaz.<br> 2. Clicar no botão principal de call-to-action "Comprar Ingressos".|
+| Resultado esperado |O navegador abre uma nova janela ou aba carregando a página oficial de vendas do espetáculo na ticketeira externa. |
+| Pós-condição |A interação de clique (hand-off) é registrada no sistema para geração de métricas de conversão. |
+
+---
+
+### RF10 — Recomendação Inteligente
+
+**User story:** Como usuário, quero receber sugestões personalizadas com base no meu comportamento e preferências, para descobrir novos espetáculos relevantes de forma mais rápida e intuitiva.
+
+**Testes de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição |O usuário possui preferências registradas no sistema (via Onboarding ou interações prévias). |
+| Procedimento de teste | 1. Acessar a página inicial (Home).<br> 2. Localizar a seção de recomendações personalizadas.<br>3. Comparar o gênero e temática dos espetáculos sugeridos com o perfil do usuário.|
+| Resultado esperado |As sugestões exibidas são condizentes com os interesses do usuário, apresentando espetáculos que correspondam ao seu perfil de consumo cultural. |
+| Pós-condição |O sistema mantém a personalização da interface ativa para a conta do usuário. |
+
+---
+
+
 
 ## 10. Requisitos Não Funcionais
 

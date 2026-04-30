@@ -98,7 +98,19 @@ No entanto, a substituição é apenas parcial. O teatro acontece com a presenç
 
 ### 5.1 Personas
 
-**5.1.2: Marcos Abrantes - a persona do cliente**
+**5.1.1: Ana Luiza - cliente em formação (descoberta)**
+
+Ana Luiza representa um perfil emergente de consumidores culturais em formação: jovens que ainda não possuem o hábito consolidado de frequentar teatro, mas demonstram interesse quando expostos a estímulos visuais, sociais e tendências digitais. Sua relação com o lazer é fortemente influenciada por redes sociais e pelo grupo de amigos, tornando a descoberta de experiências mais espontânea do que planejada.
+
+Apesar de não ser uma consumidora ativa do setor, Ana exerce influência significativa na decisão de compra, especialmente em contextos familiares. No entanto, enfrenta barreiras como a falta de direcionamento, dificuldade em identificar conteúdos adequados para sua faixa etária e baixa atratividade das plataformas tradicionais. Esse cenário evidencia a necessidade de soluções que tornem a experiência mais visual, intuitiva e alinhada ao comportamento digital, incentivando o interesse e reduzindo a distância entre o público jovem e o consumo cultural.
+
+<div align="center">
+  <img src="../assets/personas-ana.png" width="100%" alt="Persona do cliente"><br>
+  <sub>Imagem 02 - Persona do cliente</sub><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+
+**5.1.2: Marcos Abrantes - cliente ativo (decisão e consumo)**
 
 Marcos Abrantes representa um perfil crescente de consumidores culturais urbanos: jovens adultos com rotina intensa, que buscam no lazer uma forma de descanso e inspiração, mas ainda têm uma relação pouco estruturada com o consumo de teatro. Seu contato com espetáculos acontece de forma reativa, mediado por redes sociais e indicações, o que torna sua jornada fragmentada. Apesar do interesse genuíno e do potencial de consumo, Marcos enfrenta dificuldades para descobrir novas produções com confiança, revelando uma oportunidade clara para soluções que organizem, personalizem e qualifiquem sua experiência de decisão.
 

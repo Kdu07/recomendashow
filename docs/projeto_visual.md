@@ -1,4 +1,4 @@
-# Projeto Visual (Mobile First) — Aventura Teatros
+# Projeto Visual (Mobile First)
 
 ---
 
@@ -177,18 +177,9 @@ Descreva como o visual foi pensado para toque/legibilidade e como estados e feed
 ### 6.1 Tipografia
 Descreva família(s), escala (títulos/corpo/legendas), pesos e uso por contexto (ex.: títulos de seção, cards, botões).
 
-**Sugestão de tabela (preencher):**
-| Estilo | Tamanho | Peso | Altura de linha | Uso | Observações |
-|---|---:|---:|---:|---|---|
-|  |  |  |  |  |  |
 
 ### 6.2 Paleta de cores
 Liste cores (hex) e uso (primária, secundária, fundo, texto, feedback).
-
-**Sugestão de tabela (preencher):**
-| Token/Cor | Hex | Uso | Contraste/Observações |
-|---|---|---|---|
-|  |  |  |  |
 
 ### 6.3 Botões
 Documente variantes (primário/secundário/terciário), estados (normal/press/disabled/loading) e regras de espaçamento.

@@ -16,12 +16,17 @@ Explique o objetivo da experiência em telas pequenas (ex.: rapidez de acesso, d
 ### 1.4 Escopo do protótipo visual
 Liste **apenas** as telas cobertas pelo projeto visual e o nível de fidelidade do protótipo (wireframes e mockups navegáveis).
 
+- Splash Screen  
 - Login  
 - Cadastro  
 - Onboarding  
-- Explorar  
+- Boas-Vindas  
+- Explorar / Home  
+- Buscar  
 - Wishlist  
-- Perfil/Configurações  
+- Perfil / Configurações  
+- Detalhes do Espetáculo  
+- Editar Interesses  
 
 ---
 
@@ -74,7 +79,17 @@ Registre regras como:
 
 > **Instrução de preenchimento**: para cada tela, descreva a intenção, organização do layout e decisões de usabilidade **no mobile**. Insira a imagem do wireframe ao final de cada subseção.
 
-### 4.1 Login (Wireframe)
+### 4.1 Splash Screen (Wireframe)
+- **Objetivo da tela**:  
+- **Descrição funcional** (o que o usuário consegue fazer aqui):  
+- **Componentes principais** (ex.: marca, carregamento, transição):  
+- **Organização do layout** (hierarquia, alinhamentos):  
+- **Comportamento mobile** (tempo de exibição, transição, compatibilidade com telas):  
+- **Observações de usabilidade** (clareza, percepção de velocidade, feedback):  
+
+![Splash Screen]()
+
+### 4.2 Login (Wireframe)
 - **Objetivo da tela**:  
 - **Descrição funcional** (o que o usuário consegue fazer aqui):  
 - **Componentes principais** (ex.: campos, botões, links, alertas):  
@@ -84,7 +99,7 @@ Registre regras como:
 
 ![Login]()
 
-### 4.2 Cadastro (Wireframe)
+### 4.3 Cadastro (Wireframe)
 - **Objetivo da tela**:  
 - **Descrição funcional**:  
 - **Componentes principais**:  
@@ -94,7 +109,7 @@ Registre regras como:
 
 ![Cadastro]()
 
-### 4.3 Onboarding (Wireframe)
+### 4.4 Onboarding (Wireframe)
 - **Objetivo da tela**:  
 - **Descrição funcional**:  
 - **Componentes principais**:  
@@ -104,7 +119,17 @@ Registre regras como:
 
 ![Onboarding]()
 
-### 4.4 Explorar (Wireframe)
+### 4.5 Boas-Vindas (Wireframe)
+- **Objetivo da tela**:  
+- **Descrição funcional**:  
+- **Componentes principais** (ex.: mensagem, CTA principal, acesso a explorar):  
+- **Organização do layout**:  
+- **Comportamento mobile**:  
+- **Observações de usabilidade**:  
+
+![Boas-Vindas]()
+
+### 4.6 Explorar / Home (Wireframe)
 - **Objetivo da tela**:  
 - **Descrição funcional**:  
 - **Componentes principais** (ex.: busca, filtros, listagem, cards):  
@@ -112,9 +137,19 @@ Registre regras como:
 - **Comportamento mobile** (scroll, filtros, estados de carregamento/resultado):  
 - **Observações de usabilidade**:  
 
-![Explorar]()
+![Explorar / Home]()
 
-### 4.5 Wishlist (Wireframe)
+### 4.7 Buscar (Wireframe)
+- **Objetivo da tela**:  
+- **Descrição funcional**:  
+- **Componentes principais** (ex.: campo de busca, sugestões, histórico, filtros, resultados):  
+- **Organização do layout**:  
+- **Comportamento mobile** (teclado, foco, scroll, estados sem resultados):  
+- **Observações de usabilidade**:  
+
+![Buscar]()
+
+### 4.8 Wishlist (Wireframe)
 - **Objetivo da tela**:  
 - **Descrição funcional**:  
 - **Componentes principais** (ex.: lista, ações por item, estados vazio):  
@@ -124,7 +159,7 @@ Registre regras como:
 
 ![Wishlist]()
 
-### 4.6 Perfil/Configurações (Wireframe)
+### 4.9 Perfil / Configurações (Wireframe)
 - **Objetivo da tela**:  
 - **Descrição funcional**:  
 - **Componentes principais** (ex.: dados, preferências, ações, navegação interna):  
@@ -132,7 +167,27 @@ Registre regras como:
 - **Comportamento mobile** (scroll, seções, toques, confirmação de mudanças):  
 - **Observações de usabilidade**:  
 
-![Perfil/Configurações]()
+![Perfil / Configurações]()
+
+### 4.10 Detalhes do Espetáculo (Wireframe)
+- **Objetivo da tela**:  
+- **Descrição funcional**:  
+- **Componentes principais** (ex.: título, imagem, informações, CTA, salvar na wishlist):  
+- **Organização do layout** (hierarquia e leitura em scroll):  
+- **Comportamento mobile** (scroll, ações fixas, compartilhamento se aplicável):  
+- **Observações de usabilidade**:  
+
+![Detalhes do Espetáculo]()
+
+### 4.11 Editar Interesses (Wireframe)
+- **Objetivo da tela**:  
+- **Descrição funcional**:  
+- **Componentes principais** (ex.: seleção de categorias/interesses, busca, salvar/cancelar):  
+- **Organização do layout**:  
+- **Comportamento mobile** (seleção, feedback, confirmação):  
+- **Observações de usabilidade**:  
+
+![Editar Interesses]()
 
 ---
 
@@ -161,12 +216,17 @@ Descreva como o visual foi pensado para toque/legibilidade e como estados e feed
 ### 5.7 Imagens dos mockups (placeholders)
 > Insira abaixo os prints/exportações dos mockups por tela (ou principais estados).
 
+![Mockup - Splash Screen]()
 ![Mockup - Login]()
 ![Mockup - Cadastro]()
 ![Mockup - Onboarding]()
-![Mockup - Explorar]()
+![Mockup - Boas-Vindas]()
+![Mockup - Explorar / Home]()
+![Mockup - Buscar]()
 ![Mockup - Wishlist]()
-![Mockup - Perfil/Configurações]()
+![Mockup - Perfil / Configurações]()
+![Mockup - Detalhes do Espetáculo]()
+![Mockup - Editar Interesses]()
 
 ---
 

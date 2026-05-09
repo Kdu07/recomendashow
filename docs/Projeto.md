@@ -13,6 +13,7 @@
 - [10. Requisitos Não Funcionais](#10-requisitos-não-funcionais)
 - [11. Correlação entre RFs e RNFs](#11-correlação-entre-rfs-e-rnfs)
 - [12. Termos e Abreviações](#12-termos-e-abreviações)
+- [13. Diagrama de Classes](#13-diagrama-de-classes)
 - [Referências](#referências)
 
 ---
@@ -663,6 +664,13 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 | Vitrine Dinâmica | Componente de interface que exibe conteúdos personalizados de forma adaptativa, baseando-se no perfil e comportamento do usuário. |
 | Wishlist | Lista de desejos — conjunto de espetáculos que o cliente deseja assistir e salva para consulta futura. |
 
+## 13. Diagrama de Classes
+
+<div align="center">
+<sub>Imagem 09 - Diagrama de Classes UML</sub><br>
+  <img src="../assets/diagrama-classes-mod6.drawio.png" width="100%" alt="Diagrama de Classes UML"><br>
+  <sup>Source: Material produced by the authors, 2026.</sup>
+</div>
 
 ## Referências
 

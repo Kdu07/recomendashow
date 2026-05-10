@@ -6,6 +6,7 @@
 - [2. Contexto da Indústria do Parceiro](#2-contexto-da-indústria-do-parceiro)
 - [3. Visão e Objetivos do Produto](#3-visão-e-objetivos-do-produto)
 - [4. O que o Produto Faz e o que Não Faz](#4-o-que-o-produto-faz-e-o-que-não-faz)
+- [5. Personas e Jornada do Usuário](#5-personas-e-jornada-do-usuário)
 - [6. Fluxo do Negócio](#6-fluxo-do-negócio)
 - [7. Brainstorming de Features](#7-brainstorming-de-features)
 - [8. Business Model Canvas do MVP](#8-business-model-canvas-do-mvp)
@@ -13,6 +14,7 @@
 - [10. Requisitos Não Funcionais](#10-requisitos-não-funcionais)
 - [11. Correlação entre RFs e RNFs](#11-correlação-entre-rfs-e-rnfs)
 - [12. Termos e Abreviações](#12-termos-e-abreviações)
+- [14. Diagrama de Componentes](#14-diagrama-de-componentes)
 - [Referências](#referências)
 
 ---
@@ -663,6 +665,13 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 | Vitrine Dinâmica | Componente de interface que exibe conteúdos personalizados de forma adaptativa, baseando-se no perfil e comportamento do usuário. |
 | Wishlist | Lista de desejos — conjunto de espetáculos que o cliente deseja assistir e salva para consulta futura. |
 
+## 14. Diagrama de Componentes
+
+<div align="center">
+  <sub>Imagem 03 - Persona do cliente</sub><br>
+  <img src="../assets/personas-ana.png" width="100%" alt="Persona do cliente"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
 
 ## Referências
 

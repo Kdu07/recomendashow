@@ -667,11 +667,84 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ## 14. Diagrama de Componentes
 
+O diagrama de componentes abaixo representa a estrutura da aplicação seguindo o padrão arquitetural MVVM, com dois mecanismos de persistência: um banco de dados relacional PostgreSQL para dados estruturados e um Storage Bucket para armazenamento de interações dos usuários.
+
 <div align="center">
-  <sub>Imagem 03 - Persona do cliente</sub><br>
-  <img src="../assets/personas-ana.png" width="100%" alt="Persona do cliente"><br>
+  <sub>Imagem 10 - Diagrama de Componentes UML</sub><br>
+  <img src="../assets/diagrama-de-componentes.drawio.png" width="100%" alt="Diagrama de Componentes UML"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
+
+### Packages
+
+Packages são representados por um retângulo com uma abinha no topo. Servem para agrupar componentes que pertencem à mesma camada ou responsabilidade.
+ 
+O diagrama possui dois packages:
+ 
+- **Presentation**: agrupa os componentes da camada de apresentação
+- **Data**: agrupa os componentes da camada de acesso a dados
+
+PostgreSQL e Storage Bucket ficam **fora de qualquer package** pois são infraestrutura externa — não fazem parte do código da aplicação.
+
+### Componentes
+
+Componentes são representados por um retângulo com o ícone de componente no canto superior direito (dois retângulos pequenos sobrepostos). Cada componente possui um estereótipo que descreve sua natureza.
+
+| Componente | Estereótipo | Package |
+|---|---|---|
+| View | «component» | Presentation |
+| ViewModel | «component» | Presentation |
+| Repository | «component» | Data |
+| PostgresDataSource | «dataSource» | Data |
+| BucketDataSource | «dataSource» | Data |
+| PostgreSQL | «database» | — (externo) |
+| Storage Bucket | «artifact» | — (externo) |
+
+**Sobre os estereótipos:**
+ 
+- `«component»`: unidade de software com responsabilidade própria. É o estereótipo padrão; pode ser omitido, mas foi mantido para deixar o diagrama explícito.
+- `«dataSource»`: adaptador que encapsula os detalhes de acesso a uma fonte de dados externa.
+- `«database»`: banco de dados externo ao código da aplicação.
+- `«artifact»`: recurso implantado externamente, como um bucket de storage.
+
+### Interfaces
+
+As interfaces são representadas pelo padrão **ball-and-socket**:
+ 
+- **Bolinha (provided interface)** — linha reta saindo do componente com um círculo na ponta. Indica que o componente fornece aquele contrato.
+- **Semicírculo aberto (required interface)** — linha reta saindo do componente com um semicírculo na ponta. Indica que o componente precisa daquele contrato para funcionar.
+O encaixe entre o semicírculo e a bolinha representa a satisfação do contrato — o componente que precisa encontra o componente que fornece.
+ 
+O diagrama possui três interfaces:
+ 
+| Interface | Fornecida por | Consumida por |
+|---|---|---|
+| IRepository | Repository | ViewModel |
+| IPostgresDataSource | PostgresDataSource | Repository |
+| IBucketDataSource | BucketDataSource | Repository |
+ 
+Representação textual dos encaixes:
+ 
+```
+[ViewModel] —(— o IRepository — [Repository] —(— o IPostgresDataSource — [PostgresDataSource]
+                                              —(— o IBucketDataSource   — [BucketDataSource]
+```
+ 
+O Repository está no centro: fornece a bolinha `IRepository` para o ViewModel e consome as bolinhas `IPostgresDataSource` e `IBucketDataSource` dos DataSources por meio de seus semicírculos.
+
+### Decisões
+
+**Porque o ball-and-socket foi usado entre ViewModel e Repository**
+O ViewModel não depende da implementação concreta do Repository — ele depende apenas do contrato `IRepository`. O ball-and-socket torna esse contrato visível no diagrama, o que uma seta tracejada simples não expressa.
+ 
+**Porque 0 ball-and-socket foi usado entre Repository e DataSources?**
+Pelo mesmo motivo: o Repository não conhece os detalhes de cada tecnologia, apenas os contratos `IPostgresDataSource` e `IBucketDataSource`. Os DataSources são os responsáveis por fornecer esses contratos.
+ 
+**Porque a seta tracejada simples foi usada de DataSources para a infraestrutura**
+PostgreSQL e Storage Bucket são recursos externos — não há contrato UML a ser modelado entre o código da aplicação e eles. A seta de dependência simples é suficiente para indicar que o DataSource acessa aquele recurso.
+ 
+**Porque PostgreSQL e Storage Bucket ficam fora dos packages**
+Packages representam agrupamentos do código da aplicação. Infraestrutura externa não pertence a nenhuma camada do sistema — colocá-la dentro de um package seria incorreto semanticamente.
 
 ## Referências
 

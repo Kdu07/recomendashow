@@ -665,6 +665,8 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ## Diagrama de Casos de uso
 
+![Diagrama de Casos de uso](/assets/Diagrama-use-case.png)
+
 ### Atores
 
 #### Usuário

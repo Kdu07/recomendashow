@@ -13,8 +13,9 @@
 - [9. Requisitos Funcionais](#9-requisitos-funcionais)
 - [10. Requisitos Não Funcionais](#10-requisitos-não-funcionais)
 - [11. Correlação entre RFs e RNFs](#11-correlação-entre-rfs-e-rnfs)
-- [12. Termos e Abreviações](#12-termos-e-abreviações)
+- [12. Diagramação do banco](#12-diagramação-do-banco)
 - [14. Diagrama de Componentes](#14-diagrama-de-componentes)
+- [15. Termos e Abreviações](#15-termos-e-abreviações)
 - [Referências](#referências)
 
 ---
@@ -176,11 +177,7 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 
 ---
 
-
-Personas e jornadas · MD
-Copiar
-
-# 5. Personas e Jornada do Usuário
+## 5. Personas e Jornada do Usuário
  
 ---
  
@@ -235,7 +232,7 @@ Marcos Abrantes representa um perfil crescente de consumidores culturais urbanos
  
 <div align="center">
   <sub>Imagem 06 - Jornada do usuário: Marcos Abrantes</sub><br>
-  <img src="../assets/jornadaMarcos.png" width="100%" alt="Jornada do usuário Marcos Abrantes"><br>
+  <img src="../assets/jorandaMarcos.png" width="100%" alt="Jornada do usuário Marcos Abrantes"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
@@ -630,6 +627,8 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ## 11. Correlação entre RFs e RNFs
 
+> Tabela explicitando as relações diretas entre requisitos não funcionais e requisitos funcionais.
+
 | RNF | RF relacionados | Justificativa |
 |---|---|---|
 | RNF01 | RF01, RF02, RF04, RF06 | O tempo de resposta impacta diretamente as funcionalidades de descoberta e personalização: o questionário de onboarding (RF01), as sugestões por geolocalização (RF02), a navegação pelo catálogo de espetáculos (RF04) e a interação com a Wishlist (RF06) dependem de carregamento ágil para que o usuário não abandone o fluxo antes de receber as recomendações. |
@@ -642,28 +641,159 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
-## 12. Termos e Abreviações
+## 12. Diagramação do banco
 
-| Termo / Abreviação | Definição |
-|---|---|
-| Gateway (BPMN) | Elemento de controle de fluxo em diagramas BPMN que determina a divisão ou convergência de caminhos no processo. |
-| Gateway de Pagamento | Serviço que processa transações financeiras eletrônicas entre o cliente e o estabelecimento. |
-| Hash | Função criptográfica que converte dados de entrada em uma sequência fixa e irreversível, utilizada para armazenamento seguro de senhas. |
-| HTTPS | HyperText Transfer Protocol Secure — protocolo de comunicação seguro na web, utilizando criptografia TLS. |
-| IEEE | Institute of Electrical and Electronics Engineers — organização internacional que define padrões técnicos em engenharia, incluindo o SWEBOK. |
-| ISO 25010 | Norma internacional que define o modelo de qualidade de software, classificando características como desempenho, segurança, usabilidade e confiabilidade. |
-| Lei Rouanet | Lei nº 8.313/1991 que institui o Programa Nacional de Apoio à Cultura (PRONAC), permitindo incentivos fiscais para projetos culturais no Brasil. |
-| LGPD | Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018) — legislação brasileira que regula o tratamento de dados pessoais. |
-| MVP | Minimum Viable Product (Produto Mínimo Viável) — versão inicial de um produto contendo as funcionalidades essenciais para validar a proposta de valor. |
-| Pool (BPMN) | Elemento gráfico no BPMN que representa um participante ou organização dentro de um processo de negócio. |
-| Prateleira | Componente visual da interface que agrupa um conjunto temático de espetáculos exibido em formato de carrossel. |
-| SWEBOK | Software Engineering Body of Knowledge — guia internacional do IEEE que consolida o conhecimento da área de engenharia de software. |
-| TLS | Transport Layer Security — protocolo criptográfico que garante a segurança das comunicações em redes de computadores. |
-| UI | User Interface (Interface do Usuário) — conjunto de elementos visuais e interativos com os quais o usuário interage. |
-| UNESCO | United Nations Educational, Scientific and Cultural Organization — Organização das Nações Unidas para a Educação, a Ciência e a Cultura. |
-| Uptime | Período em que o sistema permanece disponível e operacional, geralmente expresso em percentual. |
-| Vitrine Dinâmica | Componente de interface que exibe conteúdos personalizados de forma adaptativa, baseando-se no perfil e comportamento do usuário. |
-| Wishlist | Lista de desejos — conjunto de espetáculos que o cliente deseja assistir e salva para consulta futura. |
+### 12.1 - Diagrama conceitual
+
+
+### 12.2 Diagrama Lógico
+
+<div align="center">
+<sub>Imagem 09 - Diagrama lógico</sub><br>
+  <img src="../assets/diagrama-logico.png" width="100%" alt="Diagrama logico do banco"><br>
+  <sup>Source: Material produced by the authors, 2026.</sup>
+</div>
+
+
+
+O modelo lógico de dados representa a estruturação dos dados seguindo as regras do modelo relacional, servindo como uma ponte entre a abstração do modelo conceitual e a implementação física no SGDB .
+
+---
+
+### 12.2.1 Dicionário de Dados e Mapeamento
+
+A conversão do modelo conceitual para o modelo lógico foi realizada mapeando cada entidade conceitual para uma tabela relacional e transformando relacionamentos Muitos-para-Muitos (N:N) em tabelas associativas.
+
+---
+
+### A. Tabelas de Cadastro (Entidades Fortes)
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **USUARIOS** | `id_usuario` | INT | PK, AI | Identificador único do usuário. |
+| | `nome` | VARCHAR(100) | NN | Nome completo do usuário. |
+| | `email` | VARCHAR(100) | UNIQUE, NN | E-mail utilizado para autenticação. |
+| | `senha` | VARCHAR(255) | NN | Hash da senha de acesso. |
+| | `idade` | INT | - | Idade do usuário. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **GENEROS** | `id_genero` | INT | PK, AI | Identificador único do gênero. |
+| | `nome` | VARCHAR(50) | NN | Nome do gênero artístico. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **TEATROS** | `id_teatro` | INT | PK, AI | Identificador único do teatro. |
+| | `nome` | VARCHAR(100) | NN | Nome do teatro ou espaço cultural. |
+| | `cidade` | VARCHAR(100) | NN | Cidade onde o teatro está localizado. |
+| | `estado` | VARCHAR(50) | NN | Estado onde o teatro está localizado. |
+| | `rua` | VARCHAR(150) | NN | Nome da rua do teatro. |
+| | `numero` | VARCHAR(20) | NN | Número do endereço do teatro. |
+| | `horario_func` | VARCHAR(100) | - | Horário de funcionamento do teatro. |
+| | `descricao` | TEXT | - | Descrição geral do teatro. |
+| | `imagem` | VARCHAR(255) | - | URL ou caminho da imagem do teatro. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **ESPETACULOS** | `id_espetaculo` | INT | PK, AI | Identificador único do espetáculo. |
+| | `id_teatro` | INT | FK, NN | Teatro onde o espetáculo é apresentado. |
+| | `nome` | VARCHAR(150) | NN | Nome do espetáculo. |
+| | `link_ingresso` | VARCHAR(255) | - | Link para compra de ingressos. |
+| | `descricao` | TEXT | - | Descrição detalhada do espetáculo. |
+| | `imagem` | VARCHAR(255) | - | URL ou caminho da imagem do espetáculo. |
+
+---
+
+### B. Tabelas Associativas e Operacionais
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **ESP_GEN** | `id_espetaculo` | INT | FK, PK(1/2) | Espetáculo relacionado ao gênero. |
+| | `id_genero` | INT | FK, PK(2/2) | Gênero associado ao espetáculo. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **GEN_FAV** | `id_usuario` | INT | FK, PK(1/2) | Usuário que favoritou o gênero. |
+| | `id_genero` | INT | FK, PK(2/2) | Gênero marcado como preferência pelo usuário. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **CURT_WISH** | `id_usuario` | INT | FK, PK(1/2) | Usuário que realizou a interação. |
+| | `id_espetaculo` | INT | FK, PK(2/2) | Espetáculo alvo da interação. |
+| | `tipo` | ENUM('curtida', 'wishlist') | NN | Tipo de interação realizada pelo usuário. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **INTERAÇÕES_USU** | `id_evento` | INT | PK, AI | Identificador único do evento registrado. |
+| | `id_usuario` | INT | FK, NN | Usuário que realizou a interação. |
+| | `id_espetaculo` | INT | FK, NN | Espetáculo relacionado à interação. |
+| | `tipo` | VARCHAR(50) | NN | Tipo de evento/interação realizada. |
+| | `tempo_pagina` | INT | - | Tempo de permanência do usuário na página do espetáculo em segundos. |
+
+---
+
+### 12.2.2 Definição de Chaves e Integridade Referencial
+
+### Chaves Primárias (PK)
+
+As chaves primárias foram definidas para garantir a unicidade de cada registro dentro das tabelas.
+
+### Chaves Estrangeiras (FK)
+
+As chaves estrangeiras garantem a integridade referencial entre as entidades relacionadas, impedindo registros órfãos e assegurando consistência entre os dados.
+
+### Relacionamentos implementados
+
+- Um usuário pode possuir vários registros de eventos.
+- Um usuário pode favoritar múltiplos gêneros.
+- Um usuário pode interagir com vários espetáculos.
+- Um espetáculo pertence a um teatro.
+- Um espetáculo pode possuir múltiplos gêneros.
+- Um gênero pode estar associado a múltiplos espetáculos.
+
+---
+
+### 12.2.3 Regras de Normalização Aplicadas
+
+O modelo lógico segue os princípios da Terceira Forma Normal (3FN).
+
+### Primeira Forma Normal (1FN)
+
+Todos os atributos armazenam valores atômicos, sem grupos repetitivos ou listas em uma mesma coluna.
+
+### Segunda Forma Normal (2FN)
+
+As tabelas associativas utilizam chaves compostas, garantindo que todos os atributos dependam integralmente da chave primária completa.
+
+### Terceira Forma Normal (3FN)
+
+Os atributos não-chave dependem exclusivamente da chave primária, eliminando dependências transitivas e reduzindo redundâncias no banco de dados.
+
+---
+
+### 12.2.4 Justificativa e Rastreabilidade
+
+O modelo lógico foi estruturado para manter fidelidade ao modelo conceitual, garantindo consistência entre as regras de negócio e a implementação relacional.
+
+As tabelas associativas permitem representar corretamente relacionamentos Muitos-para-Muitos, como:
+
+- preferências de gêneros dos usuários;
+- categorização de espetáculos;
+- interações entre usuários e espetáculos.
+
+A separação das entidades reduz redundâncias, melhora a escalabilidade do sistema e facilita futuras manutenções e expansões do banco de dados.
 
 ## 14. Diagrama de Componentes
 
@@ -745,6 +875,30 @@ PostgreSQL e Storage Bucket são recursos externos — não há contrato UML a s
  
 **Porque PostgreSQL e Storage Bucket ficam fora dos packages**
 Packages representam agrupamentos do código da aplicação. Infraestrutura externa não pertence a nenhuma camada do sistema — colocá-la dentro de um package seria incorreto semanticamente.
+
+## 15. Termos e Abreviações
+
+| Termo / Abreviação | Definição |
+|---|---|
+| Gateway (BPMN) | Elemento de controle de fluxo em diagramas BPMN que determina a divisão ou convergência de caminhos no processo. |
+| Gateway de Pagamento | Serviço que processa transações financeiras eletrônicas entre o cliente e o estabelecimento. |
+| Hash | Função criptográfica que converte dados de entrada em uma sequência fixa e irreversível, utilizada para armazenamento seguro de senhas. |
+| HTTPS | HyperText Transfer Protocol Secure — protocolo de comunicação seguro na web, utilizando criptografia TLS. |
+| IEEE | Institute of Electrical and Electronics Engineers — organização internacional que define padrões técnicos em engenharia, incluindo o SWEBOK. |
+| ISO 25010 | Norma internacional que define o modelo de qualidade de software, classificando características como desempenho, segurança, usabilidade e confiabilidade. |
+| Lei Rouanet | Lei nº 8.313/1991 que institui o Programa Nacional de Apoio à Cultura (PRONAC), permitindo incentivos fiscais para projetos culturais no Brasil. |
+| LGPD | Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018) — legislação brasileira que regula o tratamento de dados pessoais. |
+| MVP | Minimum Viable Product (Produto Mínimo Viável) — versão inicial de um produto contendo as funcionalidades essenciais para validar a proposta de valor. |
+| Pool (BPMN) | Elemento gráfico no BPMN que representa um participante ou organização dentro de um processo de negócio. |
+| Prateleira | Componente visual da interface que agrupa um conjunto temático de espetáculos exibido em formato de carrossel. |
+| SWEBOK | Software Engineering Body of Knowledge — guia internacional do IEEE que consolida o conhecimento da área de engenharia de software. |
+| TLS | Transport Layer Security — protocolo criptográfico que garante a segurança das comunicações em redes de computadores. |
+| UI | User Interface (Interface do Usuário) — conjunto de elementos visuais e interativos com os quais o usuário interage. |
+| UNESCO | United Nations Educational, Scientific and Cultural Organization — Organização das Nações Unidas para a Educação, a Ciência e a Cultura. |
+| Uptime | Período em que o sistema permanece disponível e operacional, geralmente expresso em percentual. |
+| Vitrine Dinâmica | Componente de interface que exibe conteúdos personalizados de forma adaptativa, baseando-se no perfil e comportamento do usuário. |
+| Wishlist | Lista de desejos — conjunto de espetáculos que o cliente deseja assistir e salva para consulta futura. |
+
 
 ## Referências
 

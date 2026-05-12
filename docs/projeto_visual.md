@@ -5,28 +5,17 @@
 ## 1. Introdução
 
 ### 1.1 Objetivo desta documentação
-Descreva **para que** este documento existe (ex.: registrar decisões visuais, orientar avaliação, apoiar implementação, garantir consistência).
+Este documento registra as decisões visuais e de experiência do usuário do protótipo mobile, servindo como referência para stakeholders (comunicando a abordagem visual), guia de implementação para desenvolvedores (garantindo consistência), instrumento de validação (avaliando alinhamento com objetivos de negócio e experiência) e base para futuras iterações que mantenham a estratégia visual e comportamental desejada.
 
 ### 1.2 Contexto da solução
-Resuma o contexto do produto (plataforma digital da Aventura Teatros focada em **recomendação e descoberta** de espetáculos culturais) e o público/uso pretendido **no mobile**.
+
+O Portal Aventura é uma plataforma de descoberta de espetáculos culturais que atualmente funciona como um catálogo estático. A solução proposta transforma isso em um hub dinâmico com recomendações personalizadas. O mobile é um ponto de entrada complementar  utilizado por usuários em momentos de navegação e consultas rápidas (5-15 min), exigindo experiência que priorize rapidez, clareza e simplicidade.
 
 ### 1.3 Objetivo da experiência Mobile First
-Explique o objetivo da experiência em telas pequenas (ex.: rapidez de acesso, descoberta eficiente, leitura confortável, ações principais com uma mão).
+A experiência mobile foi concebida com três objetivos: (1) descoberta rápida e intuitiva em poucos toques, com recomendação como centro da experiência; (2) leitura confortável em movimento com hierarquia clara, textos diretos, imagens de impacto e tamanhos de toque adequados para uso com uma mão; (3) conversão acelerada para venda removendo barreiras entre descoberta e compra através de botão sempre visível, wishlist persistente, redirecionamento direto para vendas e micro-animações confirmando ações.
 
 ### 1.4 Escopo do protótipo visual
-Liste **apenas** as telas cobertas pelo projeto visual e o nível de fidelidade do protótipo (wireframes e mockups navegáveis).
-
-- Splash Screen  
-- Login  
-- Cadastro  
-- Onboarding  
-- Boas-Vindas  
-- Explorar / Home  
-- Buscar  
-- Wishlist  
-- Perfil / Configurações  
-- Detalhes do Espetáculo  
-- Editar Interesses  
+O protótipo abrange 11 telas em nível mockup navegável, cobrindo todos os fluxos críticos: autenticação (Splash, Login, Cadastro), onboarding do usuário (Onboarding, Boas-Vindas), descoberta de conteúdo (Home, Buscar, Detalhes do Espetáculo), gestão de preferências (Wishlist, Perfil, Editar Interesses). As interações são plenamente navegáveis, permitindo validar tanto a jornada do novo usuário quanto os fluxos de exploração e conversão para compra. 
 
 ---
 

@@ -649,13 +649,11 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 <div align="center">
 <sub>Imagem 09 - Diagrama lógico</sub><br>
-  <img src="../assets/diagrama-logico.png" width="100%" alt="Diagrama logico do banco"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <img src="../assets/diagrama-logico.png" width="100%" alt="Diagrama logico do banco"><br>
+  <sup>Source: Material produced by the authors, 2026.</sup>
 </div>
 
-
-
-O modelo lógico de dados representa a estruturação dos dados seguindo as regras do modelo relacional, servindo como uma ponte entre a abstração do modelo conceitual e a implementação física no SGDB .
+O modelo lógico de dados representa a estruturação dos dados seguindo as regras do modelo relacional, servindo como uma ponte entre a abstração do modelo conceitual e a implementação física no SGDB.
 
 ---
 
@@ -669,43 +667,42 @@ A conversão do modelo conceitual para o modelo lógico foi realizada mapeando c
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **USUARIOS** | `id_usuario` | INT | PK, AI | Identificador único do usuário. |
-| | `nome` | VARCHAR(100) | NN | Nome completo do usuário. |
-| | `email` | VARCHAR(100) | UNIQUE, NN | E-mail utilizado para autenticação. |
-| | `senha` | VARCHAR(255) | NN | Hash da senha de acesso. |
-| | `idade` | INT | - | Idade do usuário. |
+| **USUARIOS** | `Id` | INT | PK, AI | Identificador único do usuário. |
+| | `Nome` | VARCHAR(100) | NN | Nome completo do usuário. |
+| | `Email` | VARCHAR(100) | UNIQUE, NN | E-mail utilizado para autenticação. |
+| | `Senha` | VARCHAR(255) | NN | Hash da senha de acesso. |
+| | `Idade` | INT | - | Idade do usuário. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **GENEROS** | `id_genero` | INT | PK, AI | Identificador único do gênero. |
-| | `nome` | VARCHAR(50) | NN | Nome do gênero artístico. |
+| **GENEROS** | `id` | INT | PK, AI | Identificador único do gênero. |
+| | `Nome` | VARCHAR(50) | NN | Nome do gênero artístico. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **TEATROS** | `id_teatro` | INT | PK, AI | Identificador único do teatro. |
-| | `nome` | VARCHAR(100) | NN | Nome do teatro ou espaço cultural. |
-| | `cidade` | VARCHAR(100) | NN | Cidade onde o teatro está localizado. |
-| | `estado` | VARCHAR(50) | NN | Estado onde o teatro está localizado. |
-| | `rua` | VARCHAR(150) | NN | Nome da rua do teatro. |
-| | `numero` | VARCHAR(20) | NN | Número do endereço do teatro. |
-| | `horario_func` | VARCHAR(100) | - | Horário de funcionamento do teatro. |
-| | `descricao` | TEXT | - | Descrição geral do teatro. |
-| | `imagem` | VARCHAR(255) | - | URL ou caminho da imagem do teatro. |
+| **TEATROS** | `id` | INT | PK, AI | Identificador único do teatro. |
+| | `Nome` | VARCHAR(100) | NN | Nome do teatro ou espaço cultural. |
+| | `Cidade` | VARCHAR(100) | NN | Cidade onde o teatro está localizado. |
+| | `Estado` | VARCHAR(50) | NN | Estado onde o teatro está localizado. |
+| | `Rua` | VARCHAR(150) | NN | Nome da rua do teatro. |
+| | `Numero` | VARCHAR(20) | NN | Número do endereço do teatro. |
+| | `Horario_func` | VARCHAR(100) | - | Horário de funcionamento do teatro. |
+| | `Descricao` | TEXT | - | Descrição geral do teatro. |
+| | `Imagem` | VARCHAR(255) | - | URL ou caminho da imagem do teatro. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **ESPETACULOS** | `id_espetaculo` | INT | PK, AI | Identificador único do espetáculo. |
-| | `id_teatro` | INT | FK, NN | Teatro onde o espetáculo é apresentado. |
-| | `nome` | VARCHAR(150) | NN | Nome do espetáculo. |
+| **ESPETACULOS** | `id` | INT | PK, AI | Identificador único do espetáculo. |
+| | `Nome` | VARCHAR(150) | NN | Nome do espetáculo. |
 | | `link_ingresso` | VARCHAR(255) | - | Link para compra de ingressos. |
-| | `descricao` | TEXT | - | Descrição detalhada do espetáculo. |
-| | `imagem` | VARCHAR(255) | - | URL ou caminho da imagem do espetáculo. |
+| | `Descricao` | TEXT | - | Descrição detalhada do espetáculo. |
+| | `Imagem` | VARCHAR(255) | - | URL ou caminho da imagem do espetáculo. |
 
 ---
 
@@ -713,54 +710,56 @@ A conversão do modelo conceitual para o modelo lógico foi realizada mapeando c
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **ESP_GEN** | `id_espetaculo` | INT | FK, PK(1/2) | Espetáculo relacionado ao gênero. |
-| | `id_genero` | INT | FK, PK(2/2) | Gênero associado ao espetáculo. |
+| **ESP_GEN** | `id_esp` | INT | FK, PK(1/2) | Espetáculo relacionado ao gênero. |
+| | `id_gen` | INT | FK, PK(2/2) | Gênero associado ao espetáculo. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **GEN_FAV** | `id_usuario` | INT | FK, PK(1/2) | Usuário que favoritou o gênero. |
-| | `id_genero` | INT | FK, PK(2/2) | Gênero marcado como preferência pelo usuário. |
+| **GEN_FAV** | `id_usu` | INT | FK, PK(1/2) | Usuário que favoritou o gênero. |
+| | `id_gen` | INT | FK, PK(2/2) | Gênero marcado como preferência pelo usuário. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **CURT_WISH** | `id_usuario` | INT | FK, PK(1/2) | Usuário que realizou a interação. |
-| | `id_espetaculo` | INT | FK, PK(2/2) | Espetáculo alvo da interação. |
+| **TEAT_ESPET** | `id_teat` | INT | FK, PK(1/2) | Teatro onde o espetáculo ocorre. |
+| | `id_espet` | INT | FK, PK(2/2) | Espetáculo vinculado ao teatro. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **CURT_WISH** | `id_usu` | INT | FK, PK(1/2) | Usuário que realizou a interação. |
+| | `id_esp` | INT | FK, PK(2/2) | Espetáculo alvo da interação. |
 | | `tipo` | ENUM('curtida', 'wishlist') | NN | Tipo de interação realizada pelo usuário. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **INTERAÇÕES_USU** | `id_evento` | INT | PK, AI | Identificador único do evento registrado. |
-| | `id_usuario` | INT | FK, NN | Usuário que realizou a interação. |
-| | `id_espetaculo` | INT | FK, NN | Espetáculo relacionado à interação. |
+| **INTERAÇÕES_USU** | `id` | INT | PK, AI | Identificador único do evento registrado. |
+| | `id_usu` | INT | FK, NN | Usuário que realizou a interação. |
+| | `id_esp` | INT | FK, NN | Espetáculo relacionado à interação. |
 | | `tipo` | VARCHAR(50) | NN | Tipo de evento/interação realizada. |
-| | `tempo_pagina` | INT | - | Tempo de permanência do usuário na página do espetáculo em segundos. |
+| | `temp_pagi` | INT | - | Tempo de permanência na página (segundos). |
 
 ---
 
 ### 12.2.2 Definição de Chaves e Integridade Referencial
 
 ### Chaves Primárias (PK)
-
-As chaves primárias foram definidas para garantir a unicidade de cada registro dentro das tabelas.
+As chaves primárias foram definidas para garantir a unicidade de cada registro. Nas tabelas associativas (`ESP_GEN`, `GEN_FAV`, `TEAT_ESPET`, `CURT_WISH`), utilizam-se chaves compostas pelos IDs das entidades relacionadas para evitar duplicidade de associações.
 
 ### Chaves Estrangeiras (FK)
-
-As chaves estrangeiras garantem a integridade referencial entre as entidades relacionadas, impedindo registros órfãos e assegurando consistência entre os dados.
+As chaves estrangeiras garantem a integridade referencial, assegurando que as associações entre usuários, espetáculos, teatros e gêneros apontem apenas para registros existentes.
 
 ### Relacionamentos implementados
-
-- Um usuário pode possuir vários registros de eventos.
-- Um usuário pode favoritar múltiplos gêneros.
-- Um usuário pode interagir com vários espetáculos.
-- Um espetáculo pertence a um teatro.
-- Um espetáculo pode possuir múltiplos gêneros.
-- Um gênero pode estar associado a múltiplos espetáculos.
+- **Usuários e Interações**: Um usuário pode gerar múltiplos registros de interação e eventos de navegação (`1:N`).
+- **Gêneros Favoritos**: Relação `N:N` que permite ao usuário filtrar sua experiência com base em múltiplos interesses.
+- **Espetáculos e Teatros**: Relação `N:N` via `TEAT_ESPET`, permitindo que uma produção ocorra em diferentes locais e que um teatro receba diversos eventos.
+- **Categorização Multifacetada**: Através da `ESP_GEN`, um espetáculo pode ser associado a diversos gêneros simultaneamente.
 
 ---
 
@@ -769,31 +768,15 @@ As chaves estrangeiras garantem a integridade referencial entre as entidades rel
 O modelo lógico segue os princípios da Terceira Forma Normal (3FN).
 
 ### Primeira Forma Normal (1FN)
-
-Todos os atributos armazenam valores atômicos, sem grupos repetitivos ou listas em uma mesma coluna.
+Todos os atributos possuem valores atômicos. Colunas como `tipo` em `CURT_WISH` utilizam ENUM para padronização, evitando dados multivalorados.
 
 ### Segunda Forma Normal (2FN)
-
-As tabelas associativas utilizam chaves compostas, garantindo que todos os atributos dependam integralmente da chave primária completa.
+Não existem dependências parciais. Em tabelas com chaves compostas, os atributos dependem da junção completa das chaves estrangeiras.
 
 ### Terceira Forma Normal (3FN)
-
-Os atributos não-chave dependem exclusivamente da chave primária, eliminando dependências transitivas e reduzindo redundâncias no banco de dados.
+Não há dependências transitivas. Atributos descritivos (como os detalhes de endereço em `TEATROS`) dependem exclusivamente da PK daquela tabela.
 
 ---
-
-### 12.2.4 Justificativa e Rastreabilidade
-
-O modelo lógico foi estruturado para manter fidelidade ao modelo conceitual, garantindo consistência entre as regras de negócio e a implementação relacional.
-
-As tabelas associativas permitem representar corretamente relacionamentos Muitos-para-Muitos, como:
-
-- preferências de gêneros dos usuários;
-- categorização de espetáculos;
-- interações entre usuários e espetáculos.
-
-A separação das entidades reduz redundâncias, melhora a escalabilidade do sistema e facilita futuras manutenções e expansões do banco de dados.
-
 
 ## 13. Termos e Abreviações
 

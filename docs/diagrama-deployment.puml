@@ -1,0 +1,118 @@
+@startuml deployment_aventura
+skinparam defaultFontName Arial
+skinparam backgroundColor #1A1A1A
+skinparam ArrowColor #AAAAAA
+skinparam ArrowThickness 1.2
+
+skinparam node {
+  BackgroundColor #2D2D2D
+  BorderColor #DDDDDD
+  FontColor #FFFFFF
+  FontSize 12
+}
+skinparam artifact {
+  BackgroundColor #3A3A3A
+  BorderColor #AAAAAA
+  FontColor #FFFFFF
+  FontSize 11
+}
+skinparam database {
+  BackgroundColor #2D2D2D
+  BorderColor #AAAAAA
+  FontColor #FFFFFF
+  FontSize 11
+}
+skinparam storage {
+  BackgroundColor #2D2D2D
+  BorderColor #AAAAAA
+  FontColor #FFFFFF
+  FontSize 11
+}
+skinparam cloud {
+  BackgroundColor #111111
+  BorderColor #DDDDDD
+  FontColor #FFFFFF
+  FontSize 12
+}
+
+title <color:#FFFFFF>Portal Aventura — Diagrama de Deployment</color>
+
+' ══════════════════════════════════════════
+' DISPOSITIVO DO USUÁRIO
+' ══════════════════════════════════════════
+node "«device»\nSmartphone (iOS / Android)" as DEVICE {
+  node "«executionEnvironment»\nReact Native Runtime" as RN_ENV {
+    artifact "«artifact»\nApp Bundle\n(.apk / .ipa)" as APP_BUNDLE
+    artifact "«artifact»\nAsyncStorage\n(cache local)" as ASYNC
+  }
+}
+
+' ══════════════════════════════════════════
+' SERVIDOR DE APLICAÇÃO
+' ══════════════════════════════════════════
+cloud "«cloud»\nAmbiente de Servidor" as SERVER_CLOUD {
+
+  node "«server»\nAPI Gateway\n(TCP 443 / HTTPS)" as GW_NODE {
+    artifact "«artifact»\nGateway Service\n(JWT · Rate-limit)" as GW_ART
+  }
+
+  node "«server»\nBackend — ASP.NET Core (.NET 8 / C#)" as BACKEND_NODE {
+    artifact "«artifact»\nAutenticação" as A_AUTH
+    artifact "«artifact»\nUsuários" as A_USERS
+    artifact "«artifact»\nEspetáculos" as A_SHOWS
+    artifact "«artifact»\nRecomendação" as A_REC
+    artifact "«artifact»\nInterações" as A_INT
+    artifact "«artifact»\nGeolocalização" as A_GEO
+  }
+
+}
+
+' ══════════════════════════════════════════
+' INFRAESTRUTURA DE DADOS
+' ══════════════════════════════════════════
+cloud "«cloud»\nInfraestrutura de Dados" as DATA_CLOUD {
+
+  node "«server»\nPostgreSQL" as PG_NODE {
+    database "«database»\nporta 5432" as POSTGRES
+  }
+
+  node "«server»\nObject Storage" as S3_NODE {
+    storage "«artifact»\nBucket S3\nEventos Brutos (JSON)" as BUCKET
+  }
+
+}
+
+' ══════════════════════════════════════════
+' SERVIÇOS EXTERNOS
+' ══════════════════════════════════════════
+cloud "«external»\nServiços Externos" as EXT_CLOUD {
+  node "«external»\nTicketeira\n(Sympla / Ingresso.com)" as TICKET
+  node "«external»\nViaCEP\n(TCP 443)" as CEP
+  node "«external»\nCDN Imagens\n(Cloudinary / S3)" as CDN
+}
+
+' ══════════════════════════════════════════
+' CONEXÕES
+' ══════════════════════════════════════════
+
+' Dispositivo → Gateway
+APP_BUNDLE --> GW_NODE : <color:#FFFFFF>HTTPS / TCP 443</color>
+
+' Dispositivo → Ticketeira (deep link)
+APP_BUNDLE -[#880E4F]-> TICKET : <color:#FFFFFF>deep link\nHTTPS</color>
+
+' Gateway → Backend
+GW_NODE --> BACKEND_NODE : HTTP / <color:#FFFFFF>TCP 8080</color>
+
+' Backend → Banco
+BACKEND_NODE --> PG_NODE : <color:#FFFFFF>TCP 5432</color>
+
+' Backend → Bucket
+A_INT --> S3_NODE : <color:#FFFFFF>HTTPS (grava eventos)</color>
+A_REC --> S3_NODE : <color:#FFFFFF>HTTPS (lê para ranking)</color>
+
+' Backend → Externos
+A_SHOWS --> CDN : <color:#FFFFFF>HTTPS</color>
+A_GEO   --> CEP : <color:#FFFFFF>HTTPS</color>
+
+@enduml

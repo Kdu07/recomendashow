@@ -1,0 +1,96 @@
+@startuml soa_simples
+skinparam componentStyle uml2
+skinparam linetype ortho
+skinparam defaultFontName Arial
+skinparam backgroundColor #1A1A1A
+skinparam ArrowColor #AAAAAA
+skinparam ArrowThickness 1.2
+
+skinparam component {
+  BackgroundColor #2D2D2D
+  BorderColor #AAAAAA
+  FontColor #FFFFFF
+  FontSize 12
+}
+skinparam package {
+  BackgroundColor #111111
+  BorderColor #DDDDDD
+  FontColor #FFFFFF
+  FontSize 13
+  BorderThickness 1.5
+}
+skinparam database {
+  BackgroundColor #2D2D2D
+  BorderColor #AAAAAA
+  FontColor #FFFFFF
+  FontSize 12
+}
+skinparam storage {
+  BackgroundColor #2D2D2D
+  BorderColor #AAAAAA
+  FontColor #FFFFFF
+  FontSize 12
+}
+
+title <color:#FFFFFF>Portal Aventura — Arquitetura SOA</color>
+
+' ── PRESENTATION ───────────────────────────────────────────
+package "Presentation" {
+  [«component»\nView] as VIEW
+  [«component»\nViewModel] as VIEWMODEL
+}
+
+' ── DATA ───────────────────────────────────────────────────
+package "Data" {
+  [«component»\nRepository] as REPO
+  [«dataSource»\nPostgresDataSource] as PG_DS
+  [«dataSource»\nBucketDataSource] as BK_DS
+}
+
+' ── SERVICES (SOA) ─────────────────────────────────────────
+package "Services  |  ASP.NET Core (.NET 8 / C#)" {
+  [«service»\nAPI Gateway] as GATEWAY
+  [«service»\nBackend Services] as BACKEND
+}
+
+' ── EXTERNOS ───────────────────────────────────────────────
+package "External" {
+  [«external»\nTicketeira] as TICKET
+  [«external»\nViaCEP] as CEP
+  [«external»\nCDN Imagens] as CDN
+}
+
+' ── INFRAESTRUTURA ─────────────────────────────────────────
+database "«database»\nPostgreSQL" as POSTGRES
+storage  "«artifact»\nBucket S3" as BUCKET
+
+' ── MVVM INTERNO ───────────────────────────────────────────
+' ViewModel provê estado; View observa/consome
+VIEW )--( VIEWMODEL : <color:#FFFFFF>IViewModel</color>
+
+' ViewModel requer Repository; Repository provê IRepository
+VIEWMODEL )--( REPO : <color:#FFFFFF>IRepository</color>
+
+' ── DATA → SERVICES ────────────────────────────────────────
+' Repository requer API Gateway; Gateway provê IApiGateway
+REPO )--( GATEWAY : <color:#FFFFFF>IApiGateway</color>
+
+' Gateway requer Backend; Backend provê o serviço
+GATEWAY )--( BACKEND : <color:#FFFFFF>IBackendService</color>
+
+' ── BACKEND → DATASOURCES ──────────────────────────────────
+' Backend requer datasources; cada um provê sua interface
+BACKEND )--( PG_DS : <color:#FFFFFF>IPostgresDataSource</color>
+BACKEND )--( BK_DS : <color:#FFFFFF>IBucketDataSource</color>
+
+' ── DATASOURCES → INFRA ────────────────────────────────────
+PG_DS ..> POSTGRES
+BK_DS ..> BUCKET
+
+' ── BACKEND → EXTERNOS ─────────────────────────────────────
+' Backend requer serviços externos
+BACKEND )-- TICKET
+BACKEND )-- CEP
+BACKEND )-- CDN
+
+@enduml

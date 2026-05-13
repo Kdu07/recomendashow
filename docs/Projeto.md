@@ -725,6 +725,23 @@ O caso de uso "Visualizar detalhes do espetáculo" possui relação `<<include>>
 #### Extend
 O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visualizar detalhes do espetáculo", uma vez que o redirecionamento para compra ocorre opcionalmente após a visualização do espetáculo.
 
+---
+
+### Associação entre Requisitos Funcionais e Casos de Uso
+
+| Requisito Funcional | Caso de Uso Relacionado |
+|---|---|
+| RF01 — Onboarding de Interesses | UC03 — Responder onboarding |
+| RF02 — Recomendação por Geolocalização | UC09 — Receber recomendações personalizadas |
+| RF03 — Autenticação e Persistência | UC01 — Cadastrar conta / UC02 — Realizar login |
+| RF04 — Catálogo Categorizado | UC05 — Visualizar catálogo de espetáculos |
+| RF05 — Busca Específica | UC06 — Pesquisar espetáculos |
+| RF06 — Gestão de Wishlist | UC10 — Visualizar wishlist / UC11 — Adicionar espetáculo à wishlist / UC12 — Remover espetáculo da wishlist |
+| RF07 — Informações de Teatros | UC08 — Visualizar informações do teatro |
+| RF08 — Gestão de Perfil e Preferências | UC04 — Gerenciar perfil e preferências |
+| RF09 — Redirecionamento de Compra | UC13 — Acessar link de compra |
+| RF10 — Recomendação Inteligente | UC09 — Receber recomendações personalizadas |
+
 
 ## Referências
 

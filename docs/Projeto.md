@@ -672,6 +672,51 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 #### Usuário
 Representa o espectador autenticado na plataforma, responsável por interagir com o sistema, visualizar espetáculos, gerenciar preferências e acessar recomendações personalizadas.
 
+---
+
+### Casos de Uso
+
+#### UC01 — Cadastrar conta
+Como usuário, quero criar uma conta na plataforma para salvar minhas preferências e manter minha wishlist sincronizada entre diferentes sessões e dispositivos.
+
+#### UC02 — Realizar login
+Como usuário, quero realizar login utilizando e-mail e senha para acessar minhas informações personalizadas e minhas recomendações.
+
+#### UC03 — Responder onboarding
+Como novo usuário, quero responder um questionário de interesses para que o sistema personalize minhas recomendações iniciais.
+
+#### UC04 — Gerenciar perfil e preferências
+Como usuário, quero editar meus dados de perfil e minhas preferências para manter as recomendações alinhadas aos meus interesses atuais.
+
+#### UC05 — Visualizar catálogo de espetáculos
+Como usuário, quero visualizar o catálogo de espetáculos organizado por categorias para explorar produções disponíveis na plataforma.
+
+#### UC06 — Pesquisar espetáculos
+Como usuário, quero pesquisar espetáculos e teatros específicos para encontrar rapidamente informações relevantes.
+
+#### UC07 — Visualizar detalhes do espetáculo
+Como usuário, quero visualizar os detalhes de um espetáculo para conhecer informações sobre a produção, teatro e disponibilidade.
+
+#### UC08 — Visualizar informações do teatro
+Como usuário, quero visualizar endereço e horários do teatro para me planejar antes de assistir ao espetáculo.
+
+#### UC09 — Receber recomendações personalizadas
+Como usuário, quero receber sugestões personalizadas baseadas em minhas preferências e interações para descobrir novos espetáculos relevantes.
+
+#### UC10 — Visualizar wishlist
+Como usuário, quero acessar minha wishlist para visualizar os espetáculos salvos anteriormente.
+
+#### UC11 — Adicionar espetáculo à wishlist
+Como usuário, quero adicionar espetáculos à minha wishlist para salvar produções de interesse e melhorar futuras recomendações.
+
+#### UC12 — Remover espetáculo da wishlist
+Como usuário, quero remover espetáculos da wishlist para atualizar meus interesses na plataforma.
+
+#### UC13 — Acessar link de compra
+Como usuário, quero acessar a bilheteria oficial do espetáculo para realizar a compra do ingresso com segurança.
+
+---
+
 ### Relacionamentos do Diagrama
 
 #### Include

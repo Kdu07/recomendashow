@@ -797,7 +797,7 @@ A separação das entidades reduz redundâncias, melhora a escalabilidade do sis
 
 ## 14. Diagrama de Componentes
 
-O diagrama de componentes abaixo representa a estrutura da aplicação seguindo o padrão arquitetural MVVM, com dois mecanismos de persistência: um banco de dados relacional PostgreSQL para dados estruturados e um Storage Bucket para armazenamento de interações dos usuários.
+O diagrama de componentes abaixo representa a estrutura da aplicação seguindo o padrão arquitetural MVVM no cliente (React Native) e SOA no servidor (ASP.NET Core), com dois mecanismos de persistência: um banco de dados relacional PostgreSQL para dados estruturados e transacionais e um Storage Bucket para armazenamento de eventos de comportamento, vetores latentes do modelo SVD e assets de mídia.
 
 <div align="center">
   <sub>Imagem 10 - Diagrama de Componentes UML</sub><br>
@@ -806,74 +806,110 @@ O diagrama de componentes abaixo representa a estrutura da aplicação seguindo 
 </div>
 
 ### Packages
-
+ 
 Packages são representados por um retângulo com uma abinha no topo. Servem para agrupar componentes que pertencem à mesma camada ou responsabilidade.
  
-O diagrama possui dois packages:
+O diagrama possui quatro packages:
  
-- **Presentation**: agrupa os componentes da camada de apresentação
+- **Presentation**: agrupa os componentes da camada de apresentação do app React Native (MVVM)
+- **Service | ASP.NET Core**: agrupa os serviços do backend
 - **Data**: agrupa os componentes da camada de acesso a dados
-
+- **External**: agrupa os serviços externos consumidos pelo backend
 PostgreSQL e Storage Bucket ficam **fora de qualquer package** pois são infraestrutura externa — não fazem parte do código da aplicação.
-
+ 
+---
+ 
 ### Componentes
-
+ 
 Componentes são representados por um retângulo com o ícone de componente no canto superior direito (dois retângulos pequenos sobrepostos). Cada componente possui um estereótipo que descreve sua natureza.
-
+ 
 | Componente | Estereótipo | Package |
 |---|---|---|
 | View | «component» | Presentation |
 | ViewModel | «component» | Presentation |
-| Repository | «component» | Data |
+| Repository | «component» | Presentation |
+| API Gateway | «service» | Service \| ASP.NET Core |
+| Backend Services | «service» | Service \| ASP.NET Core |
+| Recommendation Service | «service» | Service \| ASP.NET Core |
+| Training Job | «job» | Service \| ASP.NET Core |
 | PostgresDataSource | «dataSource» | Data |
 | BucketDataSource | «dataSource» | Data |
+| CDN Imagens | «external» | External |
+| ViaCEP | «external» | External |
 | PostgreSQL | «database» | — (externo) |
 | Storage Bucket | «artifact» | — (externo) |
-
+ 
 **Sobre os estereótipos:**
  
-- `«component»`: unidade de software com responsabilidade própria. É o estereótipo padrão; pode ser omitido, mas foi mantido para deixar o diagrama explícito.
+- `«component»`: unidade de software com responsabilidade própria dentro da aplicação cliente.
+- `«service»`: serviço do backend exposto via HTTP, com responsabilidade bem definida.
+- `«job»`: processo executado periodicamente de forma assíncrona, sem exposição via HTTP.
 - `«dataSource»`: adaptador que encapsula os detalhes de acesso a uma fonte de dados externa.
+- `«external»`: serviço de terceiros consumido pelo backend via HTTP.
 - `«database»`: banco de dados externo ao código da aplicação.
 - `«artifact»`: recurso implantado externamente, como um bucket de storage.
-
+---
+ 
 ### Interfaces
-
+ 
 As interfaces são representadas pelo padrão **ball-and-socket**:
  
 - **Bolinha (provided interface)** — linha reta saindo do componente com um círculo na ponta. Indica que o componente fornece aquele contrato.
 - **Semicírculo aberto (required interface)** — linha reta saindo do componente com um semicírculo na ponta. Indica que o componente precisa daquele contrato para funcionar.
 O encaixe entre o semicírculo e a bolinha representa a satisfação do contrato — o componente que precisa encontra o componente que fornece.
  
-O diagrama possui três interfaces:
+O diagrama possui cinco interfaces:
  
 | Interface | Fornecida por | Consumida por |
 |---|---|---|
 | IRepository | Repository | ViewModel |
-| IPostgresDataSource | PostgresDataSource | Repository |
-| IBucketDataSource | BucketDataSource | Repository |
+| IApiGateway | API Gateway | Repository |
+| IBackendService | Backend Services | API Gateway |
+| IRecommendationService | Recommendation Service | API Gateway |
+| IPostgresDataSource | PostgresDataSource | Backend Services, Training Job, Recommendation Service |
+| IBucketDataSource | BucketDataSource | Backend Services, Training Job, Recommendation Service |
  
-Representação textual dos encaixes:
+O `Repository` está no centro do cliente: fornece a bolinha `IRepository` para o ViewModel e consome a bolinha `IApiGateway` do API Gateway por meio do seu semicírculo — abstraindo todas as chamadas de rede.
  
-```
-[ViewModel] —(— o IRepository — [Repository] —(— o IPostgresDataSource — [PostgresDataSource]
-                                              —(— o IBucketDataSource   — [BucketDataSource]
-```
+`IPostgresDataSource` e `IBucketDataSource` são consumidas por três componentes cada — `Backend Services`, `Training Job` e `Recommendation Service` — pois todos precisam acessar dados persistidos, cada um com finalidades distintas.
+
+### Responsabilidades do Storage Bucket
  
-O Repository está no centro: fornece a bolinha `IRepository` para o ViewModel e consome as bolinhas `IPostgresDataSource` e `IBucketDataSource` dos DataSources por meio de seus semicírculos.
+O Storage Bucket possui responsabilidade tripla, organizada internamente por prefixos de path:
+ 
+| Path | Conteúdo | Escrito por | Lido por |
+|---|---|---|---|
+| `/media/` | Assets de mídia (imagens de eventos e atrações) | Backend Services | CDN Imagens |
+| `/events/` | Eventos brutos de comportamento (cliques, visualizações, compras) | Backend Services | Training Job |
+| `/model/` | Vetores latentes do modelo SVD (matrizes usuário × fator, item × fator) | Training Job | Recommendation Service |
+ 
+### Responsabilidades do PostgreSQL
+ 
+O PostgreSQL armazena exclusivamente dados transacionais e os hiperparâmetros do modelo SVD:
+ 
+| Conteúdo | Escrito por | Lido por |
+|---|---|---|
+| Dados transacionais (usuários, pedidos, produtos, eventos) | Backend Services | Backend Services |
+| Hiperparâmetros SVD (n_fatores, learning_rate, epochs, versão, data_treino) | Training Job | Recommendation Service, Training Job |
 
 ### Decisões
 
-**Porque o ball-and-socket foi usado entre ViewModel e Repository**
+**Por que o ball-and-socket foi usado entre ViewModel e Repository?**
 O ViewModel não depende da implementação concreta do Repository — ele depende apenas do contrato `IRepository`. O ball-and-socket torna esse contrato visível no diagrama, o que uma seta tracejada simples não expressa.
  
-**Porque 0 ball-and-socket foi usado entre Repository e DataSources?**
-Pelo mesmo motivo: o Repository não conhece os detalhes de cada tecnologia, apenas os contratos `IPostgresDataSource` e `IBucketDataSource`. Os DataSources são os responsáveis por fornecer esses contratos.
+**Por que o Repository passou a consumir IApiGateway em vez de IPostgresDataSource e IBucketDataSource?**
+O app React Native roda no dispositivo do usuário — nunca acessa banco de dados diretamente. Todo acesso a dados passa pela API do servidor. O Repository no cliente abstrai as chamadas HTTP para o API Gateway, não o acesso direto a fontes de dados. `IPostgresDataSource` e `IBucketDataSource` existem apenas no servidor.
  
-**Porque a seta tracejada simples foi usada de DataSources para a infraestrutura**
-PostgreSQL e Storage Bucket são recursos externos — não há contrato UML a ser modelado entre o código da aplicação e eles. A seta de dependência simples é suficiente para indicar que o DataSource acessa aquele recurso.
+**Por que IPostgresDataSource e IBucketDataSource têm múltiplos consumidores?**
+Backend Services, Training Job e Recommendation Service têm necessidades distintas de acesso a dados, mas compartilham as mesmas fontes. Centralizar o acesso nos DataSources evita duplicação de lógica de conexão e mantém um único ponto de configuração para cada tecnologia de persistência.
  
-**Porque PostgreSQL e Storage Bucket ficam fora dos packages**
+**Por que o Training Job usa seta tracejada simples em vez de ball-and-socket para o Recommendation Service?**
+O Training Job não consome uma interface fornecida pelo Recommendation Service — ele é acionado pelo próprio Recommendation Service periodicamente. A seta tracejada representa uma dependência de acionamento, não um contrato de interface.
+ 
+**Por que o SVD Model Store (.zip) foi removido?**
+O modelo SVD é composto por duas partes com naturezas distintas: hiperparâmetros (dados estruturados, poucos campos) e vetores latentes (arrays densos e pesados). Separar essas partes nos storages já existentes — PostgreSQL e Storage Bucket respectivamente — elimina um componente desnecessário e aproveita a infraestrutura já presente.
+ 
+**Por que PostgreSQL e Storage Bucket ficam fora dos packages?**
 Packages representam agrupamentos do código da aplicação. Infraestrutura externa não pertence a nenhuma camada do sistema — colocá-la dentro de um package seria incorreto semanticamente.
 
 ## 15. Termos e Abreviações

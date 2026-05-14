@@ -171,6 +171,14 @@ A fidelidade média foi escolhida deliberadamente: o objetivo é validar hierarq
 - **Comportamento mobile:** cada item navega para uma subpágina dedicada (4.11, 4.12, 4.13); o *link* "Editar Perfil" abre o fluxo de edição de dados básicos.
 - **Observações de usabilidade:** agrupar configurações por intenção (preferências = recomendação; notificações = comunicação; institucional = transparência) é mais escaneável que uma lista plana. A separação clara entre "editar perfil" e "preferências" evita confusão entre dados pessoais e sinais para o algoritmo.
 
+## 4.11 Editar Interesses
+- **Objetivo da tela:** permitir ao usuário ajustar a qualquer momento os sinais que alimentam o motor de recomendação, fechando o *loop* iniciado no onboarding.
+- **Descrição funcional:** reedição dos mesmos campos coletados no onboarding (gêneros e cidade) em uma única tela, com CTAs explícitos de salvar ou cancelar e dica auxiliar ao final.
+- **Componentes principais:** header com botão de voltar e título "Editar Interesses", *card* informativo "Ajuste suas recomendações", seção "Selecione seus interesses" (grade de tags multiseleção), contador "[N] interesses selecionados", seção "Selecione sua cidade" (lista de opções), botão primário "Salvar Alterações", botão secundário "Cancelar", dica final sobre flexibilidade de mudança.
+- **Organização do layout:** estrutura de formulário verticalizada com agrupamento por tema; CTAs no fim da página em hierarquia clara (primário sobre secundário).
+- **Comportamento mobile:** as seleções refletem o estado atual no carregamento; "Cancelar" descarta mudanças e retorna ao Perfil; "Salvar Alterações" persiste e dispara recálculo das recomendações na Explorar.
+- **Observações de usabilidade:** consolidar tudo em uma tela (ao contrário do onboarding em três passos) é apropriado aqui — o usuário já conhece o sistema e busca eficiência. A "dica" final reforça que mudar interesses é seguro e reversível, reduzindo a fricção da edição. Esta tela é também o destino do CTA do *empty state* "Para você" na Explorar (ver 4.6), fechando o fluxo do usuário que pulou o onboarding.
+
 ---
 
 ## 5. Mockups Navegáveis

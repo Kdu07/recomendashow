@@ -163,6 +163,14 @@ A fidelidade média foi escolhida deliberadamente: o objetivo é validar hierarq
 - **Comportamento mobile:** *parallax* ou *sticky header* opcional na imagem; o botão "Ingressos" redireciona o usuário para o parceiro de bilheteria (fluxo de saída, alinhado à definição de "o que o produto não faz"); a ação "Salvar" alterna o estado do coração e atualiza a Wishlist.
 - **Observações de usabilidade:** a barra inferior persistente respeita a heurística de "ação visível em qualquer ponto do scroll", reduzindo distância até a conversão. A seção "Você pode gostar" alavanca o motor de recomendação para evitar *dead-ends* (alinhado ao objetivo de "Sinergia do Ecossistema"). Exibir o preço junto ao CTA elimina surpresas e qualifica o clique antes do redirecionamento à ticketeira.
 
+## 4.10 Perfil
+- **Objetivo da tela:** dar ao usuário controle sobre dados pessoais, preferências e canais de comunicação, sustentando a confiança no produto e a longevidade do relacionamento.
+- **Descrição funcional:** painel de conta com identidade do usuário e três grupos de configuração — preferências/cidade, notificações e informações institucionais.
+- **Componentes principais:** *card* de identidade (avatar, nome, e-mail, *link* "Editar Perfil"), lista de itens de configuração (Preferências e cidade, Notificações, Informações Institucionais), *tab bar* inferior com "Perfil" destacado.
+- **Organização do layout:** identidade no topo (referência clara de "quem está logado"), lista de ações em *cards* com *chevron* indicando navegação para subpáginas; espaçamento generoso para legibilidade.
+- **Comportamento mobile:** cada item navega para uma subpágina dedicada (4.11, 4.12, 4.13); o *link* "Editar Perfil" abre o fluxo de edição de dados básicos.
+- **Observações de usabilidade:** agrupar configurações por intenção (preferências = recomendação; notificações = comunicação; institucional = transparência) é mais escaneável que uma lista plana. A separação clara entre "editar perfil" e "preferências" evita confusão entre dados pessoais e sinais para o algoritmo.
+
 ---
 
 ## 5. Mockups Navegáveis

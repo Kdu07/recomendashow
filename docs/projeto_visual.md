@@ -179,6 +179,14 @@ A fidelidade média foi escolhida deliberadamente: o objetivo é validar hierarq
 - **Comportamento mobile:** as seleções refletem o estado atual no carregamento; "Cancelar" descarta mudanças e retorna ao Perfil; "Salvar Alterações" persiste e dispara recálculo das recomendações na Explorar.
 - **Observações de usabilidade:** consolidar tudo em uma tela (ao contrário do onboarding em três passos) é apropriado aqui — o usuário já conhece o sistema e busca eficiência. A "dica" final reforça que mudar interesses é seguro e reversível, reduzindo a fricção da edição. Esta tela é também o destino do CTA do *empty state* "Para você" na Explorar (ver 4.6), fechando o fluxo do usuário que pulou o onboarding.
 
+## 4.12 Notificações
+- **Objetivo da tela:** dar controle granular sobre os canais e tipos de comunicação, item crítico para conformidade e para manter relevância da estratégia de *push* (descrita no brainstorm).
+- **Descrição funcional:** lista de *toggles* agrupados por categoria: canais (Push, E-mail), conteúdo (Novos espetáculos, Recomendações personalizadas, Espetáculos salvos) e marketing (Newsletter, Atualizações do app).
+- **Componentes principais:** header com botão voltar e título "NOTIFICAÇÕES", *card* explicativo de topo, três blocos de toggles com título de seção, label e descrição auxiliar por item.
+- **Organização do layout:** agrupamento semântico em três blocos verticais, separados visualmente por títulos de seção; cada item ocupa altura confortável para alvo de toque.
+- **Comportamento mobile:** toggles aplicam mudança imediatamente (sem botão "Salvar"); alteração no canal Push pode disparar pedido de permissão nativa do sistema operacional.
+- **Observações de usabilidade:** separar canais de tipos de conteúdo respeita a expectativa do usuário de modular comunicação em duas dimensões. Descrições auxiliares por item reduzem ambiguidade sobre o que cada toggle controla, evitando *opt-outs* indesejados.
+
 ---
 
 ## 5. Mockups Navegáveis

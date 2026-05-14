@@ -132,6 +132,18 @@ A fidelidade média foi escolhida deliberadamente: o objetivo é validar hierarq
 - **Comportamento mobile:** *infinite scroll* opcional nas prateleiras; *cards* otimizados para *thumb zone*; chips de categoria fixos ou sticky ao rolar.
 - **Observações de usabilidade:** o padrão "prateleiras" (familiar de plataformas de *streaming*) reduz curva de aprendizado para o público-alvo. A seção "Perto de você" responde ao RF02 (geolocalização) e é peça-chave da estratégia de relevância local. O *empty state* personalizado de "Para você" transforma uma fraqueza (falta de dados) em um *hook* de coleta, sem bloquear o restante da experiência.
 
+## 4.7 Buscar
+- **Objetivo da tela:** permitir busca ativa por espetáculos, teatros ou cidades, complementando a descoberta passiva do feed.
+- **Descrição funcional:** campo de busca no topo, sugestões/recomendações no estado inicial, lista de resultados ao digitar ou aplicar filtros. Filtros avançados acessíveis via ícone dedicado.
+- **Estados desta tela:**
+  - **Inicial:** campo de busca vazio + lista "Recomendados para você" como conteúdo de fallback.
+  - **Filtros abertos:** *bottom sheet* / modal sobreposto com filtros por categoria, data, local/cidade e CTAs "Aplicar Filtros" e "Limpar Filtros".
+  - **Resultados com filtro aplicado:** lista de resultados, badge numérico no ícone de filtro indicando filtros ativos, *link* "Limpar" para reset rápido, texto descrevendo filtros aplicados.
+- **Componentes principais:** campo de busca com ícone de lupa, ícone de filtros (com *badge* de contagem ativa), texto descritivo de filtros ativos, lista vertical de *cards* de resultado, *tab bar* inferior.
+- **Organização do layout:** input no topo (alcance natural do polegar para digitação), resultados em lista vertical scrollável. O modal de filtros ocupa a metade inferior, preservando contexto da busca acima.
+- **Comportamento mobile:** *autofocus* no campo ao abrir; teclado fica visível imediatamente; histórico de buscas pode ser exposto entre o estado inicial e o resultado; modal de filtros aplica-se com transição *slide-up*.
+- **Observações de usabilidade:** o *empty state* inicial popular com recomendações evita a sensação de "tela em branco" e mantém o usuário em fluxo de descoberta. O *badge* no ícone de filtros torna o estado do sistema visível (heurística de Nielsen).
+
 ---
 
 ## 5. Mockups Navegáveis

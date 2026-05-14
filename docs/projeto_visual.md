@@ -64,119 +64,19 @@ Registre regras como:
 
 ---
 
-## 4. Wireframes
+# 4. Wireframes
 
-> **Instrução de preenchimento**: para cada tela, descreva a intenção, organização do layout e decisões de usabilidade **no mobile**. Insira a imagem do wireframe ao final de cada subseção.
+## Introdução
 
-### 4.1 Splash Screen (Wireframe)
-- **Objetivo da tela**:  
-- **Descrição funcional** (o que o usuário consegue fazer aqui):  
-- **Componentes principais** (ex.: marca, carregamento, transição):  
-- **Organização do layout** (hierarquia, alinhamentos):  
-- **Comportamento mobile** (tempo de exibição, transição, compatibilidade com telas):  
-- **Observações de usabilidade** (clareza, percepção de velocidade, feedback):  
+Esta seção documenta os wireframes de média fidelidade do aplicativo móvel do **Portal Aventura**, a camada de interface da plataforma de recomendação cultural desenvolvida para a Aventura Teatros. O escopo dos wireframes traduz para a UI o pilar estratégico do produto: adicionar um *hub* de descoberta personalizada para o espectador, concentrando-se em três jornadas críticas: **onboarding de interesses** (que alimenta o motor de recomendação), **descoberta** (Explorar, Buscar, Wishlist) e **conversão** (página de informações do espetáculo com *hand-off* para a bilheteria parceira).
 
-![Splash Screen]()
+A fidelidade média foi escolhida deliberadamente: o objetivo é validar hierarquia, fluxo e padrões de interação sem comprometer a discussão com decisões estéticas prematuras. Toda a documentação adota a abordagem *mobile-first*, dado que o aplicativo é o canal prioritário definido no Business Model Canvas do MVP. Componentes recorrentes (header com logo, *tab bar* de navegação inferior, *cards* de espetáculo) são tratados como padrões reutilizáveis, garantindo consistência visual e cognitiva entre as telas.
 
-### 4.2 Login (Wireframe)
-- **Objetivo da tela**:  
-- **Descrição funcional** (o que o usuário consegue fazer aqui):  
-- **Componentes principais** (ex.: campos, botões, links, alertas):  
-- **Organização do layout** (hierarquia, agrupamentos, alinhamentos):  
-- **Comportamento mobile** (rolagem, teclado, foco, áreas tocáveis):  
-- **Observações de usabilidade** (pontos de atenção e rationale breve):  
+> **Arquivo Figma:** [WireFrame — Portal Aventura](https://www.figma.com/design/1MhhzP1FCg9BETFkPsi8T3/WireFrame---Portal-aventura-app?node-id=0-1)
 
-![Login]()
+> **Nota sobre estados:** algumas telas possuem variantes de estado (vazio, filtros aplicados, fluxo alternativo). Quando aplicável, essas variantes são descritas dentro da subseção da tela-mãe.
 
-### 4.3 Cadastro (Wireframe)
-- **Objetivo da tela**:  
-- **Descrição funcional**:  
-- **Componentes principais**:  
-- **Organização do layout**:  
-- **Comportamento mobile**:  
-- **Observações de usabilidade**:  
 
-![Cadastro]()
-
-### 4.4 Onboarding (Wireframe)
-- **Objetivo da tela**:  
-- **Descrição funcional**:  
-- **Componentes principais**:  
-- **Organização do layout**:  
-- **Comportamento mobile**:  
-- **Observações de usabilidade**:  
-
-![Onboarding]()
-
-### 4.5 Boas-Vindas (Wireframe)
-- **Objetivo da tela**:  
-- **Descrição funcional**:  
-- **Componentes principais** (ex.: mensagem, CTA principal, acesso a explorar):  
-- **Organização do layout**:  
-- **Comportamento mobile**:  
-- **Observações de usabilidade**:  
-
-![Boas-Vindas]()
-
-### 4.6 Explorar / Home (Wireframe)
-- **Objetivo da tela**:  
-- **Descrição funcional**:  
-- **Componentes principais** (ex.: busca, filtros, listagem, cards):  
-- **Organização do layout**:  
-- **Comportamento mobile** (scroll, filtros, estados de carregamento/resultado):  
-- **Observações de usabilidade**:  
-
-![Explorar / Home]()
-
-### 4.7 Buscar (Wireframe)
-- **Objetivo da tela**:  
-- **Descrição funcional**:  
-- **Componentes principais** (ex.: campo de busca, sugestões, histórico, filtros, resultados):  
-- **Organização do layout**:  
-- **Comportamento mobile** (teclado, foco, scroll, estados sem resultados):  
-- **Observações de usabilidade**:  
-
-![Buscar]()
-
-### 4.8 Wishlist (Wireframe)
-- **Objetivo da tela**:  
-- **Descrição funcional**:  
-- **Componentes principais** (ex.: lista, ações por item, estados vazio):  
-- **Organização do layout**:  
-- **Comportamento mobile** (scroll, remover/editar, confirmações):  
-- **Observações de usabilidade**:  
-
-![Wishlist]()
-
-### 4.9 Perfil / Configurações (Wireframe)
-- **Objetivo da tela**:  
-- **Descrição funcional**:  
-- **Componentes principais** (ex.: dados, preferências, ações, navegação interna):  
-- **Organização do layout**:  
-- **Comportamento mobile** (scroll, seções, toques, confirmação de mudanças):  
-- **Observações de usabilidade**:  
-
-![Perfil / Configurações]()
-
-### 4.10 Detalhes do Espetáculo (Wireframe)
-- **Objetivo da tela**:  
-- **Descrição funcional**:  
-- **Componentes principais** (ex.: título, imagem, informações, CTA, salvar na wishlist):  
-- **Organização do layout** (hierarquia e leitura em scroll):  
-- **Comportamento mobile** (scroll, ações fixas, compartilhamento se aplicável):  
-- **Observações de usabilidade**:  
-
-![Detalhes do Espetáculo]()
-
-### 4.11 Editar Interesses (Wireframe)
-- **Objetivo da tela**:  
-- **Descrição funcional**:  
-- **Componentes principais** (ex.: seleção de categorias/interesses, busca, salvar/cancelar):  
-- **Organização do layout**:  
-- **Comportamento mobile** (seleção, feedback, confirmação):  
-- **Observações de usabilidade**:  
-
-![Editar Interesses]()
 
 ---
 

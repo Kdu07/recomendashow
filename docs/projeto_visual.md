@@ -54,7 +54,16 @@ Também foram mantidas regras de:
 - Organização clara entre títulos e conteúdos.
 
 ### 2.4 Organização de conteúdo em telas pequenas
-Descreva como o conteúdo foi estruturado para reduzir carga cognitiva (ex.: agrupamentos, progressão de informação, uso de cards, filtros).
+O conteúdo foi organizado em blocos verticais e hierárquicos para reduzir a carga cognitiva do usuário.
+
+A interface prioriza:
+
+- Separação clara das informações;
+- Destaque para ações principais;
+- Exibição gradual do conteúdo;
+- Layout limpo e com pouca poluição visual.
+
+Isso torna a navegação mais intuitiva e confortável em telas pequenas.
 
 ---
 

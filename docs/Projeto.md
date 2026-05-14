@@ -6,13 +6,16 @@
 - [2. Contexto da Indústria do Parceiro](#2-contexto-da-indústria-do-parceiro)
 - [3. Visão e Objetivos do Produto](#3-visão-e-objetivos-do-produto)
 - [4. O que o Produto Faz e o que Não Faz](#4-o-que-o-produto-faz-e-o-que-não-faz)
+- [5. Personas e Jornada do Usuário](#5-personas-e-jornada-do-usuário)
 - [6. Fluxo do Negócio](#6-fluxo-do-negócio)
 - [7. Brainstorming de Features](#7-brainstorming-de-features)
 - [8. Business Model Canvas do MVP](#8-business-model-canvas-do-mvp)
 - [9. Requisitos Funcionais](#9-requisitos-funcionais)
 - [10. Requisitos Não Funcionais](#10-requisitos-não-funcionais)
 - [11. Correlação entre RFs e RNFs](#11-correlação-entre-rfs-e-rnfs)
-- [12. Termos e Abreviações](#12-termos-e-abreviações)
+- [12. Diagramação do banco](#12-diagramação-do-banco)
+- [13. Diagrama de Classes](#13-diagrama-de-classes)
+- [15. Termos e Abreviações](#15-termos-e-abreviações)
 - [Referências](#referências)
 
 ---
@@ -174,10 +177,6 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 
 ---
 
-
-Personas e jornadas · MD
-Copiar
-
 # 5. Personas e Jornada do Usuário
  
 ---
@@ -233,7 +232,7 @@ Marcos Abrantes representa um perfil crescente de consumidores culturais urbanos
  
 <div align="center">
   <sub>Imagem 06 - Jornada do usuário: Marcos Abrantes</sub><br>
-  <img src="../assets/jornadaMarcos.png" width="100%" alt="Jornada do usuário Marcos Abrantes"><br>
+  <img src="../assets\jorandaMarcos.png" width="100%" alt="Jornada do usuário Marcos Abrantes"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
@@ -628,6 +627,8 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ## 11. Correlação entre RFs e RNFs
 
+> Tabela explicitando as relações diretas entre requisitos não funcionais e requisitos funcionais.
+
 | RNF | RF relacionados | Justificativa |
 |---|---|---|
 | RNF01 | RF01, RF02, RF04, RF06 | O tempo de resposta impacta diretamente as funcionalidades de descoberta e personalização: o questionário de onboarding (RF01), as sugestões por geolocalização (RF02), a navegação pelo catálogo de espetáculos (RF04) e a interação com a Wishlist (RF06) dependem de carregamento ágil para que o usuário não abandone o fluxo antes de receber as recomendações. |
@@ -640,7 +641,346 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
-## 12. Termos e Abreviações
+## 12. Diagramação do banco
+
+### 12.1 - Diagrama conceitual
+
+
+### 12.2 Diagrama Lógico
+
+<div align="center">
+<sub>Imagem 09 - Diagrama lógico</sub><br>
+  <img src="../assets/diagrama-logico.png" width="100%" alt="Diagrama logico do banco"><br>
+  <sup>Source: Material produced by the authors, 2026.</sup>
+</div>
+
+O modelo lógico de dados representa a estruturação dos dados seguindo as regras do modelo relacional, servindo como uma ponte entre a abstração do modelo conceitual e a implementação física no SGDB.
+
+---
+
+### 12.2.1 Dicionário de Dados e Mapeamento
+
+A conversão do modelo conceitual para o modelo lógico foi realizada mapeando cada entidade conceitual para uma tabela relacional e transformando relacionamentos Muitos-para-Muitos (N:N) em tabelas associativas.
+
+---
+
+### A. Tabelas de Cadastro (Entidades Fortes)
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **USUARIOS** | `Id` | INT | PK, AI | Identificador único do usuário. |
+| | `Nome` | VARCHAR(100) | NN | Nome completo do usuário. |
+| | `Email` | VARCHAR(100) | UNIQUE, NN | E-mail utilizado para autenticação. |
+| | `Senha` | VARCHAR(255) | NN | Hash da senha de acesso. |
+| | `Idade` | INT | - | Idade do usuário. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **GENEROS** | `id` | INT | PK, AI | Identificador único do gênero. |
+| | `Nome` | VARCHAR(50) | NN | Nome do gênero artístico. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **TEATROS** | `id` | INT | PK, AI | Identificador único do teatro. |
+| | `Nome` | VARCHAR(100) | NN | Nome do teatro ou espaço cultural. |
+| | `Cidade` | VARCHAR(100) | NN | Cidade onde o teatro está localizado. |
+| | `Estado` | VARCHAR(50) | NN | Estado onde o teatro está localizado. |
+| | `Rua` | VARCHAR(150) | NN | Nome da rua do teatro. |
+| | `Numero` | VARCHAR(20) | NN | Número do endereço do teatro. |
+| | `Horario_func` | VARCHAR(100) | - | Horário de funcionamento do teatro. |
+| | `Descricao` | TEXT | - | Descrição geral do teatro. |
+| | `Imagem` | VARCHAR(255) | - | URL ou caminho da imagem do teatro. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **ESPETACULOS** | `id` | INT | PK, AI | Identificador único do espetáculo. |
+| | `Nome` | VARCHAR(150) | NN | Nome do espetáculo. |
+| | `link_ingresso` | VARCHAR(255) | - | Link para compra de ingressos. |
+| | `Descricao` | TEXT | - | Descrição detalhada do espetáculo. |
+| | `Imagem` | VARCHAR(255) | - | URL ou caminho da imagem do espetáculo. |
+
+---
+
+### B. Tabelas Associativas e Operacionais
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **ESP_GEN** | `id_esp` | INT | FK, PK(1/2) | Espetáculo relacionado ao gênero. |
+| | `id_gen` | INT | FK, PK(2/2) | Gênero associado ao espetáculo. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **GEN_FAV** | `id_usu` | INT | FK, PK(1/2) | Usuário que favoritou o gênero. |
+| | `id_gen` | INT | FK, PK(2/2) | Gênero marcado como preferência pelo usuário. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **TEAT_ESPET** | `id_teat` | INT | FK, PK(1/2) | Teatro onde o espetáculo ocorre. |
+| | `id_espet` | INT | FK, PK(2/2) | Espetáculo vinculado ao teatro. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **CURT_WISH** | `id_usu` | INT | FK, PK(1/2) | Usuário que realizou a interação. |
+| | `id_esp` | INT | FK, PK(2/2) | Espetáculo alvo da interação. |
+| | `tipo` | ENUM('curtida', 'wishlist') | NN | Tipo de interação realizada pelo usuário. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **INTERAÇÕES_USU** | `id` | INT | PK, AI | Identificador único do evento registrado. |
+| | `id_usu` | INT | FK, NN | Usuário que realizou a interação. |
+| | `id_esp` | INT | FK, NN | Espetáculo relacionado à interação. |
+| | `tipo` | VARCHAR(50) | NN | Tipo de evento/interação realizada. |
+| | `temp_pagi` | INT | - | Tempo de permanência na página (segundos). |
+
+---
+
+### 12.2.2 Definição de Chaves e Integridade Referencial
+
+### Chaves Primárias (PK)
+As chaves primárias foram definidas para garantir a unicidade de cada registro. Nas tabelas associativas (`ESP_GEN`, `GEN_FAV`, `TEAT_ESPET`, `CURT_WISH`), utilizam-se chaves compostas pelos IDs das entidades relacionadas para evitar duplicidade de associações.
+
+### Chaves Estrangeiras (FK)
+As chaves estrangeiras garantem a integridade referencial, assegurando que as associações entre usuários, espetáculos, teatros e gêneros apontem apenas para registros existentes.
+
+### Relacionamentos implementados
+- **Usuários e Interações**: Um usuário pode gerar múltiplos registros de interação e eventos de navegação (`1:N`).
+- **Gêneros Favoritos**: Relação `N:N` que permite ao usuário filtrar sua experiência com base em múltiplos interesses.
+- **Espetáculos e Teatros**: Relação `N:N` via `TEAT_ESPET`, permitindo que uma produção ocorra em diferentes locais e que um teatro receba diversos eventos.
+- **Categorização Multifacetada**: Através da `ESP_GEN`, um espetáculo pode ser associado a diversos gêneros simultaneamente.
+
+---
+
+### 12.2.3 Regras de Normalização Aplicadas
+
+O modelo lógico segue os princípios da Terceira Forma Normal (3FN).
+
+### Primeira Forma Normal (1FN)
+Todos os atributos possuem valores atômicos. Colunas como `tipo` em `CURT_WISH` utilizam ENUM para padronização, evitando dados multivalorados.
+
+### Segunda Forma Normal (2FN)
+Não existem dependências parciais. Em tabelas com chaves compostas, os atributos dependem da junção completa das chaves estrangeiras.
+
+### Terceira Forma Normal (3FN)
+Não há dependências transitivas. Atributos descritivos (como os detalhes de endereço em `TEATROS`) dependem exclusivamente da PK daquela tabela.
+
+---
+
+### 12.2.4 Justificativa e Rastreabilidade
+
+O modelo lógico foi estruturado para manter fidelidade ao modelo conceitual, garantindo consistência entre as regras de negócio e a implementação relacional.
+
+As tabelas associativas permitem representar corretamente relacionamentos Muitos-para-Muitos, como:
+
+- preferências de gêneros dos usuários;
+- categorização de espetáculos;
+- interações entre usuários e espetáculos.
+
+A separação das entidades reduz redundâncias, melhora a escalabilidade do sistema e facilita futuras manutenções e expansões do banco de dados.
+
+## 13. Diagrama de Classes
+
+O diagrama de classes representa o modelo de domínio de um sistema de gerenciamento de teatro, espetáculos e recomendações personalizadas. O sistema registra interações, além de permitir que usuários descubram espetáculos, gerenciem listas de desejos e recebam recomendações baseadas em seu comportamento e preferências.
+
+<div align="center">
+<sub>Imagem 09 - Diagrama de Classes UML</sub><br>
+  <img src="../assets/diagrama-classes-mod6.drawio.png" width="100%" alt="Diagrama de Classes UML"><br>
+  <sup>Source: Material produced by the authors, 2026.</sup>
+</div>
+
+### Teatro
+ 
+Representa um teatro físico cadastrado no sistema. É responsável por gerenciar os espetáculos que estão em cartaz em sua estrutura.
+ 
+| Atributo / Método | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador único do teatro |
+| Nome | - (private) | string | Nome do teatro |
+| Endereco | - (private) | string | Endereço completo do teatro |
+| Cidade | - (private) | string | Cidade onde o teatro está localizado |
+| HorarioFuncionamento | - (private) | string | Horários de funcionamento do teatro |
+| **Métodos** | | | |
+| AdicionarEspetaculo() | + (public) | : void | Adiciona um espetáculo ao teatro |
+| RemoverEspetaculo(id) | + (public) | : void | Remove um espetáculo pelo seu id |
+| BuscarEspetaculos() | + (public) | : List | Retorna a lista de espetáculos do teatro |
+ 
+---
+ 
+### Espetaculo
+ 
+Representa um espetáculo teatral. Contém todas as informações necessárias para exibição, compra de ingressos e categorização por gênero e tipo de evento.
+ 
+| Atributo / Método | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador único do espetáculo |
+| Nome | - (private) | string | Nome do espetáculo |
+| Genero | - (private) | string | Gênero artístico do espetáculo |
+| TipoEvento | - (private) | string | Tipo de evento (ex: peça, musical, ópera) |
+| Descricao | - (private) | string | Descrição detalhada do espetáculo |
+| UrlBilheteria | - (private) | string | URL para compra de ingressos |
+| DataInicio | - (private) | DateTime | Data de início das apresentações |
+| DataFim | - (private) | DateTime | Data de encerramento das apresentações |
+| ValorIngresso | - (private) | decimal | Valor do ingresso |
+| **Métodos** | | | |
+| EstaEmCartaz() | + (public) | : bool | Verifica se o espetáculo está em cartaz na data atual |
+| ObterUrlCompra() | + (public) | : string | Retorna a URL de compra de ingresso |
+| PertenceAoGenero(genero) | + (public) | : bool | Verifica se o espetáculo pertence a um determinado gênero |
+ 
+---
+ 
+### Usuario
+ 
+Representa um usuário cadastrado na plataforma. Agrega as preferências e a wishlist do usuário, sendo o ponto central das interações com o sistema.
+ 
+| Atributo / Método | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador único do usuário |
+| Nome | - (private) | string | Nome completo do usuário |
+| Email | - (private) | string | Endereço de e-mail do usuário |
+| SenhaHash | - (private) | string | Hash da senha do usuário |
+| DataCadastro | - (private) | DateTime | Data de cadastro na plataforma |
+| **Métodos** | | | |
+| AtualizarPreferencias(preferencias) | + (public) | : void | Atualiza as preferências do usuário |
+| SalvarEspetaculo() | + (public) | : void | Salva um espetáculo na wishlist |
+| RemoverDaWishlist(itemId) | + (public) | : void | Remove um espetáculo da wishlist |
+| AlterarSenha(hash) | + (public) | : void | Atualiza o hash da senha |
+| ExcluirConta() | + (public) | : void | Exclui a conta do usuário |
+ 
+---
+ 
+### Wishlist
+ 
+Lista de espetáculos salvos pelo usuário. Possui composição com `Usuario` — não existe independentemente de um usuário.
+ 
+| Atributo / Método | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador único da wishlist |
+| UsuarioId | - (private) | Guid | Referência ao usuário dono da wishlist |
+| DataAtualizacao | - (private) | DateTime | Data da última atualização da lista |
+| **Métodos** | | | |
+| Adicionar(itemId : UUID) | + (public) | : void | Adiciona um espetáculo à lista |
+| Remover(itemId : UUID) | + (public) | : void | Remove um espetáculo da lista |
+| Contem(itemId : UUID) | + (public) | : bool | Verifica se um espetáculo está na lista |
+| Limpar() | + (public) | : void | Remove todos os itens da lista |
+ 
+---
+ 
+### Preferencias `«Value Object»`
+ 
+Objeto de valor que representa as preferências culturais do usuário. Por ser um Value Object, não possui identidade própria — sua igualdade é definida pelo conjunto de seus atributos.
+ 
+| Atributo | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Generos | - (private) | List\<string\> | Lista de gêneros de interesse do usuário |
+| Cidade | - (private) | string | Cidade de preferência para eventos |
+| TiposEvento | - (private) | List\<string\> | Tipos de evento de interesse do usuário |
+| DataAtualizacao | - (private) | DateTime | Data da última atualização das preferências |
+ 
+---
+ 
+### Interacao
+ 
+Registra uma interação do usuário com um espetáculo (clique, acesso ou tempo de tela). Utiliza a enumeração `TipoInteracao` para categorizar o tipo de interação registrada.
+ 
+| Atributo / Método | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador único da interação |
+| Tipo | - (private) | TipoInteracao | Tipo da interação (Clique, Acesso, TempoDeTela) |
+| Pontuacao | - (private) | Float | Pontuação atribuída à interação para o sistema de recomendação |
+| DataRegistro | - (private) | DateTime | Data e hora em que a interação foi registrada |
+| DataExpiracao | - (private) | DateTime | Data e hora em que a interação expira |
+| **Métodos** | | | |
+| EstaExpirada() | + (public) | : bool | Verifica se a interação já está expirada |
+| Renovar() | + (public) | : void | Renova a validade da interação |
+ 
+---
+ 
+### Recomendacao
+ 
+Representa uma recomendação gerada pelo `SistemaRecomendacao` para um usuário específico sobre um espetáculo. Armazena a pontuação calculada e o motivo da recomendação.
+ 
+| Atributo | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador único da recomendação |
+| Score | - (private) | decimal | Pontuação de relevância da recomendação |
+| DataGeracao | - (private) | DateTime | Data em que a recomendação foi gerada |
+| Motivo | - (private) | string | Justificativa textual da recomendação |
+ 
+---
+ 
+### SistemaRecomendacao
+ 
+Componente responsável por gerar e gerenciar recomendações personalizadas. Depende da classe `Interacao` para calcular scores e produzir sugestões relevantes para cada usuário.
+ 
+| Atributo / Método | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador do sistema |
+| Interacoes | - (private) | List\<Interacao\> | Lista de interações usadas como base para recomendações |
+| UltimaExecucao | - (private) | DateTime | Data da última execução do algoritmo |
+| Versao | - (private) | string | Versão do algoritmo de recomendação |
+| **Métodos** | | | |
+| GerarRecomendacoes(userId) | + (public) | : void | Gera recomendações personalizadas para o usuário informado |
+| RegistrarInteracao(i : Interacao) | + (public) | : void | Registra uma nova interação no sistema |
+| LimparInteracoesExpiradas() | + (public) | : void | Remove interações cuja validade expirou |
+| ObterRanking(userId, itemId) | + (public) | : void | Retorna o ranking de relevância de um item para o usuário |
+| FiltrarPorCidade(cidade) | + (public) | : void | Filtra recomendações pela cidade do usuário |
+ 
+---
+ 
+### TipoInteracao `«enumeration»`
+ 
+Enumeração que define os tipos possíveis de interação de um usuário com um espetáculo. Utilizada pela classe `Interacao`.
+ 
+| Valor | Descrição |
+|---|---|
+| Clique | Usuário clicou no espetáculo |
+| Acesso | Usuário acessou a página do espetáculo |
+| TempoDeTela | Tempo que o usuário permaneceu na página do espetáculo |
+ 
+---
+ 
+### Relacionamentos
+ 
+| Origem | Destino | Tipo | Descrição |
+|---|---|---|---|
+| Teatro | Espetaculo | Associação (1 → 0..*) | Um teatro possui zero ou mais espetáculos |
+| Espetaculo | Interacao | Associação (1 → 0..*) | Um espetáculo pode ter múltiplas interações de usuários |
+| Espetaculo | Recomendacao | Associação (1 → 0..*) | Um espetáculo pode aparecer em múltiplas recomendações |
+| Usuario | Wishlist | Composição (1 ◆→ 1) | Usuário possui uma wishlist; a wishlist não existe sem o usuário |
+| Usuario | Preferencias | Composição (1 ◆→ 1) | Usuário possui preferências; elas não existem sem o usuário |
+| Usuario | Interacao | Associação (1 → 0..*) | Um usuário pode ter múltiplas interações registradas |
+| Usuario | Recomendacao | Associação (1 → 0..*) | Um usuário pode receber múltiplas recomendações |
+| SistemaRecomendacao | Interacao | Dependência (→→) | O sistema depende de Interacao para gerar recomendações |
+| SistemaRecomendacao | Recomendacao | Associação (1 → 0..*) | O sistema gera e gerencia múltiplas recomendações |
+| Interacao | TipoInteracao | Dependência (→→) | Interacao utiliza a enumeração TipoInteracao |
+ 
+---
+ 
+### Observações e Decisões de Design
+ 
+**Preferencias como Value Object:** a classe `Preferencias` não possui identidade própria. Sua igualdade é definida pelo conjunto de seus valores, seguindo o padrão de Value Object do Domain-Driven Design (DDD).
+ 
+**Composição em Wishlist e Preferencias:** ambas possuem relação de composição com `Usuario`, pois seu ciclo de vida está diretamente ligado ao do usuário — são criadas e destruídas junto com ele.
+ 
+**Separação de responsabilidades:** o `SistemaRecomendacao` é um componente dedicado exclusivamente à lógica de recomendação, mantendo as demais classes do domínio focadas em suas responsabilidades específicas.
+ 
+**Expiração de interações:** a classe `Interacao` possui controle de validade por meio de `DataExpiracao` e dos métodos `EstaExpirada()` e `Renovar()`, permitindo que interações antigas sejam descartadas pelo `SistemaRecomendacao`.
+
+
+## 15. Termos e Abreviações
 
 | Termo / Abreviação | Definição |
 |---|---|
@@ -662,7 +1002,6 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 | Uptime | Período em que o sistema permanece disponível e operacional, geralmente expresso em percentual. |
 | Vitrine Dinâmica | Componente de interface que exibe conteúdos personalizados de forma adaptativa, baseando-se no perfil e comportamento do usuário. |
 | Wishlist | Lista de desejos — conjunto de espetáculos que o cliente deseja assistir e salva para consulta futura. |
-
 
 ## Referências
 

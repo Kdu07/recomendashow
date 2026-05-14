@@ -20,24 +20,40 @@ O protótipo abrange 11 telas em nível mockup navegável, cobrindo todos os flu
 ---
 
 ## 2. Abordagem Mobile First
+A abordagem Mobile First consiste em iniciar o desenvolvimento pensando primeiro nos dispositivos de telas menores, como smartphones. Ele segue o conceito de Progressive Enhancement (melhoramento progressivo), que defende a criação inicial voltada para dispositivos mais simples, priorizando as funcionalidades essenciais e a boa experiência do usuário.
 
-> **Instrução de preenchimento**: registre decisões que priorizam o uso em smartphone. Para cada tópico, descreva **o que foi decidido** e **por quê**, com base em leitura, toque e navegação.
+A partir disso, conforme o aumento do tamanho da tela e da capacidade de processamento do dispositivo, novas funcionalidades e melhorias visuais podem ser adicionadas gradualmente. Dessa forma, o sistema cresce de maneira progressiva sem comprometer a usabilidade nos dispositivos móveis.
+
 
 ### 2.1 Priorização da experiência mobile
-Documente quais tarefas e informações foram priorizadas no mobile (ex.: ações principais visíveis sem excesso de rolagem; redução de etapas).
+O wireframe foi desenvolvido inicialmente para dispositivos móveis, priorizando as funcionalidades essenciais e a navegação rápida em telas pequenas. As principais ações permanecem visíveis sem excesso de rolagem, reduzindo etapas e facilitando o uso com apenas uma mão.
+
+Os elementos mais importantes foram posicionados em áreas de maior destaque e fácil acesso, melhorando a usabilidade e a eficiência da navegação.
 
 ### 2.2 Adaptação para diferentes tamanhos de tela
-Descreva como o layout se comporta em variações comuns (ex.: 360×640, 390×844, 414×896).  
-Inclua critérios objetivos (ex.: regras de quebra, escalas, truncamento, grid).
+O layout foi projetado de forma responsiva para funcionar corretamente em resoluções como 360×640, 390×844 e 414×896.
+
+Foram aplicadas regras como:
+
+- Organização vertical do conteúdo;
+- Componentes flexíveis e redimensionáveis;
+- Ajuste automático de espaçamentos e elementos;
+- Redução de colunas em telas menores;
+- Priorização das informações principais nas  primeiras áreas visíveis da tela.
+
+Essas adaptações garantem boa visualização e usabilidade em diferentes dispositivos móveis.
 
 ### 2.3 Legibilidade
-Registre decisões de hierarquia tipográfica e contraste para leitura em movimento/baixa luminosidade.  
-Indique quais regras devem ser mantidas para consistência (ex.: tamanhos mínimos, densidade de texto, limites de linha).
+A hierarquia tipográfica foi definida para facilitar a leitura em dispositivos móveis e ambientes com baixa luminosidade. Títulos possuem maior destaque visual, enquanto textos secundários mantêm tamanhos adequados para leitura confortável.
 
-### 2.4 Ergonomia para toque
-Explique como as ações mais frequentes foram posicionadas para uso confortável (ex.: alcance do polegar, alvos de toque, espaçamentos).
+Também foram mantidas regras de:
 
-### 2.5 Organização de conteúdo em telas pequenas
+- Bom contraste entre texto e fundo;
+- Espaçamento adequado entre elementos;
+- Redução de blocos extensos de texto;
+- Organização clara entre títulos e conteúdos.
+
+### 2.4 Organização de conteúdo em telas pequenas
 Descreva como o conteúdo foi estruturado para reduzir carga cognitiva (ex.: agrupamentos, progressão de informação, uso de cards, filtros).
 
 ---

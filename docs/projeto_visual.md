@@ -257,13 +257,19 @@ A fidelidade média foi escolhida deliberadamente: o objetivo é validar hierarq
 
 ## 5. Mockups Navegáveis
 
-> **Instrução de preenchimento**: registre como a camada visual final materializa os wireframes, com foco em consistência e experiência mobile. Inclua link do protótipo e prints por tela/estado.
+## Introdução
+
+Esta seção documenta os mockups de alta fidelidade do aplicativo móvel do **Portal Aventura**, traduzindo os wireframes de média fidelidade em uma camada visual que materializa identidade, hierarquia cromática, tipografia e componentes finais. O escopo mantém alinhamento com as mesmas jornadas críticas: **onboarding de interesses** (alimentando o motor de recomendação), **descoberta** (Explorar, Buscar, Wishlist) e **conversão** (informações do espetáculo com *hand-off* para a bilheteria), agora com o detalhe necessário para validação estética, implementação e testes com usuários.
+
+> **Arquivo Figma:** [Mockup — Portal Aventura (visualização completa)](https://www.figma.com/design/0lPbGGZo6VHkp0eKkrQlWs/Mockup-din%C3%A2mico---aventura?node-id=0-1&t=BVSOfexMDGf7JtH6-1)
+
+> **Nota:** o link acima aponta ao quadro com o **mockup completo** das telas para revisão visual no Figma; O protótipo **dinâmico** navegável (fluxo interativo entre telas), está referenciado ao fim dessa sessão
 
 ### 5.1 Objetivo visual do mockup
 Descreva o objetivo da proposta visual (ex.: clareza, modernidade, destaque para descoberta, linguagem cultural) e o que deve ser percebido pelo usuário.
 
 ### 5.2 Coerência com os wireframes
-Explique o que foi mantido e o que foi ajustado na passagem de wireframe → mockup (somente ajustes de UI/visual/hierarquia, sem inventar novas telas).
+Explique o que foi mantido e o que foi ajustado na passagem de wireframe → mockup
 
 ### 5.3 Fluxo navegável
 Descreva como o usuário percorre as telas no protótipo (pontos de entrada, rotas principais, retornos).
@@ -275,22 +281,8 @@ Registre decisões-chave (ex.: hierarquia, uso de cor, ênfase em cards, densida
 Descreva como o visual foi pensado para toque/legibilidade e como estados e feedbacks aparecem.
 
 ### 5.6 Link do protótipo navegável
-- **Link do protótipo**:  
-
-### 5.7 Imagens dos mockups (placeholders)
-> Insira abaixo os prints/exportações dos mockups por tela (ou principais estados).
-
-![Mockup - Splash Screen]()
-![Mockup - Login]()
-![Mockup - Cadastro]()
-![Mockup - Onboarding]()
-![Mockup - Boas-Vindas]()
-![Mockup - Explorar / Home]()
-![Mockup - Buscar]()
-![Mockup - Wishlist]()
-![Mockup - Perfil / Configurações]()
-![Mockup - Detalhes do Espetáculo]()
-![Mockup - Editar Interesses]()
+- **Mockup completo (Figma — visualização das telas):** [Mockup — Portal Aventura](https://www.figma.com/design/0lPbGGZo6VHkp0eKkrQlWs/Mockup-din%C3%A2mico---aventura?node-id=0-1&t=BVSOfexMDGf7JtH6-1) — uso para revisão estática do layout; o protótipo dinâmico será adicionado aqui quando existir.
+- **Link do protótipo dinâmico (navegável):** *(a preencher)*
 
 ---
 

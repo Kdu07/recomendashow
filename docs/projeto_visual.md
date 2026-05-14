@@ -155,6 +155,14 @@ A fidelidade média foi escolhida deliberadamente: o objetivo é validar hierarq
 - **Comportamento mobile:** *pull-to-refresh* para sincronizar; remoção via *tap* no coração com confirmação opcional via *toast*; navegação para detalhe via *tap* no *card*.
 - **Observações de usabilidade:** o *empty state* converte um momento de "nada para mostrar" em um ponto de entrada para a descoberta, conectando-se à Explorar. Manter o estado visual do coração consistente em todas as superfícies (Explorar, Buscar, Informações, Wishlist) é crítico para coerência do modelo mental.
 
+## 4.9 Informações do Espetáculo
+- **Objetivo da tela:** apresentar todas as informações necessárias para a decisão de compra e fazer o *hand-off* para a bilheteria parceira (ponto de conversão central do produto).
+- **Descrição funcional:** página de detalhe scrollável com imagem principal, metadados (categoria, data, local), sinopse, elenco, recomendações relacionadas, e botões de ação ("Salvar" e "Ingressos") fixos no rodapé.
+- **Componentes principais:** logo + categorias no header, imagem principal do espetáculo, título + bloco de tags de categoria, dados estruturados (data, local, mapa miniatura), seção "Sobre o espetáculo" (descrição + duração), seção "Elenco principal", seção "Você pode gostar" (recomendações cruzadas), barra inferior fixa com preço "RS [XX]", botão "Salvar" e botão primário "Ingressos".
+- **Organização do layout:** *scroll* vertical longo, hierarquizado por seções com títulos. Barra inferior fixa garante acesso constante às duas ações principais (salvar = retenção; ingressos = conversão).
+- **Comportamento mobile:** *parallax* ou *sticky header* opcional na imagem; o botão "Ingressos" redireciona o usuário para o parceiro de bilheteria (fluxo de saída, alinhado à definição de "o que o produto não faz"); a ação "Salvar" alterna o estado do coração e atualiza a Wishlist.
+- **Observações de usabilidade:** a barra inferior persistente respeita a heurística de "ação visível em qualquer ponto do scroll", reduzindo distância até a conversão. A seção "Você pode gostar" alavanca o motor de recomendação para evitar *dead-ends* (alinhado ao objetivo de "Sinergia do Ecossistema"). Exibir o preço junto ao CTA elimina surpresas e qualifica o clique antes do redirecionamento à ticketeira.
+
 ---
 
 ## 5. Mockups Navegáveis

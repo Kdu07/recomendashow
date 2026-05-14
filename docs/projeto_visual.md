@@ -144,6 +144,17 @@ A fidelidade média foi escolhida deliberadamente: o objetivo é validar hierarq
 - **Comportamento mobile:** *autofocus* no campo ao abrir; teclado fica visível imediatamente; histórico de buscas pode ser exposto entre o estado inicial e o resultado; modal de filtros aplica-se com transição *slide-up*.
 - **Observações de usabilidade:** o *empty state* inicial popular com recomendações evita a sensação de "tela em branco" e mantém o usuário em fluxo de descoberta. O *badge* no ícone de filtros torna o estado do sistema visível (heurística de Nielsen).
 
+## 4.8 Wishlist
+- **Objetivo da tela:** consolidar os espetáculos salvos pelo usuário, oferecendo um acesso rápido a interesses futuros (peça da estratégia de retenção descrita no brainstorm de features).
+- **Descrição funcional:** lista vertical de *cards* de espetáculos salvos. Cada *card* expõe título, tag de categoria, local e data; ícone de coração permite remover do favoritos. Toque no *card* leva à página de informações.
+- **Estados desta tela:**
+  - **Com itens:** lista de espetáculos salvos com layout consistente; o coração preenchido indica estado de "salvo".
+  - **Vazia:** ícone de coração outline centralizado, mensagem de *empty state* explicativa, CTA "Explorar Espetáculos" que leva à Home.
+- **Componentes principais:** header com título "Wishlist" e subtítulo, lista de *cards* (ou *empty state*), *tab bar* inferior com o ícone de coração destacado.
+- **Organização do layout:** densidade média de informação por *card*, otimizando varredura; *empty state* segue padrão central com mensagem + CTA.
+- **Comportamento mobile:** *pull-to-refresh* para sincronizar; remoção via *tap* no coração com confirmação opcional via *toast*; navegação para detalhe via *tap* no *card*.
+- **Observações de usabilidade:** o *empty state* converte um momento de "nada para mostrar" em um ponto de entrada para a descoberta, conectando-se à Explorar. Manter o estado visual do coração consistente em todas as superfícies (Explorar, Buscar, Informações, Wishlist) é crítico para coerência do modelo mental.
+
 ---
 
 ## 5. Mockups Navegáveis

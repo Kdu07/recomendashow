@@ -121,6 +121,17 @@ A fidelidade média foi escolhida deliberadamente: o objetivo é validar hierarq
 - **Observações de usabilidade:** personalizar com o nome do usuário cria *anchoring* emocional. O CTA único elimina ambiguidade — o caminho desejado é uma decisão de produto, não do usuário neste momento.
 
 
+## 4.6 Explorar (Home)
+- **Objetivo da tela:** materializar a proposta de valor do produto — entregar uma vitrine dinâmica personalizada que reduz o atrito da descoberta e direciona à conversão.
+- **Descrição funcional:** *feed* vertical scrollável com múltiplas prateleiras (*carrosséis*) de espetáculos, contemplando recomendações personalizadas e curadoria editorial. O usuário pode filtrar a vitrine por categoria no topo, scrollar lateralmente em cada prateleira e abrir o detalhe ao tocar em um *card*.
+- **Estados desta tela:**
+  - **Estado padrão (usuário com preferências):** todas as prateleiras populadas, incluindo a seção **"Para você"** com recomendações baseadas no perfil capturado no onboarding.
+  - **Estado alternativo (usuário pulou o onboarding):** a seção "Para você" exibe *empty state* dedicado, com ícone (lâmpada), mensagem orientando a personalização e CTA "Editar Interesses" que leva ao fluxo 4.11. Demais prateleiras (curadoria editorial não personalizada, "Em alta", etc.) permanecem populadas.
+- **Componentes principais:** header com saudação/data, barra de filtros por categoria (chips horizontais), prateleiras temáticas ("Em alta", "Para você", "Novidades", "Perto de você"), seções de retenção ("Continue assistindo aos trailers"), *tab bar* fixa inferior com quatro itens (Explorar, Buscar, Wishlist, Perfil).
+- **Organização do layout:** *scroll* vertical da página, *scroll* horizontal dentro de cada prateleira; densidade visual modulada por seções com títulos claros para facilitar varredura; *tab bar* sempre acessível.
+- **Comportamento mobile:** *infinite scroll* opcional nas prateleiras; *cards* otimizados para *thumb zone*; chips de categoria fixos ou sticky ao rolar.
+- **Observações de usabilidade:** o padrão "prateleiras" (familiar de plataformas de *streaming*) reduz curva de aprendizado para o público-alvo. A seção "Perto de você" responde ao RF02 (geolocalização) e é peça-chave da estratégia de relevância local. O *empty state* personalizado de "Para você" transforma uma fraqueza (falta de dados) em um *hook* de coleta, sem bloquear o restante da experiência.
+
 ---
 
 ## 5. Mockups Navegáveis

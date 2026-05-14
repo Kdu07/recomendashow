@@ -44,23 +44,81 @@ Descreva como o conteúdo foi estruturado para reduzir carga cognitiva (ex.: agr
 
 ## 3. Estrutura de Navegação
 
-> **Instrução de preenchimento**: documente a navegação considerando o fluxo principal do usuário e a hierarquia entre telas. Se possível, inclua um diagrama/fluxo e explique regras de transição e retorno.
+A navegação do Portal Aventura foi desenhada para sustentar o pilar estratégico do produto — descoberta contínua e baixo atrito até a conversão — adotando um modelo *mobile-first* baseado em barra de abas inferior e hierarquia plana entre as áreas principais. Telas de configuração e detalhe operam em uma camada secundária, acessadas por *drill-down*, sem interromper o contexto da área raiz.
 
 ### 3.1 Fluxo principal do usuário
-Descreva o caminho esperado do usuário do início ao uso recorrente (ex.: onboarding → explorar → detalhes/ações → wishlist → perfil).
+
+O fluxo é segmentado em três estados de jornada:
+
+**Primeiro acesso (não autenticado):**
+Splash → Login → (Cadastro, se novo usuário) → Onboarding de Interesses (gêneros → cidade → frequência) → Bem-vinda → Explorar.
+
+O caminho alternativo do "Pular" no onboarding leva diretamente a Bem-vinda → Explorar, com a seção "Para você" exibindo *empty state* até que o usuário visite Editar Interesses pelo Perfil.
+
+**Uso recorrente (autenticado):**
+Splash → Explorar. A partir desse ponto, o usuário transita livremente entre as quatro áreas principais (Explorar, Buscar, Wishlist, Perfil) via barra de abas inferior, sem hierarquia entre elas.
+
+**Fluxo de conversão (objetivo de negócio):**
+Qualquer área principal → *card* de espetáculo → Informações do Espetáculo → CTA "Ingressos" → *hand-off* para parceiro de bilheteria (saída do app). Em paralelo, o CTA "Salvar" alimenta a Wishlist, retendo o usuário no ecossistema para uma decisão futura.
 
 ### 3.2 Hierarquia entre telas
-Explique a relação entre telas (ex.: telas de entrada vs. principais; telas de configuração; telas de apoio).
+
+A arquitetura de informação se organiza em três níveis:
+
+**Nível 0 — Telas de entrada (fora da navegação principal):**
+Splash, Login, Cadastro, Onboarding (3 passos), Bem-vinda. São transicionais, não fazem parte do uso recorrente e não exibem a *tab bar*. Operam em um fluxo linear com saída única para a área principal.
+
+**Nível 1 — Áreas principais (raízes da navegação):**
+Explorar, Buscar, Wishlist e Perfil. Todas exibem a *tab bar* inferior e funcionam como pontos de partida para *drill-down*. São consideradas pares — nenhuma é "filha" de outra.
+
+**Nível 2 — Telas de detalhe e configuração (sub-telas):**
+- A partir de qualquer área principal: **Informações do Espetáculo** (detalhe de conteúdo, ponto de conversão).
+- A partir do Perfil: **Editar Interesses**, **Notificações** e **Informações Institucionais** (telas de configuração).
+- A partir da Buscar: o **modal de Filtros** (overlay, não consome rota).
+
+Telas de nível 2 herdam o contexto da raiz pela qual foram acessadas e devolvem o usuário a esse mesmo ponto ao retornar.
 
 ### 3.3 Navegação principal
-Defina o padrão de navegação predominante (ex.: barra inferior, topo com ações, tabs) e **quando** ele aparece.
+
+O padrão predominante é a **barra de abas inferior fixa** (*bottom tab bar*) com quatro itens, na ordem:
+
+1. **Explorar** — ícone de casa (raiz da descoberta).
+2. **Buscar** — ícone de lupa (descoberta ativa).
+3. **Wishlist** — ícone de coração (retenção).
+4. **Perfil** — ícone de pessoa (conta e configurações).
+
+A *tab bar* aparece em todas as telas de nível 1 e é ocultada nas telas de nível 0 (entrada/onboarding) e em telas de nível 2 de configuração (Notificações, Informações Institucionais, Editar Interesses) — nestas, a navegação se dá pelo botão "voltar" no header. Em Informações do Espetáculo, a *tab bar* pode ser substituída pela barra de ação fixa ("Salvar" + "Ingressos"), priorizando a conversão sobre a troca de contexto.
+
+Acima da *tab bar*, cada tela usa um header próprio com regras descritas em 3.4. Filtros na Buscar abrem como *bottom sheet* sobre a tela atual, sem alterar a rota — preservando o input e o contexto da busca.
 
 ### 3.4 Comportamento de menus e navegação inferior/superior
-Registre regras como:
-- comportamento do botão “voltar”
-- persistência/ocultação de barras ao scroll
-- estados ativos e rotas
-- títulos e ações do topo
+
+**Botão "voltar" (header):**
+- Disponível em todas as telas de nível 2 (Informações do Espetáculo, Editar Interesses, Notificações, Informações Institucionais).
+- Retorna o usuário à tela imediatamente anterior na pilha de navegação, preservando *scroll position* e estado de filtros quando aplicável.
+- Não aparece nas áreas principais (nível 1) — a navegação entre elas se dá exclusivamente pela *tab bar*.
+- Nas telas de onboarding, o avanço é unidirecional pelo CTA "Continuar"; o retorno entre passos pode ser oferecido como secundário, mas o "Pular" tem prioridade visual.
+
+**Persistência e ocultação de barras ao scroll:**
+- *Tab bar* inferior: **fixa**, sem ocultação ao scroll, garantindo acesso constante às áreas principais.
+- Header superior: **fixo** nas áreas principais (logo + ações). Em Informações do Espetáculo, o header pode ter comportamento *sticky* com *parallax* sobre a imagem hero.
+- Chips de categoria em Explorar: podem ser *sticky* ao scroll, mantendo o filtro visível durante a varredura do *feed*.
+- Barra de ação fixa em Informações do Espetáculo ("Salvar" + "Ingressos"): persistente em todo o scroll, alinhada à heurística de "ação visível em qualquer ponto do scroll".
+
+**Estados ativos e rotas:**
+- O ícone da aba ativa é destacado por preenchimento e/ou peso de fonte mais forte no label.
+- Tocar em uma aba já ativa **rola a tela ao topo**.
+- Cada aba mantém sua própria pilha de navegação independente — sair de Wishlist para Perfil e voltar para Wishlist preserva o estado anterior (incluindo subtelas abertas).
+
+**Títulos e ações do topo:**
+- **Áreas principais (Explorar, Wishlist, Perfil):** header com logo "Aventura" à esquerda.
+- **Buscar:** header com logo + campo de busca compacto; o campo de busca da própria tela fica logo abaixo, em destaque.
+- **Telas de configuração (Notificações, Informações Institucionais, Editar Interesses):** header simplificado com botão "voltar" à esquerda e título da seção em caixa-alta centralizado, sem ações à direita — reduzindo distrações em contexto de leitura/edição.
+- **Informações do Espetáculo:** header com botão "voltar" e, opcionalmente, ação de compartilhar à direita.
+
+**Overlays e modais:**
+- O modal de Filtros (Buscar) abre como *bottom sheet* com transição *slide-up*, fundo escurecido e botão de fechar (X) no canto superior direito. Os CTAs "Aplicar Filtros" e "Limpar Filtros" são fixos no rodapé do *sheet*.
+- Toque fora do *sheet* ou no X o fecha sem aplicar mudanças; "Aplicar" confirma e fecha, retornando à lista de resultados atualizada.
 
 ---
 

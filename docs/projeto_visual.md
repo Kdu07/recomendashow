@@ -187,6 +187,14 @@ A fidelidade média foi escolhida deliberadamente: o objetivo é validar hierarq
 - **Comportamento mobile:** toggles aplicam mudança imediatamente (sem botão "Salvar"); alteração no canal Push pode disparar pedido de permissão nativa do sistema operacional.
 - **Observações de usabilidade:** separar canais de tipos de conteúdo respeita a expectativa do usuário de modular comunicação em duas dimensões. Descrições auxiliares por item reduzem ambiguidade sobre o que cada toggle controla, evitando *opt-outs* indesejados.
 
+## 4.13 Informações Institucionais
+- **Objetivo da tela:** consolidar informações sobre a Aventura Teatros e canais oficiais, reforçando confiança e cumprindo expectativas de transparência institucional.
+- **Descrição funcional:** página estática com descrição da empresa, links de redes sociais, contato, site oficial e localização.
+- **Componentes principais:** header com botão voltar e título "INFORMAÇÕES INSTITUCIONAIS" + subtítulo, bloco "Sobre [Nome da Empresa]" com texto institucional e versão do app, bloco "Siga-nos" com lista de redes sociais, bloco com e-mail, site, e localização (endereço + CEP), rodapé com copyright e tagline.
+- **Organização do layout:** estrutura informativa em blocos verticais por categoria, com ícones para reconhecimento visual rápido das redes sociais; rodapé fecha a página com identidade da marca.
+- **Comportamento mobile:** *taps* em redes/e-mail/site/endereço abrem o app nativo correspondente (browser, mail, maps); versão do app é informativa para diagnóstico de suporte.
+- **Observações de usabilidade:** página de baixo tráfego mas alta importância simbólica — sinaliza profissionalismo e oferece pontos de contato verificáveis, especialmente relevantes para o público sênior do catálogo da Aventura. A versão do app facilita troubleshooting quando o usuário entra em contato com suporte.
+
 ---
 
 ## 5. Mockups Navegáveis

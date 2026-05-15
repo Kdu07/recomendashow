@@ -16,7 +16,8 @@
 - [12. Diagramação do banco](#12-diagramação-do-banco)
 - [13. Diagrama de Classes](#13-diagrama-de-classes)
 - [14. Diagrama de Componentes](#14-diagrama-de-componentes)
-- [15. Termos e Abreviações](#15-termos-e-abreviações)
+- [15. Diagrama de Casos de uso](#16-diagrama-de-casos-de-uso)
+- [16. Termos e Abreviações](#15-termos-e-abreviações)
 - [Referências](#referências)
 
 ---
@@ -1145,7 +1146,86 @@ O modelo SVD é composto por duas partes com naturezas distintas: hiperparâmetr
 **Por que PostgreSQL e Storage Bucket ficam fora dos packages?**
 Packages representam agrupamentos do código da aplicação. Infraestrutura externa não pertence a nenhuma camada do sistema — colocá-la dentro de um package seria incorreto semanticamente.
 
-## 15. Termos e Abreviações
+## 15. Diagrama de Casos de Uso
+
+![Diagrama de Casos de Uso](../assets/Diagrama-use-case.png)
+
+### Atores
+
+#### Usuário
+Representa o espectador autenticado na plataforma, responsável por interagir com o sistema, visualizar espetáculos, gerenciar preferências e acessar recomendações personalizadas.
+
+---
+
+### Casos de Uso
+
+#### UC01 — Cadastrar conta
+Como usuário, quero criar uma conta na plataforma para salvar minhas preferências e manter minha wishlist sincronizada entre diferentes sessões e dispositivos.
+
+#### UC02 — Realizar login
+Como usuário, quero realizar login utilizando e-mail e senha para acessar minhas informações personalizadas e minhas recomendações.
+
+#### UC03 — Responder onboarding
+Como novo usuário, quero responder um questionário de interesses para que o sistema personalize minhas recomendações iniciais.
+
+#### UC04 — Gerenciar perfil e preferências
+Como usuário, quero editar meus dados de perfil e minhas preferências para manter as recomendações alinhadas aos meus interesses atuais.
+
+#### UC05 — Visualizar catálogo de espetáculos
+Como usuário, quero visualizar o catálogo de espetáculos organizado por categorias para explorar produções disponíveis na plataforma.
+
+#### UC06 — Pesquisar espetáculos
+Como usuário, quero pesquisar espetáculos e teatros específicos para encontrar rapidamente informações relevantes.
+
+#### UC07 — Visualizar detalhes do espetáculo
+Como usuário, quero visualizar os detalhes de um espetáculo para conhecer informações sobre a produção, teatro e disponibilidade.
+
+#### UC08 — Visualizar informações do teatro
+Como usuário, quero visualizar endereço e horários do teatro para me planejar antes de assistir ao espetáculo.
+
+#### UC09 — Receber recomendações personalizadas
+Como usuário, quero receber sugestões personalizadas baseadas em minhas preferências e interações para descobrir novos espetáculos relevantes.
+
+#### UC10 — Visualizar wishlist
+Como usuário, quero acessar minha wishlist para visualizar os espetáculos salvos anteriormente.
+
+#### UC11 — Adicionar espetáculo à wishlist
+Como usuário, quero adicionar espetáculos à minha wishlist para salvar produções de interesse e melhorar futuras recomendações.
+
+#### UC12 — Remover espetáculo da wishlist
+Como usuário, quero remover espetáculos da wishlist para atualizar meus interesses na plataforma.
+
+#### UC13 — Acessar link de compra
+Como usuário, quero acessar a bilheteria oficial do espetáculo para realizar a compra do ingresso com segurança.
+
+---
+
+### Relacionamentos do Diagrama
+
+#### Include
+O caso de uso "Visualizar detalhes do espetáculo" possui relação `<<include>>` com "Visualizar informações do teatro", pois as informações do local fazem parte da experiência de visualização dos detalhes do espetáculo.
+
+#### Extend
+O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visualizar detalhes do espetáculo", uma vez que o redirecionamento para compra ocorre opcionalmente após a visualização do espetáculo.
+
+---
+
+### Associação entre Requisitos Funcionais e Casos de Uso
+
+| Requisito Funcional | Caso de Uso Relacionado |
+|---|---|
+| RF01 — Onboarding de Interesses | UC03 — Responder onboarding |
+| RF02 — Recomendação por Geolocalização | UC09 — Receber recomendações personalizadas |
+| RF03 — Autenticação e Persistência | UC01 — Cadastrar conta / UC02 — Realizar login |
+| RF04 — Catálogo Categorizado | UC05 — Visualizar catálogo de espetáculos |
+| RF05 — Busca Específica | UC06 — Pesquisar espetáculos |
+| RF06 — Gestão de Wishlist | UC10 — Visualizar wishlist / UC11 — Adicionar espetáculo à wishlist / UC12 — Remover espetáculo da wishlist |
+| RF07 — Informações de Teatros | UC08 — Visualizar informações do teatro |
+| RF08 — Gestão de Perfil e Preferências | UC04 — Gerenciar perfil e preferências |
+| RF09 — Redirecionamento de Compra | UC13 — Acessar link de compra |
+| RF10 — Recomendação Inteligente | UC09 — Receber recomendações personalizadas |
+
+## 16. Termos e Abreviações
 
 | Termo / Abreviação | Definição |
 |---|---|
@@ -1167,6 +1247,10 @@ Packages representam agrupamentos do código da aplicação. Infraestrutura exte
 | Uptime | Período em que o sistema permanece disponível e operacional, geralmente expresso em percentual. |
 | Vitrine Dinâmica | Componente de interface que exibe conteúdos personalizados de forma adaptativa, baseando-se no perfil e comportamento do usuário. |
 | Wishlist | Lista de desejos — conjunto de espetáculos que o cliente deseja assistir e salva para consulta futura. |
+| MVVM | Model-View-ViewModel — padrão arquitetural utilizado para separar interface, lógica e dados da aplicação. |
+| Include | Relação UML utilizada quando um caso de uso obrigatoriamente incorpora outro comportamento. |
+| Extend | Relação UML utilizada quando um caso de uso adiciona comportamentos opcionais a outro. |
+
 
 ## Referências
 

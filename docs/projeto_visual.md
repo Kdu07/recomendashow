@@ -266,19 +266,117 @@ Esta seção documenta os mockups de alta fidelidade do aplicativo móvel do **P
 > **Nota:** o link acima aponta ao quadro com o **mockup completo** das telas para revisão visual no Figma; O protótipo **dinâmico** navegável (fluxo interativo entre telas), está referenciado ao fim dessa sessão
 
 ### 5.1 Objetivo visual do mockup
-Descreva o objetivo da proposta visual (ex.: clareza, modernidade, destaque para descoberta, linguagem cultural) e o que deve ser percebido pelo usuário.
+O objetivo visual do mockup de alta fidelidade é representar uma experiência mobile clara, moderna e alinhada ao universo cultural da Aventura. A proposta busca transmitir a sensação de descoberta, personalização e facilidade de navegação, permitindo que o usuário encontre espetáculos, salve favoritos, ajuste preferências e acesse informações relevantes com poucos toques.
+
+A identidade visual utiliza uma base limpa, com predominância de fundo branco, tipografia de boa legibilidade e uso do roxo como cor principal de ação e destaque. Essa escolha cria contraste suficiente para botões, categorias selecionadas, estados ativos e elementos de navegação. O laranja aparece como cor de apoio para categorias e detalhes de destaque, reforçando a comunicação visual sem competir com a ação principal.
+
+A percepção esperada para o usuário é de um aplicativo confiável, simples de usar e personalizado. O design procura valorizar imagens de espetáculos e teatros, pois o produto está ligado à experiência cultural e à tomada de decisão visual. Dessa forma, cards, banners, fotos de eventos e imagens de espaços culturais assumem papel central na navegação.
+
+---
+
 
 ### 5.2 Coerência com os wireframes
-Explique o que foi mantido e o que foi ajustado na passagem de wireframe → mockup
+Na passagem dos wireframes de média fidelidade para o mockup de alta fidelidade, foi mantida a estrutura principal da jornada do usuário. As telas continuam organizadas em fluxos de autenticação, onboarding, descoberta de espetáculos, busca, favoritos, detalhes do espetáculo e perfil.
+
+O que foi mantido:
+
+- fluxo inicial com splash screen, login e onboarding;
+- coleta de preferências para personalização das recomendações;
+- tela inicial com seções de descoberta e recomendações;
+- busca por espetáculos e teatros;
+- wishlist para espetáculos salvos;
+- tela de detalhes com informações de data, local, mapa e descrição;
+- perfil com edição de preferências, notificações e informações institucionais.
+
+O que foi ajustado na alta fidelidade:
+
+- aplicação da identidade visual da Aventura;
+- definição de cores finais, com roxo como cor primária;
+- refinamento da tipografia e hierarquia textual;
+- uso de imagens reais ou simuladas de espetáculos e teatros;
+- criação de cards visuais para eventos e espaços culturais;
+- inclusão de estados selecionados nos botões de interesse, cidade e frequência;
+- melhoria da legibilidade dos textos e espaçamentos;
+- maior clareza nos estados vazios, como a wishlist sem itens salvos.
+
+Esses ajustes tornam o mockup mais próximo da experiência final do aplicativo, permitindo validar não apenas a estrutura funcional, mas também a percepção visual e a usabilidade da solução.
+
 
 ### 5.3 Fluxo navegável
-Descreva como o usuário percorre as telas no protótipo (pontos de entrada, rotas principais, retornos).
+O fluxo navegável do aplicativo começa com a **Splash Screen**, responsável por apresentar a marca Aventura. Em seguida, o usuário acessa a tela de **Login/Cadastro**, onde pode entrar com e-mail e senha, autenticar com Google ou criar uma nova conta.
+
+Após o acesso, o usuário passa pelo fluxo de **onboarding**, que coleta informações essenciais para personalização:
+
+1. tela de boas-vindas;
+2. seleção de cidade;
+3. seleção de interesses culturais;
+4. frequência com que o usuário vai ao teatro.
+
+Essas respostas alimentam a experiência personalizada do aplicativo, especialmente as seções de recomendações e eventos próximos.
+
+Depois do onboarding, o usuário chega à **Home principal**, onde encontra banners, categorias, espetáculos em alta e recomendações personalizadas. A partir da home, ele pode navegar para:
+
+- **Busca**, para pesquisar espetáculos, teatros ou filtrar resultados;
+- **Recomendações**, para explorar seções como “Para você”, “Novidades” e “Perto de você”;
+- **Detalhes do espetáculo**, ao selecionar um evento específico;
+- **Wishlist**, para visualizar espetáculos salvos;
+- **Perfil**, para editar preferências, gerenciar notificações e consultar informações institucionais.
+
+Durante a navegação principal, o aplicativo utiliza uma barra fixa inferior para permitir acesso rápido às áreas centrais da experiência, como Home, Busca, Wishlist e Perfil. Dessa forma, o usuário pode circular entre descoberta, pesquisa, favoritos e configurações sem depender de retornos sucessivos ou menus ocultos.
+
+Na tela de **Detalhes do espetáculo**, o usuário visualiza imagem, data, local, mapa e descrição. Quando houver interesse em compra, a aplicação deve realizar o *hand-off* para a ticketeira externa responsável. A compra não é processada dentro do aplicativo.
+
+No perfil, o usuário pode retornar ao ajuste de interesses e cidade, controlar notificações, consultar informações institucionais da Aventura e sair da conta.
+
 
 ### 5.4 Decisões visuais
-Registre decisões-chave (ex.: hierarquia, uso de cor, ênfase em cards, densidade, contraste). Justificativas curtas e objetivas.
+As principais decisões visuais do mockup foram tomadas para favorecer clareza, navegação rápida e valorização do conteúdo cultural.
+
+**Uso do roxo como cor principal:**  
+O roxo foi utilizado em botões principais, estados selecionados e elementos de destaque. Essa cor reforça a identidade visual da aplicação e orienta o usuário sobre ações importantes, como continuar, entrar, salvar alterações e identificar preferências selecionadas.
+
+**Predominância de fundo branco:**  
+A maior parte das telas utiliza fundo branco para reduzir ruído visual e aumentar a legibilidade. Essa decisão também permite que imagens de espetáculos, teatros e banners tenham maior destaque.
+
+**Cards visuais para espetáculos e teatros:**  
+Os espetáculos aparecem em cards com imagem, título e informações resumidas. Essa decisão favorece a descoberta, pois o usuário consegue identificar rapidamente eventos de interesse. Os teatros também são apresentados em cards com imagens amplas, reforçando o aspecto cultural e presencial da experiência.
+
+**Hierarquia textual objetiva:**  
+Os títulos possuem maior peso visual, enquanto descrições e informações complementares aparecem em cinza. Isso facilita a leitura em telas pequenas e ajuda o usuário a encontrar rapidamente as informações mais importantes.
+
+**Estados selecionados claros:**  
+Nas telas de onboarding e edição de interesses, opções selecionadas recebem borda e fundo em roxo claro, além de ícone de confirmação. Isso oferece feedback imediato e reduz dúvidas sobre quais preferências foram escolhidas.
+
+**Estados vazios orientativos:**  
+A wishlist vazia não aparece apenas como uma tela sem conteúdo. Ela apresenta mensagem explicativa e link para explorar espetáculos, orientando o usuário para a próxima ação.
+
+**Ênfase na personalização:**  
+Telas como onboarding, recomendações e edição de interesses reforçam que a experiência será adaptada ao gosto do usuário. Isso está diretamente relacionado ao sistema de recomendação do projeto.
 
 ### 5.5 Experiência mobile
-Descreva como o visual foi pensado para toque/legibilidade e como estados e feedbacks aparecem.
+A experiência foi pensada para uso em dispositivos móveis, priorizando toque, legibilidade e navegação vertical.
+
+Os botões principais possuem largura ampla e altura confortável para toque, como nas telas de login, onboarding e edição de interesses. As opções de seleção também aparecem em formatos grandes, facilitando a interação com o dedo e reduzindo erros de toque.
+
+A navegação utiliza listas e cards verticais ou horizontais, padrões comuns em aplicativos mobile. Na home e nas recomendações, os cards horizontais permitem explorar vários espetáculos sem sair da tela principal. Já nas telas de busca e wishlist, a listagem vertical facilita comparação entre itens.
+
+Outro ponto importante da experiência mobile é o uso de uma **barra de navegação fixa na parte inferior da tela**. Esse padrão facilita o acesso às principais áreas do aplicativo com apenas um toque, sem exigir que o usuário retorne para a home ou abra menus complexos.
+
+A barra inferior funciona como ponto de orientação durante a navegação, permitindo alternar rapidamente entre seções como início, busca, wishlist e perfil. Essa decisão melhora a usabilidade em dispositivos móveis, pois mantém as rotas principais sempre visíveis e acessíveis ao alcance do polegar.
+
+A legibilidade foi priorizada por meio de títulos destacados, descrições curtas e bom espaçamento entre elementos. Informações secundárias aparecem em cinza, enquanto ações e estados ativos usam roxo para chamar atenção.
+
+Os feedbacks visuais aparecem principalmente em:
+
+- opções selecionadas no onboarding;
+- switches ativados ou desativados em notificações;
+- botão de favoritar na tela de detalhes;
+- estado vazio da wishlist;
+- destaque de categorias selecionadas;
+- botões principais com cor sólida.
+
+Esses elementos ajudam o usuário a entender o estado atual da interface e reduzem incertezas durante a navegação.
+
 
 ### 5.6 Link do protótipo navegável
 - **Mockup completo (Figma — visualização das telas):** [Mockup — Portal Aventura](https://www.figma.com/design/0lPbGGZo6VHkp0eKkrQlWs/Mockup-din%C3%A2mico---aventura?node-id=0-1&t=BVSOfexMDGf7JtH6-1) — uso para revisão estática do layout; o protótipo dinâmico será adicionado aqui quando existir.

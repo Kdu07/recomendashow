@@ -398,6 +398,47 @@ Descreva como o visual foi pensado para toque/legibilidade e como estados e feed
 - **Sucesso**: Borda verde + ícone de check
 - **Disabled**: Fundo cinza claro, opacidade 60%
 
+### 6.7 Barra de navegação
+
+**Padrão:** Bottom Navigation (mobile-first)
+
+**Itens:**
+- Explorar (ícone casa)
+- Buscar (ícone lupa)
+- Wishlist (ícone coração)
+- Perfil (ícone usuário)
+
+**Comportamento:**
+- Ícone + label
+- Estado ativo: Roxo Principal (`#6F3CFF`) com preenchimento
+- Estado inativo: Cinza Texto (`#64748B`)
+- Fixa no bottom da tela
+- Esconde em telas de onboarding e pagamento quando necessário
+
+### 6.8 Espaçamentos
+
+**Escala base:** Múltiplos de 8px (8px grid)
+
+| Escala   | Valor   | Uso comum |
+|----------|---------|---------|
+| 2x       | 16px    | Padding interno de cards e botões |
+| 3x       | 24px    | Espaçamento entre seções |
+| 4x       | 32px    | Margens laterais principais |
+| 5x       | 40px    | Espaçamento vertical grande |
+| 6x       | 48px    | Altura mínima de botões |
+
+**Gaps:** Entre cards e chips → 12px ou 16px
+
+### 6.9 Consistência visual
+
+**Regras Gerais a serem mantidas em todas as telas:**
+- Border radius padrão: **12px** (elementos pequenos) e **16px** (cards e modais)
+- Alinhamento: Esquerda na maioria dos conteúdos (exceto botões centrados)
+- Sombras: Suaves e consistentes (0 1px 3px rgba(0,0,0,0.08))
+- Densidade: Espaçamento generoso para boa legibilidade em mobile
+- Hierarquia: Sempre destacar o título do espetáculo como elemento mais forte
+- Contraste: Mínimo 4.5:1 em textos sobre fundos claros
+
 ---
 
 ## 7. Interações e Comportamentos Mobile

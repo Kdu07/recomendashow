@@ -16,8 +16,8 @@
 - [12. Diagramação do banco](#12-diagramação-do-banco)
 - [13. Diagrama de Classes](#13-diagrama-de-classes)
 - [14. Diagrama de Componentes](#14-diagrama-de-componentes)
-- [15. Termos e Abreviações](#15-termos-e-abreviações)
-- [16. Diagrama de Casos de uso](#16-diagrama-de-casos-de-uso)
+- [15. Diagrama de Casos de uso](#16-diagrama-de-casos-de-uso)
+- [16. Termos e Abreviações](#15-termos-e-abreviações)
 - [Referências](#referências)
 
 ---
@@ -1098,30 +1098,9 @@ O modelo SVD é composto por duas partes com naturezas distintas: hiperparâmetr
 **Por que PostgreSQL e Storage Bucket ficam fora dos packages?**
 Packages representam agrupamentos do código da aplicação. Infraestrutura externa não pertence a nenhuma camada do sistema — colocá-la dentro de um package seria incorreto semanticamente.
 
-## 15. Termos e Abreviações
+## 15. Diagrama de Casos de Uso
 
-| Termo / Abreviação | Definição |
-|---|---|
-| Gateway (BPMN) | Elemento de controle de fluxo em diagramas BPMN que determina a divisão ou convergência de caminhos no processo. |
-| Gateway de Pagamento | Serviço que processa transações financeiras eletrônicas entre o cliente e o estabelecimento. |
-| Hash | Função criptográfica que converte dados de entrada em uma sequência fixa e irreversível, utilizada para armazenamento seguro de senhas. |
-| HTTPS | HyperText Transfer Protocol Secure — protocolo de comunicação seguro na web, utilizando criptografia TLS. |
-| IEEE | Institute of Electrical and Electronics Engineers — organização internacional que define padrões técnicos em engenharia, incluindo o SWEBOK. |
-| ISO 25010 | Norma internacional que define o modelo de qualidade de software, classificando características como desempenho, segurança, usabilidade e confiabilidade. |
-| Lei Rouanet | Lei nº 8.313/1991 que institui o Programa Nacional de Apoio à Cultura (PRONAC), permitindo incentivos fiscais para projetos culturais no Brasil. |
-| LGPD | Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018) — legislação brasileira que regula o tratamento de dados pessoais. |
-| MVP | Minimum Viable Product (Produto Mínimo Viável) — versão inicial de um produto contendo as funcionalidades essenciais para validar a proposta de valor. |
-| Pool (BPMN) | Elemento gráfico no BPMN que representa um participante ou organização dentro de um processo de negócio. |
-| Prateleira | Componente visual da interface que agrupa um conjunto temático de espetáculos exibido em formato de carrossel. |
-| SWEBOK | Software Engineering Body of Knowledge — guia internacional do IEEE que consolida o conhecimento da área de engenharia de software. |
-| TLS | Transport Layer Security — protocolo criptográfico que garante a segurança das comunicações em redes de computadores. |
-| UI | User Interface (Interface do Usuário) — conjunto de elementos visuais e interativos com os quais o usuário interage. |
-| UNESCO | United Nations Educational, Scientific and Cultural Organization — Organização das Nações Unidas para a Educação, a Ciência e a Cultura. |
-| Uptime | Período em que o sistema permanece disponível e operacional, geralmente expresso em percentual. |
-| Vitrine Dinâmica | Componente de interface que exibe conteúdos personalizados de forma adaptativa, baseando-se no perfil e comportamento do usuário. |
-| Wishlist | Lista de desejos — conjunto de espetáculos que o cliente deseja assistir e salva para consulta futura. |
-
-## 16. Diagrama de Casos de Uso
+![Diagrama de Casos de Uso](../assets/Diagrama-use-case.png)
 
 ### Atores
 
@@ -1197,6 +1176,32 @@ O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visual
 | RF08 — Gestão de Perfil e Preferências | UC04 — Gerenciar perfil e preferências |
 | RF09 — Redirecionamento de Compra | UC13 — Acessar link de compra |
 | RF10 — Recomendação Inteligente | UC09 — Receber recomendações personalizadas |
+
+## 16. Termos e Abreviações
+
+| Termo / Abreviação | Definição |
+|---|---|
+| Gateway (BPMN) | Elemento de controle de fluxo em diagramas BPMN que determina a divisão ou convergência de caminhos no processo. |
+| Gateway de Pagamento | Serviço que processa transações financeiras eletrônicas entre o cliente e o estabelecimento. |
+| Hash | Função criptográfica que converte dados de entrada em uma sequência fixa e irreversível, utilizada para armazenamento seguro de senhas. |
+| HTTPS | HyperText Transfer Protocol Secure — protocolo de comunicação seguro na web, utilizando criptografia TLS. |
+| IEEE | Institute of Electrical and Electronics Engineers — organização internacional que define padrões técnicos em engenharia, incluindo o SWEBOK. |
+| ISO 25010 | Norma internacional que define o modelo de qualidade de software, classificando características como desempenho, segurança, usabilidade e confiabilidade. |
+| Lei Rouanet | Lei nº 8.313/1991 que institui o Programa Nacional de Apoio à Cultura (PRONAC), permitindo incentivos fiscais para projetos culturais no Brasil. |
+| LGPD | Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018) — legislação brasileira que regula o tratamento de dados pessoais. |
+| MVP | Minimum Viable Product (Produto Mínimo Viável) — versão inicial de um produto contendo as funcionalidades essenciais para validar a proposta de valor. |
+| Pool (BPMN) | Elemento gráfico no BPMN que representa um participante ou organização dentro de um processo de negócio. |
+| Prateleira | Componente visual da interface que agrupa um conjunto temático de espetáculos exibido em formato de carrossel. |
+| SWEBOK | Software Engineering Body of Knowledge — guia internacional do IEEE que consolida o conhecimento da área de engenharia de software. |
+| TLS | Transport Layer Security — protocolo criptográfico que garante a segurança das comunicações em redes de computadores. |
+| UI | User Interface (Interface do Usuário) — conjunto de elementos visuais e interativos com os quais o usuário interage. |
+| UNESCO | United Nations Educational, Scientific and Cultural Organization — Organização das Nações Unidas para a Educação, a Ciência e a Cultura. |
+| Uptime | Período em que o sistema permanece disponível e operacional, geralmente expresso em percentual. |
+| Vitrine Dinâmica | Componente de interface que exibe conteúdos personalizados de forma adaptativa, baseando-se no perfil e comportamento do usuário. |
+| Wishlist | Lista de desejos — conjunto de espetáculos que o cliente deseja assistir e salva para consulta futura. |
+| MVVM | Model-View-ViewModel — padrão arquitetural utilizado para separar interface, lógica e dados da aplicação. |
+| Include | Relação UML utilizada quando um caso de uso obrigatoriamente incorpora outro comportamento. |
+| Extend | Relação UML utilizada quando um caso de uso adiciona comportamentos opcionais a outro. |
 
 
 ## Referências

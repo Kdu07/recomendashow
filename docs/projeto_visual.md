@@ -20,25 +20,50 @@ O protótipo abrange 11 telas em nível mockup navegável, cobrindo todos os flu
 ---
 
 ## 2. Abordagem Mobile First
+A abordagem Mobile First consiste em iniciar o desenvolvimento pensando primeiro nos dispositivos de telas menores, como smartphones. Ele segue o conceito de Progressive Enhancement (melhoramento progressivo), que defende a criação inicial voltada para dispositivos mais simples, priorizando as funcionalidades essenciais e a boa experiência do usuário.
 
-> **Instrução de preenchimento**: registre decisões que priorizam o uso em smartphone. Para cada tópico, descreva **o que foi decidido** e **por quê**, com base em leitura, toque e navegação.
+A partir disso, conforme o aumento do tamanho da tela e da capacidade de processamento do dispositivo, novas funcionalidades e melhorias visuais podem ser adicionadas gradualmente. Dessa forma, o sistema cresce de maneira progressiva sem comprometer a usabilidade nos dispositivos móveis.
+
 
 ### 2.1 Priorização da experiência mobile
-Documente quais tarefas e informações foram priorizadas no mobile (ex.: ações principais visíveis sem excesso de rolagem; redução de etapas).
+O wireframe foi desenvolvido inicialmente para dispositivos móveis, priorizando as funcionalidades essenciais e a navegação rápida em telas pequenas. As principais ações permanecem visíveis sem excesso de rolagem, reduzindo etapas e facilitando o uso com apenas uma mão.
+
+Os elementos mais importantes foram posicionados em áreas de maior destaque e fácil acesso, melhorando a usabilidade e a eficiência da navegação.
 
 ### 2.2 Adaptação para diferentes tamanhos de tela
-Descreva como o layout se comporta em variações comuns (ex.: 360×640, 390×844, 414×896).  
-Inclua critérios objetivos (ex.: regras de quebra, escalas, truncamento, grid).
+O layout foi projetado de forma responsiva para funcionar corretamente em resoluções como 360×640, 390×844 e 414×896.
+
+Foram aplicadas regras como:
+
+- Organização vertical do conteúdo;
+- Componentes flexíveis e redimensionáveis;
+- Ajuste automático de espaçamentos e elementos;
+- Redução de colunas em telas menores;
+- Priorização das informações principais nas  primeiras áreas visíveis da tela.
+
+Essas adaptações garantem boa visualização e usabilidade em diferentes dispositivos móveis.
 
 ### 2.3 Legibilidade
-Registre decisões de hierarquia tipográfica e contraste para leitura em movimento/baixa luminosidade.  
-Indique quais regras devem ser mantidas para consistência (ex.: tamanhos mínimos, densidade de texto, limites de linha).
+A hierarquia tipográfica foi definida para facilitar a leitura em dispositivos móveis e ambientes com baixa luminosidade. Títulos possuem maior destaque visual, enquanto textos secundários mantêm tamanhos adequados para leitura confortável.
 
-### 2.4 Ergonomia para toque
-Explique como as ações mais frequentes foram posicionadas para uso confortável (ex.: alcance do polegar, alvos de toque, espaçamentos).
+Também foram mantidas regras de:
 
-### 2.5 Organização de conteúdo em telas pequenas
-Descreva como o conteúdo foi estruturado para reduzir carga cognitiva (ex.: agrupamentos, progressão de informação, uso de cards, filtros).
+- Bom contraste entre texto e fundo;
+- Espaçamento adequado entre elementos;
+- Redução de blocos extensos de texto;
+- Organização clara entre títulos e conteúdos.
+
+### 2.4 Organização de conteúdo em telas pequenas
+O conteúdo foi organizado em blocos verticais e hierárquicos para reduzir a carga cognitiva do usuário.
+
+A interface prioriza:
+
+- Separação clara das informações;
+- Destaque para ações principais;
+- Exibição gradual do conteúdo;
+- Layout limpo e com pouca poluição visual.
+
+Isso torna a navegação mais intuitiva e confortável em telas pequenas.
 
 ---
 
@@ -552,34 +577,135 @@ Registre regras gerais que devem ser mantidas em todas as telas (ex.: alinhament
 
 ## 7. Interações e Comportamentos Mobile
 
-> **Instrução de preenchimento**: descreva como o usuário interage com a interface no mobile. Registre comportamentos de navegação, feedbacks e estados, com foco em previsibilidade e acessibilidade.
-
 ### 7.1 Scroll
-Descreva o que rola, como barras se comportam, e como preservar contexto (ex.: título fixo, retorno ao topo).
+
+O scroll vertical é utilizado como principal forma de navegação entre conteúdos extensos da aplicação.
+
+Comportamentos definidos:
+
+- Rolagem vertical contínua em listas, feeds e páginas de conteúdo.
+- Header superior permanece fixo em telas principais para preservar contexto de navegação.
+- Navegação inferior permanece visível durante a rolagem para facilitar acesso rápido às funcionalidades principais.
+- Conteúdos são carregados progressivamente para evitar excesso de informações simultâneas.
+- Em páginas longas, o usuário pode retornar ao topo rapidamente através de interação simplificada.
+- Barras de rolagem seguem comportamento nativo do sistema operacional do dispositivo.
+
+---
 
 ### 7.2 Swipe
-Se aplicável, descreva onde existe swipe (ex.: onboarding), limites e feedback.
+
+O gesto de swipe é utilizado em áreas específicas da interface para melhorar navegação e dinamismo.
+
+Comportamentos definidos:
+
+- Swipe horizontal em carrosséis de categorias e destaques.
+- Navegação limitada ao conteúdo disponível, impedindo movimentações excessivas.
+- Feedback visual suave acompanha o movimento do usuário.
+- Swipe utilizado apenas em componentes que exigem navegação horizontal, evitando conflitos com o scroll vertical.
+
+---
 
 ### 7.3 Transições
-Documente transições entre telas/estados (ex.: padrões de entrada/saída, duração percebida, consistência).
+
+As transições foram planejadas para manter fluidez e previsibilidade durante a navegação entre telas.
+
+Padrões definidos:
+
+- Transições suaves entre páginas principais.
+- Abertura e fechamento de menus com animações rápidas e discretas.
+- Alterações de estado ocorrem sem interrupções bruscas.
+- Tempo de transição reduzido para evitar sensação de lentidão.
+- Componentes seguem comportamento visual consistente em toda a aplicação.
+- Navegação de retorno respeita o comportamento padrão do dispositivo móvel.
+
+---
 
 ### 7.4 Feedback visual
-Explique como o sistema comunica ações e estados (ex.: toque, carregamento, sucesso/erro).
+
+O sistema fornece respostas visuais imediatas para informar o usuário sobre ações e estados da interface.
+
+Feedbacks implementados:
+
+- Alteração visual ao pressionar botões e cards.
+- Indicadores de carregamento durante buscas e carregamento de conteúdo.
+- Destaque visual para itens selecionados.
+- Mensagens de sucesso para ações concluídas corretamente.
+- Mensagens de erro em situações de falha ou conexão indisponível.
+- Estados desabilitados representados com menor contraste visual.
+- Campos de formulário apresentam validação visual em tempo real.
+
+---
 
 ### 7.5 Microinterações
-Liste microinterações relevantes (ex.: estados de botão, seleção, favoritos) e sua intenção.
+
+As microinterações auxiliam na percepção de controle e melhoram a experiência do usuário.
+
+Microinterações previstas:
+
+- Efeito visual ao tocar em botões.
+- Destaque em itens ativos da navegação.
+- Animações sutis em abertura de cards e conteúdos.
+- Alteração de estado em botões favoritos e interações rápidas.
+- Feedback visual em campos preenchidos corretamente.
+- Respostas visuais em ações concluídas pelo usuário.
+- Mudança de aparência em componentes selecionados.
+
+Objetivos das microinterações:
+
+- Confirmar ações executadas.
+- Melhorar percepção de responsividade.
+- Facilitar entendimento da interface.
+- Tornar a navegação mais fluida e intuitiva.
+
+---
 
 ### 7.6 Estados de navegação
-Descreva estados como:
-- tela ativa/inativa na navegação
-- estado vazio
-- carregando
-- erro
-- sem resultados
+
+A interface contempla diferentes estados para garantir clareza durante o uso.
+
+#### Tela ativa/inativa
+
+- A seção ativa da navegação inferior permanece destacada visualmente.
+- Itens inativos possuem menor contraste visual.
+
+#### Estado vazio
+
+- Exibição de mensagens informativas quando não houver conteúdo disponível.
+- Sugestões de navegação ou novas ações são apresentadas ao usuário.
+
+#### Carregando
+
+- Indicadores de loading são exibidos durante carregamento de conteúdo.
+- Estruturas visuais simplificadas evitam sensação de travamento.
+
+#### Erro
+
+- Mensagens claras comunicam falhas de carregamento ou conexão.
+- Usuário recebe possibilidade de tentar novamente.
+
+#### Sem resultados
+
+- Interface informa ausência de resultados encontrados.
+- Sugestões alternativas podem ser exibidas para continuidade da navegação.
+
+---
 
 ### 7.7 Comportamento responsivo
-Documente regras de adaptação (ex.: colunas, tamanhos, truncamento, reorganização de blocos) sem sair do foco mobile.
 
+A interface foi estruturada para adaptação eficiente em diferentes resoluções mobile.
+
+Regras definidas:
+
+- Componentes organizados prioritariamente em coluna.
+- Cards e imagens ajustam largura automaticamente.
+- Textos possuem truncamento controlado para evitar quebra excessiva.
+- Botões mantêm tamanho mínimo adequado para interação por toque.
+- Espaçamentos internos preservam legibilidade em telas menores.
+- Blocos de conteúdo são reorganizados conforme dimensão disponível.
+- Navegação permanece acessível independentemente da resolução utilizada.
+- Elementos secundários possuem menor prioridade visual em telas reduzidas.
+
+O comportamento responsivo busca garantir acessibilidade, legibilidade e consistência visual em toda a experiência mobile.
 ---
 
 ## 8. Considerações Finais

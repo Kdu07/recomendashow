@@ -6,13 +6,19 @@
 - [2. Contexto da Indústria do Parceiro](#2-contexto-da-indústria-do-parceiro)
 - [3. Visão e Objetivos do Produto](#3-visão-e-objetivos-do-produto)
 - [4. O que o Produto Faz e o que Não Faz](#4-o-que-o-produto-faz-e-o-que-não-faz)
+- [5. Personas e Jornada do Usuário](#5-personas-e-jornada-do-usuário)
 - [6. Fluxo do Negócio](#6-fluxo-do-negócio)
 - [7. Brainstorming de Features](#7-brainstorming-de-features)
 - [8. Business Model Canvas do MVP](#8-business-model-canvas-do-mvp)
 - [9. Requisitos Funcionais](#9-requisitos-funcionais)
 - [10. Requisitos Não Funcionais](#10-requisitos-não-funcionais)
 - [11. Correlação entre RFs e RNFs](#11-correlação-entre-rfs-e-rnfs)
-- [12. Termos e Abreviações](#12-termos-e-abreviações)
+- [12. Diagramação do banco](#12-diagramação-do-banco)
+- [13. Diagrama de Classes](#13-diagrama-de-classes)
+- [14. Diagrama de Componentes](#14-diagrama-de-componentes)
+- [15. Diagrama de Casos de uso](#15-diagrama-de-casos-de-uso)
+- [16. Linguagens e Tecnologias Utilizadas](#16-linguagens-e-tecnologias-utilizadas)
+- [17. Termos e Abreviações](#17-termos-e-abreviações)
 - [Referências](#referências)
 
 ---
@@ -174,11 +180,7 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 
 ---
 
-
-Personas e jornadas · MD
-Copiar
-
-# 5. Personas e Jornada do Usuário
+## 5. Personas e Jornada do Usuário
  
 ---
  
@@ -233,7 +235,7 @@ Marcos Abrantes representa um perfil crescente de consumidores culturais urbanos
  
 <div align="center">
   <sub>Imagem 06 - Jornada do usuário: Marcos Abrantes</sub><br>
-  <img src="../assets/jornadaMarcos.png" width="100%" alt="Jornada do usuário Marcos Abrantes"><br>
+  <img src="../assets/jorandaMarcos.png" width="100%" alt="Jornada do usuário Marcos Abrantes"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
@@ -628,6 +630,8 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ## 11. Correlação entre RFs e RNFs
 
+> Tabela explicitando as relações diretas entre requisitos não funcionais e requisitos funcionais.
+
 | RNF | RF relacionados | Justificativa |
 |---|---|---|
 | RNF01 | RF01, RF02, RF04, RF06 | O tempo de resposta impacta diretamente as funcionalidades de descoberta e personalização: o questionário de onboarding (RF01), as sugestões por geolocalização (RF02), a navegação pelo catálogo de espetáculos (RF04) e a interação com a Wishlist (RF06) dependem de carregamento ágil para que o usuário não abandone o fluxo antes de receber as recomendações. |
@@ -640,7 +644,625 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
-## 12. Termos e Abreviações
+## 12. Diagramação do banco
+
+### 12.1 - Diagrama Lógico
+
+<div align="center">
+<sub>Imagem 09 - Diagrama Lógico</sub><br>
+  <img src="../assets/diagrama_logico.png" width="100%" alt="Diagrama lógico do banco"><br>
+  <sup>Source: Material produzido pelos autores, 2026.</sup>
+</div>
+
+O Diagrama Lógico representa as entidades principais do sistema, os relacionamentos entre elas e as cardinalidades, utilizando notação Entidade-Relacionamento (ER) com **retângulos** para as entidades e **losangos** para os relacionamentos.
+
+---
+
+### 12.2 - Entidades e Relacionamentos
+
+#### **Entidades (Retângulos)**
+
+- **Onboarding**: Representa o processo inicial de cadastro e definição de preferências do usuário.
+- **Usuário**: Entidade principal que representa os usuários da plataforma.
+- **Gênero**: Categorias artísticas dos espetáculos (Drama, Musical, Comédia, etc.).
+- **Espetáculo**: Peças teatrais, musicais e eventos culturais disponíveis na aplicação.
+- **Teatro**: Locais físicos onde os espetáculos são realizados.
+- **Wishlist**: Lista de espetáculos salvos pelo usuário.
+
+#### **Relacionamentos (Losangos) e Cardinalidades**
+
+| Relacionamento      | Entidades Envolvidas                  | Cardinalidade | Descrição |
+|---------------------|---------------------------------------|---------------|---------|
+| **Realiza**         | Usuário ↔ Onboarding                 | **1:1**       | Cada usuário realiza exatamente um onboarding. |
+| **Seleciona**       | Onboarding ↔ Gênero                  | **1:N**       | O usuário seleciona um ou mais gêneros durante o onboarding. |
+| **Prefere**         | Usuário ↔ Gênero                     | **N:N**       | Usuário pode preferir vários gêneros e um gênero pode ser preferido por vários usuários. |
+| **Adiciona**        | Usuário ↔ Wishlist                   | **1:1**       | Cada usuário possui apenas uma wishlist. |
+| **Possui**          | Wishlist ↔ Espetáculo                | **1:N**       | Uma wishlist pode conter vários espetáculos. |
+| **Possui**          | Espetáculo ↔ Gênero                  | **N:N**       | Um espetáculo pode pertencer a múltiplos gêneros. |
+| **Recomenda**       | Espetáculo ↔ Usuário                 | **N:N**       | O sistema recomenda espetáculos aos usuários com base em suas preferências. |
+| **Apresentado em**  | Espetáculo ↔ Teatro                  | **N:1**       | Muitos espetáculos podem ser apresentados em um mesmo teatro. |
+
+---
+
+### 12.3 - Justificativa e Regras de Negócio
+
+O Diagrama Lógico foi construído para atender diretamente às necessidades da aplicação:
+
+- O usuário realiza um **onboarding** para informar suas preferências de gêneros e recebe recomendações personalizadas;
+- O sistema utiliza as preferências para gerar **recomendações** dinâmicas;
+- O usuário tem permissão apenas de **leitura** para Espetáculos, Teatros e Gêneros;
+- A **Wishlist** é a única funcionalidade que permite ao usuário **adicionar e remover** itens;
+- Um espetáculo pode ser classificado em **múltiplos gêneros**, enriquecendo os filtros e recomendações;
+- Suporte a filtros por gênero e localidade (via Teatro).
+
+Este modelo garante **clareza visual**, boa escalabilidade para consultas de recomendação e forte alinhamento com as regras de negócio da aplicação.
+
+### 12.4 Diagrama Conceitual
+
+<div align="center">
+<sub>Imagem 09 - Diagrama conceitual</sub><br>
+  <img src="../assets/diagrama-logico.png" width="100%" alt="Diagrama conceitual do banco"><br>
+  <sup>Source: Material produced by the authors, 2026.</sup>
+</div>
+
+O modelo conceitual de dados representa a estruturação dos dados seguindo as regras do modelo relacional, servindo como uma ponte entre a abstração do modelo conceitual e a implementação física no SGDB.
+
+---
+
+### 12.4.1 Dicionário de Dados e Mapeamento
+
+A conversão do modelo lógico para o modelo conceitual foi realizada mapeando cada entidade conceitual para uma tabela relacional e transformando relacionamentos Muitos-para-Muitos (N:N) em tabelas associativas.
+
+---
+
+### A. Tabelas de Cadastro (Entidades Fortes)
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **USUARIOS** | `Id` | INT | PK, AI | Identificador único do usuário. |
+| | `Nome` | VARCHAR(100) | NN | Nome completo do usuário. |
+| | `Email` | VARCHAR(100) | UNIQUE, NN | E-mail utilizado para autenticação. |
+| | `Senha` | VARCHAR(255) | NN | Hash da senha de acesso. |
+| | `Idade` | INT | - | Idade do usuário. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **GENEROS** | `id` | INT | PK, AI | Identificador único do gênero. |
+| | `Nome` | VARCHAR(50) | NN | Nome do gênero artístico. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **TEATROS** | `id` | INT | PK, AI | Identificador único do teatro. |
+| | `Nome` | VARCHAR(100) | NN | Nome do teatro ou espaço cultural. |
+| | `Cidade` | VARCHAR(100) | NN | Cidade onde o teatro está localizado. |
+| | `Estado` | VARCHAR(50) | NN | Estado onde o teatro está localizado. |
+| | `Rua` | VARCHAR(150) | NN | Nome da rua do teatro. |
+| | `Numero` | VARCHAR(20) | NN | Número do endereço do teatro. |
+| | `Horario_func` | VARCHAR(100) | - | Horário de funcionamento do teatro. |
+| | `Descricao` | TEXT | - | Descrição geral do teatro. |
+| | `Imagem` | VARCHAR(255) | - | URL ou caminho da imagem do teatro. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **ESPETACULOS** | `id` | INT | PK, AI | Identificador único do espetáculo. |
+| | `Nome` | VARCHAR(150) | NN | Nome do espetáculo. |
+| | `link_ingresso` | VARCHAR(255) | - | Link para compra de ingressos. |
+| | `Descricao` | TEXT | - | Descrição detalhada do espetáculo. |
+| | `Imagem` | VARCHAR(255) | - | URL ou caminho da imagem do espetáculo. |
+
+---
+
+### B. Tabelas Associativas e Operacionais
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **ESP_GEN** | `id_esp` | INT | FK, PK(1/2) | Espetáculo relacionado ao gênero. |
+| | `id_gen` | INT | FK, PK(2/2) | Gênero associado ao espetáculo. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **GEN_FAV** | `id_usu` | INT | FK, PK(1/2) | Usuário que favoritou o gênero. |
+| | `id_gen` | INT | FK, PK(2/2) | Gênero marcado como preferência pelo usuário. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **TEAT_ESPET** | `id_teat` | INT | FK, PK(1/2) | Teatro onde o espetáculo ocorre. |
+| | `id_espet` | INT | FK, PK(2/2) | Espetáculo vinculado ao teatro. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **CURT_WISH** | `id_usu` | INT | FK, PK(1/2) | Usuário que realizou a interação. |
+| | `id_esp` | INT | FK, PK(2/2) | Espetáculo alvo da interação. |
+| | `tipo` | ENUM('curtida', 'wishlist') | NN | Tipo de interação realizada pelo usuário. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **INTERAÇÕES_USU** | `id` | INT | PK, AI | Identificador único do evento registrado. |
+| | `id_usu` | INT | FK, NN | Usuário que realizou a interação. |
+| | `id_esp` | INT | FK, NN | Espetáculo relacionado à interação. |
+| | `tipo` | VARCHAR(50) | NN | Tipo de evento/interação realizada. |
+| | `temp_pagi` | INT | - | Tempo de permanência na página (segundos). |
+
+---
+
+### 12.4.2 Definição de Chaves e Integridade Referencial
+
+### Chaves Primárias (PK)
+As chaves primárias foram definidas para garantir a unicidade de cada registro. Nas tabelas associativas (`ESP_GEN`, `GEN_FAV`, `TEAT_ESPET`, `CURT_WISH`), utilizam-se chaves compostas pelos IDs das entidades relacionadas para evitar duplicidade de associações.
+
+### Chaves Estrangeiras (FK)
+As chaves estrangeiras garantem a integridade referencial, assegurando que as associações entre usuários, espetáculos, teatros e gêneros apontem apenas para registros existentes.
+
+### Relacionamentos implementados
+- **Usuários e Interações**: Um usuário pode gerar múltiplos registros de interação e eventos de navegação (`1:N`).
+- **Gêneros Favoritos**: Relação `N:N` que permite ao usuário filtrar sua experiência com base em múltiplos interesses.
+- **Espetáculos e Teatros**: Relação `N:N` via `TEAT_ESPET`, permitindo que uma produção ocorra em diferentes locais e que um teatro receba diversos eventos.
+- **Categorização Multifacetada**: Através da `ESP_GEN`, um espetáculo pode ser associado a diversos gêneros simultaneamente.
+
+---
+
+### 12.4.3 Regras de Normalização Aplicadas
+
+O modelo conceitual segue os princípios da Terceira Forma Normal (3FN).
+
+### Primeira Forma Normal (1FN)
+Todos os atributos possuem valores atômicos. Colunas como `tipo` em `CURT_WISH` utilizam ENUM para padronização, evitando dados multivalorados.
+
+### Segunda Forma Normal (2FN)
+Não existem dependências parciais. Em tabelas com chaves compostas, os atributos dependem da junção completa das chaves estrangeiras.
+
+### Terceira Forma Normal (3FN)
+Não há dependências transitivas. Atributos descritivos (como os detalhes de endereço em `TEATROS`) dependem exclusivamente da PK daquela tabela.
+
+---
+
+### 12.4.4 Justificativa e Rastreabilidade
+
+O modelo conceitual foi estruturado para manter fidelidade ao modelo lógico, garantindo consistência entre as regras de negócio e a implementação relacional.
+
+As tabelas associativas permitem representar corretamente relacionamentos Muitos-para-Muitos, como:
+
+- preferências de gêneros dos usuários;
+- categorização de espetáculos;
+- interações entre usuários e espetáculos.
+
+A separação das entidades reduz redundâncias, melhora a escalabilidade do sistema e facilita futuras manutenções e expansões do banco de dados.
+
+## 13. Diagrama de Classes
+
+O diagrama de classes representa o modelo de domínio de um sistema de gerenciamento de teatro, espetáculos e recomendações personalizadas. O sistema registra interações, além de permitir que usuários descubram espetáculos, gerenciem listas de desejos e recebam recomendações baseadas em seu comportamento e preferências.
+
+<div align="center">
+<sub>Imagem 09 - Diagrama de Classes UML</sub><br>
+  <img src="../assets/diagrama-classes-mod6.drawio.png" width="100%" alt="Diagrama de Classes UML"><br>
+  <sup>Source: Material produced by the authors, 2026.</sup>
+</div>
+
+### Teatro
+ 
+Representa um teatro físico cadastrado no sistema. É responsável por gerenciar os espetáculos que estão em cartaz em sua estrutura.
+ 
+| Atributo / Método | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador único do teatro |
+| Nome | - (private) | string | Nome do teatro |
+| Endereco | - (private) | string | Endereço completo do teatro |
+| Cidade | - (private) | string | Cidade onde o teatro está localizado |
+| HorarioFuncionamento | - (private) | string | Horários de funcionamento do teatro |
+| **Métodos** | | | |
+| AdicionarEspetaculo() | + (public) | : void | Adiciona um espetáculo ao teatro |
+| RemoverEspetaculo(id) | + (public) | : void | Remove um espetáculo pelo seu id |
+| BuscarEspetaculos() | + (public) | : List | Retorna a lista de espetáculos do teatro |
+ 
+---
+ 
+### Espetaculo
+ 
+Representa um espetáculo teatral. Contém todas as informações necessárias para exibição, compra de ingressos e categorização por gênero e tipo de evento.
+ 
+| Atributo / Método | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador único do espetáculo |
+| Nome | - (private) | string | Nome do espetáculo |
+| Genero | - (private) | string | Gênero artístico do espetáculo |
+| TipoEvento | - (private) | string | Tipo de evento (ex: peça, musical, ópera) |
+| Descricao | - (private) | string | Descrição detalhada do espetáculo |
+| UrlBilheteria | - (private) | string | URL para compra de ingressos |
+| DataInicio | - (private) | DateTime | Data de início das apresentações |
+| DataFim | - (private) | DateTime | Data de encerramento das apresentações |
+| ValorIngresso | - (private) | decimal | Valor do ingresso |
+| **Métodos** | | | |
+| EstaEmCartaz() | + (public) | : bool | Verifica se o espetáculo está em cartaz na data atual |
+| ObterUrlCompra() | + (public) | : string | Retorna a URL de compra de ingresso |
+| PertenceAoGenero(genero) | + (public) | : bool | Verifica se o espetáculo pertence a um determinado gênero |
+ 
+---
+ 
+### Usuario
+ 
+Representa um usuário cadastrado na plataforma. Agrega as preferências e a wishlist do usuário, sendo o ponto central das interações com o sistema.
+ 
+| Atributo / Método | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador único do usuário |
+| Nome | - (private) | string | Nome completo do usuário |
+| Email | - (private) | string | Endereço de e-mail do usuário |
+| SenhaHash | - (private) | string | Hash da senha do usuário |
+| DataCadastro | - (private) | DateTime | Data de cadastro na plataforma |
+| **Métodos** | | | |
+| AtualizarPreferencias(preferencias) | + (public) | : void | Atualiza as preferências do usuário |
+| SalvarEspetaculo() | + (public) | : void | Salva um espetáculo na wishlist |
+| RemoverDaWishlist(itemId) | + (public) | : void | Remove um espetáculo da wishlist |
+| AlterarSenha(hash) | + (public) | : void | Atualiza o hash da senha |
+| ExcluirConta() | + (public) | : void | Exclui a conta do usuário |
+ 
+---
+ 
+### Wishlist
+ 
+Lista de espetáculos salvos pelo usuário. Possui composição com `Usuario` — não existe independentemente de um usuário.
+ 
+| Atributo / Método | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador único da wishlist |
+| UsuarioId | - (private) | Guid | Referência ao usuário dono da wishlist |
+| DataAtualizacao | - (private) | DateTime | Data da última atualização da lista |
+| **Métodos** | | | |
+| Adicionar(itemId : UUID) | + (public) | : void | Adiciona um espetáculo à lista |
+| Remover(itemId : UUID) | + (public) | : void | Remove um espetáculo da lista |
+| Contem(itemId : UUID) | + (public) | : bool | Verifica se um espetáculo está na lista |
+| Limpar() | + (public) | : void | Remove todos os itens da lista |
+ 
+---
+ 
+### Preferencias `«Value Object»`
+ 
+Objeto de valor que representa as preferências culturais do usuário. Por ser um Value Object, não possui identidade própria — sua igualdade é definida pelo conjunto de seus atributos.
+ 
+| Atributo | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Generos | - (private) | List\<string\> | Lista de gêneros de interesse do usuário |
+| Cidade | - (private) | string | Cidade de preferência para eventos |
+| TiposEvento | - (private) | List\<string\> | Tipos de evento de interesse do usuário |
+| DataAtualizacao | - (private) | DateTime | Data da última atualização das preferências |
+ 
+---
+ 
+### Interacao
+ 
+Registra uma interação do usuário com um espetáculo (clique, acesso ou tempo de tela). Utiliza a enumeração `TipoInteracao` para categorizar o tipo de interação registrada.
+ 
+| Atributo / Método | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador único da interação |
+| Tipo | - (private) | TipoInteracao | Tipo da interação (Clique, Acesso, TempoDeTela) |
+| Pontuacao | - (private) | Float | Pontuação atribuída à interação para o sistema de recomendação |
+| DataRegistro | - (private) | DateTime | Data e hora em que a interação foi registrada |
+| DataExpiracao | - (private) | DateTime | Data e hora em que a interação expira |
+| **Métodos** | | | |
+| EstaExpirada() | + (public) | : bool | Verifica se a interação já está expirada |
+| Renovar() | + (public) | : void | Renova a validade da interação |
+ 
+---
+ 
+### Recomendacao
+ 
+Representa uma recomendação gerada pelo `SistemaRecomendacao` para um usuário específico sobre um espetáculo. Armazena a pontuação calculada e o motivo da recomendação.
+ 
+| Atributo | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador único da recomendação |
+| Score | - (private) | decimal | Pontuação de relevância da recomendação |
+| DataGeracao | - (private) | DateTime | Data em que a recomendação foi gerada |
+| Motivo | - (private) | string | Justificativa textual da recomendação |
+ 
+---
+ 
+### SistemaRecomendacao
+ 
+Componente responsável por gerar e gerenciar recomendações personalizadas. Depende da classe `Interacao` para calcular scores e produzir sugestões relevantes para cada usuário.
+ 
+| Atributo / Método | Visibilidade | Tipo | Descrição |
+|---|---|---|---|
+| Id | - (private) | UUID | Identificador do sistema |
+| Interacoes | - (private) | List\<Interacao\> | Lista de interações usadas como base para recomendações |
+| UltimaExecucao | - (private) | DateTime | Data da última execução do algoritmo |
+| Versao | - (private) | string | Versão do algoritmo de recomendação |
+| **Métodos** | | | |
+| GerarRecomendacoes(userId) | + (public) | : void | Gera recomendações personalizadas para o usuário informado |
+| RegistrarInteracao(i : Interacao) | + (public) | : void | Registra uma nova interação no sistema |
+| LimparInteracoesExpiradas() | + (public) | : void | Remove interações cuja validade expirou |
+| ObterRanking(userId, itemId) | + (public) | : void | Retorna o ranking de relevância de um item para o usuário |
+| FiltrarPorCidade(cidade) | + (public) | : void | Filtra recomendações pela cidade do usuário |
+ 
+---
+ 
+### TipoInteracao `«enumeration»`
+ 
+Enumeração que define os tipos possíveis de interação de um usuário com um espetáculo. Utilizada pela classe `Interacao`.
+ 
+| Valor | Descrição |
+|---|---|
+| Clique | Usuário clicou no espetáculo |
+| Acesso | Usuário acessou a página do espetáculo |
+| TempoDeTela | Tempo que o usuário permaneceu na página do espetáculo |
+ 
+---
+ 
+### Relacionamentos
+ 
+| Origem | Destino | Tipo | Descrição |
+|---|---|---|---|
+| Teatro | Espetaculo | Associação (1 → 0..*) | Um teatro possui zero ou mais espetáculos |
+| Espetaculo | Interacao | Associação (1 → 0..*) | Um espetáculo pode ter múltiplas interações de usuários |
+| Espetaculo | Recomendacao | Associação (1 → 0..*) | Um espetáculo pode aparecer em múltiplas recomendações |
+| Usuario | Wishlist | Composição (1 ◆→ 1) | Usuário possui uma wishlist; a wishlist não existe sem o usuário |
+| Usuario | Preferencias | Composição (1 ◆→ 1) | Usuário possui preferências; elas não existem sem o usuário |
+| Usuario | Interacao | Associação (1 → 0..*) | Um usuário pode ter múltiplas interações registradas |
+| Usuario | Recomendacao | Associação (1 → 0..*) | Um usuário pode receber múltiplas recomendações |
+| SistemaRecomendacao | Interacao | Dependência (→→) | O sistema depende de Interacao para gerar recomendações |
+| SistemaRecomendacao | Recomendacao | Associação (1 → 0..*) | O sistema gera e gerencia múltiplas recomendações |
+| Interacao | TipoInteracao | Dependência (→→) | Interacao utiliza a enumeração TipoInteracao |
+ 
+---
+ 
+### Observações e Decisões de Design
+ 
+**Preferencias como Value Object:** a classe `Preferencias` não possui identidade própria. Sua igualdade é definida pelo conjunto de seus valores, seguindo o padrão de Value Object do Domain-Driven Design (DDD).
+ 
+**Composição em Wishlist e Preferencias:** ambas possuem relação de composição com `Usuario`, pois seu ciclo de vida está diretamente ligado ao do usuário — são criadas e destruídas junto com ele.
+ 
+**Separação de responsabilidades:** o `SistemaRecomendacao` é um componente dedicado exclusivamente à lógica de recomendação, mantendo as demais classes do domínio focadas em suas responsabilidades específicas.
+ 
+**Expiração de interações:** a classe `Interacao` possui controle de validade por meio de `DataExpiracao` e dos métodos `EstaExpirada()` e `Renovar()`, permitindo que interações antigas sejam descartadas pelo `SistemaRecomendacao`.
+
+## 14. Diagrama de Componentes
+
+O diagrama de componentes abaixo representa a estrutura da aplicação seguindo o padrão arquitetural MVVM no cliente (React Native) e SOA no servidor (ASP.NET Core), com dois mecanismos de persistência: um banco de dados relacional PostgreSQL para dados estruturados e transacionais e um Storage Bucket para armazenamento de eventos de comportamento, vetores latentes do modelo SVD e assets de mídia.
+
+<div align="center">
+  <sub>Imagem 10 - Diagrama de Componentes UML</sub><br>
+  <img src="../assets/diagrama-de-componentes.drawio.png" width="100%" alt="Diagrama de Componentes UML"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+
+### Packages
+ 
+Packages são representados por um retângulo com uma abinha no topo. Servem para agrupar componentes que pertencem à mesma camada ou responsabilidade.
+ 
+O diagrama possui quatro packages:
+ 
+- **Presentation**: agrupa os componentes da camada de apresentação do app React Native (MVVM)
+- **Service | ASP.NET Core**: agrupa os serviços do backend
+- **Data**: agrupa os componentes da camada de acesso a dados
+- **External**: agrupa os serviços externos consumidos pelo backend
+PostgreSQL e Storage Bucket ficam **fora de qualquer package** pois são infraestrutura externa — não fazem parte do código da aplicação.
+ 
+---
+ 
+### Componentes
+ 
+Componentes são representados por um retângulo com o ícone de componente no canto superior direito (dois retângulos pequenos sobrepostos). Cada componente possui um estereótipo que descreve sua natureza.
+ 
+| Componente | Estereótipo | Package |
+|---|---|---|
+| View | «component» | Presentation |
+| ViewModel | «component» | Presentation |
+| Repository | «component» | Presentation |
+| API Gateway | «service» | Service \| ASP.NET Core |
+| Backend Services | «service» | Service \| ASP.NET Core |
+| Recommendation Service | «service» | Service \| ASP.NET Core |
+| Training Job | «job» | Service \| ASP.NET Core |
+| PostgresDataSource | «dataSource» | Data |
+| BucketDataSource | «dataSource» | Data |
+| CDN Imagens | «external» | External |
+| ViaCEP | «external» | External |
+| PostgreSQL | «database» | — (externo) |
+| Storage Bucket | «artifact» | — (externo) |
+ 
+**Sobre os estereótipos:**
+ 
+- `«component»`: unidade de software com responsabilidade própria dentro da aplicação cliente.
+- `«service»`: serviço do backend exposto via HTTP, com responsabilidade bem definida.
+- `«job»`: processo executado periodicamente de forma assíncrona, sem exposição via HTTP.
+- `«dataSource»`: adaptador que encapsula os detalhes de acesso a uma fonte de dados externa.
+- `«external»`: serviço de terceiros consumido pelo backend via HTTP.
+- `«database»`: banco de dados externo ao código da aplicação.
+- `«artifact»`: recurso implantado externamente, como um bucket de storage.
+---
+ 
+### Interfaces
+ 
+As interfaces são representadas pelo padrão **ball-and-socket**:
+ 
+- **Bolinha (provided interface)** — linha reta saindo do componente com um círculo na ponta. Indica que o componente fornece aquele contrato.
+- **Semicírculo aberto (required interface)** — linha reta saindo do componente com um semicírculo na ponta. Indica que o componente precisa daquele contrato para funcionar.
+O encaixe entre o semicírculo e a bolinha representa a satisfação do contrato — o componente que precisa encontra o componente que fornece.
+ 
+O diagrama possui cinco interfaces:
+ 
+| Interface | Fornecida por | Consumida por |
+|---|---|---|
+| IRepository | Repository | ViewModel |
+| IApiGateway | API Gateway | Repository |
+| IBackendService | Backend Services | API Gateway |
+| IRecommendationService | Recommendation Service | API Gateway |
+| IPostgresDataSource | PostgresDataSource | Backend Services, Training Job, Recommendation Service |
+| IBucketDataSource | BucketDataSource | Backend Services, Training Job, Recommendation Service |
+ 
+O `Repository` está no centro do cliente: fornece a bolinha `IRepository` para o ViewModel e consome a bolinha `IApiGateway` do API Gateway por meio do seu semicírculo — abstraindo todas as chamadas de rede.
+ 
+`IPostgresDataSource` e `IBucketDataSource` são consumidas por três componentes cada — `Backend Services`, `Training Job` e `Recommendation Service` — pois todos precisam acessar dados persistidos, cada um com finalidades distintas.
+
+### Responsabilidades do Storage Bucket
+ 
+O Storage Bucket possui responsabilidade tripla, organizada internamente por prefixos de path:
+ 
+| Path | Conteúdo | Escrito por | Lido por |
+|---|---|---|---|
+| `/media/` | Assets de mídia (imagens de eventos e atrações) | Backend Services | CDN Imagens |
+| `/events/` | Eventos brutos de comportamento (cliques, visualizações, compras) | Backend Services | Training Job |
+| `/model/` | Vetores latentes do modelo SVD (matrizes usuário × fator, item × fator) | Training Job | Recommendation Service |
+ 
+### Responsabilidades do PostgreSQL
+ 
+O PostgreSQL armazena exclusivamente dados transacionais e os hiperparâmetros do modelo SVD:
+ 
+| Conteúdo | Escrito por | Lido por |
+|---|---|---|
+| Dados transacionais (usuários, pedidos, produtos, eventos) | Backend Services | Backend Services |
+| Hiperparâmetros SVD (n_fatores, learning_rate, epochs, versão, data_treino) | Training Job | Recommendation Service, Training Job |
+
+### Decisões
+
+**Por que o ball-and-socket foi usado entre ViewModel e Repository?**
+O ViewModel não depende da implementação concreta do Repository — ele depende apenas do contrato `IRepository`. O ball-and-socket torna esse contrato visível no diagrama, o que uma seta tracejada simples não expressa.
+ 
+**Por que o Repository passou a consumir IApiGateway em vez de IPostgresDataSource e IBucketDataSource?**
+O app React Native roda no dispositivo do usuário — nunca acessa banco de dados diretamente. Todo acesso a dados passa pela API do servidor. O Repository no cliente abstrai as chamadas HTTP para o API Gateway, não o acesso direto a fontes de dados. `IPostgresDataSource` e `IBucketDataSource` existem apenas no servidor.
+ 
+**Por que IPostgresDataSource e IBucketDataSource têm múltiplos consumidores?**
+Backend Services, Training Job e Recommendation Service têm necessidades distintas de acesso a dados, mas compartilham as mesmas fontes. Centralizar o acesso nos DataSources evita duplicação de lógica de conexão e mantém um único ponto de configuração para cada tecnologia de persistência.
+ 
+**Por que o Training Job usa seta tracejada simples em vez de ball-and-socket para o Recommendation Service?**
+O Training Job não consome uma interface fornecida pelo Recommendation Service — ele é acionado pelo próprio Recommendation Service periodicamente. A seta tracejada representa uma dependência de acionamento, não um contrato de interface.
+ 
+**Por que o SVD Model Store (.zip) foi removido?**
+O modelo SVD é composto por duas partes com naturezas distintas: hiperparâmetros (dados estruturados, poucos campos) e vetores latentes (arrays densos e pesados). Separar essas partes nos storages já existentes — PostgreSQL e Storage Bucket respectivamente — elimina um componente desnecessário e aproveita a infraestrutura já presente.
+ 
+**Por que PostgreSQL e Storage Bucket ficam fora dos packages?**
+Packages representam agrupamentos do código da aplicação. Infraestrutura externa não pertence a nenhuma camada do sistema — colocá-la dentro de um package seria incorreto semanticamente.
+
+## 15. Diagrama de Casos de Uso
+
+![Diagrama de Casos de Uso](../assets/Diagrama-use-case.png)
+
+### Atores
+
+#### Usuário
+Representa o espectador autenticado na plataforma, responsável por interagir com o sistema, visualizar espetáculos, gerenciar preferências e acessar recomendações personalizadas.
+
+---
+
+### Casos de Uso
+
+#### UC01 — Cadastrar conta
+Como usuário, quero criar uma conta na plataforma para salvar minhas preferências e manter minha wishlist sincronizada entre diferentes sessões e dispositivos.
+
+#### UC02 — Realizar login
+Como usuário, quero realizar login utilizando e-mail e senha para acessar minhas informações personalizadas e minhas recomendações.
+
+#### UC03 — Responder onboarding
+Como novo usuário, quero responder um questionário de interesses para que o sistema personalize minhas recomendações iniciais.
+
+#### UC04 — Gerenciar perfil e preferências
+Como usuário, quero editar meus dados de perfil e minhas preferências para manter as recomendações alinhadas aos meus interesses atuais.
+
+#### UC05 — Visualizar catálogo de espetáculos
+Como usuário, quero visualizar o catálogo de espetáculos organizado por categorias para explorar produções disponíveis na plataforma.
+
+#### UC06 — Pesquisar espetáculos
+Como usuário, quero pesquisar espetáculos e teatros específicos para encontrar rapidamente informações relevantes.
+
+#### UC07 — Visualizar detalhes do espetáculo
+Como usuário, quero visualizar os detalhes de um espetáculo para conhecer informações sobre a produção, teatro e disponibilidade.
+
+#### UC08 — Visualizar informações do teatro
+Como usuário, quero visualizar endereço e horários do teatro para me planejar antes de assistir ao espetáculo.
+
+#### UC09 — Receber recomendações personalizadas
+Como usuário, quero receber sugestões personalizadas baseadas em minhas preferências e interações para descobrir novos espetáculos relevantes.
+
+#### UC10 — Visualizar wishlist
+Como usuário, quero acessar minha wishlist para visualizar os espetáculos salvos anteriormente.
+
+#### UC11 — Adicionar espetáculo à wishlist
+Como usuário, quero adicionar espetáculos à minha wishlist para salvar produções de interesse e melhorar futuras recomendações.
+
+#### UC12 — Remover espetáculo da wishlist
+Como usuário, quero remover espetáculos da wishlist para atualizar meus interesses na plataforma.
+
+#### UC13 — Acessar link de compra
+Como usuário, quero acessar a bilheteria oficial do espetáculo para realizar a compra do ingresso com segurança.
+
+---
+
+### Relacionamentos do Diagrama
+
+#### Include
+O caso de uso "Visualizar detalhes do espetáculo" possui relação `<<include>>` com "Visualizar informações do teatro", pois as informações do local fazem parte da experiência de visualização dos detalhes do espetáculo.
+
+#### Extend
+O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visualizar detalhes do espetáculo", uma vez que o redirecionamento para compra ocorre opcionalmente após a visualização do espetáculo.
+
+---
+
+### Associação entre Requisitos Funcionais e Casos de Uso
+
+| Requisito Funcional | Caso de Uso Relacionado |
+|---|---|
+| RF01 — Onboarding de Interesses | UC03 — Responder onboarding |
+| RF02 — Recomendação por Geolocalização | UC09 — Receber recomendações personalizadas |
+| RF03 — Autenticação e Persistência | UC01 — Cadastrar conta / UC02 — Realizar login |
+| RF04 — Catálogo Categorizado | UC05 — Visualizar catálogo de espetáculos |
+| RF05 — Busca Específica | UC06 — Pesquisar espetáculos |
+| RF06 — Gestão de Wishlist | UC10 — Visualizar wishlist / UC11 — Adicionar espetáculo à wishlist / UC12 — Remover espetáculo da wishlist |
+| RF07 — Informações de Teatros | UC08 — Visualizar informações do teatro |
+| RF08 — Gestão de Perfil e Preferências | UC04 — Gerenciar perfil e preferências |
+| RF09 — Redirecionamento de Compra | UC13 — Acessar link de compra |
+| RF10 — Recomendação Inteligente | UC09 — Receber recomendações personalizadas |
+
+## 16. Linguagens e Tecnologias Utilizadas
+
+O projeto segue uma Arquitetura Orientada a Serviços (SOA), com camadas bem definidas de apresentação, serviços e dados. As tecnologias foram escolhidas para atender aos requisitos funcionais e não funcionais do sistema, e são descritas a seguir.
+
+**Supabase (banco de dados, autenticação e armazenamento)**
+
+O Supabase é uma plataforma open-source construída sobre PostgreSQL que oferece banco de dados relacional, autenticação de usuários e armazenamento de arquivos de forma integrada. Ele será provisionado localmente via Docker, o que garante que todos da equipe trabalhem no mesmo ambiente sem depender de serviços externos pagos durante o desenvolvimento. Usar uma única plataforma para essas três responsabilidades reduz a complexidade da infraestrutura e facilita a manutenção.
+
+O banco de dados PostgreSQL armazenará as entidades do sistema como usuários, espetáculos, teatros e wishlists. O módulo de autenticação cuidará do cadastro, login e geração de tokens JWT, dispensando a necessidade de implementar essa lógica do zero. O Storage Bucket será usado para guardar assets de mídia e arquivos gerados pelo modelo de recomendação.
+
+**Docker**
+
+O Docker é a ferramenta de conteinerização utilizada para rodar o Supabase localmente. Com ele, toda a infraestrutura de banco de dados, autenticação e storage é empacotada em containers, garantindo que o ambiente seja idêntico para todos os membros da equipe independentemente do sistema operacional. Isso evita problemas de configuração e torna o setup do projeto mais simples e reproduzível.
+
+**Backend de APIs em C# com ASP.NET Core**
+
+O backend de APIs será desenvolvido em C# com ASP.NET Core, expondo endpoints REST a serem consumidos pelo frontend. A arquitetura prevê um API Gateway, que receberá todas as requisições e roteará para os serviços corretos, e os Backend Services, que concentrarão a lógica de negócio. O C# é fortemente tipado, o que facilita modelar as entidades do domínio e reduz erros em tempo de execução. O ASP.NET Core oferece suporte nativo a injeção de dependência, autenticação JWT e ferramentas de escalabilidade, atendendo aos requisitos de segurança e disponibilidade do sistema.
+
+**Modelo de recomendação em Python com scikit-surprise**
+
+O modelo de recomendação está sendo desenvolvido em Python, com a biblioteca scikit-surprise para filtragem colaborativa. Dois algoritmos estão sendo implementados e serão comparados: KNN, que recomenda espetáculos com base em usuários de comportamento similar, e Funk SVD, que fatoriza a matriz de interações em representações latentes para prever o engajamento do usuário com espetáculos não vistos. Os modelos são treinados sobre um dataset de 109.916 interações entre aproximadamente 68 mil usuários e 571 espetáculos, com hiperparâmetros otimizados via GridSearchCV. O modelo final, após a comparação entre os dois algoritmos, será integrado ao backend de recomendação em C#.
+
+Python foi escolhido para essa etapa porque seu ecossistema de ciência de dados (pandas, numpy, scikit-learn, scikit-surprise) não tem equivalente de mesma maturidade em C# para tarefas de filtragem colaborativa, tornando a experimentação muito mais ágil.
+
+**Frontend em React Native**
+
+O frontend será desenvolvido em React Native, framework que permite criar aplicações móveis para iOS e Android a partir de uma única base de código. Isso é importante porque o produto precisa estar disponível nas duas plataformas sem duplicar o esforço de desenvolvimento. O React Native tem bom suporte a geolocalização, notificações push e navegação entre telas, funcionalidades centrais para o app. A proximidade com o ecossistema JavaScript facilita o consumo das APIs REST do backend.
+
+**Padrão MVVM no frontend**
+
+O frontend seguirá o padrão MVVM (Model-View-ViewModel), separando a interface visual (View) da lógica de estado e apresentação (ViewModel) e do acesso a dados (Repository). Essa separação torna os componentes de tela mais simples, os ViewModels testáveis de forma isolada e facilita mudanças na camada de comunicação com o backend sem impactar a interface. Para um app com muitas telas de conteúdo dinâmico, como carrosséis de recomendação e catálogo filtrado, essa organização evita que lógica e interface se misturem e tornem o código difícil de manter.
+
+**ViaCEP**
+
+O ViaCEP é uma API pública e gratuita que retorna dados de endereço a partir de um CEP informado. No projeto, ela será usada durante o onboarding do usuário para identificar automaticamente a cidade a partir do CEP cadastrado, sem que o usuário precise informar isso manualmente. Essa informação é essencial para o sistema de recomendação, que filtra os espetáculos de acordo com a cidade do usuário, sendo São Paulo ou Rio de Janeiro.
+
+## 17. Termos e Abreviações
 
 | Termo / Abreviação | Definição |
 |---|---|
@@ -662,6 +1284,9 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 | Uptime | Período em que o sistema permanece disponível e operacional, geralmente expresso em percentual. |
 | Vitrine Dinâmica | Componente de interface que exibe conteúdos personalizados de forma adaptativa, baseando-se no perfil e comportamento do usuário. |
 | Wishlist | Lista de desejos — conjunto de espetáculos que o cliente deseja assistir e salva para consulta futura. |
+| MVVM | Model-View-ViewModel — padrão arquitetural utilizado para separar interface, lógica e dados da aplicação. |
+| Include | Relação UML utilizada quando um caso de uso obrigatoriamente incorpora outro comportamento. |
+| Extend | Relação UML utilizada quando um caso de uso adiciona comportamentos opcionais a outro. |
 
 
 ## Referências

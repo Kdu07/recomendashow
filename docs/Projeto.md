@@ -703,13 +703,13 @@ Este modelo garante **clareza visual**, boa escalabilidade para consultas de rec
   <sup>Source: Material produced by the authors, 2026.</sup>
 </div>
 
-O modelo lógico de dados representa a estruturação dos dados seguindo as regras do modelo relacional, servindo como uma ponte entre a abstração do modelo conceitual e a implementação física no SGDB.
+O modelo conceitual de dados representa a estruturação dos dados seguindo as regras do modelo relacional, servindo como uma ponte entre a abstração do modelo conceitual e a implementação física no SGDB.
 
 ---
 
 ### 12.4.1 Dicionário de Dados e Mapeamento
 
-A conversão do modelo conceitual para o modelo lógico foi realizada mapeando cada entidade conceitual para uma tabela relacional e transformando relacionamentos Muitos-para-Muitos (N:N) em tabelas associativas.
+A conversão do modelo lógico para o modelo conceitual foi realizada mapeando cada entidade conceitual para uma tabela relacional e transformando relacionamentos Muitos-para-Muitos (N:N) em tabelas associativas.
 
 ---
 
@@ -815,7 +815,7 @@ As chaves estrangeiras garantem a integridade referencial, assegurando que as as
 
 ### 12.4.3 Regras de Normalização Aplicadas
 
-O modelo lógico segue os princípios da Terceira Forma Normal (3FN).
+O modelo conceitual segue os princípios da Terceira Forma Normal (3FN).
 
 ### Primeira Forma Normal (1FN)
 Todos os atributos possuem valores atômicos. Colunas como `tipo` em `CURT_WISH` utilizam ENUM para padronização, evitando dados multivalorados.
@@ -830,7 +830,7 @@ Não há dependências transitivas. Atributos descritivos (como os detalhes de e
 
 ### 12.4.4 Justificativa e Rastreabilidade
 
-O modelo lógico foi estruturado para manter fidelidade ao modelo conceitual, garantindo consistência entre as regras de negócio e a implementação relacional.
+O modelo conceitual foi estruturado para manter fidelidade ao modelo lógico, garantindo consistência entre as regras de negócio e a implementação relacional.
 
 As tabelas associativas permitem representar corretamente relacionamentos Muitos-para-Muitos, como:
 

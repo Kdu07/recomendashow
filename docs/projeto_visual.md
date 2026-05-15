@@ -289,8 +289,8 @@ Descreva como o visual foi pensado para toque/legibilidade e como estados e feed
 ## 6. Guia de Estilos (Componentes Visuais)
 
 <div align="center">
-  <sub>Imagem 03 - Persona do cliente</sub><br>
-  <img src="../assets/guia_estilo.png" width="100%" alt="Persona do cliente"><br>
+  <sub>Imagem 03 - Guia de estilos</sub><br>
+  <img src="../assets/guia_estilos.png" width="100%" alt="Guia de estilo"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
@@ -323,9 +323,9 @@ Descreva como o visual foi pensado para toque/legibilidade e como estados e feed
 - **Roxo Secundário** — `#A78BFA` → Bordas e elementos secundários
 
 **Accent Colors**
-- **Magenta** — `#D946EF` → Destaques especiais ("Em alta", promoções)
-- **Laranja Drama** — `#F97316` → Tags de categoria (Musical, Drama, Dança etc.)
-- **Verde Esmeralda** — `#10B981` → Categorias de dança e conteúdo leve
+
+- **Pêssego Queimado** — `#EC673D` → Tags de categoria (Musical, Drama, Dança etc.), ícones de destaque, e textos chamativos.
+
 
 **Neutral Colors**
 - **Cinza Escuro** — `#111827` → Textos principais

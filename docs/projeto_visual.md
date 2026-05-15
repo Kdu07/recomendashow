@@ -585,10 +585,38 @@ Documente regras de adaptação (ex.: colunas, tamanhos, truncamento, reorganiza
 ## 8. Considerações Finais
 
 ### 8.1 Aderência aos objetivos do projeto
-Explique como o projeto visual atende ao objetivo de recomendação e descoberta, de forma objetiva.
+
+O projeto visual do Portal Aventura foi estruturado para apoiar a transição do catálogo estático para um **hub de descoberta personalizada**. Nesse sentido, a abordagem mobile-first orientou cada decisão visual e de interação, tratando o smartphone como ambiente primário de uso. As decisões documentadas nas seções de navegação, wireframes e mockups convergem para três entregas centrais do MVP:
+
+**Recomendação e personalização.** O onboarding de interesses (gêneros, cidade, frequência) e a tela **Editar Interesses** no perfil coletam e atualizam os sinais que alimentam o motor de recomendação (RF01). Na interface, isso se materializa em seções como **“Para você”**, **“Perto de você”** e recomendações na busca: com *empty state* orientativo, convertendo ausência de dados em convite à personalização em vez de bloquear a descoberta.
+
+**Descoberta contínua.** A arquitetura de quatro abas (Explorar, Buscar, Wishlist, Perfil), prateleiras horizontais na Home, busca com filtros em *bottom sheet* e cards visuais de espetáculos e teatros reduzem o atrito entre “não sei o que ver” e “encontrei algo relevante”. O padrão de vitrine por seções (Em alta, Novidades, Para você) aproxima o modelo mental de plataformas de streaming já familiares ao público-alvo.
+
+**Conversão sem fricção desnecessária.** A tela **Informações do Espetáculo** concentra dados para decisão (data, local, sinopse, elenco, recomendações cruzadas) e mantém **“Ingressos”** e **“Salvar”** sempre acessíveis na barra inferior fixa, alinhado ao *hand-off* para a bilheteria parceira — papel explícito do app como descoberta e informação, não como processador de pagamento. Em paralelo, a Wishlist sustenta **retenção** para decisões futuras.
+
+Em conjunto, wireframes (validação de fluxo) e mockups de alta fidelidade (validação de percepção e implementação) permitem que stakeholders, design e desenvolvimento compartilhem a mesma referência sobre **o que** o produto entrega na experiência visual e **como** isso se conecta aos requisitos de negócio.
 
 ### 8.2 Alinhamento com a proposta Mobile First
-Resuma como as decisões documentadas priorizam uso em smartphone (leitura, toque, fluxo).
+
+A proposta *mobile-first* não se limita ao formato de tela: ela orienta priorização de tarefas, ergonomia e densidade de informação em todo o documento.
+
+**Priorização de tarefas e alcance.** Ações principais (entrar, continuar onboarding, explorar, buscar, salvar, ingressos) aparecem em CTAs amplos, na *thumb zone* e, nas áreas recorrentes, na **tab bar fixa** — sem ocultação ao scroll — garantindo acesso com uma mão em contextos de deslocamento. Telas de entrada e onboarding operam em fluxo linear, sem *tab bar*, para não competir com a configuração inicial.
+
+**Leitura e hierarquia.** Fundo predominantemente claro, títulos com peso maior e metadados em cinza favorecem varredura rápida. Imagens de espetáculos e teatros ocupam papel central nos cards, adequado a um produto cuja decisão é em grande parte visual e emocional.
+
+**Toque e feedback.** Seleções no onboarding e em Editar Interesses usam estados visuais explícitos (roxo, borda, confirmação); notificações usam *switches* com estado imediato; favoritos e *empty states* comunicam o estado do sistema sem depender de mensagens técnicas.
+
+**Navegação previsível.** Pilhas independentes por aba, botão voltar em nível 2, filtros em overlay que preservam o contexto da busca e barra de ação fixa na conversão seguem heurísticas de consistência e visibilidade do status — especialmente relevantes em sessões curtas, em que o usuário não pode “reaprender” o app a cada uso.
+
+**Escopo consciente do canal.** O documento delimita o que o mobile faz bem (descobrir, personalizar, salvar, informar) e o que fica fora (compra in-app), evitando expectativas incorretas na implementação e na validação com usuários.
 
 ### 8.3 Resultado esperado da experiência visual
-Descreva o resultado esperado para o usuário (ex.: clareza, fluidez, confiança, facilidade de encontrar e salvar espetáculos).
+
+Para o usuário final, a experiência visual pretendida pode ser resumida em quatro percepções:
+
+1. **Clareza** — em poucos toques, entender onde explorar, como buscar, como salvar um espetáculo e como seguir para ingressos, sem ambiguidade entre áreas do app.
+2. **Personalização perceptível** — sentir que o conteúdo em “Para você” e recomendações relacionadas refletem gostos e localização, com caminho simples para ajustar interesses quando a curadoria não encaixar.
+3. **Confiança** — identidade Aventura consistente (roxo como ação, layout limpo), informações completas na ficha do espetáculo e transparência institucional no perfil reforçam credibilidade antes do redirecionamento à ticketeira.
+4. **Fluidez** — navegação inferior estável, listas e carrosséis familiares, estados vazios que orientam a próxima ação e transições entre descoberta passiva (Home) e ativa (Busca) sem ruptura de contexto.
+
+O resultado esperado para o negócio é um aplicativo que **aumenta a descoberta de espetáculos relevantes**, **retém intenção de compra** via Wishlist e **encaminha conversão** ao parceiro de bilheteria com menor abandono por dúvida ou por interface confusa: mantendo o Portal Aventura como extensão natural do ecossistema cultural da Aventura Teatros, e não apenas um catálogo digital estático.

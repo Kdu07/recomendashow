@@ -3,3 +3,5 @@ dataset.csv
 .venv311/
 venv/
 env/
+__pycache__/
+*.pyc

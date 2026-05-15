@@ -644,24 +644,72 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ## 12. Diagramação do banco
 
-### 12.1 - Diagrama conceitual
-
-
-### 12.2 Diagrama Lógico
+### 12.1 - Diagrama Lógico
 
 <div align="center">
-<sub>Imagem 09 - Diagrama lógico</sub><br>
-  <img src="../assets/diagrama-logico.png" width="100%" alt="Diagrama logico do banco"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+<sub>Imagem 09 - Diagrama Lógico</sub><br>
+  <img src="../assets/diagrama_logico.png" width="100%" alt="Diagrama lógico do banco"><br>
+  <sup>Source: Material produzido pelos autores, 2026.</sup>
 </div>
 
-O modelo lógico de dados representa a estruturação dos dados seguindo as regras do modelo relacional, servindo como uma ponte entre a abstração do modelo conceitual e a implementação física no SGDB.
+O Diagrama Lógico representa as entidades principais do sistema, os relacionamentos entre elas e as cardinalidades, utilizando notação Entidade-Relacionamento (ER) com **retângulos** para as entidades e **losangos** para os relacionamentos.
 
 ---
 
-### 12.2.1 Dicionário de Dados e Mapeamento
+### 12.2 - Entidades e Relacionamentos
 
-A conversão do modelo conceitual para o modelo lógico foi realizada mapeando cada entidade conceitual para uma tabela relacional e transformando relacionamentos Muitos-para-Muitos (N:N) em tabelas associativas.
+#### **Entidades (Retângulos)**
+
+- **Onboarding**: Representa o processo inicial de cadastro e definição de preferências do usuário.
+- **Usuário**: Entidade principal que representa os usuários da plataforma.
+- **Gênero**: Categorias artísticas dos espetáculos (Drama, Musical, Comédia, etc.).
+- **Espetáculo**: Peças teatrais, musicais e eventos culturais disponíveis na aplicação.
+- **Teatro**: Locais físicos onde os espetáculos são realizados.
+- **Wishlist**: Lista de espetáculos salvos pelo usuário.
+
+#### **Relacionamentos (Losangos) e Cardinalidades**
+
+| Relacionamento      | Entidades Envolvidas                  | Cardinalidade | Descrição |
+|---------------------|---------------------------------------|---------------|---------|
+| **Realiza**         | Usuário ↔ Onboarding                 | **1:1**       | Cada usuário realiza exatamente um onboarding. |
+| **Seleciona**       | Onboarding ↔ Gênero                  | **1:N**       | O usuário seleciona um ou mais gêneros durante o onboarding. |
+| **Prefere**         | Usuário ↔ Gênero                     | **N:N**       | Usuário pode preferir vários gêneros e um gênero pode ser preferido por vários usuários. |
+| **Adiciona**        | Usuário ↔ Wishlist                   | **1:1**       | Cada usuário possui apenas uma wishlist. |
+| **Possui**          | Wishlist ↔ Espetáculo                | **1:N**       | Uma wishlist pode conter vários espetáculos. |
+| **Possui**          | Espetáculo ↔ Gênero                  | **N:N**       | Um espetáculo pode pertencer a múltiplos gêneros. |
+| **Recomenda**       | Espetáculo ↔ Usuário                 | **N:N**       | O sistema recomenda espetáculos aos usuários com base em suas preferências. |
+| **Apresentado em**  | Espetáculo ↔ Teatro                  | **N:1**       | Muitos espetáculos podem ser apresentados em um mesmo teatro. |
+
+---
+
+### 12.3 - Justificativa e Regras de Negócio
+
+O Diagrama Lógico foi construído para atender diretamente às necessidades da aplicação:
+
+- O usuário realiza um **onboarding** para informar suas preferências de gêneros e recebe recomendações personalizadas;
+- O sistema utiliza as preferências para gerar **recomendações** dinâmicas;
+- O usuário tem permissão apenas de **leitura** para Espetáculos, Teatros e Gêneros;
+- A **Wishlist** é a única funcionalidade que permite ao usuário **adicionar e remover** itens;
+- Um espetáculo pode ser classificado em **múltiplos gêneros**, enriquecendo os filtros e recomendações;
+- Suporte a filtros por gênero e localidade (via Teatro).
+
+Este modelo garante **clareza visual**, boa escalabilidade para consultas de recomendação e forte alinhamento com as regras de negócio da aplicação.
+
+### 12.4 Diagrama Conceitual
+
+<div align="center">
+<sub>Imagem 09 - Diagrama conceitual</sub><br>
+  <img src="../assets/diagrama-logico.png" width="100%" alt="Diagrama conceitual do banco"><br>
+  <sup>Source: Material produced by the authors, 2026.</sup>
+</div>
+
+O modelo conceitual de dados representa a estruturação dos dados seguindo as regras do modelo relacional, servindo como uma ponte entre a abstração do modelo conceitual e a implementação física no SGDB.
+
+---
+
+### 12.4.1 Dicionário de Dados e Mapeamento
+
+A conversão do modelo lógico para o modelo conceitual foi realizada mapeando cada entidade conceitual para uma tabela relacional e transformando relacionamentos Muitos-para-Muitos (N:N) em tabelas associativas.
 
 ---
 
@@ -749,7 +797,7 @@ A conversão do modelo conceitual para o modelo lógico foi realizada mapeando c
 
 ---
 
-### 12.2.2 Definição de Chaves e Integridade Referencial
+### 12.4.2 Definição de Chaves e Integridade Referencial
 
 ### Chaves Primárias (PK)
 As chaves primárias foram definidas para garantir a unicidade de cada registro. Nas tabelas associativas (`ESP_GEN`, `GEN_FAV`, `TEAT_ESPET`, `CURT_WISH`), utilizam-se chaves compostas pelos IDs das entidades relacionadas para evitar duplicidade de associações.
@@ -765,9 +813,9 @@ As chaves estrangeiras garantem a integridade referencial, assegurando que as as
 
 ---
 
-### 12.2.3 Regras de Normalização Aplicadas
+### 12.4.3 Regras de Normalização Aplicadas
 
-O modelo lógico segue os princípios da Terceira Forma Normal (3FN).
+O modelo conceitual segue os princípios da Terceira Forma Normal (3FN).
 
 ### Primeira Forma Normal (1FN)
 Todos os atributos possuem valores atômicos. Colunas como `tipo` em `CURT_WISH` utilizam ENUM para padronização, evitando dados multivalorados.
@@ -780,9 +828,9 @@ Não há dependências transitivas. Atributos descritivos (como os detalhes de e
 
 ---
 
-### 12.2.4 Justificativa e Rastreabilidade
+### 12.4.4 Justificativa e Rastreabilidade
 
-O modelo lógico foi estruturado para manter fidelidade ao modelo conceitual, garantindo consistência entre as regras de negócio e a implementação relacional.
+O modelo conceitual foi estruturado para manter fidelidade ao modelo lógico, garantindo consistência entre as regras de negócio e a implementação relacional.
 
 As tabelas associativas permitem representar corretamente relacionamentos Muitos-para-Muitos, como:
 

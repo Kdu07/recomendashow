@@ -1,3 +1,14 @@
+"""
+Módulo de inferência do recomendador SVD/Funk SVD — Portal Aventura.
+
+Uso:
+    from src.models.inference import recomendar
+    recomendar(user_id=12345, n=10)
+
+Dependências: joblib, numpy, pandas, scikit-surprise (já treinado).
+O modelo é carregado de svd_model.joblib e o dataset de ../dataset/dataset.csv
+na primeira importação do módulo.
+"""
 import pathlib
 import joblib
 import numpy as np
@@ -5,7 +16,15 @@ import pandas as pd
 
 _HERE = pathlib.Path(__file__).resolve().parent
 _modelo = joblib.load(_HERE / "svd_model.joblib")
-_df = pd.read_csv(_HERE.parent / "dataset" / "dataset.csv")
+
+try:
+    _df = pd.read_csv(_HERE.parent / "dataset" / "dataset.csv")
+except FileNotFoundError as exc:
+    raise FileNotFoundError(
+        f"Dataset não encontrado em {_HERE.parent / 'dataset' / 'dataset.csv'}. "
+        "Certifique-se de que o arquivo existe antes de importar este módulo."
+    ) from exc
+
 _todos_itens = set(_df["item_id"].unique())
 
 # Pré-computado uma vez na inicialização: evita groupby/sort por chamada cold-start
@@ -40,7 +59,7 @@ def recomendar(user_id: int, n: int = 10) -> list[dict]:
     if not isinstance(n, int) or isinstance(n, bool):
         raise TypeError(f"n deve ser int, recebido {type(n).__name__}")
     if n <= 0:
-        raise ValueError("n deve ser maior que zero")
+        raise ValueError(f"n deve ser maior que zero, recebido {n}")
 
     consumidos = set(_df[_df["user_id"] == user_id]["item_id"])
 
@@ -54,7 +73,7 @@ def recomendar(user_id: int, n: int = 10) -> list[dict]:
     except ValueError:
         return [{"espetaculo": item, "score": None} for item in _COLD_START_ITEMS[:n]]
 
-    # Vetorizado: uma multiplicação matricial BLAS substitui 447 chamadas Cython
+    # Vetorizado: uma multiplicação matricial BLAS substitui N chamadas Cython
     # Nota: usa atributos internos do surprise (pu, qi, bu, bi) — não é API pública
     all_scores = (
         ts.global_mean

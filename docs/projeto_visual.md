@@ -543,35 +543,156 @@ A tela de informações institucionais apresenta dados sobre a Aventura, redes s
 
 ## 6. Guia de Estilos (Componentes Visuais)
 
-> **Instrução de preenchimento**: documente o “kit visual” utilizado no protótipo para garantir consistência. Para cada item, descreva regras de uso, variações e justificativas objetivas (quando necessário).
+<div align="center">
+  <sub>Imagem 03 - Guia de estilos</sub><br>
+  <img src="../assets/guia_estilos.png" width="100%" alt="Guia de estilo"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
 
 ### 6.1 Tipografia
-Descreva família(s), escala (títulos/corpo/legendas), pesos e uso por contexto (ex.: títulos de seção, cards, botões).
 
+**Família principal:** Inter
+
+**Escala e Pesos:**
+
+| Estilo                | Peso       | Tamanho (px) | Uso por Contexto |
+|-----------------------|------------|--------------|------------------|
+| **Inter Semi Bold**   | 600        | 28–32px      | Títulos principais (H1), nomes de espetáculos |
+| **Inter Semi Bold**   | 600        | 20–24px      | Títulos de seção (Em alta, Para você, Novidades) |
+| **Inter Medium**      | 500        | 16–18px      | Subtítulos, nomes de teatro, preços |
+| **Inter Regular**     | 400        | 16px         | Textos corridos, descrições, endereços |
+| **Inter Regular**     | 400        | 14px         | Legendas, metadados, captions, tags |
+
+**Regras:** 
+- Hierarquia clara com no máximo 3 níveis de peso por tela.
+- Todo texto deve respeitar contraste mínimo WCAG AA.
 
 ### 6.2 Paleta de cores
-Liste cores (hex) e uso (primária, secundária, fundo, texto, feedback).
+
+**Primary Colors**
+- **Roxo Principal** — `#6F3CFF` → Botões primários, tabs ativos, links principais, marca
+- **Roxo Escuro** — `#4C2F8A` → Header, Bottom Navigation, textos fortes
+- **Roxo Claro** — `#C4B5FF` → Estados selecionados, chips ativos
+- **Roxo Vibrante** — `#8B5CF6` → Destaques e hovers
+- **Roxo Suave** — `#E0D4FF` → Fundos suaves de cards e seções
+- **Roxo Secundário** — `#A78BFA` → Bordas e elementos secundários
+
+**Accent Colors**
+
+- **Pêssego Queimado** — `#EC673D` → Tags de categoria (Musical, Drama, Dança etc.), ícones de destaque, e textos chamativos.
+
+
+**Neutral Colors**
+- **Cinza Escuro** — `#111827` → Textos principais
+- **Cinza Texto** — `#64748B` → Textos secundários e metadados
+- **Branco Suave** — `#F8FAFC` → Fundo principal das telas
+- **Cinza Claro** — `#E2E8F0` → Bordas e divisórias
 
 ### 6.3 Botões
-Documente variantes (primário/secundário/terciário), estados (normal/press/disabled/loading) e regras de espaçamento.
+
+**Variantes:**
+- **Primário**: Fundo `#6F3CFF`, texto branco, altura 48px, border-radius 12px
+- **Secundário**: Fundo `#C4B5FF`, texto `#4C2F8A`, altura 48px, border-radius 12px
+- **Ghost / Outline**: Borda `#6F3CFF`, texto `#6F3CFF`, fundo transparente
+- **Text Button**: Apenas texto roxo, sem fundo
+
+**Estados:**
+- **Normal**: Opacidade 100%
+- **Press / Active**: Escala 0.98 + leve escurecimento
+- **Disabled**: Opacidade 40% + cursor not-allowed
+- **Loading**: Spinner + texto desabilitado
+
+**Regras:** Padding horizontal mínimo de 24px. Largura total em telas mobile quando possível.
 
 ### 6.4 Ícones
-Defina estilo (linha/sólido), tamanhos, alinhamento e consistência semântica (quando usar cada ícone).
+
+**Estilo:** Line Icons (traço fino) — preferência por biblioteca **Lucide Icons** ou **Feather**.
+
+**Tamanhos:**
+- Small: 20px
+- Medium (padrão): 24px
+- Large: 28px
+
+**Uso Semântico:**
+- Casa → Explorar
+- Lupa → Buscar
+- Coração → Wishlist
+- Usuário → Perfil
+- Seta para esquerda → Voltar
+- Lâmpada → Sugestões / "Para você"
+
+**Regras:** Todos os ícones devem ter a mesma espessura de traço e alinhamento centralizado com o texto.
 
 ### 6.5 Cards
-Descreva estrutura padrão de card (imagem/título/metadados/ações) e regras de truncamento/linhas.
+
+**Estrutura Padrão:**
+1. Imagem de capa (proporção 16:9 ou 2:3 para posters)
+2. Título do espetáculo (1–2 linhas, truncamento com `...`)
+3. Local + data/horário (1 linha)
+4. Tag de categoria (Musical, Drama, Dança etc.)
+5. Botão de ação (quando aplicável)
+
+**Regras:**
+- Border radius: 16px
+- Sombra sutil (elevação baixa)
+- Truncamento de título em 2 linhas
+- Espaçamento interno: 16px
 
 ### 6.6 Inputs
-Documente padrões de campo (label, placeholder, máscara), estados (foco/erro/sucesso/disabled) e mensagens.
+
+**Padrão de Campo:**
+- Label acima do campo (Medium 14px)
+- Placeholder em cinza claro
+- Altura: 52px
+- Border radius: 12px
+- Borda padrão: `#E2E8F0`
+
+**Estados:**
+- **Foco**: Borda `#6F3CFF` + sombra suave
+- **Erro**: Borda vermelha + texto de erro abaixo
+- **Sucesso**: Borda verde + ícone de check
+- **Disabled**: Fundo cinza claro, opacidade 60%
 
 ### 6.7 Barra de navegação
-Especifique padrão (inferior/superior), itens, estado ativo, comportamento com scroll e em telas específicas.
+
+**Padrão:** Bottom Navigation (mobile-first)
+
+**Itens:**
+- Explorar (ícone casa)
+- Buscar (ícone lupa)
+- Wishlist (ícone coração)
+- Perfil (ícone usuário)
+
+**Comportamento:**
+- Ícone + label
+- Estado ativo: Roxo Principal (`#6F3CFF`) com preenchimento
+- Estado inativo: Cinza Texto (`#64748B`)
+- Fixa no bottom da tela
+- Esconde em telas de onboarding e pagamento quando necessário
 
 ### 6.8 Espaçamentos
-Defina a escala de espaçamento (ex.: 4/8/12/16/24) e onde aplicar (margens, gaps, paddings).
+
+**Escala base:** Múltiplos de 8px (8px grid)
+
+| Escala   | Valor   | Uso comum |
+|----------|---------|---------|
+| 2x       | 16px    | Padding interno de cards e botões |
+| 3x       | 24px    | Espaçamento entre seções |
+| 4x       | 32px    | Margens laterais principais |
+| 5x       | 40px    | Espaçamento vertical grande |
+| 6x       | 48px    | Altura mínima de botões |
+
+**Gaps:** Entre cards e chips → 12px ou 16px
 
 ### 6.9 Consistência visual
-Registre regras gerais que devem ser mantidas em todas as telas (ex.: alinhamentos, raios, sombras, densidade).
+
+**Regras Gerais a serem mantidas em todas as telas:**
+- Border radius padrão: **12px** (elementos pequenos) e **16px** (cards e modais)
+- Alinhamento: Esquerda na maioria dos conteúdos (exceto botões centrados)
+- Sombras: Suaves e consistentes (0 1px 3px rgba(0,0,0,0.08))
+- Densidade: Espaçamento generoso para boa legibilidade em mobile
+- Hierarquia: Sempre destacar o título do espetáculo como elemento mais forte
+- Contraste: Mínimo 4.5:1 em textos sobre fundos claros
 
 ---
 

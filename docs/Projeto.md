@@ -189,13 +189,34 @@
 - [17.6 Testes de APIs externas](#176-testes-de-apis-externas)
 - [17.7 Testes de integração](#177-testes-de-integração)
 - [17.8 Discussão geral de abrangência dos testes](#178-discussão-geral-de-abrangência-dos-testes)
+</details>
+
+<details>
+<summary><a href="#18-desenvolvimento-do-projeto--sprint-3">18. Desenvolvimento Do Projeto — Sprint 3</a></summary>
+
+- [18.1 Objetivo do artefato](#181-objetivo-do-artefato)
+- [18.2 Arquitetura de codificação e estrutura de diretórios](#182-arquitetura-de-codificação-e-estrutura-de-diretórios)
+- [18.3 Desenvolvimento do Backend](#183-desenvolvimento-do-backend)
+  - [18.3.1 Arquitetura do backend](#1831-arquitetura-do-backend)
+- [18.4 Desenvolvimento do Frontend](#184-desenvolvimento-do-frontend)
+  - [18.4.1 Arquitetura do frontend](#1841-arquitetura-do-frontend)
+  - [18.4.2 Telas implementadas](#1842-telas-implementadas)
+- [18.5 Padrões de codificação e padrões de projeto](#185-padrões-de-codificação-e-padrões-de-projeto)
+  - [Padrões de codificação](#padrões-de-codificação)
+  - [Padrões de projeto](#padrões-de-projeto)
+- [18.6 Testes unitários e metodologia TDD](#186-testes-unitários-e-metodologia-tdd)
+  - [Estratégia de testes](#estratégia-de-testes)
+  - [Testes implementados](#testes-implementados)
+  - [Execução dos testes](#execução-dos-testes)
+  - [Resultado da cobertura](#resultado-da-cobertura)
+  - [Link do vídeo demonstrativo](#link-do-vídeo-demonstrativo)
 
 </details>
 
 <details>
-<summary><a href="#18-termos-e-abreviações">18. Termos e Abreviações</a></summary>
+<summary><a href="#19-termos-e-abreviações">19. Termos e Abreviações</a></summary>
 
-- [Termos e Abreviações](#18-termos-e-abreviações)
+- [Termos e Abreviações](#19-termos-e-abreviações)
 
 </details>
 
@@ -1601,6 +1622,112 @@ A preencher após a conclusão das subseções anteriores.
 Nesta seção, o grupo deve discutir a cobertura geral do planejamento, destacando quais dimensões do sistema foram contempladas, quais riscos permanecem e quais seriam os próximos passos para execução dos testes.
 
 ----
+
+## 18. Desenvolvimento Do Projeto  — Sprint 3
+
+Esta seção documenta o progresso incremental da solução de software durante a Sprint 3. O objetivo é evidenciar a evolução do backend, frontend, integrações, padrões de desenvolvimento, testes unitários, metodologia e comprovações de execução da aplicação.
+
+A documentação deve demonstrar que a implementação está alinhada ao planejamento da sprint, à arquitetura definida e aos padrões técnicos do projeto.
+
+---
+
+### 18.1 Objetivo do artefato
+
+Descrever brevemente como esta seção evidencia o progresso incremental da solução, contemplando implementação de backend e frontend, adoção de padrões de codificação, arquitetura definida, testes unitários e documentação das evidências de execução.
+
+---
+
+### 18.2 Arquitetura de codificação e estrutura de diretórios
+
+Nesta seção, deve ser apresentada a organização geral do projeto, separando backend, frontend, documentação, testes, configurações e arquivos auxiliares.
+
+#### Estrutura geral do repositório
+
+```text
+A preencher com a estrutura atual do projeto.
+```
+
+### 18.3 Desenvolvimento do Backend
+
+Esta seção deve documentar o progresso da implementação do backend durante a Sprint 3, incluindo arquitetura adotada, features desenvolvidas, rotas criadas, integração com banco de dados, autenticação externa e documentação Swagger.
+
+#### 18.3.1 Arquitetura do backend
+
+Descrever a arquitetura adotada no backend, indicando camadas, serviços, controllers, models, repositories, integração com banco de dados, autenticação e demais responsabilidades.
+
+```text
+A preencher com a estrutura de pastas do backend.
+```
+
+---
+
+### 18.4 Desenvolvimento do Frontend
+
+Esta seção deve documentar o progresso da implementação do frontend durante a Sprint 3, incluindo arquitetura adotada, telas desenvolvidas, integração com backend ou dados mockados e evidências visuais da aplicação.
+
+#### 18.4.1 Arquitetura do frontend
+
+Descrever a arquitetura adotada no frontend, indicando organização de telas, componentes, navegação, serviços, estados, hooks, ViewModels ou repositories, conforme o padrão definido pelo grupo.
+
+```text
+A preencher com a estrutura de pastas do frontend.
+```
+
+#### 18.4.2 Telas implementadas
+
+---
+
+### 18.5 Padrões de codificação e padrões de projeto
+
+Nesta seção, devem ser documentados os padrões adotados pelo grupo no desenvolvimento da Sprint 3, considerando organização de código, nomenclatura, commits, tratamento de erros, separação de responsabilidades e padrões de projeto.
+
+#### Padrões de codificação
+
+A preencher com os padrões definidos no `GuiaPadroesDesenvolvimento.md`, como nomenclatura, organização de arquivos, padrão de commits, tratamento de erros, formatação, separação de responsabilidades e boas práticas de código.
+
+#### Padrões de projeto
+
+| Tipo de padrão | Nome do padrão | Onde aparece no projeto | Justificativa |
+|---|---|---|---|
+| Criacional | A preencher | A preencher | A preencher |
+| Comportamental | A preencher | A preencher | A preencher |
+
+---
+
+### 18.6 Testes unitários e metodologia TDD
+
+Esta seção deve documentar a estratégia de testes unitários adotada no projeto, com foco nas funcionalidades implementadas e na aplicação da metodologia TDD.
+
+#### Estratégia de testes
+
+A preencher explicando como o grupo aplicou TDD, quais camadas foram priorizadas, quais ferramentas foram utilizadas e como os testes se conectam às funcionalidades desenvolvidas.
+
+#### Testes implementados
+
+| Teste | Camada testada | Funcionalidade | Resultado | Evidência |
+|---|---|---|---|---|
+| A preencher | Service | A preencher | A preencher | A preencher |
+| A preencher | Service | A preencher | A preencher | A preencher |
+| A preencher | Service | A preencher | A preencher | A preencher |
+
+#### Execução dos testes
+
+```bash
+A preencher com o comando utilizado para executar os testes.
+```
+
+#### Resultado da cobertura
+
+A preencher com prints, logs ou resumo da cobertura obtida.
+
+---
+
+#### Link do vídeo demonstrativo
+
+A preencher com o link do vídeo demonstrando a aplicação em execução, preferencialmente com tela dividida entre aplicação e console/VSCode.
+
+---
+
 
 ## 19. Termos e Abreviações
 

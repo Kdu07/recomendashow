@@ -1523,16 +1523,232 @@ A preencher pelo responsável, explicando quais funcionalidades foram cobertas e
 
 ### 17.4 Testes de requisitos não funcionais
 
-Nesta seção, devem ser planejados os testes relacionados aos RNFs, avaliando atributos de qualidade como desempenho, segurança, disponibilidade, usabilidade, compatibilidade e escalabilidade.
+Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atributos de qualidade como desempenho, segurança, disponibilidade, usabilidade, compatibilidade e escalabilidade.
 
-| ID do teste | RNF relacionado | Categoria de qualidade | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso |
-|---|---|---|---|---|---|---|---|---|---|
-| TNF-01 | RNF-XX | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
-| TNF-02 | RNF-XX | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
-| TNF-03 | RNF-XX | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+#### RNF01 — Tempo de Resposta das Recomendações
+ 
+**Cenário Positivo:** Carregamento dentro do SLA com conexão estável
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário autenticado com perfil de onboarding preenchido e wishlist com ao menos 1 item. Conexão de rede estável de no mínimo 10 Mbps. Cache de recomendações aquecido (warm). |
+| **Procedimento** | 1: Abrir DevTools → abas Network e Performance. 2: Acessar a Home do Portal e registrar o timestamp de início. 3: Aguardar o carregamento completo dos carrosséis (evento `load` + elementos visuais renderizados). 4: Registrar o tempo total de carregamento. 5: Repetir 20 vezes em horários distintos (manhã, tarde, noite). 6. Calcular p50, p95 e média dos tempos coletados. |
+| **Resultado Esperado** | p95 ≤ 3 segundos; média ≤ 2 segundos; nenhuma exceção de timeout na série de 20 execuções. |
+| **Pós-condição** | Carrosséis renderizados com itens personalizados; logs de performance armazenados; relatório de métricas gerado. |
+ 
+**Cenário Negativo 1:** Degradação sob latência de rede elevada (simulação de 3G)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário autenticado com perfil preenchido. Conexão de rede simulada em Slow 3G (~1,5 Mbps, 300 ms de latência) via DevTools → Network Throttling. |
+| **Procedimento** | 1: Ativar throttling para "Slow 3G" no DevTools. 2: Acessar a Home e medir o tempo de carregamento dos carrosséis. 3: Repetir 5 vezes. 4: Verificar o comportamento da interface durante a espera (spinner, skeleton screen, mensagem de erro). 5: Registrar se o sistema ultrapassa o limite de timeout configurado. |
+| **Resultado Esperado** | O sistema exibe feedback visual adequado (skeleton screen ou spinner) enquanto aguarda; após timeout configurado (ex.: 10 s) apresenta mensagem amigável de erro, sem tela em branco ou crash silencioso. Métricas de latência registradas nos logs de observabilidade. |
+| **Pós-condição** | Log de timeout registrado; alertas de degradação disparados no painel de monitoramento; usuário não abandonado sem feedback. |
+ 
+**Cenário Negativo 2:** Falha do serviço de recomendação (backend indisponível)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário autenticado com perfil preenchido. Serviço de recomendação desligado ou mockado com resposta 503. |
+| **Procedimento** | 1: Derrubar (ou mockar com 503) o endpoint de recomendações. 2: Acessar a Home do Portal. 3: Verificar se a página exibe fallback (carrossel com itens populares genéricos ou mensagem de erro). 4: Verificar se os demais módulos da Home continuam funcionando normalmente. |
+| **Resultado Esperado** | A Home carrega com conteúdo de fallback (destaques genéricos) ou mensagem "Não foi possível carregar recomendações". Os demais carrosséis não personalizados continuam funcionando. Nenhum erro 500 exposto ao usuário. |
+| **Pós-condição** | Erro registrado nos logs de aplicação; alerta disparado para a equipe de operações; usuário permanece em página funcional. |
+ 
+#### RNF02 — Segurança das Credenciais de Usuário
+ 
+**Cenário Positivo:** Tráfego criptografado e senha hasheada corretamente
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário cadastrado com e-mail e senha válidos. Banco de dados de teste populado. Ferramentas: DevTools (aba Network), acesso direto ao banco (read-only). |
+| **Procedimento** | 1: Abrir DevTools → aba Network, filtro XHR/Fetch. 2: Realizar login com usuário de teste. 3: Inspecionar a requisição: verificar protocolo HTTPS e versão TLS (≥ 1.2). 4: Verificar que o payload não contém senha em texto plano. 5: Consultar o banco de dados: o campo `password` deve conter hash bcrypt/Argon2 (prefixo `$2b$`, `$argon2id$`), nunca texto plano. 6: Verificar arquivos de log, nenhum dado sensível deve aparecer. |
+| **Resultado Esperado** | 100% do tráfego via HTTPS/TLS 1.2+; senha armazenada com hash não reversível; nenhum dado sensível em logs ou payload em texto plano. |
+| **Pós-condição** | Sessão autenticada com token seguro (JWT/Bearer); evidências de conformidade registradas para auditoria. |
+ 
+**Cenário Negativo 1:** Tentativa de brute force (múltiplos logins com senha inválida)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário cadastrado. Script de automação (ex.: curl, Postman) configurado para simular múltiplas tentativas de login com senhas incorretas. |
+| **Procedimento** | 1: Executar 10 tentativas consecutivas de login com senha incorreta para o mesmo usuário. 2: Verificar se o sistema implementa bloqueio temporário ou CAPTCHA após N tentativas (N definido pela política de segurança). 3: Verificar se as tentativas são registradas em log de segurança (com timestamp, IP, user-agent). 4: Tentar login com credenciais corretas após o bloqueio, verificar comportamento (desbloqueio por tempo ou por e-mail). |
+| **Resultado Esperado** | Após atingir o limite configurado (ex.: 5 tentativas), o sistema bloqueia o login temporariamente ou exige CAPTCHA; todas as tentativas são registradas em log de segurança; usuário legítimo pode recuperar acesso por canal seguro. |
+| **Pós-condição** | Log de tentativas de acesso indevido gerado; alerta de segurança disparado (se configurado); conta não comprometida. |
+ 
+---
+ 
+**Cenário Negativo 2:** Tentativa de downgrade de HTTPS para HTTP
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Ambiente de teste com proxy intermediário (ex.: Burp Suite em modo passivo) configurado para tentar interceptar tráfego HTTP. |
+| **Procedimento** | 1: Configurar proxy para tentar interceptar requisições em HTTP. 2: Tentar acessar diretamente a URL via HTTP (ex.: `http://portal-aventura.com/login`). 3: Verificar se o servidor redireciona automaticamente para HTTPS (301/302). 4: Verificar se o header `Strict-Transport-Security` (HSTS) está presente na resposta. |
+| **Resultado Esperado** | Toda requisição HTTP redirecionada para HTTPS; header HSTS presente com `max-age` ≥ 31536000; nenhuma credencial transmitida em texto claro. |
+| **Pós-condição** | Evidência de conformidade com HSTS registrada; relatório de segurança atualizado. |
+ 
+#### RNF03 — Conformidade com a LGPD
+ 
+**Cenário Positivo 1:** Edição e consulta de dados pessoais pelo usuário
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário autenticado com dados de perfil preenchidos no onboarding (nome, idade, gênero, CEP, preferências de gênero cultural). |
+| **Procedimento** | 1: Acessar Perfil → seção de dados pessoais. 2: Editar cada campo disponível (nome, CEP, preferências) e salvar. 3: Verificar se as alterações são persistidas corretamente na interface e no banco. 4: Verificar se existe indicação clara das finalidades de uso de cada dado. 5: Verificar se o registro de consentimento (opt-in) está armazenado com data, IP e finalidade. |
+| **Resultado Esperado** | Todos os campos editáveis alterados com sucesso; alterações refletidas imediatamente na interface; registro de consentimento atualizado e disponível para auditoria. |
+| **Pós-condição** | Dados atualizados na base; log de auditoria de edição gerado com timestamp e identificador do usuário. |
+ 
+**Cenário Positivo 2:** Solicitação e conclusão de exclusão de conta
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário autenticado com dados de perfil e histórico de interações (wishlist, preferências). |
+| **Procedimento** | 1: Acessar Perfil → opção "Excluir minha conta". 2: Confirmar a exclusão conforme o fluxo definido (confirmação por e-mail ou senha). 3: Aguardar até 30 dias (simular com processo acelerado em ambiente de teste). 4: Verificar no banco se os dados pessoais foram removidos ou anonimizados (campos como nome, e-mail, CEP devem ser nulos ou substituídos por token anônimo). 5: Verificar se dados analíticos agregados sem identificação pessoal foram preservados conforme política. |
+| **Resultado Esperado** | Dados pessoais identificáveis removidos ou anonimizados em até 30 dias; conta não permite novo login; dados agregados anônimos preservados conforme política de retenção. |
+| **Pós-condição** | Registro de exclusão gerado com data e confirmação; log de auditoria arquivado para eventual comprovação perante a ANPD. |
+ 
+---
+ 
+**Cenário Negativo 1:** Tentativa de acesso a dados de outro usuário
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Dois usuários de teste cadastrados (User A e User B). User A autenticado com token de sessão ativo. |
+| **Procedimento** | 1: Autenticar como User A e obter o token de sessão. 2: Tentar acessar diretamente a rota de perfil de User B (ex.: `GET /api/users/{id_user_b}/profile`) usando o token de User A. 3: Tentar editar ou excluir dados de User B via requisição direta à API (Postman/curl). 4: Registrar as respostas HTTP recebidas. |
+| **Resultado Esperado** | O sistema retorna HTTP 403 (Forbidden) para todas as tentativas; nenhum dado de User B é retornado ou modificado; tentativa registrada em log de segurança. |
+| **Pós-condição** | Log de tentativa de acesso não autorizado gerado; nenhum dado exposto indevidamente. |
+ 
+**Cenário Negativo 2:** Fluxo de onboarding sem registro formal de consentimento
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Novo usuário em processo de cadastro/onboarding. Ferramenta de inspeção de banco de dados disponível. |
+| **Procedimento** | 1: Realizar o cadastro completo tentando pular a etapa de consentimento (caso o sistema permita). 2: Verificar se o sistema bloqueia o avanço sem o registro formal de opt-in. 3: Verificar no banco se há registro de consentimento associado ao novo usuário antes de qualquer tratamento de dado. |
+| **Resultado Esperado** | O sistema não permite conclusão do cadastro sem registro formal de consentimento para ao menos a finalidade principal; ausência de opt-in bloqueia o fluxo com mensagem clara ao usuário. |
+| **Pós-condição** | Evidência de conformidade com o Art. 7º da LGPD (consentimento como base legal) documentada. |
 
-**Discussão de abrangência:**  
-A preencher pelo responsável, explicando quais RNFs foram cobertos e como os testes se relacionam com a arquitetura do sistema.
+#### RNF04 — Usabilidade da Interface em Dispositivos Móveis
+ 
+**Cenário Positivo:** Conclusão das tarefas principais em mobile (480px e 720px)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Aplicação publicada em ambiente de homologação. Dispositivos reais ou emulados com larguras de 480px e 720px (iOS e Android). 5 usuários recrutados representando o público-alvo. |
+| **Procedimento** | 1: Solicitar a cada usuário que realize, sem ajuda: (a) completar o onboarding; (b) buscar um espetáculo pelo nome; (c) adicionar à wishlist; (d) acessar a área de Perfil; (e) clicar em "Ir para bilheteria". 2: Observar e registrar onde cada usuário hesita, erra ou pede ajuda. 3: Aplicar o questionário SUS ao final de cada sessão. 4: Verificar visualmente que nenhum elemento é cortado, sobreposto ou inacessível nas resoluções testadas. |
+| **Resultado Esperado** | Taxa de conclusão ≥ 90% das tarefas sem ajuda; pontuação SUS ≥ 70; nenhum elemento cortado ou inacessível; botões de ação com área de toque ≥ 44×44px. |
+| **Pós-condição** | Relatório de usabilidade gerado com gravações de sessão (se autorizado), heatmaps e lista de problemas; ajustes de UI registrados no backlog. |
+ 
+**Cenário Negativo 1:** Interface em resolução abaixo do mínimo suportado (320px)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Aplicação em homologação. Emulador configurado para largura de 320px (dispositivos muito antigos ou com zoom ativado). |
+| **Procedimento** | 1: Acessar a Home, tela de Busca, Perfil e Wishlist com viewport de 320px. 2: Verificar quebras de layout: elementos sobrepostos, texto cortado, botões inacessíveis, scroll horizontal indesejado. 3: Registrar cada elemento problemático com screenshot. |
+| **Resultado Esperado** | O sistema exibe mensagem orientando o usuário a ampliar a janela OU a interface se degrada de forma controlada (sem conteúdo sobreposto). Nenhuma funcionalidade crítica fica completamente inacessível; eventuais limitações são comunicadas claramente. |
+| **Pós-condição** | Lista de problemas em 320px documentada; decisão formal da equipe registrada (suportar ou não a resolução). |
+ 
+**Cenário Negativo 2:** Fluxo de onboarding com erro de validação em mobile
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Novo usuário em dispositivo móvel (480px). Campos obrigatórios do onboarding identificados. |
+| **Procedimento** | 1: Iniciar o onboarding e tentar avançar com campos obrigatórios em branco ou com dados inválidos (ex.: CEP com letras, e-mail sem @). 2: Verificar se as mensagens de erro são exibidas próximas ao campo com problema. 3: Verificar se o teclado virtual cobre a mensagem de erro ou o campo em questão. 4: Verificar se o botão de avanço fica desabilitado ou exibe feedback enquanto há erro. |
+| **Resultado Esperado** | Mensagens de erro visíveis e legíveis sem scroll adicional; campo em erro recebe foco automaticamente; teclado virtual não oculta a mensagem crítica; botão desabilitado com feedback visual claro. |
+| **Pós-condição** | Problemas de UX em formulários mobile documentados; correções priorizadas no backlog. |
+ 
+#### RNF05 — Disponibilidade da Plataforma
+
+**Cenário Positivo:** Monitoramento contínuo com disponibilidade dentro do SLA
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Plataforma publicada em produção com monitoramento ativo (ex.: UptimeRobot, Datadog, AWS CloudWatch). Health check endpoint configurado (`GET /health` retorna 200). |
+| **Procedimento** | 1: Configurar monitoramento com verificações a cada 1 minuto por 24 horas contínuas. 2: Registrar todas as respostas HTTP do health check. 3: Calcular disponibilidade: (minutos com resposta 200 / 1440) × 100. 4: Verificar se alertas são disparados corretamente em caso de queda (e-mail, Slack, PagerDuty). 5: Calcular downtime total e comparar com SLA (≤ 14,4 minutos em 24h). |
+| **Resultado Esperado** | Disponibilidade ≥ 99% na janela de 24h (downtime ≤ 14,4 min); alertas disparados em até 2 minutos após detecção de queda; relatório de uptime gerado automaticamente. |
+| **Pós-condição** | Relatório de uptime gerado; incidentes (se houver) registrados com causa raiz e MTTR. |
+ 
+**Cenário Negativo 1:** Simulação de queda de serviço e tempo de recuperação (RTO)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Ambiente de produção ou staging com acesso administrativo. Runbook de recuperação disponível. |
+| **Procedimento** | 1: Simular queda do serviço (ex.: desligar instância principal, simular erro de banco de dados). 2: Registrar o timestamp exato da queda. 3: Verificar se o monitoramento detecta e alerta em até 2 minutos. 4: Acionar o procedimento de recuperação (failover automático ou manual). 5: Registrar o timestamp de restauração completa e calcular o RTO. |
+| **Resultado Esperado** | Alerta gerado em até 2 minutos; serviço restaurado dentro do RTO definido; dados sem corrupção após recuperação; usuários recebem página de manutenção amigável durante a indisponibilidade. |
+| **Pós-condição** | Incidente documentado com causa raiz, timeline e RTO observado. Post-mortem agendado se o RTO for ultrapassado. |
+
+**Cenário Negativo 2:** Acesso durante janela de manutenção sem comunicação prévia
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário não informado sobre janela de manutenção. Manutenção programada em horário de pico. |
+| **Procedimento** | 1: Simular acesso de usuário durante janela de manutenção planejada. 2: Verificar se o sistema exibe página de manutenção com mensagem amigável, previsão de retorno e canal de contato. 3: Verificar se o usuário é redirecionado automaticamente após a restauração do serviço. |
+| **Resultado Esperado** | Página de manutenção exibida com mensagem clara, previsão de retorno e informações de contato; nenhum erro 500 exposto; após restauração, usuário redirecionado automaticamente ou orientado a atualizar a página. |
+| **Pós-condição** | Processo de comunicação de manutenção revisado; notificação proativa a usuários incluída no plano de manutenção futuro. |
+
+#### RNF06 — Escalabilidade do Sistema de Recomendação
+
+**Cenário Positivo:** Teste de carga com 100 usuários simultâneos dentro do SLA
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Ambiente de homologação configurado com infraestrutura equivalente à produção. Ferramenta de carga instalada (k6 ou JMeter). Scripts simulando fluxo: login → home com carrosséis → adicionar à wishlist. |
+| **Procedimento** | 1: Configurar script com ramp-up gradual: 0 → 50 → 100 usuários em 5 minutos. 2: Manter 100 usuários concorrentes por 15 minutos contínuos. 3: Monitorar em tempo real: latência p50/p95, taxa de erro HTTP, CPU e memória dos servidores. 4: Analisar relatório completo ao final. 5: Verificar logs por erros, timeouts ou circuit breakers acionados. |
+| **Resultado Esperado** | Tempo médio de resposta ≤ 3s; p95 ≤ 5s; taxa de erro HTTP < 1%; nenhuma queda de serviço; CPU < 80% e memória < 85% durante toda a execução. |
+| **Pós-condição** | Relatório de carga exportado (HTML/JSON); métricas arquivadas; gargalos documentados como backlog de otimização. |
+ 
+**Cenário Negativo 1:** Sobrecarga além da capacidade projetada (150 usuários)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Mesmo ambiente de homologação. Script de carga adaptado para 150 usuários concorrentes. |
+| **Procedimento** | 1: Executar teste de stress com 150 usuários simultâneos por 10 minutos. 2: Monitorar latência, taxa de erro, comportamento do auto-scaling, circuit breakers e filas. 3: Verificar se o sistema aplica degradação elegante (ex.: desabilitar recomendações personalizadas e servir cache genérico). 4: Verificar se usuários recebem feedback adequado em caso de lentidão ou erro. |
+| **Resultado Esperado** | O sistema não trava completamente; aplica degradação elegante com fallback para cache/conteúdo genérico; taxa de erro pode superar 1% porém sem perda total de funcionalidade; auto-scaling (se existente) acionado e registrado em logs; usuário recebe mensagem amigável. |
+| **Pós-condição** | Comportamento sob sobrecarga documentado; limites reais de capacidade registrados; plano de escalonamento revisado. |
+ 
+**Cenário Negativo 2:** Spike repentino de tráfego (0 → 100 usuários em 30 segundos)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Ambiente de homologação. Script configurado para spike sem ramp-up gradual: 0 para 100 usuários em 30 segundos. |
+| **Procedimento** | 1: Executar spike test: 0 para 100 usuários em 30 segundos. 2: Observar latência e taxa de erro nos primeiros 2 minutos após o spike. 3: Verificar se o sistema se recupera sozinho após o pico (estabilização da latência). 4: Verificar se circuit breakers ou rate limiters foram acionados. |
+| **Resultado Esperado** | Sistema não cai durante o spike; latência pode elevar-se brevemente, mas retorna ao SLA em até 60 segundos após estabilização da carga; nenhuma perda de dados (wishlist, perfil) durante o pico. |
+| **Pós-condição** | Métricas de spike registradas; comportamento de auto-scaling documentado; thresholds de alerta ajustados se necessário. |
+ 
+#### RNF07 — Precisão da Geolocalização
+ 
+**Cenário Positivo 1:** Identificação correta de cidade por CEP (SP e RJ)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | 10 perfis de usuário de teste: 5 com CEPs reais de São Paulo e 5 com CEPs reais do Rio de Janeiro. Banco de dados de CEPs atualizado. |
+| **Procedimento** | 1: Para cada perfil, acessar a Home com geolocalização do navegador desativada. 2: Verificar na seção regional se a cidade exibida corresponde ao CEP cadastrado. 3: Verificar se ao menos um espetáculo da cidade correta aparece nas 3 primeiras posições da seção regional. 4: Repetir com geolocalização do navegador ativada. 5: Registrar acertos e erros por perfil. |
+| **Resultado Esperado** | Cidade identificada corretamente em ≥ 95% dos perfis (≥ 19 de 20); espetáculos da região correspondente nas 3 primeiras posições; geolocalização do dispositivo, quando ativada, tem prioridade sobre o CEP. |
+| **Pós-condição** | Logs de geolocalização registrados (apenas cidade, sem coordenadas precisas) em conformidade com a LGPD; relatório de precisão gerado. |
+ 
+**Cenário Positivo 2:** Identificação por geolocalização com CEP ausente (novo usuário)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário novo sem CEP cadastrado (onboarding incompleto). Geolocalização do navegador ativada e permissão concedida. Usuário fisicamente em São Paulo (ou emulado via DevTools). |
+| **Procedimento** | 1: Acessar o Portal com novo usuário sem CEP. 2: Conceder permissão de geolocalização quando solicitado. 3: Verificar se a seção regional exibe espetáculos de SP. 4: Negar a permissão de geolocalização e verificar o comportamento de fallback (ex.: prompt para inserir CEP ou exibição de conteúdo genérico). |
+| **Resultado Esperado** | Com permissão concedida: região de SP identificada corretamente, seção regional exibe espetáculos de SP. Com permissão negada: sistema apresenta fallback gracioso sem erro ou tela em branco. |
+| **Pós-condição** | Log de geolocalização registrado sem coordenadas precisas; consentimento de uso de geolocalização registrado. |
+ 
+**Cenário Negativo 1:** CEP inválido ou inexistente
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário de teste com CEP inválido cadastrado (ex.: 00000-000, 99999-999 ou CEP de outro país). Geolocalização desativada. |
+| **Procedimento** | 1: Acessar a Home com usuário portador de CEP inválido. 2: Verificar se o sistema tenta validar o CEP contra base oficial (ex.: ViaCEP). 3: Verificar o comportamento: exibe conteúdo genérico, solicita correção do CEP ou usa geolocalização como fallback? 4: Verificar se o campo CEP no perfil permite salvar valores inválidos (validação na entrada). |
+| **Resultado Esperado** | O sistema não quebra nem exibe recomendações erradas; apresenta fallback claro; campo CEP no perfil valida o formato antes de salvar; CEP inválido não é persistido sem aviso. |
+| **Pós-condição** | Log de CEP inválido registrado; usuário orientado a corrigir o dado; nenhum dado incorreto armazenado sem sinalização. |
+ 
+**Cenário Negativo 2:** Permissão de geolocalização negada e CEP não cadastrado
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário novo sem CEP e com geolocalização do navegador negada. |
+| **Procedimento** | 1: Acessar o Portal negando a permissão de geolocalização. 2: Navegar pela Home sem fornecer CEP. 3: Verificar o comportamento da seção regional: exibe conteúdo genérico, solicita ação do usuário ou exibe mensagem explicativa? 4: Verificar se a página carrega sem erros e as demais seções funcionam normalmente. |
+| **Resultado Esperado** | A seção regional exibe conteúdo genérico ou mensagem orientando o usuário a fornecer sua localização; nenhuma seção quebra ou exibe erro técnico; as demais funcionalidades da Home operam normalmente. |
+| **Pós-condição** | Experiência de usuário sem localização documentada; decisão de UX registrada no backlog (ex.: exibir modal de boas-vindas solicitando CEP). |
 
 ---
 

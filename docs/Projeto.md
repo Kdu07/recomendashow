@@ -507,125 +507,197 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 
 ## 10. Requisitos Não Funcionais
+## RNF01 — Tempo de resposta das recomendações
 
+**Característica ISO 25010:** Eficiência de Desempenho → **Comportamento Temporal**
 
-### RNF01 — Tempo de resposta das recomendações
+**User story:** Como usuário, quero que as recomendações personalizadas e os carrosséis da home carreguem rapidamente, para que eu possa explorar o catálogo sem frustração e manter o interesse na navegação.
 
-**Característica ISO 25010:** Eficiência de Desempenho
+**Critério de Aceitação:** sob carga nominal (até 200 usuários simultâneos), o tempo de renderização completa das prateleiras de recomendação tem **p95 ≤ 3 s** e **média ≤ 2 s**.
 
-**User story:** Como usuário, quero que as recomendações personalizadas e os carrosséis da home carreguem em até 3 segundos, para que eu possa explorar o catálogo sem frustração e manter o interesse na navegação.
-
-**Testes de usuário:**
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Usuário autenticado com perfil de onboarding preenchido e wishlist contendo ao menos 1 item e conexão estável de no mínimo 10 Mbps. |
-| Procedimento de teste | Acessar a Home do Portal e medir, o tempo entre o carregamento da página e a renderização completa das prateleiras de recomendação. Repetir 5 vezes em horários distintos. |
-| Resultado esperado | O tempo médio de carregamento das recomendações deve ser ≤ 3 segundos em pelo menos 4 das 5 execuções. |
-| Pós-condição | Carrosséis renderizados com itens personalizados e logs de performance armazenados para análise. |
+| Pré-condição | Usuário autenticado com onboarding preenchido, wishlist com ao menos 1 item e conexão estável de no mínimo 10 Mbps. |
+| Procedimento | Acessar a Home do Portal e medir, via ferramenta de performance (ex.: Lighthouse/DevTools, marca de `paint` das prateleiras), o tempo entre o início do carregamento e a renderização completa dos carrosséis. Coletar uma amostra de pelo menos 30 execuções em horários distintos. |
+| Resultado esperado | A amostra apresenta p95 ≤ 3 s e média ≤ 2 s; nenhuma execução isolada ultrapassa 5 s (p99). |
+| Pós-condição | Carrosséis renderizados com itens personalizados e logs de performance (timestamps por percentil) armazenados para análise. |
 
 ---
 
-### RNF02 — Segurança das credenciais de usuário
+## RNF02 — Segurança das credenciais de usuário
 
-**Característica ISO 25010:** Segurança
+**Característica ISO 25010:** Segurança → **Confidencialidade** e **Integridade**
 
-**User story:** Como usuário cadastrado, quero que minha senha e dados pessoais (nome, idade, gênero, CEP) sejam armazenados e transmitidos de forma criptografada, para que minhas informações não sejam expostas em caso de tentativa de invasão ou interceptação.
+**User story:** Como usuário cadastrado, quero que minha senha e meus dados pessoais (nome, idade, gênero, CEP) sejam armazenados e transmitidos de forma criptografada, para que minhas informações não sejam expostas em caso de tentativa de invasão ou interceptação.
 
-**Testes de usuário:**
+**Critério de Aceitação:** 100% do tráfego de autenticação ocorre via HTTPS/TLS 1.2+; senhas são persistidas com função de hash forte e com *salt* (ex.: bcrypt/Argon2), de forma não reversível; nenhum dado sensível trafega ou é registrado em texto plano.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Usuário cadastrado com e-mail e senha válidos e banco de dados de teste populado. |
-| Procedimento de teste | Inspecionar o tráfego de rede no momento do login com ferramenta como DevTools, verificando uso de HTTPS/TLS. Consultar diretamente o banco de dados e verificar se a senha está armazenada com hash e não em texto plano. |
-| Resultado esperado | Todo tráfego ocorre via HTTPS, nenhuma senha é armazenada em texto plano no banco e o hash não é reversível. |
-| Pós-condição | Sessão autenticada com token seguro e nenhum dado sensível visível em logs ou no payload em texto plano. |
+| Procedimento | Inspecionar o tráfego de rede no momento do login (DevTools → aba Network), confirmando HTTPS/TLS. Consultar diretamente o banco e verificar o formato de armazenamento da senha. Tentar reverter o hash de uma senha conhecida. |
+| Resultado esperado | Todo o tráfego usa HTTPS; a senha aparece como hash com *salt*, não em texto plano; a tentativa de reversão do hash falha. |
+| Pós-condição | Sessão autenticada com token seguro; nenhum dado sensível visível em logs ou no *payload* em texto plano. |
 
 ---
 
-### RNF03 — Conformidade com a LGPD
+## RNF03 — Privacidade e direitos do titular (LGPD)
 
-**Característica ISO 25010:** Segurança / Conformidade
+**Característica ISO 25010:** Segurança → **Confidencialidade (foco em Privacidade de dados pessoais)** e **Responsabilização**
 
-**User story:** Como usuário, quero poder consultar, editar e excluir meus dados pessoais e preferências a qualquer momento, para que a plataforma respeite meus direitos garantidos pela LGPD e eu mantenha controle sobre minhas informações.
+**User story:** Como usuário, quero consultar, editar e excluir meus dados pessoais e preferências a qualquer momento, para que a plataforma respeite os direitos garantidos pela LGPD e eu mantenha controle sobre minhas informações.
 
-**Testes de usuário:**
+**Critério de Aceitação:** o usuário consegue visualizar, editar e solicitar a exclusão de todos os seus dados pessoais; após a exclusão, **0** registros pessoais permanecem associados ao identificador do usuário na base (dados removidos ou anonimizados de forma irreversível) em até **15 dias**; toda solicitação de exclusão fica registrada em log de auditoria.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Usuário autenticado com dados de perfil preenchidos no onboarding (idade, gênero, CEP, preferências). |
-| Procedimento de teste | Acessar a área de Perfil → tentar editar cada campo de dado pessoal e preferências. Em seguida, solicitar exclusão da conta e verificar se os dados são efetivamente removidos ou anonimizados na base. |
-| Resultado esperado | O usuário consegue visualizar, editar e excluir seus dados e após a exclusão, os registros pessoais não estão mais associados ao identificador do usuário na base. |
-| Pós-condição | Processo de exclusão/edição concluído com sucesso. |
+| Procedimento | Acessar Perfil → editar cada campo de dado pessoal e de preferência. Em seguida, solicitar a exclusão da conta e consultar a base verificando se os dados foram removidos/anonimizados. Conferir o log de auditoria da solicitação. |
+| Resultado esperado | A edição e a exclusão são concluídas; consulta à base não retorna registros pessoais vinculados ao ID do usuário; o evento de exclusão consta no log de auditoria. |
+| Pós-condição | Processo de exclusão/edição concluído; trilha de auditoria preservada (sem reidentificar o titular). |
 
 ---
 
-### RNF04 — Usabilidade da interface em dispositivos móveis
+## RNF04 — Usabilidade e responsividade em dispositivos móveis
 
-**Característica ISO 25010:** Usabilidade
+**Característica ISO 25010:** Usabilidade → **Operabilidade**, **Apreensibilidade** e **Acessibilidade**
 
-**User story:** Como espectador que acessa o portal pelo celular, quero que toda a navegação (home, busca, wishlist, perfil e fluxo de onboarding) seja totalmente responsiva e intuitiva em telas a partir de 480px, para que eu possa descobrir espetáculos e gerenciar minhas preferências em qualquer dispositivo.
+**User story:** Como espectador que acessa o portal pelo celular, quero que toda a navegação (home, busca, wishlist, perfil e onboarding) seja responsiva e intuitiva em telas a partir de 480 px, para que eu possa descobrir espetáculos e gerenciar minhas preferências em qualquer dispositivo.
 
-**Testes de usuário:**
+**Critério de Aceitação:** taxa de conclusão das tarefas ≥ 90% sem ajuda externa; pontuação **SUS ≥ 70**; nenhum elemento cortado ou inacessível nas larguras de 480 px a 1920 px.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Aplicação publicada em ambiente de homologação, dispositivos disponíveis com larguras de 480px e 720px. |
-| Procedimento de teste | Realizar teste de usabilidade com 5 usuários, solicitando: completar o onboarding, buscar um espetáculo, adicionar à wishlist, acessar perfil e seguir para a bilheteria. Medir taxa de conclusão e SUS (System Usability Scale). |
-| Resultado esperado | Taxa de conclusão ≥ 90% das tarefas sem ajuda externa; pontuação SUS ≥ 70; nenhum elemento cortado ou inacessível nas resoluções testadas. |
-| Pós-condição | Relatório de usabilidade documentado; eventuais ajustes de UI registrados como backlog. |
+| Pré-condição | Aplicação publicada em homologação; dispositivos/emuladores disponíveis nas larguras de 480 px e 720 px. |
+| Procedimento | Teste com 5 usuários executando: completar o onboarding, buscar um espetáculo, adicionar à wishlist, acessar o perfil e seguir para a bilheteria. Medir taxa de conclusão por tarefa e aplicar o questionário SUS ao final. |
+| Resultado esperado | Taxa de conclusão ≥ 90%; SUS ≥ 70; nenhum elemento cortado nas resoluções testadas. |
+| Pós-condição | Relatório de usabilidade documentado; ajustes de UI registrados no backlog. |
 
 ---
 
-### RNF05 — Disponibilidade da plataforma
+## RNF05 — Disponibilidade da plataforma
 
-**Característica ISO 25010:** Confiabilidade
+**Característica ISO 25010:** Confiabilidade → **Disponibilidade**
 
-**User story:** Como usuário do Portal Aventura, quero que a plataforma esteja disponível 99% do tempo no horário comercial e em horários de pico, para que eu possa consultar a programação e ser direcionado à bilheteria sem indisponibilidades.
+**User story:** Como usuário do Portal Aventura, quero que a plataforma esteja disponível na maior parte do tempo, inclusive em horários de pico, para que eu possa consultar a programação e ser direcionado à bilheteria sem indisponibilidades.
 
-**Testes de usuário:**
+**Critério de Aceitação:** disponibilidade mensal ≥ **99%** (equivalente a no máximo ~7 h 18 min de indisponibilidade por mês), medida em janela contínua de 30 dias.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Plataforma publicada em ambiente de produção com monitoramento ativo. |
-| Procedimento de teste | Monitorar a disponibilidade do portal por um período contínuo de 10 dias, registrando todas as interrupções e suas durações. |
-| Resultado esperado | Disponibilidade mensal ≥ 99%. |
-| Pós-condição | Relatório de uptime gerado e incidentes registrados com causa raiz. |
+| Pré-condição | Plataforma publicada em produção com monitoramento ativo (ex.: ferramenta de *uptime* com checagem a cada 1 min). |
+| Procedimento | Monitorar a disponibilidade do portal por um período contínuo de 30 dias, registrando cada interrupção e sua duração. |
+| Resultado esperado | Uptime do período ≥ 99%. |
+| Pós-condição | Relatório de uptime gerado; incidentes registrados com causa-raiz. |
 
 ---
 
-### RNF06 — Escalabilidade do sistema de recomendação
+## RNF06 — Capacidade sob carga em pico de campanha
 
-**Característica ISO 25010:** Escalabilidade
+**Característica ISO 25010:** Eficiência de Desempenho → **Capacidade**
 
-**User story:** Como gestor da Aventura, quero que a plataforma suporte ao menos 1.000 usuários simultâneos sem degradação perceptível das recomendações, para que campanhas de lançamento de espetáculos não comprometam a experiência dos espectadores.
+**Premissa do volume-alvo:** o número de 1.000 usuários simultâneos representa uma estimativa de pico durante lançamentos de espetáculo/campanhas de marketing da Aventura. Esse valor deve ser recalibrado quando o parceiro disponibilizar os dados reais de tráfego do Portal.
 
-**Testes de usuário:**
+**User story:** Como gestor da Aventura, quero que a plataforma suporte ao menos 1.000 usuários simultâneos sem degradação perceptível das recomendações, para que campanhas de lançamento não comprometam a experiência dos espectadores.
+
+**Critério de Aceitação:** com 1.000 usuários concorrentes por 15 min, o tempo de resposta tem **p95 ≤ 3 s** e **p99 ≤ 5 s**, taxa de erro **< 1%** e nenhuma queda de serviço.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Ambiente de homologação configurado com infraestrutura equivalente à produção. |
-| Procedimento de teste | Executar teste de carga simulando 1.000 usuários concorrentes navegando pela home, acessando carrosséis de recomendação e adicionando itens à wishlist por 15 minutos. |
-| Resultado esperado | Tempo médio de resposta ≤ 3s, taxa de erro < 1% e nenhuma queda do serviço durante o teste. |
-| Pós-condição | Métricas de CPU, memória e latência registradas e eventuais gargalos documentados. |
+| Pré-condição | Ambiente de homologação com infraestrutura equivalente à de produção. |
+| Procedimento | Executar teste de carga (ex.: k6 ou Locust) simulando 1.000 usuários concorrentes navegando pela home, acessando carrosséis e adicionando itens à wishlist, por 15 min. |
+| Resultado esperado | p95 ≤ 3 s, p99 ≤ 5 s, taxa de erro < 1% e nenhuma indisponibilidade durante o teste. |
+| Pós-condição | Métricas de CPU, memória e latência registradas; gargalos documentados. |
 
 ---
 
-### RNF07 — Precisão da geolocalização
+## RNF07 — Precisão da geolocalização
 
-**Característica ISO 25010:** Adequação Funcional
+**Característica ISO 25010:** Adequação Funcional → **Correção Funcional**
 
-**User story:** Como usuário localizado no Rio de Janeiro ou em São Paulo, quero que o sistema identifique corretamente minha cidade a partir do CEP ou da geolocalização do dispositivo, para que as recomendações priorizem espetáculos da minha região com precisão.
+**User story:** Como usuário localizado no Rio de Janeiro ou em São Paulo, quero que o sistema identifique corretamente minha cidade a partir do CEP ou da geolocalização do dispositivo, para que as recomendações priorizem espetáculos da minha região.
 
-**Testes de usuário:**
+**Critério de Aceitação:** a cidade correta é identificada em **≥ 95%** dos casos; quando identificada, os espetáculos da região correspondente aparecem entre as primeiras posições da seção regional.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Usuários de teste cadastrados com CEPs reais de SP e RJ, permissão de geolocalização concedida em parte dos casos. |
-| Procedimento de teste | Acessar a home com 10 perfis distintos (5 SP e 5 RJ), verificar se as recomendações da seção regional priorizam espetáculos da cidade correta. Repetir o teste com geolocalização do navegador ativada. |
-| Resultado esperado | A cidade correta é identificada em ≥ 95% dos casos e os espetáculos da região correspondente aparecem nas primeiras posições. |
-| Pós-condição | Logs de geolocalização registrados (sem armazenar coordenadas precisas, apenas cidade), respeitando a LGPD. |
+| Pré-condição | Usuários de teste cadastrados com CEPs reais de SP e RJ; permissão de geolocalização concedida em parte dos casos. |
+| Procedimento | Acessar a home com 10 perfis distintos (5 SP, 5 RJ) e verificar a seção regional. Repetir com a geolocalização do navegador ativada. |
+| Resultado esperado | Cidade correta em ≥ 95% dos casos; espetáculos da região correta nas primeiras posições. |
+| Pós-condição | Logs de geolocalização registrados apenas no nível de cidade (sem coordenadas precisas), respeitando a LGPD. |
 
+---
+
+## RNF08 — Interoperabilidade entre serviços e com a bilheteria *(novo)*
+
+**Característica ISO 25010:** Compatibilidade → **Interoperabilidade** e **Coexistência**
+
+**User story:** Como gestor da Aventura, quero que o serviço de recomendação se integre por APIs padronizadas ao catálogo e ao sistema de bilheteria externo, para que o redirecionamento do usuário à compra funcione corretamente e sem perda de contexto.
+
+**Critério de Aceitação:** toda comunicação entre serviços segue um contrato REST/JSON documentado; o redirecionamento à bilheteria preserva o identificador do espetáculo selecionado em **≥ 99%** dos casos; o serviço de recomendação opera sem conflito com os demais serviços que compartilham o mesmo ambiente.
+
+**Teste de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | Serviços de recomendação, catálogo e *gateway* de redirecionamento publicados em homologação, com contrato de API documentado (ex.: OpenAPI/Swagger). |
+| Procedimento | Executar 100 chamadas de ponta a ponta: obter recomendação → selecionar espetáculo → seguir para a bilheteria. Validar o contrato (status, schema do JSON) e conferir se o espetáculo aberto na bilheteria é o selecionado. |
+| Resultado esperado | 100% das respostas aderentes ao schema; espetáculo correto na bilheteria em ≥ 99% das chamadas; nenhum erro de coexistência entre serviços. |
+| Pós-condição | Logs de integração e relatório de aderência ao contrato armazenados. |
+
+---
+
+## RNF09 — Modularidade do serviço de recomendação *(novo)*
+
+**Característica ISO 25010:** Manutenibilidade → **Modularidade**, **Modificabilidade** e **Testabilidade**
+
+**User story:** Como desenvolvedor do projeto, quero que o serviço de recomendação seja modular e independente dos demais serviços, para que mudanças no algoritmo não exijam alterações em outros módulos nem causem regressões.
+
+**Critério de Aceitação:** alterar ou reimplantar o serviço de recomendação **não** requer alteração no serviço de gestão de conteúdo (baixo acoplamento); a cobertura de testes automatizados é **≥ 70%** nos módulos críticos do serviço; um *deploy* do serviço de recomendação não derruba os demais serviços.
+
+**Teste de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | Repositório com serviços separados, *pipeline* de CI configurado e suíte de testes automatizados. |
+| Procedimento | Modificar o algoritmo de recomendação (ex.: trocar KNN por SVD), rodar a suíte de testes, medir a cobertura e reimplantar apenas esse serviço. Verificar o estado dos demais serviços durante e após o *deploy*. |
+| Resultado esperado | Nenhuma alteração necessária fora do serviço de recomendação; cobertura ≥ 70% nos módulos críticos; demais serviços permanecem disponíveis durante o *deploy*. |
+| Pós-condição | Relatório de cobertura (CI) e log de *deploy* registrados. |
+
+---
+
+## RNF10 — Acesso multiplataforma *(novo)*
+
+**Característica ISO 25010:** Portabilidade → **Adaptabilidade**
+
+**User story:** Como espectador, quero acessar o Portal nos principais navegadores e sistemas operacionais, para que eu não dependa de um ambiente específico para descobrir espetáculos.
+
+**Critério de Aceitação:** a aplicação funciona sem erro funcional e com layout íntegro nas duas versões mais recentes de **Chrome, Safari, Firefox e Edge**, tanto em desktop quanto em mobile (iOS Safari e Android Chrome).
+
+**Teste de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | Aplicação publicada em homologação; matriz de navegadores/SOs definida. |
+| Procedimento | Executar o fluxo principal (onboarding → recomendação → wishlist → bilheteria) em cada combinação navegador × dispositivo da matriz, verificando funcionalidade e integridade visual. |
+| Resultado esperado | Fluxo concluído sem erro funcional em todas as combinações; nenhum elemento quebrado ou inacessível. |
+| Pós-condição | Matriz de compatibilidade preenchida; eventuais ajustes registrados no backlog. |
+
+---
 
 
 ## 11. Correlação entre RFs e RNFs
@@ -634,14 +706,16 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 | RNF | RF relacionados | Justificativa |
 |---|---|---|
-| RNF01 | RF01, RF02, RF04, RF06 | O tempo de resposta impacta diretamente as funcionalidades de descoberta e personalização: o questionário de onboarding (RF01), as sugestões por geolocalização (RF02), a navegação pelo catálogo de espetáculos (RF04) e a interação com a Wishlist (RF06) dependem de carregamento ágil para que o usuário não abandone o fluxo antes de receber as recomendações. |
+| RNF01 | RF01, RF02, RF04, RF05, RF06, RF10 | O tempo de resposta impacta diretamente as funcionalidades de descoberta e personalização: o onboarding (RF01), as sugestões por geolocalização (RF02), a navegação pelo catálogo (RF04), a busca específica (RF05), a interação com a Wishlist (RF06) e, sobretudo, o feed de recomendação inteligente (RF10) dependem de carregamento ágil para que o usuário não abandone o fluxo antes de receber as sugestões. |
 | RNF02 | RF03, RF08 | A proteção criptográfica de credenciais e dados pessoais sustenta diretamente o cadastro/login (RF03), em que senhas trafegam e são armazenadas, e a gestão de perfil e preferências (RF08), que manipula dados sensíveis como idade, gênero e CEP coletados no onboarding. |
-| RNF03 | RF03, RF08 | A conformidade com a LGPD é o que dá validade legal ao cadastro do usuário (RF03) e operacionaliza o direito de visualizar, editar e excluir dados pessoais e preferências previsto na gestão de perfil (RF08), garantindo transparência e controle sobre as informações coletadas. |
-| RNF04 | RF01, RF04, RF09 | A responsividade mobile é crítica nos pontos de maior fricção da jornada: o onboarding (RF01), em que o usuário responde ao questionário inicial pelo celular; a exploração do catálogo (RF04); e o redirecionamento para a bilheteria externa (RF09), em que qualquer falha de layout pode interromper a conversão em venda. |
-| RNF05 | RF02, RF04, RF07, RF09 | A disponibilidade da plataforma sustenta toda a jornada de descoberta e conversão: recomendações regionais (RF02), exploração do catálogo (RF04), consulta de informações dos teatros (RF07) e direcionamento à bilheteria (RF09) precisam estar ativos especialmente em horários de pico, como vésperas de estreia. |
-| RNF06 | RF01, RF02, RF04, RF06 | A escalabilidade garante que o motor de recomendação mantenha o desempenho mesmo com muitos usuários simultâneos realizando onboarding (RF01), recebendo sugestões por geolocalização (RF02), navegando pelo catálogo (RF04) e atualizando a Wishlist (RF06) — funcionalidades que dependem de processamento personalizado por usuário. |
+| RNF03 | RF03, RF08 | A privacidade e o controle do titular sobre seus dados (LGPD) operacionalizam o direito de visualizar, editar e excluir dados pessoais e preferências previsto na gestão de perfil (RF08) e dão validade ao tratamento dos dados coletados no cadastro (RF03), garantindo transparência e rastreabilidade das solicitações. |
+| RNF04 | RF01, RF04, RF05, RF06, RF08, RF09 | A responsividade mobile é crítica em toda a jornada citada na própria user story: o onboarding pelo celular (RF01), a exploração do catálogo (RF04), a busca (RF05), a gestão da Wishlist (RF06), a edição de perfil (RF08) e o redirecionamento à bilheteria externa (RF09), em que qualquer quebra de layout pode interromper a conversão em venda. |
+| RNF05 | RF02, RF04, RF05, RF07, RF09, RF10 | A disponibilidade da plataforma sustenta toda a jornada de descoberta e conversão: recomendações regionais (RF02), exploração do catálogo (RF04), busca (RF05), consulta de informações dos teatros (RF07), feed de recomendação personalizada (RF10) e direcionamento à bilheteria (RF09) precisam estar ativos especialmente em horários de pico, como vésperas de estreia. |
+| RNF06 | RF01, RF02, RF04, RF06, RF09, RF10 | A capacidade sob carga garante que o motor de recomendação mantenha o desempenho com muitos usuários simultâneos realizando onboarding (RF01), recebendo sugestões por geolocalização (RF02) e personalizadas (RF10), navegando pelo catálogo (RF04) e atualizando a Wishlist (RF06). Inclui o redirecionamento à bilheteria (RF09), caminho crítico de conversão que tende a concentrar acessos justamente nos picos de campanha. |
 | RNF07 | RF02, RF04 | A precisão da geolocalização é pré-requisito direto da filtragem regional (RF02), que prioriza eventos da cidade do usuário (RJ ou SP), e influencia a organização do catálogo (RF04), em que prateleiras regionais aparecem como destaque na home. |
-
+| RNF08 | RF04, RF07, RF09 | A interoperabilidade entre serviços sustenta o consumo de dados do catálogo (RF04) e dos metadados de teatros (RF07) por APIs padronizadas e, principalmente, o redirecionamento à bilheteria externa (RF09) — cujo hand-off para a ticketeira (ex.: Sympla) precisa preservar o identificador do espetáculo sem perda de contexto. |
+| RNF09 | RF01, RF02, RF08, RF10 | A modularidade do serviço de recomendação permite evoluir o algoritmo sem afetar os demais módulos. Atinge as funcionalidades alimentadas pelo motor: onboarding (RF01), recomendação por geolocalização (RF02), recomendação inteligente (RF10) e a atualização do vetor de interesses feita na gestão de perfil (RF08). |
+| RNF10 | RF01, RF04, RF06, RF09 | A adaptabilidade multiplataforma garante que o fluxo principal funcione em qualquer navegador/dispositivo: onboarding (RF01), navegação pelo catálogo (RF04), gestão da Wishlist (RF06) e redirecionamento à bilheteria (RF09) — representando a jornada de ponta a ponta que não pode depender de um ambiente específico. |
 ---
 
 ## 12. Diagramação do banco

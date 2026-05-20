@@ -1,0 +1,6 @@
+@BackEnd.Aventura_HostAddress = http://localhost:5253
+
+GET {{BackEnd.Aventura_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

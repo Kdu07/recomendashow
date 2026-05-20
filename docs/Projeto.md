@@ -2,26 +2,225 @@
 
 ## Sumário
 
-- [1. Problema](#1-problema)
-- [2. Contexto da Indústria do Parceiro](#2-contexto-da-indústria-do-parceiro)
-- [3. Visão e Objetivos do Produto](#3-visão-e-objetivos-do-produto)
-- [4. O que o Produto Faz e o que Não Faz](#4-o-que-o-produto-faz-e-o-que-não-faz)
-- [5. Personas e Jornada do Usuário](#5-personas-e-jornada-do-usuário)
-- [6. Fluxo do Negócio](#6-fluxo-do-negócio)
-- [7. Brainstorming de Features](#7-brainstorming-de-features)
-- [8. Business Model Canvas do MVP](#8-business-model-canvas-do-mvp)
-- [9. Requisitos Funcionais](#9-requisitos-funcionais)
-- [10. Requisitos Não Funcionais](#10-requisitos-não-funcionais)
-- [11. Correlação entre RFs e RNFs](#11-correlação-entre-rfs-e-rnfs)
-- [12. Diagramação do banco](#12-diagramação-do-banco)
-- [13. Diagrama de Classes](#13-diagrama-de-classes)
-- [14. Diagrama de Componentes](#14-diagrama-de-componentes)
-- [15. Diagrama de Casos de uso](#15-diagrama-de-casos-de-uso)
-- [16. Linguagens e Tecnologias Utilizadas](#16-linguagens-e-tecnologias-utilizadas)
-- [17. Termos e Abreviações](#17-termos-e-abreviações)
-- [Referências](#referências)
+<details>
+<summary><a href="#1-problema">1. Problema</a></summary>
 
----
+- [Descrição do Problema](#descrição-do-problema)
+- [Relevância no Contexto do Parceiro](#relevância-no-contexto-do-parceiro)
+- [Desafios e Oportunidades](#desafios-e-oportunidades)
+
+</details>
+
+<details>
+<summary><a href="#2-contexto-da-indústria-do-parceiro">2. Contexto da Indústria do Parceiro</a></summary>
+
+- [2.1 Rivalidade entre concorrentes](#21-rivalidade-entre-concorrentes)
+- [2.2 Ameaça de novos entrantes](#22-ameaça-de-novos-entrantes)
+- [2.3 Poder de barganha dos fornecedores](#23-poder-de-barganha-dos-fornecedores)
+- [2.4 Poder de barganha dos clientes](#24-poder-de-barganha-dos-clientes)
+- [2.5 Ameaça de produtos substitutos](#25-ameaça-de-produtos-substitutos)
+- [2.6 Análise SWOT](#26-análise-swot)
+
+</details>
+
+<details>
+<summary><a href="#3-visão-e-objetivos-do-produto">3. Visão e Objetivos do Produto</a></summary>
+
+- [3.1 Visão do Produto](#31-visão-do-produto)
+- [3.2 Objetivos do Produto](#32-objetivos-do-produto)
+- [3.3 Métricas de Sucesso (KPIs)](#33-métricas-de-sucesso-kpis)
+
+</details>
+
+<details>
+<summary><a href="#4-o-que-o-produto-faz-e-o-que-não-faz">4. O que o Produto Faz e o que Não Faz</a></summary>
+
+- [4.1 O Produto É](#41-o-produto-é)
+- [4.2 O Produto Não É](#42-o-produto-não-é)
+- [4.3 O Produto Faz](#43-o-produto-faz)
+- [4.4 O Produto Não Faz](#44-o-produto-não-faz)
+
+</details>
+
+<details>
+<summary><a href="#5-personas-e-jornada-do-usuário">5. Personas e Jornada do Usuário</a></summary>
+
+- [5.1 Personas](#51-personas)
+  - [5.1.1 Ana Luiza — Cliente em Formação](#511-ana-luiza--cliente-em-formação-descoberta)
+  - [5.1.2 Marcos Abrantes — Cliente Ativo](#512-marcos-abrantes--cliente-ativo-decisão-e-consumo)
+- [5.2 Jornada do Usuário](#52-jornada-do-usuário)
+  - [5.2.1 Jornada de Ana Luiza](#521-jornada-de-ana-luiza--cliente-em-formação)
+  - [5.2.2 Jornada de Marcos Abrantes](#522-jornada-de-marcos-abrantes--cliente-ativo)
+
+</details>
+
+<details>
+<summary><a href="#6-fluxo-do-negócio">6. Fluxo do Negócio</a></summary>
+
+- [Fluxo do Negócio](#6-fluxo-do-negócio)
+
+</details>
+
+<details>
+<summary><a href="#7-brainstorming-de-features">7. Brainstorming de Features</a></summary>
+
+- [1. Visão Geral do Modelo](#1-visão-geral-do-modelo-backend--inteligência)
+- [2. Interface do Usuário](#2-interface-do-usuário-front-end)
+- [2.1 Fluxo de Cadastro e Onboarding](#21-fluxo-de-cadastro-e-onboarding)
+- [2.2 Estrutura de Navegação](#22-estrutura-de-navegação)
+- [3. Funcionalidades Core](#3-funcionalidades-core)
+- [4. Roadmap: Funcionalidades Adicionais](#4-roadmap-funcionalidades-adicionais-futuro)
+
+</details>
+
+<details>
+<summary><a href="#8-business-model-canvas-do-mvp">8. Business Model Canvas do MVP</a></summary>
+
+- [Business Model Canvas do MVP](#8-business-model-canvas-do-mvp)
+
+</details>
+
+<details>
+<summary><a href="#9-requisitos-funcionais">9. Requisitos Funcionais</a></summary>
+
+- [9.1 Elicitação e Análise de Requisitos](#91--elicitação-e-análise-de-requisitos)
+- [9.2 Especificação e Validação de Requisitos Funcionais](#92-especificação-e-validação-de-requisitos-funcionais)
+- [RF01 — Onboarding de Interesses](#rf01--onboarding-de-interesses)
+- [RF02 — Recomendação por Geolocalização](#rf02--recomendação-por-geolocalização)
+- [RF03 — Autenticação e Persistência](#rf03--autenticação-e-persistência)
+- [RF04 — Catálogo Categorizado](#rf04--catálogo-categorizado)
+- [RF05 — Busca Específica](#rf05--busca-específica)
+- [RF06 — Gestão de Wishlist](#rf06--gestão-de-wishlist)
+- [RF07 — Informações de Teatros](#rf07--informações-de-teatros)
+- [RF08 — Gestão de Perfil e Preferências](#rf08--gestão-de-perfil-e-preferências)
+- [RF09 — Redirecionamento de Compra](#rf09--redirecionamento-de-compra)
+- [RF10 — Recomendação Inteligente](#rf10--recomendação-inteligente)
+
+</details>
+
+<details>
+<summary><a href="#10-requisitos-não-funcionais">10. Requisitos Não Funcionais</a></summary>
+
+- [RNF01 — Tempo de resposta das recomendações](#rnf01--tempo-de-resposta-das-recomendações)
+- [RNF02 — Segurança das credenciais de usuário](#rnf02--segurança-das-credenciais-de-usuário)
+- [RNF03 — Conformidade com a LGPD](#rnf03--conformidade-com-a-lgpd)
+- [RNF04 — Usabilidade da interface em dispositivos móveis](#rnf04--usabilidade-da-interface-em-dispositivos-móveis)
+- [RNF05 — Disponibilidade da plataforma](#rnf05--disponibilidade-da-plataforma)
+- [RNF06 — Escalabilidade do sistema de recomendação](#rnf06--escalabilidade-do-sistema-de-recomendação)
+- [RNF07 — Precisão da geolocalização](#rnf07--precisão-da-geolocalização)
+
+</details>
+
+<details>
+<summary><a href="#11-correlação-entre-rfs-e-rnfs">11. Correlação entre RFs e RNFs</a></summary>
+
+- [Correlação entre RFs e RNFs](#11-correlação-entre-rfs-e-rnfs)
+
+</details>
+
+<details>
+<summary><a href="#12-diagramação-do-banco">12. Diagramação do banco</a></summary>
+
+- [12.1 Diagrama Lógico](#121---diagrama-lógico)
+- [12.2 Entidades e Relacionamentos](#122---entidades-e-relacionamentos)
+- [12.3 Justificativa e Regras de Negócio](#123---justificativa-e-regras-de-negócio)
+- [12.4 Diagrama Conceitual](#124-diagrama-conceitual)
+- [12.4.1 Dicionário de Dados e Mapeamento](#1241-dicionário-de-dados-e-mapeamento)
+- [12.4.2 Definição de Chaves e Integridade Referencial](#1242-definição-de-chaves-e-integridade-referencial)
+- [12.4.3 Regras de Normalização Aplicadas](#1243-regras-de-normalização-aplicadas)
+- [12.4.4 Justificativa e Rastreabilidade](#1244-justificativa-e-rastreabilidade)
+
+</details>
+
+<details>
+<summary><a href="#13-diagrama-de-classes">13. Diagrama de Classes</a></summary>
+
+- [Teatro](#teatro)
+- [Espetaculo](#espetaculo)
+- [Usuario](#usuario)
+- [Wishlist](#wishlist)
+- [Preferencias](#preferencias-value-object)
+- [Interacao](#interacao)
+- [Recomendacao](#recomendacao)
+- [SistemaRecomendacao](#sistemarecomendacao)
+- [TipoInteracao](#tipointeracao-enumeration)
+- [Relacionamentos](#relacionamentos)
+- [Observações e Decisões de Design](#observações-e-decisões-de-design)
+
+</details>
+
+<details>
+<summary><a href="#14-diagrama-de-componentes">14. Diagrama de Componentes</a></summary>
+
+- [Packages](#packages)
+- [Componentes](#componentes)
+- [Interfaces](#interfaces)
+- [Responsabilidades do Storage Bucket](#responsabilidades-do-storage-bucket)
+- [Responsabilidades do PostgreSQL](#responsabilidades-do-postgresql)
+- [Decisões](#decisões)
+
+</details>
+
+<details>
+<summary><a href="#15-diagrama-de-casos-de-uso">15. Diagrama de Casos de uso</a></summary>
+
+- [Atores](#atores)
+- [Casos de Uso](#casos-de-uso)
+- [Relacionamentos do Diagrama](#relacionamentos-do-diagrama)
+- [Associação entre Requisitos Funcionais e Casos de Uso](#associação-entre-requisitos-funcionais-e-casos-de-uso)
+
+</details>
+
+<details>
+<summary><a href="#16-linguagens-e-tecnologias-utilizadas">16. Linguagens e Tecnologias Utilizadas</a></summary>
+
+- [Linguagens e Tecnologias Utilizadas](#16-linguagens-e-tecnologias-utilizadas)
+
+</details>
+
+<details>
+<summary><a href="#17-planejamento-de-testes">17. Planejamento de Testes</a></summary>
+
+- [17.1 Objetivo do planejamento de testes](#171-objetivo-do-planejamento-de-testes)
+- [17.2 Estratégia geral de testes](#172-estratégia-geral-de-testes)
+- [17.3 Testes de funcionalidade](#173-testes-de-funcionalidade)
+- [17.4 Testes de requisitos não funcionais](#174-testes-de-requisitos-não-funcionais)
+- [17.5 Testes de usabilidade](#175-testes-de-usabilidade)
+- [17.6 Testes de APIs externas](#176-testes-de-apis-externas)
+- [17.7 Testes de integração](#177-testes-de-integração)
+- [17.8 Discussão geral de abrangência dos testes](#178-discussão-geral-de-abrangência-dos-testes)
+</details>
+
+<details>
+<summary><a href="#18-desenvolvimento-do-projeto--sprint-3">18. Desenvolvimento Do Projeto — Sprint 3</a></summary>
+
+- [18.1 Objetivo do artefato](#181-objetivo-do-artefato)
+- [18.2 Arquitetura de codificação e estrutura de diretórios](#182-arquitetura-de-codificação-e-estrutura-de-diretórios)
+- [18.3 Desenvolvimento do Backend](#183-desenvolvimento-do-backend)
+  - [18.3.1 Arquitetura do backend](#1831-arquitetura-do-backend)
+- [18.4 Desenvolvimento do Frontend](#184-desenvolvimento-do-frontend)
+  - [18.4.1 Arquitetura do frontend](#1841-arquitetura-do-frontend)
+  - [18.4.2 Telas implementadas](#1842-telas-implementadas)
+- [18.5 Padrões de codificação e padrões de projeto](#185-padrões-de-codificação-e-padrões-de-projeto)
+  - [Padrões de codificação](#padrões-de-codificação)
+  - [Padrões de projeto](#padrões-de-projeto)
+- [18.6 Testes unitários e metodologia TDD](#186-testes-unitários-e-metodologia-tdd)
+  - [Estratégia de testes](#estratégia-de-testes)
+  - [Testes implementados](#testes-implementados)
+  - [Execução dos testes](#execução-dos-testes)
+  - [Resultado da cobertura](#resultado-da-cobertura)
+  - [Link do vídeo demonstrativo](#link-do-vídeo-demonstrativo)
+
+</details>
+
+<details>
+<summary><a href="#19-termos-e-abreviações">19. Termos e Abreviações</a></summary>
+
+- [Termos e Abreviações](#19-termos-e-abreviações)
+
+</details>
+
+- [Referências](#referências)
 
 ## 1. Problema
 
@@ -1336,7 +1535,275 @@ O frontend seguirá o padrão MVVM (Model-View-ViewModel), separando a interface
 
 O ViaCEP é uma API pública e gratuita que retorna dados de endereço a partir de um CEP informado. No projeto, ela será usada durante o onboarding do usuário para identificar automaticamente a cidade a partir do CEP cadastrado, sem que o usuário precise informar isso manualmente. Essa informação é essencial para o sistema de recomendação, que filtra os espetáculos de acordo com a cidade do usuário, sendo São Paulo ou Rio de Janeiro.
 
-## 17. Termos e Abreviações
+---
+
+## 17. Planejamento de Testes
+
+Esta seção apresenta a estrutura de planejamento de testes do sistema de recomendação da Aventura. O objetivo é organizar a validação sistemática da solução, cobrindo testes funcionais, testes de requisitos não funcionais, testes de usabilidade, testes de APIs externas e testes de integração.
+
+O planejamento foi estruturado para garantir que os principais fluxos do sistema sejam avaliados antes da entrega final, considerando tanto o comportamento esperado da aplicação quanto possíveis falhas, limitações técnicas e cenários negativos.
+
+A validação do sistema deve considerar o contexto do produto: um aplicativo mobile com onboarding, catálogo de espetáculos, recomendações personalizadas, wishlist, perfil, notificações, integração com APIs externas e redirecionamento para ticketeiras parceiras.
+
+---
+
+### 17.1 Objetivo do planejamento de testes
+
+O objetivo do planejamento de testes é definir como o sistema será validado ao longo da Sprint 3, garantindo que os requisitos funcionais, requisitos não funcionais, integrações e fluxos de uso sejam verificados de forma organizada.
+
+Os testes devem permitir identificar falhas de comportamento, problemas de usabilidade, inconsistências de integração, erros de comunicação com APIs externas e possíveis limitações de desempenho, segurança ou disponibilidade.
+
+Este planejamento também busca garantir que cada cenário de teste possua:
+
+- propósito;
+- pré-condições;
+- instruções de execução;
+- cenário positivo;
+- cenário negativo;
+- pós-condições;
+- critérios de validação;
+- discussão de abrangência.
+
+---
+
+### 17.2 Estratégia geral de testes
+
+A estratégia de testes do projeto está organizada em cinco frentes principais:
+
+1. **Testes de funcionalidade:** validam se os requisitos funcionais do sistema estão sendo cumpridos corretamente.
+2. **Testes de requisitos não funcionais:** avaliam atributos de qualidade, como desempenho, segurança, disponibilidade, usabilidade e manutenibilidade.
+3. **Testes de usabilidade:** verificam se usuários externos conseguem compreender e executar os principais fluxos da aplicação.
+4. **Testes de APIs externas:** validam o comportamento esperado das integrações com serviços externos, como ViaCEP e ticketeiras.
+5. **Testes de integração:** verificam a comunicação entre frontend, backend, banco de dados, motor de recomendação e sistemas externos.
+
+Os testes deverão contemplar cenários positivos e negativos, garantindo que o sistema seja avaliado tanto em fluxos esperados quanto em situações de erro.
+
+---
+
+### 17.3 Testes de funcionalidade
+
+Nesta seção, devem ser planejados os testes relacionados aos requisitos funcionais do sistema, validando se as principais funcionalidades operam conforme o esperado.
+
+| ID do teste | Requisito relacionado | Funcionalidade testada | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso |
+|---|---|---|---|---|---|---|---|---|---|
+| TF-01 | RF-XX | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+| TF-02 | RF-XX | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+| TF-03 | RF-XX | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+
+**Discussão de abrangência:**  
+A preencher pelo responsável, explicando quais funcionalidades foram cobertas e quais fluxos foram priorizados.
+
+---
+
+### 17.4 Testes de requisitos não funcionais
+
+Nesta seção, devem ser planejados os testes relacionados aos RNFs, avaliando atributos de qualidade como desempenho, segurança, disponibilidade, usabilidade, compatibilidade e escalabilidade.
+
+| ID do teste | RNF relacionado | Categoria de qualidade | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso |
+|---|---|---|---|---|---|---|---|---|---|
+| TNF-01 | RNF-XX | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+| TNF-02 | RNF-XX | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+| TNF-03 | RNF-XX | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+
+**Discussão de abrangência:**  
+A preencher pelo responsável, explicando quais RNFs foram cobertos e como os testes se relacionam com a arquitetura do sistema.
+
+---
+
+### 17.5 Testes de usabilidade
+
+Nesta seção, deve ser planejado o roteiro de testes de usabilidade com pelo menos 5 usuários externos ao grupo, utilizando SUS ou outro método definido pelo professor.
+
+#### Perfil dos participantes
+
+| Participante | Perfil | Familiaridade com apps mobile | Frequência de consumo cultural | Observações |
+|---|---|---|---|---|
+| P1 | A preencher | A preencher | A preencher | A preencher |
+| P2 | A preencher | A preencher | A preencher | A preencher |
+| P3 | A preencher | A preencher | A preencher | A preencher |
+| P4 | A preencher | A preencher | A preencher | A preencher |
+| P5 | A preencher | A preencher | A preencher | A preencher |
+
+#### Roteiro de testes de usabilidade
+
+| ID do teste | Fluxo avaliado | Propósito | Pré-condições | Tarefa do usuário | Cenário positivo | Cenário negativo | Pós-condições | Critério de sucesso | Métricas observadas |
+|---|---|---|---|---|---|---|---|---|---|
+| TU-01 | Onboarding | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Tempo, erros, dúvidas |
+| TU-02 | Home e recomendações | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Tempo, erros, dúvidas |
+| TU-03 | Busca | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Tempo, erros, dúvidas |
+| TU-04 | Wishlist | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Tempo, erros, dúvidas |
+| TU-05 | Perfil e preferências | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Tempo, erros, dúvidas |
+
+#### Questionário SUS
+
+| Item | Afirmação | Nota de 1 a 5 |
+|---|---|---|
+| 1 | Eu acho que gostaria de usar este sistema com frequência. | A preencher |
+| 2 | Eu achei o sistema desnecessariamente complexo. | A preencher |
+| 3 | Eu achei o sistema fácil de usar. | A preencher |
+| 4 | Eu acho que precisaria de ajuda de uma pessoa técnica para usar este sistema. | A preencher |
+| 5 | Eu achei que as funcionalidades do sistema estavam bem integradas. | A preencher |
+| 6 | Eu achei que havia muita inconsistência no sistema. | A preencher |
+| 7 | Eu imagino que a maioria das pessoas aprenderia a usar este sistema rapidamente. | A preencher |
+| 8 | Eu achei o sistema muito difícil de usar. | A preencher |
+| 9 | Eu me senti confiante usando o sistema. | A preencher |
+| 10 | Eu precisei aprender muitas coisas antes de conseguir usar o sistema. | A preencher |
+
+**Discussão de abrangência:**  
+A preencher pelo responsável, explicando quais fluxos da jornada mobile foram avaliados e quais limitações existem na amostra de usuários.
+
+---
+
+### 17.6 Testes de APIs externas
+
+Nesta seção, devem ser planejados os testes das APIs externas utilizadas pelo sistema, como ViaCEP, ticketeiras externas ou outros serviços consumidos pela aplicação.
+
+| ID do teste | API externa | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso | Ferramentas |
+|---|---|---|---|---|---|---|---|---|---|
+| TAPI-01 | ViaCEP | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Postman/Insomnia |
+| TAPI-02 | Ticketeira externa | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Postman/Insomnia |
+| TAPI-03 | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+
+**Discussão de abrangência:**  
+A preencher pelo responsável, explicando quais APIs foram cobertas e como o sistema deve lidar com falhas ou respostas inválidas.
+
+---
+
+### 17.7 Testes de integração
+
+Nesta seção, devem ser planejados os testes das interações entre componentes internos e sistemas externos. Também deve ser previsto o uso do módulo VHS para cache temporário de respostas de APIs externas.
+
+| ID do teste | Integração avaliada | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso | Ferramentas | Uso do VHS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| TI-01 | Frontend Mobile → Backend | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Não se aplica |
+| TI-02 | Backend → Banco de Dados | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Não se aplica |
+| TI-03 | Backend → Serviço de Recomendação | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Não se aplica |
+| TI-04 | Backend → API externa | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Sim |
+| TI-05 | Backend → Ticketeira externa | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Sim |
+
+**Método de validação dos resultados:**  
+A preencher pelo responsável, indicando como os resultados serão verificados, como status code, logs, resposta JSON, registros no banco ou comparação com respostas cacheadas pelo VHS.
+
+**Discussão de abrangência:**  
+A preencher pelo responsável, explicando quais integrações críticas foram priorizadas e como o VHS contribui para estabilidade e reprodutibilidade dos testes.
+
+---
+
+### 17.8 Discussão geral de abrangência dos testes
+
+A preencher após a conclusão das subseções anteriores.
+
+Nesta seção, o grupo deve discutir a cobertura geral do planejamento, destacando quais dimensões do sistema foram contempladas, quais riscos permanecem e quais seriam os próximos passos para execução dos testes.
+
+----
+
+## 18. Desenvolvimento Do Projeto  — Sprint 3
+
+Esta seção documenta o progresso incremental da solução de software durante a Sprint 3. O objetivo é evidenciar a evolução do backend, frontend, integrações, padrões de desenvolvimento, testes unitários, metodologia e comprovações de execução da aplicação.
+
+A documentação deve demonstrar que a implementação está alinhada ao planejamento da sprint, à arquitetura definida e aos padrões técnicos do projeto.
+
+---
+
+### 18.1 Objetivo do artefato
+
+Descrever brevemente como esta seção evidencia o progresso incremental da solução, contemplando implementação de backend e frontend, adoção de padrões de codificação, arquitetura definida, testes unitários e documentação das evidências de execução.
+
+---
+
+### 18.2 Arquitetura de codificação e estrutura de diretórios
+
+Nesta seção, deve ser apresentada a organização geral do projeto, separando backend, frontend, documentação, testes, configurações e arquivos auxiliares.
+
+#### Estrutura geral do repositório
+
+```text
+A preencher com a estrutura atual do projeto.
+```
+
+### 18.3 Desenvolvimento do Backend
+
+Esta seção deve documentar o progresso da implementação do backend durante a Sprint 3, incluindo arquitetura adotada, features desenvolvidas, rotas criadas, integração com banco de dados, autenticação externa e documentação Swagger.
+
+#### 18.3.1 Arquitetura do backend
+
+Descrever a arquitetura adotada no backend, indicando camadas, serviços, controllers, models, repositories, integração com banco de dados, autenticação e demais responsabilidades.
+
+```text
+A preencher com a estrutura de pastas do backend.
+```
+
+---
+
+### 18.4 Desenvolvimento do Frontend
+
+Esta seção deve documentar o progresso da implementação do frontend durante a Sprint 3, incluindo arquitetura adotada, telas desenvolvidas, integração com backend ou dados mockados e evidências visuais da aplicação.
+
+#### 18.4.1 Arquitetura do frontend
+
+Descrever a arquitetura adotada no frontend, indicando organização de telas, componentes, navegação, serviços, estados, hooks, ViewModels ou repositories, conforme o padrão definido pelo grupo.
+
+```text
+A preencher com a estrutura de pastas do frontend.
+```
+
+#### 18.4.2 Telas implementadas
+
+---
+
+### 18.5 Padrões de codificação e padrões de projeto
+
+Nesta seção, devem ser documentados os padrões adotados pelo grupo no desenvolvimento da Sprint 3, considerando organização de código, nomenclatura, commits, tratamento de erros, separação de responsabilidades e padrões de projeto.
+
+#### Padrões de codificação
+
+A preencher com os padrões definidos no `GuiaPadroesDesenvolvimento.md`, como nomenclatura, organização de arquivos, padrão de commits, tratamento de erros, formatação, separação de responsabilidades e boas práticas de código.
+
+#### Padrões de projeto
+
+| Tipo de padrão | Nome do padrão | Onde aparece no projeto | Justificativa |
+|---|---|---|---|
+| Criacional | A preencher | A preencher | A preencher |
+| Comportamental | A preencher | A preencher | A preencher |
+
+---
+
+### 18.6 Testes unitários e metodologia TDD
+
+Esta seção deve documentar a estratégia de testes unitários adotada no projeto, com foco nas funcionalidades implementadas e na aplicação da metodologia TDD.
+
+#### Estratégia de testes
+
+A preencher explicando como o grupo aplicou TDD, quais camadas foram priorizadas, quais ferramentas foram utilizadas e como os testes se conectam às funcionalidades desenvolvidas.
+
+#### Testes implementados
+
+| Teste | Camada testada | Funcionalidade | Resultado | Evidência |
+|---|---|---|---|---|
+| A preencher | Service | A preencher | A preencher | A preencher |
+| A preencher | Service | A preencher | A preencher | A preencher |
+| A preencher | Service | A preencher | A preencher | A preencher |
+
+#### Execução dos testes
+
+```bash
+A preencher com o comando utilizado para executar os testes.
+```
+
+#### Resultado da cobertura
+
+A preencher com prints, logs ou resumo da cobertura obtida.
+
+---
+
+#### Link do vídeo demonstrativo
+
+A preencher com o link do vídeo demonstrando a aplicação em execução, preferencialmente com tela dividida entre aplicação e console/VSCode.
+
+---
+
+
+## 19. Termos e Abreviações
 
 | Termo / Abreviação | Definição |
 |---|---|

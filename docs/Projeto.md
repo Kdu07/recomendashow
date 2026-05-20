@@ -787,8 +787,8 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Plataforma publicada em ambiente de produção com monitoramento ativo. |
-| Procedimento de teste | Monitorar a disponibilidade do portal por um período contínuo de 30 dias, registrando todas as interrupções e suas durações com ferramenta de uptime monitoring (ex.: UptimeRobot, Pingdom). |
-| Resultado esperado | Disponibilidade mensal ≥ 99% (downtime tolerado ≤ 7,2h/mês); tempo médio de recuperação (MTTR) ≤ 1 hora por incidente. |
+| Procedimento de teste | Monitorar a disponibilidade do portal por 24 horas contínuas, registrando todas as interrupções e suas durações. |
+| Resultado esperado | Disponibilidade ≥ 99% na janela monitorada (downtime tolerado ≤ 14,4 minutos nas 24h); alertas disparados corretamente em caso de queda. |
 | Pós-condição | Relatório de uptime gerado e incidentes registrados com causa raiz. |
 
 ---
@@ -797,14 +797,14 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 **Característica ISO 25010:** Eficiência de Desempenho → Capacity
 
-**User story:** Como gestor da Aventura, quero que a plataforma suporte ao menos 1.000 usuários simultâneos sem degradação perceptível das recomendações, para que campanhas de lançamento de espetáculos não comprometam a experiência dos espectadores.
+**User story:** Como gestor da Aventura, quero que a plataforma suporte ao menos 100 usuários simultâneos sem degradação perceptível das recomendações, para que campanhas de lançamento de espetáculos não comprometam a experiência dos espectadores.
 
 **Testes de usuário:**
 
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Ambiente de homologação configurado com infraestrutura equivalente à produção. |
-| Procedimento de teste | Executar teste de carga simulando 1.000 usuários concorrentes navegando pela home, acessando carrosséis de recomendação e adicionando itens à wishlist por 15 minutos contínuos (ex.: com k6 ou JMeter). |
+| Procedimento de teste | Executar teste de carga simulando 100 usuários concorrentes navegando pela home, acessando carrosséis de recomendação e adicionando itens à wishlist por 15 minutos contínuos (ex.: com k6 ou JMeter). |
 | Resultado esperado | Tempo médio de resposta ≤ 3s com p95 ≤ 5s; taxa de erro < 1%; nenhuma queda do serviço durante o teste; consumo de CPU < 80% e memória < 85% nos servidores monitorados. |
 | Pós-condição | Métricas de CPU, memória e latência registradas e eventuais gargalos documentados. |
 

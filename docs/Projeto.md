@@ -710,7 +710,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ### RNF01 — Tempo de resposta das recomendações
 
-**Característica ISO 25010:** Eficiência de Desempenho
+**Característica ISO 25010:** Eficiência de Desempenho → Time Behaviour
 
 **User story:** Como usuário, quero que as recomendações personalizadas e os carrosséis da home carreguem em até 3 segundos, para que eu possa explorar o catálogo sem frustração e manter o interesse na navegação.
 
@@ -719,15 +719,15 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Usuário autenticado com perfil de onboarding preenchido e wishlist contendo ao menos 1 item e conexão estável de no mínimo 10 Mbps. |
-| Procedimento de teste | Acessar a Home do Portal e medir, o tempo entre o carregamento da página e a renderização completa das prateleiras de recomendação. Repetir 5 vezes em horários distintos. |
-| Resultado esperado | O tempo médio de carregamento das recomendações deve ser ≤ 3 segundos em pelo menos 4 das 5 execuções. |
+| Procedimento de teste | Acessar a Home do Portal e medir o tempo entre o carregamento da página e a renderização completa das prateleiras de recomendação. Repetir 20 vezes em horários distintos para garantir base estatística confiável. |
+| Resultado esperado | Tempo de carregamento das recomendações com p95 ≤ 3 segundos e média ≤ 2 segundos. |
 | Pós-condição | Carrosséis renderizados com itens personalizados e logs de performance armazenados para análise. |
 
 ---
 
 ### RNF02 — Segurança das credenciais de usuário
 
-**Característica ISO 25010:** Segurança
+**Característica ISO 25010:** Segurança → Confidentiality e Integrity
 
 **User story:** Como usuário cadastrado, quero que minha senha e dados pessoais (nome, idade, gênero, CEP) sejam armazenados e transmitidos de forma criptografada, para que minhas informações não sejam expostas em caso de tentativa de invasão ou interceptação.
 
@@ -736,15 +736,15 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Usuário cadastrado com e-mail e senha válidos e banco de dados de teste populado. |
-| Procedimento de teste | Inspecionar o tráfego de rede no momento do login com ferramenta como DevTools, verificando uso de HTTPS/TLS. Consultar diretamente o banco de dados e verificar se a senha está armazenada com hash e não em texto plano. |
-| Resultado esperado | Todo tráfego ocorre via HTTPS, nenhuma senha é armazenada em texto plano no banco e o hash não é reversível. |
+| Procedimento de teste | Inspecionar o tráfego de rede no momento do login com ferramenta como DevTools, verificando uso de HTTPS/TLS 1.2+. Consultar diretamente o banco de dados e verificar se a senha está armazenada com hash (ex.: bcrypt, Argon2) e não em texto plano. Verificar ausência de dados sensíveis em logs de aplicação. |
+| Resultado esperado | 100% do tráfego ocorre via HTTPS/TLS 1.2+; nenhuma senha armazenada em texto plano; hash aplicado é não reversível; nenhum dado sensível visível em logs ou payload. |
 | Pós-condição | Sessão autenticada com token seguro e nenhum dado sensível visível em logs ou no payload em texto plano. |
 
 ---
 
 ### RNF03 — Conformidade com a LGPD
 
-**Característica ISO 25010:** Segurança / Conformidade
+**Característica ISO 25010:** Segurança → Privacy
 
 **User story:** Como usuário, quero poder consultar, editar e excluir meus dados pessoais e preferências a qualquer momento, para que a plataforma respeite meus direitos garantidos pela LGPD e eu mantenha controle sobre minhas informações.
 
@@ -753,15 +753,15 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Usuário autenticado com dados de perfil preenchidos no onboarding (idade, gênero, CEP, preferências). |
-| Procedimento de teste | Acessar a área de Perfil → tentar editar cada campo de dado pessoal e preferências. Em seguida, solicitar exclusão da conta e verificar se os dados são efetivamente removidos ou anonimizados na base. |
-| Resultado esperado | O usuário consegue visualizar, editar e excluir seus dados e após a exclusão, os registros pessoais não estão mais associados ao identificador do usuário na base. |
-| Pós-condição | Processo de exclusão/edição concluído com sucesso. |
+| Procedimento de teste | Acessar a área de Perfil → tentar editar cada campo de dado pessoal e preferências. Em seguida, solicitar exclusão da conta e verificar se os dados são efetivamente removidos ou anonimizados na base em até 30 dias. Verificar existência de registro de consentimento (opt-in) para cada finalidade de tratamento de dados. |
+| Resultado esperado | O usuário consegue visualizar, editar e excluir seus dados; após a exclusão, os registros pessoais não estão mais associados ao identificador do usuário na base. |
+| Pós-condição | Processo de exclusão/edição concluído com sucesso e logs de auditoria gerados. |
 
 ---
 
 ### RNF04 — Usabilidade da interface em dispositivos móveis
 
-**Característica ISO 25010:** Usabilidade
+**Característica ISO 25010:** Usabilidade → Learnability e Operability
 
 **User story:** Como espectador que acessa o portal pelo celular, quero que toda a navegação (home, busca, wishlist, perfil e fluxo de onboarding) seja totalmente responsiva e intuitiva em telas a partir de 480px, para que eu possa descobrir espetáculos e gerenciar minhas preferências em qualquer dispositivo.
 
@@ -769,7 +769,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Aplicação publicada em ambiente de homologação, dispositivos disponíveis com larguras de 480px e 720px. |
+| Pré-condição | Aplicação publicada em ambiente de homologação; dispositivos disponíveis com larguras de 480px e 720px. |
 | Procedimento de teste | Realizar teste de usabilidade com 5 usuários, solicitando: completar o onboarding, buscar um espetáculo, adicionar à wishlist, acessar perfil e seguir para a bilheteria. Medir taxa de conclusão e SUS (System Usability Scale). |
 | Resultado esperado | Taxa de conclusão ≥ 90% das tarefas sem ajuda externa; pontuação SUS ≥ 70; nenhum elemento cortado ou inacessível nas resoluções testadas. |
 | Pós-condição | Relatório de usabilidade documentado; eventuais ajustes de UI registrados como backlog. |
@@ -778,7 +778,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ### RNF05 — Disponibilidade da plataforma
 
-**Característica ISO 25010:** Confiabilidade
+**Característica ISO 25010:** Confiabilidade → Availability
 
 **User story:** Como usuário do Portal Aventura, quero que a plataforma esteja disponível 99% do tempo no horário comercial e em horários de pico, para que eu possa consultar a programação e ser direcionado à bilheteria sem indisponibilidades.
 
@@ -787,15 +787,15 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Plataforma publicada em ambiente de produção com monitoramento ativo. |
-| Procedimento de teste | Monitorar a disponibilidade do portal por um período contínuo de 10 dias, registrando todas as interrupções e suas durações. |
-| Resultado esperado | Disponibilidade mensal ≥ 99%. |
+| Procedimento de teste | Monitorar a disponibilidade do portal por um período contínuo de 30 dias, registrando todas as interrupções e suas durações com ferramenta de uptime monitoring (ex.: UptimeRobot, Pingdom). |
+| Resultado esperado | Disponibilidade mensal ≥ 99% (downtime tolerado ≤ 7,2h/mês); tempo médio de recuperação (MTTR) ≤ 1 hora por incidente. |
 | Pós-condição | Relatório de uptime gerado e incidentes registrados com causa raiz. |
 
 ---
 
 ### RNF06 — Escalabilidade do sistema de recomendação
 
-**Característica ISO 25010:** Escalabilidade
+**Característica ISO 25010:** Eficiência de Desempenho → Capacity
 
 **User story:** Como gestor da Aventura, quero que a plataforma suporte ao menos 1.000 usuários simultâneos sem degradação perceptível das recomendações, para que campanhas de lançamento de espetáculos não comprometam a experiência dos espectadores.
 
@@ -804,15 +804,15 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Ambiente de homologação configurado com infraestrutura equivalente à produção. |
-| Procedimento de teste | Executar teste de carga simulando 1.000 usuários concorrentes navegando pela home, acessando carrosséis de recomendação e adicionando itens à wishlist por 15 minutos. |
-| Resultado esperado | Tempo médio de resposta ≤ 3s, taxa de erro < 1% e nenhuma queda do serviço durante o teste. |
+| Procedimento de teste | Executar teste de carga simulando 1.000 usuários concorrentes navegando pela home, acessando carrosséis de recomendação e adicionando itens à wishlist por 15 minutos contínuos (ex.: com k6 ou JMeter). |
+| Resultado esperado | Tempo médio de resposta ≤ 3s com p95 ≤ 5s; taxa de erro < 1%; nenhuma queda do serviço durante o teste; consumo de CPU < 80% e memória < 85% nos servidores monitorados. |
 | Pós-condição | Métricas de CPU, memória e latência registradas e eventuais gargalos documentados. |
 
 ---
 
 ### RNF07 — Precisão da geolocalização
 
-**Característica ISO 25010:** Adequação Funcional
+**Característica ISO 25010:** Adequação Funcional → Functional Correctness
 
 **User story:** Como usuário localizado no Rio de Janeiro ou em São Paulo, quero que o sistema identifique corretamente minha cidade a partir do CEP ou da geolocalização do dispositivo, para que as recomendações priorizem espetáculos da minha região com precisão.
 
@@ -820,9 +820,9 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Usuários de teste cadastrados com CEPs reais de SP e RJ, permissão de geolocalização concedida em parte dos casos. |
+| Pré-condição | Usuários de teste cadastrados com CEPs reais de SP e RJ; permissão de geolocalização concedida em parte dos casos. |
 | Procedimento de teste | Acessar a home com 10 perfis distintos (5 SP e 5 RJ), verificar se as recomendações da seção regional priorizam espetáculos da cidade correta. Repetir o teste com geolocalização do navegador ativada. |
-| Resultado esperado | A cidade correta é identificada em ≥ 95% dos casos e os espetáculos da região correspondente aparecem nas primeiras posições. |
+| Resultado esperado | A cidade correta é identificada em ≥ 95% dos casos (≥ 19 de 20 perfis); espetáculos da região correspondente aparecem nas 3 primeiras posições da seção regional. |
 | Pós-condição | Logs de geolocalização registrados (sem armazenar coordenadas precisas, apenas cidade), respeitando a LGPD. |
 
 

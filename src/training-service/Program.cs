@@ -2,9 +2,9 @@ using TrainingService.Data;
 using TrainingService.Export;
 using TrainingService.Training;
 
-var rawPath     = args.ElementAtOrDefault(0) ?? "src/database_sympla.csv";
-var datasetPath = args.ElementAtOrDefault(1) ?? "src/dataset/dataset.csv";
-var weightsPath = args.ElementAtOrDefault(2) ?? "src/models/svd_weights.json";
+var rawPath     = args.ElementAtOrDefault(0) ?? "data/raw/database_sympla.csv";
+var datasetPath = args.ElementAtOrDefault(1) ?? "data/dataset/dataset.csv";
+var weightsPath = args.ElementAtOrDefault(2) ?? "data/models/svd_weights.json";
 
 Console.WriteLine("=== Aventura Training Service ===");
 Console.WriteLine($"Input:   {rawPath}");

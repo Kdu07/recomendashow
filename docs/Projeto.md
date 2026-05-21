@@ -1585,7 +1585,7 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
 | **Resultado Esperado** | Toda requisição HTTP redirecionada para HTTPS; header HSTS presente com `max-age` ≥ 31536000; nenhuma credencial transmitida em texto claro. |
 | **Pós-condição** | Evidência de conformidade com HSTS registrada; relatório de segurança atualizado. |
  
-#### RNF03 — Conformidade com a LGPD
+#### RNF03 — Privacidade e direitos do titular (LGPD)
  
 **Cenário Positivo 1:** Edição e consulta de dados pessoais pelo usuário
  
@@ -1625,7 +1625,7 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
 | **Resultado Esperado** | O sistema não permite conclusão do cadastro sem registro formal de consentimento para ao menos a finalidade principal; ausência de opt-in bloqueia o fluxo com mensagem clara ao usuário. |
 | **Pós-condição** | Evidência de conformidade com o Art. 7º da LGPD (consentimento como base legal) documentada. |
 
-#### RNF04 — Usabilidade da Interface em Dispositivos Móveis
+#### RNF04 — Usabilidade e responsividade em dispositivos móveis
  
 **Cenário Positivo:** Conclusão das tarefas principais em mobile (480px e 720px)
  
@@ -1683,7 +1683,7 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
 | **Resultado Esperado** | Página de manutenção exibida com mensagem clara, previsão de retorno e informações de contato; nenhum erro 500 exposto; após restauração, usuário redirecionado automaticamente ou orientado a atualizar a página. |
 | **Pós-condição** | Processo de comunicação de manutenção revisado; notificação proativa a usuários incluída no plano de manutenção futuro. |
 
-#### RNF06 — Escalabilidade do Sistema de Recomendação
+#### RNF06 — Capacidade sob carga em pico de campanha
 
 **Cenário Positivo:** Teste de carga com 100 usuários simultâneos dentro do SLA
  
@@ -1749,8 +1749,35 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
 | **Procedimento** | 1: Acessar o Portal negando a permissão de geolocalização. 2: Navegar pela Home sem fornecer CEP. 3: Verificar o comportamento da seção regional: exibe conteúdo genérico, solicita ação do usuário ou exibe mensagem explicativa? 4: Verificar se a página carrega sem erros e as demais seções funcionam normalmente. |
 | **Resultado Esperado** | A seção regional exibe conteúdo genérico ou mensagem orientando o usuário a fornecer sua localização; nenhuma seção quebra ou exibe erro técnico; as demais funcionalidades da Home operam normalmente. |
 | **Pós-condição** | Experiência de usuário sem localização documentada; decisão de UX registrada no backlog (ex.: exibir modal de boas-vindas solicitando CEP). |
+ 
+#### RNF08 — Modularidade do Serviço de Recomendação
+ 
+**Cenário Positivo:** Troca de algoritmo sem impacto nos demais serviços
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Repositório com serviços separados. Pipeline de CI configurado com suíte de testes automatizados e relatório de cobertura (ex.: pytest-cov ou Jest --coverage). Algoritmo atual de recomendação documentado. |
+| **Procedimento** | 1. Modificar o algoritmo de recomendação (ex.: substituir KNN por SVD) apenas dentro do serviço de recomendação. 2. Executar a suíte de testes automatizados do serviço de recomendação e verificar cobertura nos módulos críticos. 3. Verificar que nenhum arquivo fora do repositório do serviço de recomendação precisou ser alterado. 4. Reimplantar apenas o serviço de recomendação via pipeline. 5. Verificar o estado dos demais serviços (catálogo, gateway, bilheteria) durante e após o deploy. |
+| **Resultado Esperado** | Nenhuma alteração necessária fora do serviço de recomendação; cobertura ≥ 70% nos módulos críticos reportada pelo CI; demais serviços permanecem com status 200 no health check durante todo o deploy. |
+| **Pós-condição** | Relatório de cobertura exportado como artefato do CI; log de deploy registrado; versão do algoritmo documentada no changelog. |
 
----
+**Cenário Negativo 1:** Deploy do serviço de recomendação causa indisponibilidade em outro serviço
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Ambiente de homologação com todos os serviços ativos e monitorados. Health check endpoints configurados para cada serviço. |
+| **Procedimento** | 1. Iniciar o deploy do serviço de recomendação. 2. Durante o deploy, executar health checks contínuos (a cada 10 segundos) em todos os demais serviços (catálogo, gateway, autenticação). 3. Registrar qualquer resposta diferente de 200 nos demais serviços durante e após o deploy. 4. Verificar se o serviço de recomendação implementa deploy sem downtime (ex.: rolling update ou blue-green). |
+| **Resultado Esperado** | Todos os demais serviços permanecem com status 200 durante todo o deploy; o serviço de recomendação implementa estratégia de zero-downtime deployment; qualquer falha de isolamento é registrada como incidente de acoplamento. |
+| **Pós-condição** | Log de health checks durante o deploy exportado; incidentes de acoplamento registrados como dívida técnica prioritária. |
+
+**Cenário Negativo 2:** Cobertura de testes abaixo do critério de aceitação
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Pipeline de CI configurado com ferramenta de cobertura (pytest-cov, Jest --coverage ou equivalente). Threshold de cobertura mínima configurado no pipeline (≥ 70%). |
+| **Procedimento** | 1. Simular a adição de novo código nos módulos críticos do serviço de recomendação sem os respectivos testes unitários. 2. Executar o pipeline de CI. 3. Verificar se o pipeline falha automaticamente ao detectar cobertura abaixo de 70% nos módulos críticos. 4. Verificar se o relatório de cobertura indica claramente quais linhas/funções não estão cobertas. |
+| **Resultado Esperado** | Pipeline retorna exit code 1 e bloqueia o merge/deploy quando cobertura < 70% nos módulos críticos; relatório HTML de cobertura indica exatamente as linhas não cobertas; desenvolvedor é notificado automaticamente. |
+| **Pós-condição** | Relatório de cobertura com falha exportado como artefato; testes faltantes registrados como tarefa no backlog antes do próximo deploy. |
 
 ### 17.5 Testes de usabilidade
 

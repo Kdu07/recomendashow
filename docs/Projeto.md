@@ -706,7 +706,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 
 ## 10. Requisitos Não Funcionais
-## RNF01 — Tempo de resposta das recomendações
+### RNF01 — Tempo de resposta das recomendações
 
 **Característica ISO 25010:** Eficiência de Desempenho → **Comportamento Temporal**
 
@@ -725,7 +725,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
-## RNF02 — Segurança das credenciais de usuário
+### RNF02 — Segurança das credenciais de usuário
 
 **Característica ISO 25010:** Segurança → **Confidencialidade** e **Integridade**
 
@@ -744,7 +744,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
-## RNF03 — Privacidade e direitos do titular (LGPD)
+### RNF03 — Privacidade e direitos do titular (LGPD)
 
 **Característica ISO 25010:** Segurança → **Confidencialidade (foco em Privacidade de dados pessoais)** e **Responsabilização**
 
@@ -763,7 +763,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
-## RNF04 — Usabilidade e responsividade em dispositivos móveis
+### RNF04 — Usabilidade e responsividade em dispositivos móveis
 
 **Característica ISO 25010:** Usabilidade → **Operabilidade**, **Apreensibilidade** e **Acessibilidade**
 
@@ -782,7 +782,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
-## RNF05 — Disponibilidade da plataforma
+### RNF05 — Disponibilidade da plataforma
 
 **Característica ISO 25010:** Confiabilidade → **Disponibilidade**
 
@@ -801,7 +801,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
-## RNF06 — Capacidade sob carga em pico de campanha
+### RNF06 — Capacidade sob carga em pico de campanha
 
 **Característica ISO 25010:** Eficiência de Desempenho → **Capacidade**
 
@@ -822,7 +822,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
-## RNF07 — Precisão da geolocalização
+### RNF07 — Precisão da geolocalização
 
 **Característica ISO 25010:** Adequação Funcional → **Correção Funcional**
 
@@ -841,26 +841,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
-## RNF08 — Interoperabilidade entre serviços e com a bilheteria *(novo)*
-
-**Característica ISO 25010:** Compatibilidade → **Interoperabilidade** e **Coexistência**
-
-**User story:** Como gestor da Aventura, quero que o serviço de recomendação se integre por APIs padronizadas ao catálogo e ao sistema de bilheteria externo, para que o redirecionamento do usuário à compra funcione corretamente e sem perda de contexto.
-
-**Critério de Aceitação:** toda comunicação entre serviços segue um contrato REST/JSON documentado; o redirecionamento à bilheteria preserva o identificador do espetáculo selecionado em **≥ 99%** dos casos; o serviço de recomendação opera sem conflito com os demais serviços que compartilham o mesmo ambiente.
-
-**Teste de usuário:**
-
-| Campo | Descrição |
-|---|---|
-| Pré-condição | Serviços de recomendação, catálogo e *gateway* de redirecionamento publicados em homologação, com contrato de API documentado (ex.: OpenAPI/Swagger). |
-| Procedimento | Executar 100 chamadas de ponta a ponta: obter recomendação → selecionar espetáculo → seguir para a bilheteria. Validar o contrato (status, schema do JSON) e conferir se o espetáculo aberto na bilheteria é o selecionado. |
-| Resultado esperado | 100% das respostas aderentes ao schema; espetáculo correto na bilheteria em ≥ 99% das chamadas; nenhum erro de coexistência entre serviços. |
-| Pós-condição | Logs de integração e relatório de aderência ao contrato armazenados. |
-
----
-
-## RNF09 — Modularidade do serviço de recomendação *(novo)*
+### RNF08 — Modularidade do serviço de recomendação
 
 **Característica ISO 25010:** Manutenibilidade → **Modularidade**, **Modificabilidade** e **Testabilidade**
 
@@ -879,25 +860,6 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
-## RNF10 — Acesso multiplataforma *(novo)*
-
-**Característica ISO 25010:** Portabilidade → **Adaptabilidade**
-
-**User story:** Como espectador, quero acessar o Portal nos principais navegadores e sistemas operacionais, para que eu não dependa de um ambiente específico para descobrir espetáculos.
-
-**Critério de Aceitação:** a aplicação funciona sem erro funcional e com layout íntegro nas duas versões mais recentes de **Chrome, Safari, Firefox e Edge**, tanto em desktop quanto em mobile (iOS Safari e Android Chrome).
-
-**Teste de usuário:**
-
-| Campo | Descrição |
-|---|---|
-| Pré-condição | Aplicação publicada em homologação; matriz de navegadores/SOs definida. |
-| Procedimento | Executar o fluxo principal (onboarding → recomendação → wishlist → bilheteria) em cada combinação navegador × dispositivo da matriz, verificando funcionalidade e integridade visual. |
-| Resultado esperado | Fluxo concluído sem erro funcional em todas as combinações; nenhum elemento quebrado ou inacessível. |
-| Pós-condição | Matriz de compatibilidade preenchida; eventuais ajustes registrados no backlog. |
-
----
-
 
 ## 11. Correlação entre RFs e RNFs
 
@@ -912,9 +874,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 | RNF05 | RF02, RF04, RF05, RF07, RF09, RF10 | A disponibilidade da plataforma sustenta toda a jornada de descoberta e conversão: recomendações regionais (RF02), exploração do catálogo (RF04), busca (RF05), consulta de informações dos teatros (RF07), feed de recomendação personalizada (RF10) e direcionamento à bilheteria (RF09) precisam estar ativos especialmente em horários de pico, como vésperas de estreia. |
 | RNF06 | RF01, RF02, RF04, RF06, RF09, RF10 | A capacidade sob carga garante que o motor de recomendação mantenha o desempenho com muitos usuários simultâneos realizando onboarding (RF01), recebendo sugestões por geolocalização (RF02) e personalizadas (RF10), navegando pelo catálogo (RF04) e atualizando a Wishlist (RF06). Inclui o redirecionamento à bilheteria (RF09), caminho crítico de conversão que tende a concentrar acessos justamente nos picos de campanha. |
 | RNF07 | RF02, RF04 | A precisão da geolocalização é pré-requisito direto da filtragem regional (RF02), que prioriza eventos da cidade do usuário (RJ ou SP), e influencia a organização do catálogo (RF04), em que prateleiras regionais aparecem como destaque na home. |
-| RNF08 | RF04, RF07, RF09 | A interoperabilidade entre serviços sustenta o consumo de dados do catálogo (RF04) e dos metadados de teatros (RF07) por APIs padronizadas e, principalmente, o redirecionamento à bilheteria externa (RF09) — cujo hand-off para a ticketeira (ex.: Sympla) precisa preservar o identificador do espetáculo sem perda de contexto. |
-| RNF09 | RF01, RF02, RF08, RF10 | A modularidade do serviço de recomendação permite evoluir o algoritmo sem afetar os demais módulos. Atinge as funcionalidades alimentadas pelo motor: onboarding (RF01), recomendação por geolocalização (RF02), recomendação inteligente (RF10) e a atualização do vetor de interesses feita na gestão de perfil (RF08). |
-| RNF10 | RF01, RF04, RF06, RF09 | A adaptabilidade multiplataforma garante que o fluxo principal funcione em qualquer navegador/dispositivo: onboarding (RF01), navegação pelo catálogo (RF04), gestão da Wishlist (RF06) e redirecionamento à bilheteria (RF09) — representando a jornada de ponta a ponta que não pode depender de um ambiente específico. |
+| RNF08 | RF01, RF02, RF08, RF10 | A modularidade do serviço de recomendação permite evoluir o algoritmo sem afetar os demais módulos. Atinge as funcionalidades alimentadas pelo motor: onboarding (RF01), recomendação por geolocalização (RF02), recomendação inteligente (RF10) e a atualização do vetor de interesses feita na gestão de perfil (RF08). |
 ---
 
 ## 12. Diagramação do banco

@@ -1508,7 +1508,9 @@ Os testes deverão contemplar cenários positivos e negativos, garantindo que o 
 
 ### 17.3 Testes de funcionalidade
 
-Esta seção evolui os testes de usuário definidos junto a cada Requisito Funcional (RFs da seção 9.2) para casos de teste funcionais completos, com propósito explícito, pré-condições, cenários positivos e negativos, instruções de execução, pós-condições e critério objetivo de sucesso. A premissa adotada foi garantir cobertura mínima de **um caso de teste principal por RF** (TF-01 a TF-10), priorizando os fluxos da jornada crítica do usuário: descoberta → personalização → wishlist → conversão. Os cenários negativos foram desenhados para validar tratamento de erro, validações de entrada, indisponibilidade de serviços externos e estados-limite da aplicação.
+Esta seção evolui os testes de usuário definidos junto a cada Requisito Funcional (RFs da seção 9.2) para casos de teste funcionais completos, com propósito explícito, pré-condições, cenários positivos e negativos, instruções de execução, pós-condições e critério objetivo de sucesso. Dessa forma O plano de testes funcionais cobre **100% dos 10 RFs definidos na seção 9.2**.
+
+A premissa adotada foi garantir cobertura mínima de **um caso de teste principal por RF** (TF-01 a TF-10), priorizando os fluxos da jornada crítica do usuário: descoberta → personalização → wishlist → conversão. Os cenários negativos foram desenhados para validar tratamento de erro, validações de entrada, indisponibilidade de serviços externos e estados-limite da aplicação.
 
 **Casos de teste:** [TF-01](#tf-01) · [TF-02](#tf-02) · [TF-03](#tf-03) · [TF-04](#tf-04) · [TF-05](#tf-05) · [TF-06](#tf-06) · [TF-07](#tf-07) · [TF-08](#tf-08) · [TF-09](#tf-09) · [TF-10](#tf-10)
 
@@ -1840,18 +1842,6 @@ Esta seção evolui os testes de usuário definidos junto a cada Requisito Funci
 **Pós-condições:** Nenhuma alteração nas preferências do usuário, no catálogo ou no histórico de navegação; o comportamento de navegação registrado durante a execução do teste pode ser desconsiderado para fins de análise do motor.
 
 **Critério de sucesso:** O carrossel "Pra você" exibe espetáculos compatíveis com o perfil do usuário (gênero do onboarding e comportamento de navegação), com aderência mínima de 70% dos itens exibidos ao gênero de preferência; a seção "Espetáculos semelhantes" exibe espetáculos do mesmo gênero e da cidade do usuário em ≥ 70% das sugestões, sem misturar gêneros incompatíveis; o empty state com CTA é renderizado corretamente para usuário sem onboarding concluído e não bloqueia a navegação; a seção "Espetáculos semelhantes" é renderizada de forma consistente (vazia, ocultada ou populada) independentemente do volume de resultados disponíveis.
-
-#### Discussão de abrangência
-
-O plano de testes funcionais cobre **100% dos 10 RFs definidos na seção 9.2**, com um caso de teste principal por requisito. Cada caso contempla pelo menos um cenário positivo (caminho feliz validado em conjunto com a equipe de produto) e dois ou três cenários negativos, totalizando uma cobertura mínima de **três variações por funcionalidade**. A escolha por concentrar a evolução em um teste principal por RF — em vez de fragmentar em vários testes pequenos — foi feita para manter o planejamento legível dentro do tempo da Sprint 3 e por entender que os cenários negativos já garantem a exploração de estados-limite mais relevantes.
-
-Os fluxos priorizados foram aqueles que sustentam a jornada crítica do produto: **descoberta inicial** (TF-01 Onboarding, TF-02 Geolocalização, TF-04 Catálogo, TF-05 Busca), **personalização contínua** (TF-08 Edição de perfil, TF-10 Recomendação), **engajamento** (TF-06 Wishlist) e **conversão** (TF-09 Redirecionamento de compra). Os testes TF-03 (Autenticação) e TF-07 (Informações de teatro) cobrem requisitos transversais que sustentam a confiança e a completude informacional do produto. Essa priorização está coerente com as personas Ana Luiza (descoberta) e Marcos Abrantes (decisão e consumo) descritas na seção 5.1.
-
-Os cenários negativos foram desenhados a partir de três famílias de risco: **validação de entrada** (campos obrigatórios, strings vazias, caracteres especiais), **falhas de integração** (indisponibilidade de serviços externos, perda de rede, sessão expirada) e **regras de negócio em estados-limite** (categoria sem cadastros, usuário sem histórico, URLs fora da allowlist). Os critérios de sucesso foram escritos em termos objetivos e mensuráveis (percentuais de aderência, tempos máximos de resposta, integridade entre estado visual e banco), permitindo execução e avaliação independentes pelo time.
-
-**Limitações reconhecidas:** (i) os testes funcionais não exploram combinatórias profundas entre múltiplos filtros simultâneos no catálogo — esse tipo de exploração será coberto na fase de execução por testes exploratórios manuais; (ii) cenários relacionados a desempenho, segurança, LGPD e usabilidade não são contemplados aqui por já existirem nas seções 17.4 (RNFs) e 17.5 (usabilidade); (iii) o critério de aderência ≥ 70% para o motor de recomendação (TF-10) é uma meta inicial e poderá ser recalibrado após a primeira rodada de execução, conforme dados reais de comportamento dos usuários de teste.
-
-Para a fase de execução, recomenda-se priorizar **automação dos casos críticos de regressão** (TF-01, TF-03, TF-06, TF-09 e TF-10) por serem os fluxos com maior impacto direto na conversão e na retenção, mantendo os demais em execução manual durante a Sprint 3.
 
 ---
 

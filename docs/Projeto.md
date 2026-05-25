@@ -2227,16 +2227,27 @@ A aplicação do questionário SUS complementa a observação das tarefas, permi
 
 ### 17.6 Testes de APIs externas
 
-Nesta seção, devem ser planejados os testes das APIs externas utilizadas pelo sistema, como ViaCEP, ticketeiras externas ou outros serviços consumidos pela aplicação.
+O sistema integra a API **ViaCEP** para validação, autocomplete e enriquecimento automático de endereços. Essa integração é essencial para suportar a geolocalização dos usuários e entregar recomendações personalizadas na seção “Perto de você”, com foco nas cidades de São Paulo e Rio de Janeiro.
 
 | ID do teste | API externa | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso | Ferramentas |
-|---|---|---|---|---|---|---|---|---|---|
-| TAPI-01 | ViaCEP | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Postman/Insomnia |
-| TAPI-02 | Ticketeira externa | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Postman/Insomnia |
-| TAPI-03 | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+|-------------|-------------|-----------|---------------|------------------|------------------|------------------------|---------------|---------------------|-------------|
+| 01 | ViaCEP | Validar CEP e enriquecer automaticamente os dados completos de endereço (logradouro, bairro, cidade e UF) | Usuário autenticado na tela de cadastro ou edição de perfil com conexão estável | Envio de CEP válido e existente (ex: 01310-100) | - | 1. Realizar requisição GET para `https://viacep.com.br/ws/{CEP}/json/`<br>2. Validar status code, tempo de resposta e estrutura da resposta JSON<br>3. Confirmar o mapeamento correto dos dados no backend e persistência no banco | Dados de endereço enriquecidos são salvos no perfil do usuário e utilizados nos filtros geográficos | HTTP 200, todos os campos principais preenchidos corretamente, tempo de resposta ≤ 1,5s | Postman / Insomnia / cURL |
+| 02 | ViaCEP | Testar tratamento robusto de CEPs inválidos, mal formatados ou inexistentes | Conexão com internet disponível | - | Envio de CEP inválido (ex: 123, 99999-999 ou com caracteres alfabéticos) | 1. Enviar requisição com CEP inválido<br>2. Validar resposta da API e lógica de tratamento aplicada pelo backend<br>3. Verificar feedback exibido ao usuário | Sistema exibe mensagem clara e permite prosseguimento com fallback | HTTP 200 com `erro: true` tratado corretamente, fluxo mantido sem interrupções, log registrado | Postman / Insomnia |
+| 03 | ViaCEP | Avaliar performance, latência, timeout e resiliência sob diferentes condições de rede | Ambiente de homologação com ferramentas de simulação de rede | Resposta rápida em condições normais de rede | Alta latência ou indisponibilidade temporária da API | 1. Executar 30 consultas sequenciais com CEPs válidos<br>2. Aplicar Network Throttling (4G, Slow 3G e Offline)<br>3. Simular timeout forçado<br>4. Registrar todas as métricas de performance | Sistema aplica fallback de forma transparente e mantém a jornada do usuário fluida | Tempo médio ≤ 1,2s (p95 ≤ 2,0s), taxa de sucesso ≥ 98%, tratamento graceful sem impacto na experiência | Postman / Insomnia + Chrome DevTools + Network Throttling |
 
-**Discussão de abrangência:**  
-A preencher pelo responsável, explicando quais APIs foram cobertas e como o sistema deve lidar com falhas ou respostas inválidas.
+**Métricas dos Testes:**
+
+Os testes da integração com ViaCEP foram projetados com alto rigor para garantir desempenho, confiabilidade e excelente experiência do usuário. As principais métricas avaliadas são:
+
+- **Tempo de Resposta**: Média ≤ 1,2 segundos e p95 ≤ 2,0 segundos em rede normal. Em condições de Slow 3G, o p95 não deve exceder 4,5 segundos.
+- **Taxa de Sucesso**: ≥ 98% das requisições tratadas com sucesso ou fallback adequado.
+- **Taxa de Erro Tratado**: 100% dos erros (CEP inválido ou falhas de conexão) devem ser capturados e tratados de forma amigável.
+- **Latência Máxima Aceitável**: Timeout configurado em 8 segundos, com ativação automática de fallback.
+- **Eficiência de Cache**: Taxa de acerto ≥ 75% em consultas repetidas, reduzindo chamadas à API externa.
+- **Resiliência**: 100% dos fluxos críticos (cadastro e edição de perfil) devem ser completados mesmo em cenários de rede degradada.
+- **Monitoramento**: Todos os eventos são logados com contexto completo (CEP, tempo de resposta, código de erro e usuário) para análise contínua.
+
+Essa abordagem assegura que a integração com ViaCEP contribua positivamente para a qualidade geral do sistema, oferecendo rapidez, precisão e robustez na geolocalização dos usuários do Portal Aventura.
 
 ---
 

@@ -2139,29 +2139,48 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
 
 ### 17.5 Testes de usabilidade
 
-Nesta seção, deve ser planejado o roteiro de testes de usabilidade com pelo menos 5 usuários externos ao grupo, utilizando SUS ou outro método definido pelo professor.
+Os testes de usabilidade têm como objetivo avaliar se usuários externos ao grupo conseguem compreender e executar os principais fluxos do aplicativo mobile do Portal Aventura de forma clara, intuitiva e sem auxílio excessivo.
+
+A avaliação será realizada com pelo menos **5 usuários externos ao grupo**, considerando diferentes níveis de familiaridade com aplicativos mobile e diferentes frequências de consumo cultural. Os testes serão conduzidos a partir do mockup navegável ou da versão funcional disponível do aplicativo.
+
+Durante a execução, serão observados tempo de realização das tarefas, quantidade de erros, dúvidas verbalizadas, taxa de sucesso e percepção geral de facilidade de uso. Ao final, será aplicado o questionário **SUS — System Usability Scale**, com o objetivo de mensurar a percepção dos participantes sobre a usabilidade do sistema.
+
+---
 
 #### Perfil dos participantes
 
 | Participante | Perfil | Familiaridade com apps mobile | Frequência de consumo cultural | Observações |
 |---|---|---|---|---|
-| P1 | A preencher | A preencher | A preencher | A preencher |
-| P2 | A preencher | A preencher | A preencher | A preencher |
-| P3 | A preencher | A preencher | A preencher | A preencher |
-| P4 | A preencher | A preencher | A preencher | A preencher |
-| P5 | A preencher | A preencher | A preencher | A preencher |
+| P1 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
+| P2 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
+| P3 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
+| P4 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
+| P5 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
+
+---
 
 #### Roteiro de testes de usabilidade
 
+
 | ID do teste | Fluxo avaliado | Propósito | Pré-condições | Tarefa do usuário | Cenário positivo | Cenário negativo | Pós-condições | Critério de sucesso | Métricas observadas |
 |---|---|---|---|---|---|---|---|---|---|
-| TU-01 | Onboarding | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Tempo, erros, dúvidas |
-| TU-02 | Home e recomendações | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Tempo, erros, dúvidas |
-| TU-03 | Busca | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Tempo, erros, dúvidas |
-| TU-04 | Wishlist | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Tempo, erros, dúvidas |
-| TU-05 | Perfil e preferências | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher | Tempo, erros, dúvidas |
+| TU-01 | Cadastro e login | Avaliar se o usuário consegue criar uma conta ou acessar o aplicativo sem dificuldade. | O usuário está na tela inicial do aplicativo e ainda não está autenticado. | Criar uma conta ou realizar login utilizando os campos disponíveis. | O usuário preenche os dados corretamente, conclui o cadastro/login e acessa o fluxo inicial do app. | O usuário não encontra a opção de cadastro/login, preenche dados incorretos ou não entende mensagens de erro. | Usuário autenticado e direcionado para o onboarding ou tela inicial. | O usuário conclui o cadastro/login sem ajuda externa. | Tempo de execução, erros de preenchimento, dúvidas verbalizadas e taxa de sucesso. |
+| TU-02 | Onboarding de preferências | Verificar se o usuário consegue concluir o onboarding inicial de forma rápida e compreende que suas respostas personalizam a experiência. | O usuário está autenticado e acessa o aplicativo pela primeira vez. | Selecionar cidade, interesses culturais e frequência de ida ao teatro. | O usuário entende as etapas, seleciona as opções e conclui o onboarding. | O usuário não entende o objetivo das perguntas, não sabe quantas opções selecionar ou abandona o fluxo. | Preferências iniciais registradas ou simuladas no sistema. | O usuário conclui o onboarding e compreende que suas escolhas influenciam as recomendações. | Tempo de conclusão, quantidade de dúvidas, erros de navegação e taxa de conclusão. |
+| TU-03 | Home e recomendações iniciais | Avaliar se os primeiros espetáculos exibidos na Home estão coerentes com as preferências informadas no onboarding. | O usuário concluiu o onboarding e foi direcionado para a Home. | Observar os primeiros espetáculos exibidos na Home e indicar se eles combinam com as preferências selecionadas. | O usuário reconhece que os espetáculos recomendados estão relacionados aos interesses escolhidos. | O usuário percebe recomendações incoerentes ou não entende por que aqueles espetáculos aparecem. | Usuário visualiza a Home e interpreta a seção de recomendações. | O usuário identifica coerência entre preferências iniciais e recomendações exibidas. | Percepção de relevância, comentários do usuário, dúvidas, taxa de aceitação das recomendações e tempo até identificar a seção. |
+| TU-04 | Busca de espetáculo | Verificar se o usuário consegue encontrar um espetáculo, teatro ou categoria utilizando a busca. | O usuário está na área principal do aplicativo e possui acesso à barra inferior. | Acessar a tela de busca e procurar um espetáculo, teatro ou categoria de interesse. | O usuário encontra o campo de busca, compreende os resultados e seleciona um item relevante. | O usuário não identifica a busca, não entende os resultados ou não percebe a função de filtro. | Resultado de busca visualizado ou espetáculo selecionado. | O usuário encontra um item relevante sem ajuda externa. | Tempo de busca, erros de navegação, uso de filtros, dúvidas e taxa de sucesso. |
+| TU-05 | Detalhes do espetáculo e redirecionamento externo | Avaliar se o usuário entende as informações do espetáculo e compreende que a compra ocorre fora do aplicativo. | O usuário selecionou um espetáculo pela Home, recomendações ou busca. | Abrir os detalhes do espetáculo, localizar data, local, sinopse e identificar a ação de compra/redirecionamento. | O usuário encontra as informações principais e entende que será direcionado para uma ticketeira externa. | O usuário não encontra informações importantes ou acredita que o pagamento será feito dentro do aplicativo. | Usuário compreende as informações do espetáculo e o redirecionamento para a ticketeira. | O usuário consegue explicar o espetáculo e entende o redirecionamento externo. | Tempo para localizar informações, dúvidas sobre compra, confiança no redirecionamento e compreensão do botão. |
+| TU-06 | Adicionar espetáculo à Wishlist | Avaliar se o usuário entende como salvar um espetáculo na Wishlist. | O usuário está visualizando um card ou a tela de detalhes de um espetáculo. | Adicionar um espetáculo à Wishlist usando o botão ou ícone de favorito. | O usuário identifica o ícone de favorito, salva o espetáculo e percebe que a ação foi realizada. | O usuário não entende o ícone, não percebe feedback visual ou não sabe se o item foi salvo. | Espetáculo salvo na Wishlist ou ação simulada no protótipo. | O usuário consegue favoritar um espetáculo sem ajuda e entende que ele foi salvo. | Tempo de execução, erros de toque, dúvidas sobre o ícone, compreensão do feedback visual e taxa de sucesso. |
+| TU-07 | Acessar Wishlist | Avaliar se o usuário consegue encontrar a Wishlist e visualizar os espetáculos salvos. | O usuário já favoritou pelo menos um espetáculo ou está diante do estado vazio da Wishlist. | Acessar a Wishlist pela barra inferior e verificar os espetáculos salvos. | O usuário encontra a Wishlist, entende a lista de favoritos ou compreende o estado vazio. | O usuário não encontra a Wishlist, não entende o estado vazio ou não sabe como voltar a explorar espetáculos. | Wishlist acessada e estado da lista compreendido. | O usuário consegue acessar a Wishlist e explicar sua função. | Tempo de navegação, erros, dúvidas, compreensão da barra inferior e taxa de sucesso. |
+| TU-08 | Perfil e edição de preferências | Verificar se o usuário consegue acessar o perfil e alterar suas preferências de cidade ou interesses culturais. | O usuário está logado e possui acesso à barra inferior de navegação. | Acessar o Perfil, entrar em Preferências e Cidade, editar interesses ou cidade e salvar alterações. | O usuário encontra a opção correta, altera preferências e entende que isso impacta as recomendações. | O usuário não encontra a edição de preferências, não entende o impacto da alteração ou não consegue salvar. | Preferências atualizadas ou simuladas no sistema. | O usuário consegue acessar o perfil e editar preferências sem ajuda externa. | Tempo de execução, erros de navegação, dúvidas, compreensão da relação entre preferências e recomendações e taxa de sucesso. |
+
+---
 
 #### Questionário SUS
+
+Após a execução dos testes, cada participante deverá responder ao questionário SUS, utilizando escala de 1 a 5, em que:
+
+- **1** representa “discordo totalmente”;
+- **5** representa “concordo totalmente”.
 
 | Item | Afirmação | Nota de 1 a 5 |
 |---|---|---|
@@ -2176,8 +2195,33 @@ Nesta seção, deve ser planejado o roteiro de testes de usabilidade com pelo me
 | 9 | Eu me senti confiante usando o sistema. | A preencher |
 | 10 | Eu precisei aprender muitas coisas antes de conseguir usar o sistema. | A preencher |
 
-**Discussão de abrangência:**  
-A preencher pelo responsável, explicando quais fluxos da jornada mobile foram avaliados e quais limitações existem na amostra de usuários.
+---
+
+#### Métricas analisadas
+
+Além do questionário SUS, serão observadas métricas qualitativas e quantitativas durante a execução dos testes.
+
+| Métrica | Descrição | Forma de coleta |
+|---|---|---|
+| Taxa de sucesso | Indica se o usuário conseguiu concluir a tarefa proposta. | Observação direta durante o teste. |
+| Tempo de execução | Mede quanto tempo o usuário levou para concluir cada tarefa. | Cronometragem manual ou gravação da sessão. |
+| Número de erros | Registra cliques incorretos, caminhos errados ou ações mal compreendidas. | Observação direta durante o teste. |
+| Dúvidas verbalizadas | Registra comentários, inseguranças ou perguntas feitas pelo participante. | Anotações do avaliador. |
+| Percepção de relevância | Avalia se o usuário percebe coerência nas recomendações exibidas. | Pergunta direta após a tarefa de recomendação. |
+| Confiança no redirecionamento | Avalia se o usuário entende e confia no envio para ticketeiras externas. | Pergunta direta após a tarefa de detalhes do espetáculo. |
+| Pontuação SUS | Mede a percepção geral de usabilidade do sistema. | Questionário SUS aplicado ao final do teste. |
+
+---
+
+#### Discussão de abrangência
+
+Os testes de usabilidade propostos cobrem os principais fluxos da jornada mobile do Portal Aventura, desde a entrada do usuário no aplicativo até a personalização, descoberta de espetáculos e gerenciamento de preferências.
+
+Os cenários contemplam cadastro e login, onboarding, recomendações iniciais na Home, busca, detalhes do espetáculo, redirecionamento para ticketeiras externas, Wishlist, Perfil e edição de preferências. Esses fluxos foram priorizados porque representam a experiência central do produto e impactam diretamente a proposta de valor da solução: recomendar espetáculos relevantes com base nos interesses do usuário.
+
+A amostra mínima de 5 usuários externos permite identificar problemas iniciais de navegação, compreensão da interface, clareza dos rótulos, efetividade da barra inferior e percepção de relevância das recomendações. Como limitação, os resultados representam uma avaliação qualitativa inicial e devem ser complementados posteriormente com uma amostra maior, testes em ambiente funcional completo e análise de comportamento após uso contínuo da aplicação.
+
+A aplicação do questionário SUS complementa a observação das tarefas, permitindo obter uma medida padronizada da percepção de usabilidade do sistema. Dessa forma, o planejamento combina avaliação prática de tarefas com uma métrica reconhecida de experiência do usuário.
 
 ---
 

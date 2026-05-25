@@ -1,11 +1,12 @@
+import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import ComponentsPreviewScreen from './screens/ComponentsPreviewScreen';
+import RootNavigator from './RootNavigator';
 
 export default function App() {
   return (
-    <>
-      <ComponentsPreviewScreen />
+    <NavigationContainer>
+      <RootNavigator />
       <StatusBar style="auto" />
-    </>
+    </NavigationContainer>
   );
 }

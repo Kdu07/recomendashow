@@ -15,6 +15,7 @@ export default function OnboardingCategoriesView({
   onToggleCategory,
   onContinue,
   onSkip,
+  animatedStyle,
 }) {
   return (
     <OnboardingLayout
@@ -23,6 +24,7 @@ export default function OnboardingCategoriesView({
       onSkip={onSkip}
       onContinue={onContinue}
       canContinue={selectedCategories.length > 0}
+      animatedStyle={animatedStyle}
     >
       <Text style={styles.title}>O que te inspira?</Text>
       <Text style={styles.subtitle}>

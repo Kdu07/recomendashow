@@ -15,6 +15,7 @@ export default function OnboardingFrequencyView({
   onSelectFrequency,
   onContinue,
   onSkip,
+  animatedStyle,
 }) {
   return (
     <OnboardingLayout
@@ -23,6 +24,7 @@ export default function OnboardingFrequencyView({
       onSkip={onSkip}
       onContinue={onContinue}
       canContinue={selectedFrequency !== null}
+      animatedStyle={animatedStyle}
     >
       <Text style={styles.title}>Com que frequência você vai ao teatro?</Text>
 

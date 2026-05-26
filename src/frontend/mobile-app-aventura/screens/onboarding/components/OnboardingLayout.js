@@ -1,10 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, StyleSheet, SafeAreaView, Animated } from 'react-native';
 
 import AppButton from '../../../components/AppButton';
 import { colors } from '../../../constants/colors';
 import { spacing } from '../../../constants/spacing';
-import { typography } from '../../../constants/typography';
 
 export default function OnboardingLayout({
   step,
@@ -12,6 +11,7 @@ export default function OnboardingLayout({
   onSkip,
   onContinue,
   canContinue,
+  animatedStyle,
   children,
 }) {
   return (
@@ -25,7 +25,9 @@ export default function OnboardingLayout({
         <AppButton title="Pular" variant="text" onPress={onSkip} />
       </View>
 
-      <View style={styles.content}>{children}</View>
+      <Animated.View style={[styles.content, animatedStyle]}>
+        {children}
+      </Animated.View>
 
       <View style={styles.footer}>
         <AppButton

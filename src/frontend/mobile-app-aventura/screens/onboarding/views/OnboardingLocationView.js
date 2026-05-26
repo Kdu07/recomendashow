@@ -15,6 +15,7 @@ export default function OnboardingLocationView({
   onSelectCity,
   onContinue,
   onSkip,
+  animatedStyle,
 }) {
   return (
     <OnboardingLayout
@@ -23,6 +24,7 @@ export default function OnboardingLocationView({
       onSkip={onSkip}
       onContinue={onContinue}
       canContinue={selectedCity !== null}
+      animatedStyle={animatedStyle}
     >
       <Text style={styles.title}>Onde você está?</Text>
       <Text style={styles.subtitle}>

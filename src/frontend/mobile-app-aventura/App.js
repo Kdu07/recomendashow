@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
-import ComponentsPreviewScreen from './screens/ComponentsPreviewScreen';
+import HomeScreen from './screens/HomeScreen';
 
 export default function App() {
   return (
     <>
-      <ComponentsPreviewScreen />
+      <HomeScreen />
       <StatusBar style="auto" />
     </>
   );

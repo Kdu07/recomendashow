@@ -17,8 +17,8 @@ function HomePlaceholder() {
 export default function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Home" component={HomePlaceholder} />
     </Stack.Navigator>
   );

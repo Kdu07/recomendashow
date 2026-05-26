@@ -12,7 +12,7 @@ export default function OnboardingScreen({ navigation }) {
   const enterDirection = useRef('forward');
 
   const vm = useOnboardingViewModel(() => {
-    navigation.replace('Home');
+    navigation.replace('Welcome');
   });
 
   useEffect(() => {

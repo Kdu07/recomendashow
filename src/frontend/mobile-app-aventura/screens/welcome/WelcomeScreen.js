@@ -10,7 +10,7 @@ export default function WelcomeScreen({ navigation, route }) {
   const userName = route?.params?.userName ?? 'aventureiro';
 
   const { activeDot, totalDots } = useWelcomeViewModel(() => {
-    navigation.replace('Onboarding');
+    navigation.replace('Home');
   });
 
   return (

@@ -9,13 +9,15 @@ import OnboardingFrequencyView from './views/OnboardingFrequencyView';
 export default function OnboardingScreen({ navigation }) {
   const translateY = useRef(new Animated.Value(50)).current;
   const opacity = useRef(new Animated.Value(0)).current;
+  const enterDirection = useRef('forward');
 
   const vm = useOnboardingViewModel(() => {
     navigation.replace('Home');
   });
 
   useEffect(() => {
-    translateY.setValue(50);
+    const startY = enterDirection.current === 'forward' ? 50 : -50;
+    translateY.setValue(startY);
     opacity.setValue(0);
     Animated.parallel([
       Animated.timing(translateY, {
@@ -31,10 +33,12 @@ export default function OnboardingScreen({ navigation }) {
     ]).start();
   }, [vm.step]);
 
-  function animateTransition(action) {
+  function animateTransition(action, direction = 'forward') {
+    enterDirection.current = direction;
+    const exitY = direction === 'forward' ? -40 : 40;
     Animated.parallel([
       Animated.timing(translateY, {
-        toValue: -40,
+        toValue: exitY,
         duration: 200,
         useNativeDriver: true,
       }),
@@ -57,8 +61,9 @@ export default function OnboardingScreen({ navigation }) {
     step: vm.step,
     totalSteps: vm.totalSteps,
     animatedStyle,
-    onContinue: () => animateTransition(vm.goNext),
-    onSkip: () => animateTransition(vm.skip),
+    onContinue: () => animateTransition(vm.goNext, 'forward'),
+    onSkip: () => animateTransition(vm.skip, 'forward'),
+    onBack: () => animateTransition(vm.goBack, 'back'),
   };
 
   if (vm.step === 0) {

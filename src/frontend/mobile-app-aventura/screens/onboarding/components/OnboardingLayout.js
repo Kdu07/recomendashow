@@ -9,6 +9,7 @@ export default function OnboardingLayout({
   step,
   totalSteps,
   onSkip,
+  onBack,
   onContinue,
   canContinue,
   animatedStyle,
@@ -30,11 +31,20 @@ export default function OnboardingLayout({
       </Animated.View>
 
       <View style={styles.footer}>
+        {step > 0 && (
+          <AppButton
+            title="voltar"
+            variant="secondary"
+            onPress={onBack}
+            style={styles.backButton}
+          />
+        )}
         <AppButton
           title="Continuar"
           variant="primary"
           onPress={onContinue}
           disabled={!canContinue}
+          style={styles.continueButton}
         />
       </View>
     </SafeAreaView>
@@ -78,7 +88,17 @@ const styles = StyleSheet.create({
   },
 
   footer: {
+    flexDirection: 'row',
+    gap: spacing.sm,
     paddingHorizontal: spacing.xl,
     paddingBottom: spacing.xl,
+  },
+
+  backButton: {
+    flex: 1,
+  },
+
+  continueButton: {
+    flex: 2,
   },
 });

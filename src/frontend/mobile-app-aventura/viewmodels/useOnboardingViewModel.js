@@ -55,6 +55,12 @@ export function useOnboardingViewModel(onFinish) {
     onFinish();
   }
 
+  function goBack() {
+    if (step > 0) {
+      setStep((prev) => prev - 1);
+    }
+  }
+
   return {
     step,
     totalSteps: TOTAL_STEPS,
@@ -66,6 +72,7 @@ export function useOnboardingViewModel(onFinish) {
     selectFrequency,
     canContinue,
     goNext,
+    goBack,
     skip,
   };
 }

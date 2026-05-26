@@ -15,6 +15,7 @@ export default function OnboardingFrequencyView({
   onSelectFrequency,
   onContinue,
   onSkip,
+  onBack,
   animatedStyle,
 }) {
   return (
@@ -22,6 +23,7 @@ export default function OnboardingFrequencyView({
       step={step}
       totalSteps={totalSteps}
       onSkip={onSkip}
+      onBack={onBack}
       onContinue={onContinue}
       canContinue={selectedFrequency !== null}
       animatedStyle={animatedStyle}

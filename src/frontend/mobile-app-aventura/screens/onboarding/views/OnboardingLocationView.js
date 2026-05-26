@@ -15,6 +15,7 @@ export default function OnboardingLocationView({
   onSelectCity,
   onContinue,
   onSkip,
+  onBack,
   animatedStyle,
 }) {
   return (
@@ -22,6 +23,7 @@ export default function OnboardingLocationView({
       step={step}
       totalSteps={totalSteps}
       onSkip={onSkip}
+      onBack={onBack}
       onContinue={onContinue}
       canContinue={selectedCity !== null}
       animatedStyle={animatedStyle}

@@ -1,0 +1,82 @@
+import React from 'react';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+
+import AppButton from '../../../components/AppButton';
+import { colors } from '../../../constants/colors';
+import { spacing } from '../../../constants/spacing';
+import { typography } from '../../../constants/typography';
+
+export default function OnboardingLayout({
+  step,
+  totalSteps,
+  onSkip,
+  onContinue,
+  canContinue,
+  children,
+}) {
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.dots}>
+          {Array.from({ length: totalSteps }).map((_, i) => (
+            <View key={i} style={[styles.dot, i === step && styles.dotActive]} />
+          ))}
+        </View>
+        <AppButton title="Pular" variant="text" onPress={onSkip} />
+      </View>
+
+      <View style={styles.content}>{children}</View>
+
+      <View style={styles.footer}>
+        <AppButton
+          title="Continuar"
+          variant="primary"
+          onPress={onContinue}
+          disabled={!canContinue}
+        />
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.lg,
+  },
+
+  dots: {
+    flexDirection: 'row',
+    gap: spacing.xs,
+  },
+
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: colors.grayLight,
+  },
+
+  dotActive: {
+    backgroundColor: colors.purplePrimary,
+  },
+
+  content: {
+    flex: 1,
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.xxxl,
+  },
+
+  footer: {
+    paddingHorizontal: spacing.xl,
+    paddingBottom: spacing.xl,
+  },
+});

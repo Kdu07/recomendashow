@@ -1,17 +1,37 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, SafeAreaView } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, SafeAreaView, Animated } from 'react-native';
 
 import { useWelcomeViewModel } from '../../viewmodels/useWelcomeViewModel';
 import { colors } from '../../constants/colors';
 import { typography } from '../../constants/typography';
 import { spacing } from '../../constants/spacing';
 
+const DOT_COLORS = [colors.purpleLight, colors.purpleSecondary, colors.purplePrimary];
+const DOT_DELAYS = [0, 1666, 3333];
+
 export default function WelcomeScreen({ navigation, route }) {
   const userName = route?.params?.userName ?? 'aventureiro';
 
-  const { activeDot, totalDots } = useWelcomeViewModel(() => {
+  useWelcomeViewModel(() => {
     navigation.replace('Home');
   });
+
+  const dotAnims = useRef(DOT_DELAYS.map(() => new Animated.Value(0))).current;
+
+  useEffect(() => {
+    const timers = DOT_DELAYS.map((delay, i) =>
+      setTimeout(() => {
+        Animated.spring(dotAnims[i], {
+          toValue: 1,
+          friction: 5,
+          tension: 80,
+          useNativeDriver: true,
+        }).start();
+      }, delay)
+    );
+
+    return () => timers.forEach(clearTimeout);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -31,9 +51,26 @@ export default function WelcomeScreen({ navigation, route }) {
       </View>
 
       <View style={styles.dots}>
-        {Array.from({ length: totalDots }).map((_, i) => (
-          <View key={i} style={[styles.dot, i <= activeDot && styles.dotActive]} />
-        ))}
+        {dotAnims.map((anim, i) => {
+          const scale = anim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0.3, 1],
+          });
+
+          return (
+            <Animated.View
+              key={i}
+              style={[
+                styles.dot,
+                {
+                  backgroundColor: DOT_COLORS[i],
+                  opacity: anim,
+                  transform: [{ scale }],
+                },
+              ]}
+            />
+          );
+        })}
       </View>
     </SafeAreaView>
   );
@@ -81,17 +118,12 @@ const styles = StyleSheet.create({
   dots: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: spacing.sm,
+    gap: spacing.md,
   },
 
   dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.grayLight,
-  },
-
-  dotActive: {
-    backgroundColor: colors.purplePrimary,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
   },
 });

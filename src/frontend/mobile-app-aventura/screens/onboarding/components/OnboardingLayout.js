@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: spacing.xl,
-    paddingTop: spacing.xxxl,
+    justifyContent: 'center',
   },
 
   footer: {

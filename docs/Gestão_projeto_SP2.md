@@ -21,6 +21,7 @@ A retrospectiva da Sprint 2 tem como objetivo analisar o desempenho da equipe ao
 * **Interdependência entre Tasks:** Atrasos em atividades críticas impactaram diretamente o início ou conclusão de tarefas relacionadas.
 * **Ruído na Comunicação (Dailies):** Falhas pontuais no repasse de informações sobre o andamento e, principalmente, sobre impedimentos enfrentados.
 * **Subestimação de Prazos:** Algumas atividades demandaram mais tempo que o previsto, agravado pela interdependência citada.
+* **Concentração de Tasks Grandes:** Apesar da melhora na granularidade em relação à Sprint 1, ainda houve predominância de tarefas classificadas como G, dificultando a previsibilidade da sprint.
 
 ---
 
@@ -29,14 +30,17 @@ A retrospectiva da Sprint 2 tem como objetivo analisar o desempenho da equipe ao
 * **Gargalo no Fluxo de Trabalho (Efeito Cascata):** A interdependência não mapeada gerou ociosidade forçada ou "mudança de contexto" constante, onde membros precisaram abandonar tarefas pela metade para trabalhar em itens secundários enquanto aguardavam liberações.
 * **Assimetria de Informação:** O ruído nas *Dailies* dificultou a compreensão sobre o que estava sendo feito pelos membros.
 * **Sobrecarga:** A subestimação de prazos aliada à perda de tempo de dev gasto em ponderadas resultou em uma aceleração não planejada no final da sprint, prejudicando a sustentabilidade do ritmo de trabalho.
+* **Baixa Previsibilidade:** A existência de tasks muito amplas dificultou estimativas mais precisas e acompanhamento detalhado do progresso.
 
 ### Tabela de Consequências
+
 | Problema Raiz | Impacto Gerado | Risco Associado |
 | :--- | :--- | :--- |
 | **Reuniões Longas** | Perda de foco e redução do *throughput*. | Atraso nas entregas principais. |
 | **Interdependência** | Bloqueio de tarefas e tempo de espera. | Ineficiência no uso da mão de obra. |
 | **Ruído na Daily** | Desalinhamento sobre impedimentos. | Retrabalho por falta de orientação. |
 | **Subestimação** | Entrega no limite do prazo. | Comprometimento da estabilidade do código. |
+| **Tasks Grandes** | Dificuldade de acompanhamento detalhado. | Redução da previsibilidade da sprint. |
 
 ---
 
@@ -48,9 +52,25 @@ Para garantir que as melhorias sejam rastreáveis e menos superficiais, a equipe
 | :--- | :--- | :--- |
 | **Mapeamento de Dependências** | Durante a Planning, utilizaremos a técnica de "Dependency Mapping". Identificaremos quais tarefas bloqueiam outras e sinalizaremos via links de "bloqueado por" no Board. | Redução no tempo de espera (*idle time*) de tarefas dependentes. |
 | **Sincronização de Fluxo (Daily)** | Adotar o padrão de 3 perguntas focado no fluxo: 1. O que concluí? 2. O que pretendo concluir hoje? 3. **Existe algum impedimento?**. | Atualização em tempo real do board e ausência de surpresas sobre bloqueios. |
+| **Refinamento de Estimativas** | Durante a Planning, tasks consideradas muito amplas serão quebradas em subtarefas menores, reduzindo concentração de tasks G. | Aumento da quantidade de tasks P e M na Sprint 3. |
+| **Timeboxing de Reuniões** | Definir limite de tempo para ponderadas e alinhamentos internos, evitando impacto excessivo no tempo útil de desenvolvimento. | Maior tempo efetivo dedicado ao desenvolvimento técnico. |
 
 ---
 
-## 1.5 - Conclusão
+## 1.5 - Evolução em Relação à Sprint 1
 
-A Sprint 2 mostrou uma evolução na organização técnica e na colaboração interna. O foco da Sprint 3 será o refinamento da comunicação e a antecipação de bloqueios, garantindo que a interdependência entre as tarefas não comprometa o cronograma final nem a qualidade técnica da entrega.
+| Aspecto | Sprint 1 | Sprint 2 | Evolução |
+| :--- | :--- | :--- | :--- |
+| Granularidade das Tasks | Predomínio de tasks médias/grandes | Inclusão de tasks menores | Melhorou |
+| Code Review | Revisões lentas | Revisões mais rápidas | Melhorou |
+| Organização Técnica | Estrutura inicial | Fluxo mais consolidado | Melhorou |
+| Comunicação | Alinhamento básico | Melhor frequência de reuniões | Parcial |
+| Estimativas | Pouca previsibilidade | Melhor divisão, mas ainda com subestimação | Parcial |
+
+---
+
+## 1.6 - Conclusão
+
+A Sprint 2 mostrou uma evolução na organização técnica e na colaboração interna. Em comparação à Sprint 1, houve melhora na granularidade das tarefas, na velocidade de revisão de Pull Requests e na consolidação das práticas de organização técnica.
+
+O foco da Sprint 3 será o refinamento da comunicação, a antecipação de bloqueios e o aumento da rastreabilidade das tarefas, garantindo que a interdependência entre atividades não comprometa o cronograma final nem a qualidade técnica da entrega.

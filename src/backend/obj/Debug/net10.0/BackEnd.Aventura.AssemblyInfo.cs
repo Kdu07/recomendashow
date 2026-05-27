@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BackEnd.Aventura")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a0118343426b58553a1c0ade11af0a19912f0daf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+02385307a8a7ec7aa9036dd19a34f583a582e500")]
 [assembly: System.Reflection.AssemblyProductAttribute("BackEnd.Aventura")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BackEnd.Aventura")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

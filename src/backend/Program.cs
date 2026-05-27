@@ -7,10 +7,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<ITeatroRepository, InMemoryTeatroRepository>();
-builder.Services.AddScoped<ITeatroService, TeatroService>();
-builder.Services.AddScoped<IEspetaculoRepository, InMemoryEspetaculoRepository>();
-builder.Services.AddScoped<IEspetaculoService, EspetaculoService>();
+
+// TODO: Register your repository implementations after connecting to your database
+// Example:
+// builder.Services.AddScoped<ITeatroRepository, YourTeatroRepository>();
+// builder.Services.AddScoped<ITeatroService, TeatroService>();
+// builder.Services.AddScoped<IEspetaculoRepository, YourEspetaculoRepository>();
+// builder.Services.AddScoped<IEspetaculoService, EspetaculoService>();
+// builder.Services.AddScoped<IWishlistRepository, YourWishlistRepository>();
+// builder.Services.AddScoped<IWishlistService, WishlistService>();
 
 var app = builder.Build();
 
@@ -24,27 +29,4 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapControllers();
 
-// Endpoint teste
-app.MapGet("/weatherforecast", () =>
-{
-    var summaries = new[]
-    {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild",
-        "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
-
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-
-    return forecast;
-});
-
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string Summary);

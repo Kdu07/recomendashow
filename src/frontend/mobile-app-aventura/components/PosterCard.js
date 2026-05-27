@@ -10,8 +10,8 @@ export default function PosterCard({
   subtitle,
   image,
   onPress,
-  width = 104,
-  imageHeight = 146,
+  width = 134,
+  imageHeight = 186,
 }) {
   return (
     <TouchableOpacity

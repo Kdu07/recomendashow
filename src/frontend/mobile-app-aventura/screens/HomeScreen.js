@@ -40,7 +40,7 @@ function PosterSection({ title, subtitle, data = [], onEventPress }) {
   );
 }
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const {
     heroBanners = [],
     categories = [],
@@ -177,7 +177,16 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
 
-      <BottomTabBar activeTab="explore" onTabPress={handleTabPress} />
+      <BottomTabBar
+        activeTab="explore"
+        onTabPress={(tab) => {
+          if (tab === 'profile') {
+            navigation.navigate('Profile');
+            return;
+          }
+        handleTabPress(tab);
+        }}
+      />
     </View>
   );
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Inteli\\Desktop\\BackEnd.Aventura\\BackEnd.Aventura.csproj": {}
+    "C:\\Users\\Inteli\\Desktop\\g02\\src\\backend\\BackEnd.Aventura.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Inteli\\Desktop\\BackEnd.Aventura\\BackEnd.Aventura.csproj": {
+    "C:\\Users\\Inteli\\Desktop\\g02\\src\\backend\\BackEnd.Aventura.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Inteli\\Desktop\\BackEnd.Aventura\\BackEnd.Aventura.csproj",
+        "projectUniqueName": "C:\\Users\\Inteli\\Desktop\\g02\\src\\backend\\BackEnd.Aventura.csproj",
         "projectName": "BackEnd.Aventura",
-        "projectPath": "C:\\Users\\Inteli\\Desktop\\BackEnd.Aventura\\BackEnd.Aventura.csproj",
+        "projectPath": "C:\\Users\\Inteli\\Desktop\\g02\\src\\backend\\BackEnd.Aventura.csproj",
         "packagesPath": "C:\\Users\\Inteli\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Inteli\\Desktop\\BackEnd.Aventura\\obj\\",
+        "outputPath": "C:\\Users\\Inteli\\Desktop\\g02\\src\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -7,8 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IUserRepository, InMemoryUserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITeatroRepository, InMemoryTeatroRepository>();
+builder.Services.AddScoped<ITeatroService, TeatroService>();
+builder.Services.AddScoped<IEspetaculoRepository, InMemoryEspetaculoRepository>();
+builder.Services.AddScoped<IEspetaculoService, EspetaculoService>();
 
 var app = builder.Build();
 

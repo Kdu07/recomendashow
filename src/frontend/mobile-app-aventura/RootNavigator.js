@@ -12,6 +12,7 @@ import HomeScreen from './screens/HomeScreen';
 import SearchScreen from './screens/SearchScreen';
 import WishlistScreen from './screens/WishlistScreen';
 import AuthScreen from './screens/AuthScreen';
+import ShowInfoScreen from './screens/showInfo/ShowInfoScreen';
 
 import BottomTabBar from './components/BottomTabBar';
 
@@ -90,14 +91,15 @@ export default function RootNavigator() {
         animation: 'fade',
       }}
     >
-      <Stack.Screen name="Auth" component={AuthScreen}/>
+      <Stack.Screen name="Auth" component={AuthScreen} />
       <Stack.Screen name="Onboarding" component={OnboardingScreen} />
       <Stack.Screen name="Splash" component={WelcomeScreen} />
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
-      <Stack.Screen name="EditInterests"  component={EditInterestsScreen}/>
-      <Stack.Screen name="Notifications"  component={NotificationsScreen}/>
-      <Stack.Screen name="Institutional"  component={InstitutionalScreen}/>
+      <Stack.Screen name="EditInterests" component={EditInterestsScreen} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} />
+      <Stack.Screen name="Institutional" component={InstitutionalScreen} />
       <Stack.Screen name="MainTabs" component={MainTabs} />
+      <Stack.Screen name="ShowInfo" component={ShowInfoScreen} initialParams={{ showId: '1' }} />
     </Stack.Navigator>
   );
 }

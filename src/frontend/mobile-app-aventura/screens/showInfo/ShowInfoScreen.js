@@ -38,7 +38,7 @@ export default function ShowInfoScreen({ route }) {
 
         <ShowAbout about={show.about} />
 
-        <ShowCast cast={show.cast} />
+        {show.cast && <ShowCast cast={show.cast} />}
 
         <ShowCreativeTeam creativeTeam={show.creativeTeam} />
 

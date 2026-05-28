@@ -30,6 +30,7 @@ export default function AppButton({
   disabled = false,
   loading = false,
   showGoogleIcon = false,
+  style,
 }) {
   const isPrimary = variant === 'primary';
   const isSecondary = variant === 'secondary';
@@ -43,6 +44,7 @@ export default function AppButton({
         isSecondary && styles.secondaryButton,
         isText && styles.textButton,
         disabled && styles.disabledButton,
+        style,
       ]}
       onPress={onPress}
       activeOpacity={0.8}

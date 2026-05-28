@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { BlurView } from 'expo-blur';
 
 import HomeHeroBanner from '../components/HomeHeroBanner';
 import CategoryChip from '../components/CategoryChip';
@@ -12,9 +13,11 @@ import BottomTabBar from '../components/BottomTabBar';
 import useHomeViewModel from '../viewmodels/useHomeViewModel';
 
 import { colors } from '../constants/colors';
-import { spacing } from '../constants/spacing';
+import { spacing, radius } from '../constants/spacing';
 
 function PosterSection({ title, subtitle, data = [], onEventPress }) {
+  if (!data.length) return null;
+
   return (
     <View style={styles.horizontalSection}>
       <View style={styles.sectionHeaderWrapper}>
@@ -40,6 +43,30 @@ function PosterSection({ title, subtitle, data = [], onEventPress }) {
   );
 }
 
+function EmptySection({
+  title,
+  subtitle,
+  emptyTitle,
+  emptyDescription,
+  actionLabel,
+  onActionPress,
+}) {
+  return (
+    <View style={styles.verticalSection}>
+      <SectionHeader title={title} subtitle={subtitle} />
+
+      <View style={styles.emptyStateCard}>
+        <EmptyState
+          title={emptyTitle}
+          description={emptyDescription}
+          actionLabel={actionLabel}
+          onActionPress={onActionPress}
+        />
+      </View>
+    </View>
+  );
+}
+
 export default function HomeScreen() {
   const {
     heroBanners = [],
@@ -61,153 +88,191 @@ export default function HomeScreen() {
   } = useHomeViewModel();
 
   return (
-    <View style={styles.page}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <HomeHeroBanner banners={heroBanners} autoPlay interval={3000} />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.page}>
+        <View style={styles.backgroundGlow} />
 
-        <View style={styles.filterContainer}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.categoryRow}
-          >
-            {categories.map((category) => (
-              <CategoryChip
-                key={category.id}
-                label={category.label}
-                selected={selectedCategory === category.id}
-                onPress={() => handleCategoryPress(category.id)}
-              />
-            ))}
-          </ScrollView>
-        </View>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.heroSection}>
+            <View style={styles.heroCard}>
+              <HomeHeroBanner banners={heroBanners} autoPlay interval={3000} />
+            </View>
+          </View>
 
-        <PosterSection
-          title="Em alta"
-          data={trendingEvents}
-          onEventPress={handleEventPress}
-        />
+          <View style={styles.filterOuter}>
+            <BlurView intensity={35} tint="light" style={styles.filterBlur}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.categoryRow}
+              >
+                {categories.map((category) => (
+                  <CategoryChip
+                    key={category.id}
+                    label={category.label}
+                    selected={selectedCategory === category.id}
+                    onPress={() => handleCategoryPress(category.id)}
+                  />
+                ))}
+              </ScrollView>
+            </BlurView>
+          </View>
 
-        <View style={styles.verticalSection}>
-          <SectionHeader title="Para você" subtitle="Baseado nos seus gostos" />
+          <PosterSection
+            title="Em alta"
+            data={trendingEvents}
+            onEventPress={handleEventPress}
+          />
 
           {hasInterests ? (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.horizontalRow}
-            >
-              {recommendedEvents.map((event) => (
-                <PosterCard
-                  key={event.id}
-                  title={event.title}
-                  subtitle={event.location}
-                  image={event.image}
-                  onPress={() => handleEventPress(event)}
-                />
-              ))}
-            </ScrollView>
+            <PosterSection
+              title="Para você"
+              subtitle="Baseado nos seus gostos"
+              data={recommendedEvents}
+              onEventPress={handleEventPress}
+            />
           ) : (
-            <EmptyState
-              icon="💡"
-              title="Atualize seus interesses"
-              description="Personalizar suas preferências ajuda a encontrar espetáculos que você vai adorar"
+            <EmptySection
+              title="Para você"
+              subtitle="Baseado nos seus gostos"
+              emptyTitle="Atualize seus interesses"
+              emptyDescription="Personalizar suas preferências ajuda a encontrar espetáculos que você vai adorar"
               actionLabel="Editar interesses"
               onActionPress={handleEditInterests}
             />
           )}
-        </View>
 
-        <PosterSection
-          title="Novidades"
-          data={newEvents}
-          onEventPress={handleEventPress}
-        />
-
-        <View style={styles.verticalSection}>
-          <SectionHeader title="Perto de você" subtitle="Espetáculos na sua cidade." />
+          <PosterSection
+            title="Novidades"
+            data={newEvents}
+            onEventPress={handleEventPress}
+          />
 
           {hasLocation ? (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.horizontalRow}
-            >
-              {nearbyEvents.map((event) => (
-                <PosterCard
-                  key={event.id}
-                  title={event.title}
-                  subtitle={event.location}
-                  image={event.image}
-                  onPress={() => handleEventPress(event)}
-                />
-              ))}
-            </ScrollView>
+            <PosterSection
+              title="Perto de você"
+              subtitle="Espetáculos na sua cidade"
+              data={nearbyEvents}
+              onEventPress={handleEventPress}
+            />
           ) : (
-            <EmptyState
-              icon="💡"
-              title="Adicione sua localidade"
-              description="Compartilhar sua cidade nos ajuda a encontrar espetáculos perto de você"
+            <EmptySection
+              title="Perto de você"
+              subtitle="Espetáculos na sua cidade"
+              emptyTitle="Adicione sua localidade"
+              emptyDescription="Compartilhar sua cidade nos ajuda a encontrar espetáculos perto de você"
               actionLabel="Adicionar cidade"
               onActionPress={handleAddLocation}
             />
           )}
-        </View>
 
-        <View style={styles.verticalSection}>
-          <SectionHeader
-            title="Conheça os teatros"
-            subtitle="Espaços culturais que fazem a diferença"
-          />
+          <View style={styles.theaterSection}>
+            <SectionHeader
+              title="Conheça os teatros"
+              subtitle="Espaços culturais que fazem a diferença"
+            />
 
-          <View style={styles.theaterList}>
-            {theaters.map((theater) => (
-              <TheaterCard
-                key={theater.id}
-                name={theater.name}
-                location={theater.location}
-                image={theater.image}
-                onPress={() => handleTheaterPress(theater)}
-              />
-            ))}
+            <View style={styles.theaterList}>
+              {theaters.map((theater) => (
+                <TheaterCard
+                  key={theater.id}
+                  name={theater.name}
+                  location={theater.location}
+                  image={theater.image}
+                  onPress={() => handleTheaterPress(theater)}
+                />
+              ))}
+            </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
 
-      <BottomTabBar activeTab="explore" onTabPress={handleTabPress} />
-    </View>
+        <BottomTabBar activeTab="explore" onTabPress={handleTabPress} />
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.whiteSoft,
+  },
+
   page: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.whiteSoft,
+    position: 'relative',
+  },
+
+  backgroundGlow: {
+    position: 'absolute',
+    top: -100,
+    right: -90,
+    width: 230,
+    height: 230,
+    borderRadius: 999,
+    backgroundColor: colors.purpleSoft,
+    opacity: 0.32,
   },
 
   scrollContent: {
-    paddingBottom: 96,
+    paddingBottom: 155,
   },
 
-  filterContainer: {
+  heroSection: {
+    paddingHorizontal: spacing.md,
     paddingTop: spacing.md,
+  },
+
+  heroCard: {
+    borderRadius: radius.md,
+    overflow: 'hidden',
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.grayLight,
+
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+
+  // 💡 Ajustado para criar distâncias perfeitamente simétricas acima e abaixo da barra
+  filterOuter: {
+    marginTop: spacing.md, // Distância exata entre o Banner e a Barra de Categorias
+    backgroundColor: 'transparent',
+  },
+
+  filterBlur: {
+    paddingVertical: spacing.sm, // Deixa a barra de blur um pouco mais fina e elegante
   },
 
   categoryRow: {
     paddingHorizontal: spacing.md,
     paddingRight: spacing.xl,
     gap: spacing.sm,
+    alignItems: 'center',
   },
 
   horizontalSection: {
-    marginTop: spacing.xl,
+    marginTop: spacing.md, // 💡 IGUAL ao marginTop do filterOuter, garantindo a mesma distância para o "Em alta"
     gap: spacing.md,
   },
 
   verticalSection: {
+    paddingHorizontal: spacing.md,
+    marginTop: spacing.lg,
+    gap: spacing.md,
+  },
+
+  theaterSection: {
     paddingHorizontal: spacing.md,
     marginTop: spacing.xl,
     gap: spacing.md,
@@ -223,7 +288,25 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
 
+  emptyStateCard: {
+    borderRadius: radius.lg,
+    backgroundColor: 'rgba(255, 255, 255, 0.94)',
+    borderWidth: 1,
+    borderColor: colors.grayLight,
+    overflow: 'hidden',
+
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.04,
+    shadowRadius: 10,
+    elevation: 2,
+  },
+
   theaterList: {
     gap: spacing.lg,
+    alignItems: 'center',
   },
 });

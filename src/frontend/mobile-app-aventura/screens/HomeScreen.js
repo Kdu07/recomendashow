@@ -189,8 +189,17 @@ export default function HomeScreen() {
           </View>
         </ScrollView>
 
-        <BottomTabBar activeTab="explore" onTabPress={handleTabPress} />
-      </View>
+      <BottomTabBar
+        activeTab="explore"
+        onTabPress={(tab) => {
+          if (tab === 'profile') {
+            navigation.navigate('Profile');
+            return;
+          }
+        handleTabPress(tab);
+        }}
+      />
+    </View>
     </SafeAreaView>
   );
 }

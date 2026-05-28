@@ -14,7 +14,9 @@ import { colors } from '../../constants/colors';
 import { spacing } from '../../constants/spacing';
 
 const HERO_HEIGHT = 260;
-const STICKY_FADE_START = 200;
+const INLINE_FADE_START = 150;
+const INLINE_FADE_END = 210;
+const STICKY_FADE_START = 215;
 const STICKY_FADE_END = 260;
 
 export default function ShowInfoScreen({ route }) {
@@ -25,6 +27,12 @@ export default function ShowInfoScreen({ route }) {
 
   const heroOpacity = scrollY.interpolate({
     inputRange: [0, HERO_HEIGHT * 0.75],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+
+  const inlineHeaderOpacity = scrollY.interpolate({
+    inputRange: [INLINE_FADE_START, INLINE_FADE_END],
     outputRange: [1, 0],
     extrapolate: 'clamp',
   });
@@ -59,7 +67,9 @@ export default function ShowInfoScreen({ route }) {
           <ShowHero heroImage={show.heroImage} />
         </Animated.View>
 
-        <ShowInfoHeader {...headerProps} />
+        <Animated.View style={{ opacity: inlineHeaderOpacity }}>
+          <ShowInfoHeader {...headerProps} />
+        </Animated.View>
 
         <ShowDetails location={show.location} />
 

@@ -5,8 +5,8 @@ export default function useHomeViewModel() {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   
-  const [hasInterests] = useState(false);
-  const [hasLocation] = useState(false);
+  const [hasInterests] = useState(true);
+  const [hasLocation] = useState(true);
 
   const homeData = useMemo(() => getHomeData() || {}, []);
 

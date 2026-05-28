@@ -20,30 +20,15 @@ export default function AppNavigator() {
           headerShown: false,
         }}
       >
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-        />
+        <Stack.Screen name="Home"  component={HomeScreen}/>
 
-        <Stack.Screen
-          name="Profile"
-          component={ProfileScreen}
-        />
+        <Stack.Screen name="Profile"  component={ProfileScreen}/>
 
-        <Stack.Screen
-          name="EditInterests"
-          component={EditInterestsScreen}
-        />
+        <Stack.Screen name="EditInterests"  component={EditInterestsScreen}/>
 
-        <Stack.Screen
-          name="Notifications"
-          component={NotificationsScreen}
-        />
+        <Stack.Screen name="Notifications"  component={NotificationsScreen}/>
 
-        <Stack.Screen
-          name="Institutional"
-          component={InstitutionalScreen}
-        />
+        <Stack.Screen name="Institutional"  component={InstitutionalScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

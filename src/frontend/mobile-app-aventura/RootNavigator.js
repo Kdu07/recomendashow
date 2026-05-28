@@ -6,6 +6,7 @@ import WelcomeScreen from './screens/welcome/WelcomeScreen';
 import OnboardingScreen from './screens/onboarding/OnboardingScreen';
 import HomeScreen from './screens/HomeScreen';
 import SearchScreen from './screens/SearchScreen';
+import WishlistScreen from './screens/WishlistScreen';
 
 import BottomTabBar from './components/BottomTabBar';
 
@@ -69,7 +70,7 @@ function MainTabs() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Wishlist" component={WishlistPlaceholder} />
+      <Tab.Screen name="Wishlist" component={WishlistScreen} />
       <Tab.Screen name="Profile" component={ProfilePlaceholder} />
     </Tab.Navigator>
   );

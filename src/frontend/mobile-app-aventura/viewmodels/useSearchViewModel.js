@@ -1,10 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { getSearchData } from '../repositories/searchRepository';
+import {
+  getWishlistData,
+  toggleWishlistEvent,
+} from '../repositories/wishlistRepository';
 
 export default function useSearchViewModel() {
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [savedEventIds, setSavedEventIds] = useState([]);
 
   const searchData = useMemo(() => getSearchData() || {}, []);
 
@@ -14,6 +20,19 @@ export default function useSearchViewModel() {
 
   const isSearching =
     searchText.trim().length > 0 || selectedCategory !== 'all';
+
+  async function loadSavedEvents() {
+    const wishlistData = await getWishlistData();
+    const nextSavedEventIds = (wishlistData.events || []).map((event) => event.id);
+
+    setSavedEventIds(nextSavedEventIds);
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      loadSavedEvents();
+    }, [])
+  );
 
   function handleSearchChange(value) {
     setSearchText(value);
@@ -29,11 +48,20 @@ export default function useSearchViewModel() {
   }
 
   function handleEventPress(event) {
-    console.log('Abrir detalhes do espetáculo:', event.title);
+    console.log('Abrir detalhes do espetaculo:', event.title);
+  }
+
+  async function handleFavoritePress(event) {
+    const updatedWishlist = await toggleWishlistEvent(event);
+    setSavedEventIds(updatedWishlist.map((savedEvent) => savedEvent.id));
+  }
+
+  function isEventFavorite(eventId) {
+    return savedEventIds.includes(eventId);
   }
 
   function handleTabPress(tab) {
-    console.log('Ação futura: navegar para aba:', tab);
+    console.log('Acao futura: navegar para aba:', tab);
   }
 
   const filteredEvents = useMemo(() => {
@@ -67,13 +95,13 @@ export default function useSearchViewModel() {
 
   const sectionTitle = isSearching
     ? 'Resultados da busca'
-    : 'Recomendado para você';
+    : 'Recomendado para voce';
 
   const sectionSubtitle = isSearching
     ? hasResults
-      ? `${filteredEvents.length} espetáculos encontrados`
-      : 'Nenhum espetáculo encontrado'
-    : 'Algumas sugestões para começar sua busca';
+      ? `${filteredEvents.length} espetaculos encontrados`
+      : 'Nenhum espetaculo encontrado'
+    : 'Algumas sugestoes para comecar sua busca';
 
   return {
     searchText,
@@ -84,11 +112,14 @@ export default function useSearchViewModel() {
     isSearching,
     sectionTitle,
     sectionSubtitle,
+    savedEventIds,
 
     handleSearchChange,
     handleCategoryPress,
     handleClearSearch,
     handleEventPress,
+    handleFavoritePress,
+    isEventFavorite,
     handleTabPress,
   };
 }

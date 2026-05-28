@@ -16,10 +16,12 @@ import { spacing, radius } from '../constants/spacing';
 function getCategoryLabel(categoryId) {
   const labels = {
     musical: 'Musical',
-    drama: 'Drama',
+    show: 'Show / Concerto',
+    'teatro-negro': 'Teatro Negro',
+    urbano: 'Cultura Urbana',
     infantil: 'Infantil',
+    terror: 'Terror / Drama',
     ballet: 'Ballet',
-    hiphop: 'Hip Hop',
   };
 
   return labels[categoryId] || 'Espetáculo';
@@ -38,14 +40,14 @@ export default function SearchScreen() {
     handleCategoryPress,
     handleClearSearch,
     handleEventPress,
+    handleFavoritePress,
+    isEventFavorite,
     handleTabPress,
   } = useSearchViewModel();
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.page}>
-        <View style={styles.backgroundGlow} />
-
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
@@ -98,6 +100,8 @@ export default function SearchScreen() {
                     category={getCategoryLabel(event.categoryId)}
                     image={event.image}
                     onPress={() => handleEventPress(event)}
+                    isFavorite={isEventFavorite(event.id)}
+                    onFavoritePress={() => handleFavoritePress(event)}
                   />
                 ))}
               </View>
@@ -129,17 +133,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.whiteSoft,
     position: 'relative',
-  },
-
-  backgroundGlow: {
-    position: 'absolute',
-    top: -110,
-    right: -90,
-    width: 240,
-    height: 240,
-    borderRadius: 999,
-    backgroundColor: colors.purpleSoft,
-    opacity: 0.3,
   },
 
   scrollContent: {

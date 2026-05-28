@@ -1,10 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+
 import { getHomeData } from '../repositories/homeRepository';
+import {
+  getWishlistData,
+  toggleWishlistEvent,
+} from '../repositories/wishlistRepository';
 
 export default function useHomeViewModel() {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [savedEventIds, setSavedEventIds] = useState([]);
 
-  
   const [hasInterests] = useState(true);
   const [hasLocation] = useState(true);
 
@@ -13,6 +19,19 @@ export default function useHomeViewModel() {
   const categories = homeData.categories || [];
   const heroBanners = homeData.heroBanners || [];
   const theaters = homeData.theaters || [];
+
+  async function loadSavedEvents() {
+    const wishlistData = await getWishlistData();
+    const nextSavedEventIds = (wishlistData.events || []).map((event) => event.id);
+
+    setSavedEventIds(nextSavedEventIds);
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      loadSavedEvents();
+    }, [])
+  );
 
   function handleCategoryPress(categoryId) {
     setSelectedCategory(categoryId);
@@ -47,7 +66,16 @@ export default function useHomeViewModel() {
   );
 
   function handleEventPress(event) {
-    console.log('Abrir detalhes do espetáculo:', event.title);
+    console.log('Abrir detalhes do espetaculo:', event.title);
+  }
+
+  async function handleFavoritePress(event) {
+    const updatedWishlist = await toggleWishlistEvent(event);
+    setSavedEventIds(updatedWishlist.map((savedEvent) => savedEvent.id));
+  }
+
+  function isEventFavorite(eventId) {
+    return savedEventIds.includes(eventId);
   }
 
   function handleTheaterPress(theater) {
@@ -55,15 +83,15 @@ export default function useHomeViewModel() {
   }
 
   function handleEditInterests() {
-    console.log('Ação futura: navegar para edição de interesses');
+    console.log('Acao futura: navegar para edicao de interesses');
   }
 
   function handleAddLocation() {
-    console.log('Ação futura: navegar para adicionar localidade');
+    console.log('Acao futura: navegar para adicionar localidade');
   }
 
   function handleTabPress(tab) {
-    console.log('Ação futura: navegar para aba:', tab);
+    console.log('Acao futura: navegar para aba:', tab);
   }
 
   return {
@@ -79,9 +107,12 @@ export default function useHomeViewModel() {
     recommendedEvents,
     newEvents,
     nearbyEvents,
+    savedEventIds,
 
     handleCategoryPress,
     handleEventPress,
+    handleFavoritePress,
+    isEventFavorite,
     handleTheaterPress,
     handleEditInterests,
     handleAddLocation,

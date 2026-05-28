@@ -1,5 +1,13 @@
 import React from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { Heart } from 'lucide-react-native';
 
 import { colors } from '../constants/colors';
 import { typography } from '../constants/typography';
@@ -11,6 +19,8 @@ export default function SearchResultItem({
   category,
   image,
   onPress,
+  isFavorite,
+  onFavoritePress,
 }) {
   return (
     <Pressable
@@ -28,13 +38,31 @@ export default function SearchResultItem({
         </Text>
 
         <Text style={styles.location} numberOfLines={1}>
-          ⊕ {location}
+          {location}
         </Text>
 
         <Text style={styles.category} numberOfLines={1}>
           {category}
         </Text>
       </View>
+
+      {onFavoritePress && (
+        <TouchableOpacity
+          style={styles.favoriteButton}
+          activeOpacity={0.75}
+          onPress={(event) => {
+            event.stopPropagation();
+            onFavoritePress();
+          }}
+        >
+          <Heart
+            size={17}
+            strokeWidth={2.4}
+            color={isFavorite ? colors.purplePrimary : colors.grayText}
+            fill={isFavorite ? colors.purplePrimary : 'transparent'}
+          />
+        </TouchableOpacity>
+      )}
     </Pressable>
   );
 }
@@ -65,6 +93,19 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     gap: 4,
+    paddingRight: spacing.xl,
+  },
+
+  favoriteButton: {
+    position: 'absolute',
+    top: spacing.lg,
+    right: 0,
+    width: 32,
+    height: 32,
+    borderRadius: radius.pill,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   title: {

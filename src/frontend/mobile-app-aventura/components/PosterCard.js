@@ -1,15 +1,18 @@
-import React from 'react';
-import { TouchableOpacity, Image, Text, StyleSheet, View } from 'react-native';
+import React from "react";
+import { TouchableOpacity, Image, Text, StyleSheet, View } from "react-native";
+import { Heart } from "lucide-react-native";
 
-import { colors } from '../constants/colors';
-import { typography } from '../constants/typography';
-import { radius, spacing } from '../constants/spacing';
+import { colors } from "../constants/colors";
+import { typography } from "../constants/typography";
+import { radius, spacing } from "../constants/spacing";
 
 export default function PosterCard({
   title,
   subtitle,
   image,
   onPress,
+  isFavorite,
+  onFavoritePress,
   width = 134,
   imageHeight = 186,
 }) {
@@ -21,6 +24,24 @@ export default function PosterCard({
     >
       <View style={[styles.imageWrapper, { height: imageHeight }]}>
         <Image source={image} style={styles.image} resizeMode="cover" />
+
+        {onFavoritePress && (
+          <TouchableOpacity
+            style={styles.favoriteButton}
+            activeOpacity={0.75}
+            onPress={(event) => {
+              event.stopPropagation();
+              onFavoritePress();
+            }}
+          >
+            <Heart
+              size={16}
+              strokeWidth={2.4}
+              color={isFavorite ? colors.purplePrimary : colors.white}
+              fill={isFavorite ? colors.purplePrimary : "transparent"}
+            />
+          </TouchableOpacity>
+        )}
       </View>
 
       <Text style={styles.title} numberOfLines={1}>
@@ -42,15 +63,26 @@ const styles = StyleSheet.create({
   },
 
   imageWrapper: {
-    width: '100%',
+    width: "100%",
     borderRadius: radius.md,
-    overflow: 'hidden',
+    overflow: "hidden",
     backgroundColor: colors.purpleSoft,
   },
 
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
+  },
+  favoriteButton: {
+    position: "absolute",
+    top: spacing.xs,
+    right: spacing.xs,
+    width: 30,
+    height: 30,
+    borderRadius: radius.pill,
+    backgroundColor: "rgba(17, 24, 39, 0.42)",
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   title: {

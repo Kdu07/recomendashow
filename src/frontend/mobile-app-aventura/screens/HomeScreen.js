@@ -1,7 +1,6 @@
 import React from "react";
 import { View, StyleSheet, ScrollView, SafeAreaView } from "react-native";
 import { BlurView } from "expo-blur";
-import { useNavigation } from "@react-navigation/native";
 
 import HomeHeroBanner from "../components/HomeHeroBanner";
 import CategoryChip from "../components/CategoryChip";
@@ -16,7 +15,14 @@ import useHomeViewModel from "../viewmodels/useHomeViewModel";
 import { colors } from "../constants/colors";
 import { spacing, radius } from "../constants/spacing";
 
-function PosterSection({ title, subtitle, data = [], onEventPress }) {
+function PosterSection({
+  title,
+  subtitle,
+  data = [],
+  onEventPress,
+  onFavoritePress = () => {},
+  isEventFavorite = () => false,
+}) {
   if (!data.length) return null;
 
   return (
@@ -37,6 +43,8 @@ function PosterSection({ title, subtitle, data = [], onEventPress }) {
             subtitle={event.location}
             image={event.image}
             onPress={() => onEventPress(event)}
+            isFavorite={isEventFavorite(event.id)}
+            onFavoritePress={() => onFavoritePress(event)}
           />
         ))}
       </ScrollView>
@@ -69,8 +77,6 @@ function EmptySection({
 }
 
 export default function HomeScreen() {
-  const navigation = useNavigation();
-
   const {
     heroBanners = [],
     categories = [],
@@ -84,6 +90,8 @@ export default function HomeScreen() {
     hasLocation = false,
     handleCategoryPress = () => {},
     handleEventPress = () => {},
+    handleFavoritePress = () => {},
+    isEventFavorite = () => false,
     handleTheaterPress = () => {},
     handleEditInterests = () => {},
     handleAddLocation = () => {},
@@ -93,8 +101,6 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.page}>
-        <View style={styles.backgroundGlow} />
-
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
@@ -128,6 +134,8 @@ export default function HomeScreen() {
             title="Em alta"
             data={trendingEvents}
             onEventPress={handleEventPress}
+            onFavoritePress={handleFavoritePress}
+            isEventFavorite={isEventFavorite}
           />
 
           {hasInterests ? (
@@ -136,6 +144,8 @@ export default function HomeScreen() {
               subtitle="Baseado nos seus gostos"
               data={recommendedEvents}
               onEventPress={handleEventPress}
+              onFavoritePress={handleFavoritePress}
+              isEventFavorite={isEventFavorite}
             />
           ) : (
             <EmptySection
@@ -152,6 +162,8 @@ export default function HomeScreen() {
             title="Novidades"
             data={newEvents}
             onEventPress={handleEventPress}
+            onFavoritePress={handleFavoritePress}
+            isEventFavorite={isEventFavorite}
           />
 
           {hasLocation ? (
@@ -160,6 +172,8 @@ export default function HomeScreen() {
               subtitle="Espetáculos na sua cidade"
               data={nearbyEvents}
               onEventPress={handleEventPress}
+              onFavoritePress={handleFavoritePress}
+              isEventFavorite={isEventFavorite}
             />
           ) : (
             <EmptySection
@@ -206,17 +220,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.whiteSoft,
     position: "relative",
-  },
-
-  backgroundGlow: {
-    position: "absolute",
-    top: -100,
-    right: -90,
-    width: 230,
-    height: 230,
-    borderRadius: 999,
-    backgroundColor: colors.purpleSoft,
-    opacity: 0.32,
   },
 
   scrollContent: {

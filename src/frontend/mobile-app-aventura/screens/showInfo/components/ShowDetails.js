@@ -5,33 +5,18 @@ import { colors } from '../../../constants/colors';
 import { typography } from '../../../constants/typography';
 import { spacing, radius } from '../../../constants/spacing';
 
-function DetailRow({ icon, label, children }) {
-  return (
-    <View style={styles.row}>
-      <Text style={styles.icon}>{icon}</Text>
-      <View style={styles.rowContent}>
-        <Text style={styles.label}>{label}</Text>
-        {children}
-      </View>
-    </View>
-  );
-}
-
-export default function ShowDetails({ date, location }) {
+export default function ShowDetails({ location }) {
   return (
     <View style={styles.container}>
-      <DetailRow icon="📅" label={date.label}>
-        <Text style={styles.primary}>{date.status}</Text>
-        <Text style={styles.secondary}>{date.detail}</Text>
-      </DetailRow>
-
-      <View style={styles.divider} />
-
-      <DetailRow icon="📍" label={location.label}>
-        <Text style={styles.primary}>{location.venue}</Text>
-        <Text style={styles.secondary}>{location.address}</Text>
-        <Text style={styles.secondary}>{location.city}</Text>
-      </DetailRow>
+      <View style={styles.row}>
+        <Text style={styles.icon}>📍</Text>
+        <View style={styles.rowContent}>
+          <Text style={styles.label}>{location.label}</Text>
+          <Text style={styles.primary}>{location.venue}</Text>
+          <Text style={styles.secondary}>{location.address}</Text>
+          <Text style={styles.secondary}>{location.city}</Text>
+        </View>
+      </View>
 
       <Image
         source={location.mapImage}

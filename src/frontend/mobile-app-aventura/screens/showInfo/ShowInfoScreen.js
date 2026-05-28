@@ -24,17 +24,13 @@ export default function ShowInfoScreen({ route }) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <ShowHero
-          heroImage={show.heroImage}
-          isFavorited={show.isFavorited}
-          onToggleFavorite={toggleFavorite}
-        />
+        <ShowHero heroImage={show.heroImage} />
 
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{show.title}</Text>
         </View>
 
-        <ShowDetails date={show.date} location={show.location} />
+        <ShowDetails location={show.location} />
 
         <ShowAbout about={show.about} />
 

@@ -1,34 +1,36 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { Ionicons } from '@expo/vector-icons';
 
 import { colors } from '../constants/colors';
 import { typography } from '../constants/typography';
-import { spacing } from '../constants/spacing';
+import { spacing, radius } from '../constants/spacing';
 
 const tabs = [
   {
     key: 'explore',
     label: 'Explorar',
-    icon: '⌂',
-    iconSize: 28,
+    icon: 'home-outline',
+    activeIcon: 'home',
   },
   {
     key: 'search',
     label: 'Buscar',
-    icon: '⌕',
-    iconSize: 38,
+    icon: 'search-outline',
+    activeIcon: 'search',
   },
   {
     key: 'wishlist',
     label: 'Wishlist',
-    icon: '♡',
-    iconSize: 30,
+    icon: 'heart-outline',
+    activeIcon: 'heart',
   },
   {
     key: 'profile',
     label: 'Perfil',
-    icon: '♙',
-    iconSize: 36,
+    icon: 'person-outline',
+    activeIcon: 'person',
   },
 ];
 
@@ -37,78 +39,103 @@ export default function BottomTabBar({
   onTabPress,
 }) {
   return (
-    <View style={styles.container}>
-      {tabs.map((tab) => {
-        const isActive = tab.key === activeTab;
+    <View style={styles.safeArea}>
+      <BlurView intensity={35} tint="light" style={styles.backdrop}>
+        <View style={styles.container}>
+          {tabs.map((tab) => {
+            const isActive = tab.key === activeTab;
 
-        return (
-          <TouchableOpacity
-            key={tab.key}
-            style={styles.tab}
-            onPress={() => onTabPress?.(tab.key)}
-            activeOpacity={0.7}
-          >
-            <View style={styles.iconBox}>
-              <Text
-                style={[
-                  styles.icon,
-                  { fontSize: tab.iconSize },
-                  isActive && styles.activeIcon,
+            return (
+              <Pressable
+                key={tab.key}
+                onPress={() => onTabPress?.(tab.key)}
+                style={({ pressed }) => [
+                  styles.tab,
+                  isActive && styles.activeTab,
+                  pressed && styles.pressedTab,
                 ]}
               >
-                {tab.icon}
-              </Text>
-            </View>
+                <Ionicons
+                  name={isActive ? tab.activeIcon : tab.icon}
+                  size={22}
+                  color={isActive ? colors.purplePrimary : colors.grayText}
+                />
 
-            <Text style={[styles.label, isActive && styles.activeLabel]}>
-              {tab.label}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
+                <Text style={[styles.label, isActive && styles.activeLabel]}>
+                  {tab.label}
+                </Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </BlurView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 32,
+    backgroundColor: 'rgba(248, 250, 252, 0.86)',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.md,
+    paddingBottom: spacing.md,
+  },
+
+  backdrop: {
+    width: '100%',
+    borderRadius: radius.xl,
+    overflow: 'hidden',
+
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 18,
+    elevation: 10,
+  },
+
   container: {
-    height: 98,
-    backgroundColor: colors.white,
-    borderTopWidth: 2,
-    borderTopColor: colors.grayLight,
+    height: 72,
+    borderRadius: radius.xl,
+    backgroundColor: 'rgba(255, 255, 255, 0.90)',
+    borderWidth: 1,
+    borderColor: 'rgba(224, 212, 255, 0.85)',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingBottom: spacing.xs,
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.sm,
   },
 
   tab: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 4,
     flex: 1,
-  },
-
-  iconBox: {
-    width: 38,
-    height: 34,
+    height: 54,
+    borderRadius: radius.lg,
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 3,
   },
 
-  icon: {
-    lineHeight: 36,
-    color: colors.grayText,
-    textAlign: 'center',
+  activeTab: {
+    backgroundColor: colors.purpleSoft,
+    borderWidth: 1,
+    borderColor: colors.purpleLight,
   },
 
-  activeIcon: {
-    color: colors.purplePrimary,
-    fontWeight: typography.fontWeight.semiBold,
+  pressedTab: {
+    opacity: 0.88,
+    transform: [{ scale: 0.98 }],
   },
 
   label: {
     fontSize: typography.size.xs,
+    fontWeight: typography.fontWeight.medium,
     color: colors.grayText,
   },
 

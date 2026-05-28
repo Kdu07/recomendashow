@@ -95,7 +95,6 @@ export default function HomeScreen() {
     handleTheaterPress = () => {},
     handleEditInterests = () => {},
     handleAddLocation = () => {},
-    handleTabPress = () => {},
   } = useHomeViewModel();
 
   return (

@@ -36,7 +36,7 @@ export default function NotificationsScreen({
         <ScreenHeader
           title="NOTIFICAÇÕES"
           onBackPress={() =>
-            navigation.navigate('Profile')
+            navigation.navigate('MainTabs', { screen: 'Profile', })
           }
         />
 
@@ -78,12 +78,15 @@ export default function NotificationsScreen({
         activeTab="profile"
         onTabPress={(tab) => {
           if (tab === 'explore') {
-            navigation.navigate('Home');
+            navigation.navigate('MainTabs', {
+              screen: 'Home',
+            });
+          
             return;
           }
 
           if (tab === 'profile') {
-            navigation.navigate('Profile');
+            navigation.navigate("MainTabs", { screen: "Profile", });
           }
         }}
       />

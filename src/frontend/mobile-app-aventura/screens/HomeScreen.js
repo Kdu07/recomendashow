@@ -1,21 +1,29 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
-import { BlurView } from 'expo-blur';
+import React from "react";
+import { View, StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import { BlurView } from "expo-blur";
 
-import HomeHeroBanner from '../components/HomeHeroBanner';
-import CategoryChip from '../components/CategoryChip';
-import SectionHeader from '../components/SectionHeader';
-import PosterCard from '../components/PosterCard';
-import TheaterCard from '../components/TheaterCard';
-import EmptyState from '../components/EmptyState';
-import BottomTabBar from '../components/BottomTabBar';
+import HomeHeroBanner from "../components/HomeHeroBanner";
+import CategoryChip from "../components/CategoryChip";
+import SectionHeader from "../components/SectionHeader";
+import PosterCard from "../components/PosterCard";
+import TheaterCard from "../components/TheaterCard";
+import EmptyState from "../components/EmptyState";
+import BottomTabBar from "../components/BottomTabBar";
 
-import useHomeViewModel from '../viewmodels/useHomeViewModel';
 
-import { colors } from '../constants/colors';
-import { spacing, radius } from '../constants/spacing';
+import useHomeViewModel from "../viewmodels/useHomeViewModel";
 
-function PosterSection({ title, subtitle, data = [], onEventPress }) {
+import { colors } from "../constants/colors";
+import { spacing, radius } from "../constants/spacing";
+
+function PosterSection({
+  title,
+  subtitle,
+  data = [],
+  onEventPress,
+  onFavoritePress = () => {},
+  isEventFavorite = () => false,
+}) {
   if (!data.length) return null;
 
   return (
@@ -36,6 +44,8 @@ function PosterSection({ title, subtitle, data = [], onEventPress }) {
             subtitle={event.location}
             image={event.image}
             onPress={() => onEventPress(event)}
+            isFavorite={isEventFavorite(event.id)}
+            onFavoritePress={() => onFavoritePress(event)}
           />
         ))}
       </ScrollView>
@@ -76,22 +86,21 @@ export default function HomeScreen() {
     newEvents = [],
     nearbyEvents = [],
     theaters = [],
-    selectedCategory = 'all',
+    selectedCategory = "all",
     hasInterests = false,
     hasLocation = false,
     handleCategoryPress = () => {},
     handleEventPress = () => {},
+    handleFavoritePress = () => {},
+    isEventFavorite = () => false,
     handleTheaterPress = () => {},
     handleEditInterests = () => {},
     handleAddLocation = () => {},
-    handleTabPress = () => {},
   } = useHomeViewModel();
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.page}>
-        <View style={styles.backgroundGlow} />
-
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
@@ -125,6 +134,8 @@ export default function HomeScreen() {
             title="Em alta"
             data={trendingEvents}
             onEventPress={handleEventPress}
+            onFavoritePress={handleFavoritePress}
+            isEventFavorite={isEventFavorite}
           />
 
           {hasInterests ? (
@@ -133,6 +144,8 @@ export default function HomeScreen() {
               subtitle="Baseado nos seus gostos"
               data={recommendedEvents}
               onEventPress={handleEventPress}
+              onFavoritePress={handleFavoritePress}
+              isEventFavorite={isEventFavorite}
             />
           ) : (
             <EmptySection
@@ -149,6 +162,8 @@ export default function HomeScreen() {
             title="Novidades"
             data={newEvents}
             onEventPress={handleEventPress}
+            onFavoritePress={handleFavoritePress}
+            isEventFavorite={isEventFavorite}
           />
 
           {hasLocation ? (
@@ -157,6 +172,8 @@ export default function HomeScreen() {
               subtitle="Espetáculos na sua cidade"
               data={nearbyEvents}
               onEventPress={handleEventPress}
+              onFavoritePress={handleFavoritePress}
+              isEventFavorite={isEventFavorite}
             />
           ) : (
             <EmptySection
@@ -213,18 +230,7 @@ const styles = StyleSheet.create({
   page: {
     flex: 1,
     backgroundColor: colors.whiteSoft,
-    position: 'relative',
-  },
-
-  backgroundGlow: {
-    position: 'absolute',
-    top: -100,
-    right: -90,
-    width: 230,
-    height: 230,
-    borderRadius: 999,
-    backgroundColor: colors.purpleSoft,
-    opacity: 0.32,
+    position: "relative",
   },
 
   scrollContent: {
@@ -238,7 +244,7 @@ const styles = StyleSheet.create({
 
   heroCard: {
     borderRadius: radius.md,
-    overflow: 'hidden',
+    overflow: "hidden",
     backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.grayLight,
@@ -253,25 +259,24 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
 
-  // 💡 Ajustado para criar distâncias perfeitamente simétricas acima e abaixo da barra
   filterOuter: {
-    marginTop: spacing.md, // Distância exata entre o Banner e a Barra de Categorias
-    backgroundColor: 'transparent',
+    marginTop: spacing.md,
+    backgroundColor: "transparent",
   },
 
   filterBlur: {
-    paddingVertical: spacing.sm, // Deixa a barra de blur um pouco mais fina e elegante
+    paddingVertical: spacing.sm,
   },
 
   categoryRow: {
     paddingHorizontal: spacing.md,
     paddingRight: spacing.xl,
     gap: spacing.sm,
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   horizontalSection: {
-    marginTop: spacing.md, // 💡 IGUAL ao marginTop do filterOuter, garantindo a mesma distância para o "Em alta"
+    marginTop: spacing.md,
     gap: spacing.md,
   },
 
@@ -299,10 +304,10 @@ const styles = StyleSheet.create({
 
   emptyStateCard: {
     borderRadius: radius.lg,
-    backgroundColor: 'rgba(255, 255, 255, 0.94)',
+    backgroundColor: "rgba(255, 255, 255, 0.94)",
     borderWidth: 1,
     borderColor: colors.grayLight,
-    overflow: 'hidden',
+    overflow: "hidden",
 
     shadowColor: colors.black,
     shadowOffset: {
@@ -316,6 +321,6 @@ const styles = StyleSheet.create({
 
   theaterList: {
     gap: spacing.lg,
-    alignItems: 'center',
+    alignItems: "center",
   },
 });

@@ -39,7 +39,7 @@ export default function InstitutionalScreen({
         <ScreenHeader
           title="INFORMAÇÕES INSTITUCIONAIS"
           onBackPress={() =>
-            navigation.navigate('Profile')
+            navigation.navigate('MainTabs', { screen: 'Profile', })
           }
         />
 
@@ -104,12 +104,15 @@ export default function InstitutionalScreen({
         activeTab="profile"
         onTabPress={(tab) => {
           if (tab === 'explore') {
-            navigation.navigate('Home');
+            navigation.navigate('MainTabs', {
+              screen: 'Home',
+            });
+          
             return;
           }
 
           if (tab === 'profile') {
-            navigation.navigate('Profile');
+            navigation.navigate("MainTabs", { screen: "Profile", });
           }
         }}
       />

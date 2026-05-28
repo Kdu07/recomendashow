@@ -42,7 +42,7 @@ export default function EditInterestsScreen({
         <ScreenHeader
           title="EDITAR INTERESSES"
           onBackPress={() =>
-            navigation.navigate('Profile')
+            navigation.navigate('MainTabs', { screen: 'Profile', })
           }
         />
 
@@ -128,12 +128,15 @@ export default function EditInterestsScreen({
         activeTab="profile"
         onTabPress={(tab) => {
           if (tab === 'explore') {
-            navigation.navigate('Home');
+            navigation.navigate('MainTabs', {
+              screen: 'Home',
+            });
+          
             return;
           }
 
           if (tab === 'profile') {
-            navigation.navigate('Profile');
+            navigation.navigate("MainTabs", { screen: "Profile", });
             return;
           }
         }}

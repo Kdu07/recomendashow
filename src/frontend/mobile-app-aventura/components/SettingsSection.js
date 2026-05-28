@@ -34,8 +34,9 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: typography.size.md,
-    fontWeight: typography.fontWeight.medium,
-    color: colors.grayText,
+    lineHeight: typography.lineHeight.md,
+    fontWeight: typography.fontWeight.semiBold,
+    color: colors.grayDark,
   },
 
   card: {
@@ -44,8 +45,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.grayLight,
 
-    borderRadius: radius.lg,
+    borderRadius: radius.md,
 
     padding: spacing.lg,
+
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.04,
+    shadowRadius: 10,
+    elevation: 2,
   },
 });

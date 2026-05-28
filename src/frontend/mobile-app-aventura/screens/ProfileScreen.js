@@ -7,9 +7,8 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  SafeAreaView,
 } from 'react-native';
-
-import BottomTabBar from '../components/BottomTabBar';
 
 import useProfileViewModel from '../viewmodels/useProfileViewModel';
 
@@ -36,7 +35,7 @@ function MenuItem({
           </Text>
         </View>
 
-        <View>
+        <View style={styles.menuCopy}>
           <Text style={styles.menuTitle}>
             {title}
           </Text>
@@ -48,7 +47,7 @@ function MenuItem({
       </View>
 
       <Text style={styles.chevron}>
-        ›
+        &gt;
       </Text>
     </TouchableOpacity>
   );
@@ -62,130 +61,138 @@ export default function ProfileScreen({ navigation }) {
     handleMenuPress,
     handleEditProfile,
     handleLogout,
-    handleTabPress,
   } = useProfileViewModel();
 
   return (
-    <View style={styles.page}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <Text style={styles.header}>
-          PERFIL
-        </Text>
-
-        <View style={styles.profileSection}>
-          <Image
-            source={{ uri: user.avatar }}
-            style={styles.avatar}
-          />
-
-          <View style={styles.profileInfo}>
-            <Text style={styles.name}>
-              {user.name}
-            </Text>
-
-            <Text style={styles.email}>
-              {user.email}
-            </Text>
-
-            <TouchableOpacity
-              onPress={handleEditProfile}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.editProfile}>
-                ✎ Editar Perfil
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View style={styles.menuList}>
-          {menuItems.map((item) => (
-            <MenuItem
-              key={item.id}
-              icon={item.icon}
-              title={item.title}
-              subtitle={item.subtitle}
-              onPress={() => {
-                if (item.id === 'preferences') {
-                  navigation.navigate('EditInterests');
-                  return;
-                } else if (item.id === 'notifications') {
-                  navigation.navigate('Notifications');
-                  return;
-                } else if (item.id === 'institutional') {
-                  navigation.navigate('Institutional');
-                  return;
-                }
-                handleMenuPress(item);
-              }}
-            />
-          ))}
-        </View>
-
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={handleLogout}
-          activeOpacity={0.7}
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.page}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
         >
-          <Text style={styles.logoutIcon}>
-            ↪
+          <Text style={styles.header}>
+            Perfil
           </Text>
 
-          <Text style={styles.logoutText}>
-            Sair
+          <View style={styles.profileCard}>
+            <Image
+              source={{ uri: user.avatar }}
+              style={styles.avatar}
+            />
+
+            <View style={styles.profileInfo}>
+              <Text style={styles.name}>
+                {user.name}
+              </Text>
+
+              <Text style={styles.email}>
+                {user.email}
+              </Text>
+
+              <TouchableOpacity
+                onPress={handleEditProfile}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.editProfile}>
+                  Editar perfil
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.menuList}>
+            {menuItems.map((item) => (
+              <MenuItem
+                key={item.id}
+                icon={item.icon}
+                title={item.title}
+                subtitle={item.subtitle}
+                onPress={() => {
+                  if (item.id === 'preferences') {
+                    navigation.navigate('EditInterests');
+                    return;
+                  }
+
+                  if (item.id === 'notifications') {
+                    navigation.navigate('Notifications');
+                    return;
+                  }
+
+                  if (item.id === 'institutional') {
+                    navigation.navigate('Institutional');
+                    return;
+                  }
+
+                  handleMenuPress(item);
+                }}
+              />
+            ))}
+          </View>
+
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={handleLogout}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.logoutText}>
+              Sair
+            </Text>
+          </TouchableOpacity>
+
+          <Text style={styles.version}>
+            Versão 1.0.0
           </Text>
-        </TouchableOpacity>
-
-        <Text style={styles.version}>
-          Versão 1.0.0
-        </Text>
-      </ScrollView>
-
-      <BottomTabBar
-        activeTab="profile"
-        onTabPress={(tab) => {
-          if (tab === 'explore') {
-            navigation.navigate('Home');
-            return;
-          }
-          handleTabPress(tab);
-        }}
-      />
-    </View>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.whiteSoft,
+  },
+
   page: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: colors.whiteSoft,
   },
 
   scrollContent: {
-    paddingTop: spacing.xl,
-    paddingBottom: 120,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
+    paddingBottom: 140,
+    gap: spacing.lg,
   },
 
   header: {
-    paddingHorizontal: spacing.lg,
-    marginBottom: spacing.lg,
-
-    fontSize: typography.size.sm,
+    fontSize: typography.size.xl,
+    lineHeight: typography.lineHeight.xl,
     fontWeight: typography.fontWeight.bold,
-
     color: colors.grayDark,
   },
 
-  profileSection: {
+  profileCard: {
     flexDirection: 'row',
     alignItems: 'center',
 
-    paddingHorizontal: spacing.xl,
-    marginBottom: spacing.xxl,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.grayLight,
+    borderRadius: radius.md,
+
+    padding: spacing.lg,
     gap: spacing.md,
+
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.04,
+    shadowRadius: 10,
+    elevation: 2,
   },
 
   avatar: {
@@ -196,59 +203,68 @@ const styles = StyleSheet.create({
 
   profileInfo: {
     flex: 1,
-    gap: 2,
+    gap: spacing.xs,
   },
 
   name: {
-    fontSize: 32,
+    fontSize: typography.size.xl,
+    lineHeight: typography.lineHeight.xl,
     fontWeight: typography.fontWeight.bold,
     color: colors.grayDark,
   },
 
   email: {
-    fontSize: typography.size.md,
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
     color: colors.grayText,
   },
 
   editProfile: {
-    marginTop: spacing.sm,
+    marginTop: spacing.xs,
     fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
     color: colors.purplePrimary,
-    fontWeight: typography.fontWeight.medium,
+    fontWeight: typography.fontWeight.semiBold,
   },
 
   menuList: {
-    paddingHorizontal: spacing.md,
     gap: spacing.md,
   },
 
   menuItem: {
     backgroundColor: colors.white,
 
-    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.grayLight,
+    borderRadius: radius.md,
 
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.lg,
+    paddingVertical: spacing.md,
 
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
 
-    shadowColor: '#000',
+    shadowColor: colors.black,
     shadowOpacity: 0.04,
-    shadowRadius: 8,
+    shadowRadius: 10,
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 4,
     },
 
     elevation: 2,
   },
 
   menuLeft: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
+  },
+
+  menuCopy: {
+    flex: 1,
   },
 
   iconContainer: {
@@ -256,7 +272,7 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 26,
 
-    backgroundColor: '#F4ECFF',
+    backgroundColor: colors.purpleSoft,
 
     alignItems: 'center',
     justifyContent: 'center',
@@ -269,6 +285,7 @@ const styles = StyleSheet.create({
 
   menuTitle: {
     fontSize: typography.size.md,
+    lineHeight: typography.lineHeight.md,
     fontWeight: typography.fontWeight.semiBold,
     color: colors.grayDark,
   },
@@ -277,6 +294,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
 
     fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
     color: colors.grayText,
   },
 
@@ -286,32 +304,26 @@ const styles = StyleSheet.create({
   },
 
   logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
     alignSelf: 'flex-end',
 
-    marginTop: spacing.xxl,
-    marginRight: spacing.xl,
-    gap: spacing.xs,
-  },
-
-  logoutIcon: {
-    fontSize: 24,
-    color: colors.peachBurnt,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
   },
 
   logoutText: {
-    fontSize: typography.size.lg,
+    fontSize: typography.size.md,
+    lineHeight: typography.lineHeight.md,
     color: colors.peachBurnt,
-    fontWeight: typography.fontWeight.medium,
+    fontWeight: typography.fontWeight.semiBold,
   },
 
   version: {
-    marginTop: 140,
+    marginTop: spacing.xxl,
 
     textAlign: 'center',
 
     fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
     color: colors.grayText,
   },
 });

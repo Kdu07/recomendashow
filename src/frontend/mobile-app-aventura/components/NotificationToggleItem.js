@@ -60,17 +60,19 @@ const styles = StyleSheet.create({
 
   content: {
     flex: 1,
-    gap: 2,
+    gap: spacing.xs,
   },
 
   title: {
-    fontSize: typography.size.lg,
-    fontWeight: typography.fontWeight.medium,
+    fontSize: typography.size.md,
+    lineHeight: typography.lineHeight.md,
+    fontWeight: typography.fontWeight.semiBold,
     color: colors.grayDark,
   },
 
   subtitle: {
-    fontSize: typography.size.md,
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
     color: colors.grayText,
   },
 

@@ -5,6 +5,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 
 import AppButton from '../components/AppButton';
@@ -17,7 +18,7 @@ import useEditInterestsViewModel from '../viewmodels/useEditInterestsViewModel';
 
 import { colors } from '../constants/colors';
 import { typography } from '../constants/typography';
-import { spacing } from '../constants/spacing';
+import { radius, spacing } from '../constants/spacing';
 
 export default function EditInterestsScreen({
   navigation,
@@ -35,94 +36,89 @@ export default function EditInterestsScreen({
 
   return (
     <View style={styles.page}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <ScreenHeader
-          title="EDITAR INTERESSES"
-          onBackPress={() =>
-            navigation.navigate('MainTabs', { screen: 'Profile', })
-          }
-        />
+      <SafeAreaView style={styles.contentSafeArea}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <ScreenHeader
+            title="Preferências"
+            onBackPress={() =>
+              navigation.navigate('MainTabs', { screen: 'Profile' })
+            }
+          />
 
-        <InfoCard
-          title="Ajuste suas recomendações"
-          description="Suas escolhas ajudam a personalizar o conteúdo que você vê no Aventura"
-        />
+          <InfoCard
+            title="Ajuste suas recomendações"
+            description="Suas escolhas ajudam a personalizar o conteúdo que você vê no Aventura."
+          />
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            SELECIONE SEUS INTERESSES
-          </Text>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              Interesses
+            </Text>
 
-          <View style={styles.interestsGrid}>
-            {interests.map((interest) => (
-              <View
-                key={interest.id}
-                style={styles.interestItem}
-              >
+            <View style={styles.interestsGrid}>
+              {interests.map((interest) => (
+                <View
+                  key={interest.id}
+                  style={styles.interestItem}
+                >
+                  <SelectableChip
+                    label={interest.label}
+                    selected={interest.selected}
+                    onPress={() =>
+                      handleToggleInterest(
+                        interest.id
+                      )
+                    }
+                  />
+                </View>
+              ))}
+            </View>
+
+            <Text style={styles.counter}>
+              {selectedInterestsCount} interesses selecionados
+            </Text>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              Cidade
+            </Text>
+
+            <View style={styles.cityList}>
+              {cities.map((city) => (
                 <SelectableChip
-                  label={interest.label}
-                  selected={interest.selected}
+                  key={city.id}
+                  label={city.label}
+                  selected={city.selected}
                   onPress={() =>
-                    handleToggleInterest(
-                      interest.id
-                    )
+                    handleSelectCity(city.id)
                   }
                 />
-              </View>
-            ))}
+              ))}
+            </View>
           </View>
 
-          <Text style={styles.counter}>
-            {selectedInterestsCount} interesses selecionados
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            SELECIONE SUA CIDADE
-          </Text>
-
-          <View style={styles.cityList}>
-            {cities.map((city) => (
-              <SelectableChip
-                key={city.id}
-                label={city.label}
-                selected={city.selected}
-                onPress={() =>
-                  handleSelectCity(city.id)
-                }
-              />
-            ))}
+          <View style={styles.buttonContainer}>
+            <AppButton
+              title="Salvar alterações"
+              onPress={handleSaveChanges}
+            />
           </View>
-        </View>
 
-        <View style={styles.buttonContainer}>
-          <AppButton
-            title="✓ SALVAR ALTERAÇÕES"
-            onPress={handleSaveChanges}
-          />
-        </View>
-
-        <View style={styles.tipContainer}>
-          <Text style={styles.tipIcon}>
-            💡
-          </Text>
-
-          <View style={styles.tipContent}>
+          <View style={styles.tipContainer}>
             <Text style={styles.tipTitle}>
               Dica
             </Text>
 
             <Text style={styles.tipDescription}>
-              Você pode alterar seus interesses a qualquer momento.
-              Quanto mais específico, melhores serão suas recomendações!
+              Você pode alterar seus interesses a qualquer momento. Quanto mais específico, melhores serão suas recomendações.
             </Text>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </SafeAreaView>
 
       <BottomTabBar
         activeTab="profile"
@@ -131,13 +127,12 @@ export default function EditInterestsScreen({
             navigation.navigate('MainTabs', {
               screen: 'Home',
             });
-          
+
             return;
           }
 
           if (tab === 'profile') {
-            navigation.navigate("MainTabs", { screen: "Profile", });
-            return;
+            navigation.navigate('MainTabs', { screen: 'Profile' });
           }
         }}
       />
@@ -148,28 +143,29 @@ export default function EditInterestsScreen({
 const styles = StyleSheet.create({
   page: {
     flex: 1,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: colors.whiteSoft,
+  },
+
+  contentSafeArea: {
+    flex: 1,
+    backgroundColor: colors.whiteSoft,
   },
 
   scrollContent: {
-    padding: spacing.lg,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
     paddingBottom: 140,
-    gap: spacing.xl,
-  },
-
-  header: {
-    fontSize: typography.size.md,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.grayDark,
+    gap: spacing.lg,
   },
 
   section: {
-    gap: spacing.lg,
+    gap: spacing.md,
   },
 
   sectionTitle: {
     fontSize: typography.size.md,
-    fontWeight: typography.fontWeight.bold,
+    lineHeight: typography.lineHeight.md,
+    fontWeight: typography.fontWeight.semiBold,
     color: colors.grayDark,
   },
 
@@ -187,6 +183,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: colors.grayText,
     fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
   },
 
   cityList: {
@@ -194,37 +191,29 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    marginTop: spacing.lg,
+    marginTop: spacing.sm,
   },
 
   tipContainer: {
-    borderTopWidth: 1,
-    borderTopColor: colors.grayLight,
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.grayLight,
+    borderRadius: radius.md,
 
-    paddingTop: spacing.xl,
-
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-
-  tipIcon: {
-    fontSize: 22,
-  },
-
-  tipContent: {
-    flex: 1,
+    padding: spacing.lg,
     gap: spacing.xs,
   },
 
   tipTitle: {
-    fontSize: typography.size.lg,
+    fontSize: typography.size.md,
+    lineHeight: typography.lineHeight.md,
     fontWeight: typography.fontWeight.semiBold,
     color: colors.grayDark,
   },
 
   tipDescription: {
-    fontSize: typography.size.md,
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
     color: colors.grayText,
-    lineHeight: 26,
   },
 });

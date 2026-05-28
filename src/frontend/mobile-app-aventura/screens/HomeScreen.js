@@ -8,7 +8,6 @@ import SectionHeader from "../components/SectionHeader";
 import PosterCard from "../components/PosterCard";
 import TheaterCard from "../components/TheaterCard";
 import EmptyState from "../components/EmptyState";
-import BottomTabBar from "../components/BottomTabBar";
 
 
 import useHomeViewModel from "../viewmodels/useHomeViewModel";
@@ -205,18 +204,7 @@ export default function HomeScreen() {
             </View>
           </View>
         </ScrollView>
-
-      <BottomTabBar
-        activeTab="explore"
-        onTabPress={(tab) => {
-          if (tab === 'profile') {
-            navigation.navigate('Profile');
-            return;
-          }
-        handleTabPress(tab);
-        }}
-      />
-    </View>
+      </View>
     </SafeAreaView>
   );
 }

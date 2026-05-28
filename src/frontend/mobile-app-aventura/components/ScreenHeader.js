@@ -45,13 +45,13 @@ export default function ScreenHeader({
 
 const styles = StyleSheet.create({
   container: {
-    minHeight: 56,
+    minHeight: 48,
 
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
 
-    marginBottom: spacing.md,
+    marginBottom: spacing.sm,
   },
 
   leftContent: {
@@ -62,15 +62,15 @@ const styles = StyleSheet.create({
   },
 
   backButton: {
-    width: 42,
-    height: 42,
+    width: 40,
+    height: 40,
 
-    borderRadius: radius.full || 999,
+    borderRadius: radius.pill,
 
     backgroundColor: colors.white,
 
-    borderWidth: 0.8,
-    borderColor: '#ECECEC',
+    borderWidth: 1,
+    borderColor: colors.grayLight,
 
     alignItems: 'center',
     justifyContent: 'center',
@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: typography.size.lg,
+    lineHeight: typography.lineHeight.lg,
     fontWeight: typography.fontWeight.bold,
     color: colors.grayDark,
   },

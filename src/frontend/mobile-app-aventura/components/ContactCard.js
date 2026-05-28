@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.grayLight,
 
-    borderRadius: radius.lg,
+    borderRadius: radius.md,
 
     backgroundColor: colors.white,
 
@@ -67,9 +67,8 @@ const styles = StyleSheet.create({
     flex: 1,
 
     fontSize: typography.size.md,
+    lineHeight: typography.lineHeight.md,
     color: colors.grayDark,
-
-    lineHeight: 26,
   },
 
   link: {

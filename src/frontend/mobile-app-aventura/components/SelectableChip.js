@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.grayLight,
 
-    borderRadius: radius.lg,
+    borderRadius: radius.md,
 
     alignItems: 'center',
     justifyContent: 'center',
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: typography.size.md,
+    lineHeight: typography.lineHeight.md,
     color: colors.grayDark,
   },
 

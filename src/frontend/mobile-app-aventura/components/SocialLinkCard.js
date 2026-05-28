@@ -68,11 +68,14 @@ const styles = StyleSheet.create({
   platform: {
     flex: 1,
 
-    fontSize: typography.size.lg,
+    fontSize: typography.size.md,
+    lineHeight: typography.lineHeight.md,
+    fontWeight: typography.fontWeight.semiBold,
     color: colors.grayDark,
   },
 
   username: {
+    fontWeight: typography.fontWeight.regular,
     color: colors.grayText,
   },
 

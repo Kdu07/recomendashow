@@ -9,7 +9,9 @@ import AuthDivider from './AuthDivider';
 export default function AuthForm({
   mode,
   values,
+  errors = {},
   submitLabel,
+  loading = false,
   onChangeField,
   onSubmit,
   onGoogleAuth,
@@ -70,6 +72,7 @@ export default function AuthForm({
             label={field.label}
             placeholder={field.placeholder}
             value={values[field.name]}
+            error={errors[field.name]}
             onChangeText={(value) => onChangeField(field.name, value)}
             secureTextEntry={field.secureTextEntry}
             keyboardType={field.keyboardType}
@@ -82,13 +85,14 @@ export default function AuthForm({
         ))}
       </View>
 
-      <AppButton title={submitLabel} onPress={onSubmit} />
+      <AppButton title={submitLabel} loading={loading} onPress={onSubmit} />
 
       <AuthDivider />
 
       <AppButton
         title="Google"
         variant="secondary"
+        disabled={loading}
         showGoogleIcon
         onPress={onGoogleAuth}
       />

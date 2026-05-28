@@ -10,7 +10,7 @@ import {
 import AuthForm from '../components/AuthForm';
 import AuthHeader from '../components/AuthHeader';
 import AuthModeSwitch from '../components/AuthModeSwitch';
-import { useAuthViewModel } from '../hooks/useAuthViewModel';
+import { useAuthViewModel } from '../viewmodels/useAuthViewModel';
 import { colors } from '../constants/colors';
 import { spacing } from '../constants/spacing';
 import ScreenContainer from './ScreenContainer';
@@ -19,7 +19,9 @@ export default function AuthScreen() {
   const {
     mode,
     values,
+    errors,
     content,
+    loading,
     setMode,
     updateField,
     handleSubmit,
@@ -47,7 +49,9 @@ export default function AuthScreen() {
             <AuthForm
               mode={mode}
               values={values}
+              errors={errors}
               submitLabel={content.submitLabel}
+              loading={loading}
               onChangeField={updateField}
               onSubmit={handleSubmit}
               onGoogleAuth={handleGoogleAuth}

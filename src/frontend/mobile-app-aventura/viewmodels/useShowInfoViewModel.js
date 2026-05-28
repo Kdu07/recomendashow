@@ -8,8 +8,13 @@ export function useShowInfoViewModel() {
     setShow((prev) => ({ ...prev, isFavorited: !prev.isFavorited }));
   }
 
+  function onPressTickets() {
+    console.warn('[ShowInfo] onPressTickets not implemented yet');
+  }
+
   return {
     show,
     toggleFavorite,
+    onPressTickets,
   };
 }

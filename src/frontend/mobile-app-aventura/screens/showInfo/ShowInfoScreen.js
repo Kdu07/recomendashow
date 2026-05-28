@@ -14,7 +14,7 @@ import { typography } from '../../constants/typography';
 import { spacing, radius } from '../../constants/spacing';
 
 export default function ShowInfoScreen() {
-  const { show, toggleFavorite } = useShowInfoViewModel();
+  const { show, toggleFavorite, onPressTickets } = useShowInfoViewModel();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -52,7 +52,11 @@ export default function ShowInfoScreen() {
           <Text style={styles.price}>{show.ticket.price}</Text>
         </View>
 
-        <TouchableOpacity style={styles.ticketButton} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.ticketButton}
+          activeOpacity={0.8}
+          onPress={onPressTickets}
+        >
           <Text style={styles.ticketButtonLabel}>{show.ticket.buttonLabel}</Text>
         </TouchableOpacity>
       </View>

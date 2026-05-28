@@ -13,7 +13,7 @@ export default function ShowCreativeTeam({ creativeTeam }) {
 
         <View style={styles.list}>
           {creativeTeam.members.map((member, index) => (
-            <Text key={index} style={styles.member}>
+            <Text key={`${member.role}-${member.name}`} style={styles.member}>
               <Text style={styles.role}>{member.role}: </Text>
               <Text style={styles.name}>{member.name}</Text>
             </Text>

@@ -1,19 +1,20 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
-import { BlurView } from 'expo-blur';
+import React from "react";
+import { View, StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import { BlurView } from "expo-blur";
+import { useNavigation } from "@react-navigation/native";
 
-import HomeHeroBanner from '../components/HomeHeroBanner';
-import CategoryChip from '../components/CategoryChip';
-import SectionHeader from '../components/SectionHeader';
-import PosterCard from '../components/PosterCard';
-import TheaterCard from '../components/TheaterCard';
-import EmptyState from '../components/EmptyState';
-import BottomTabBar from '../components/BottomTabBar';
+import HomeHeroBanner from "../components/HomeHeroBanner";
+import CategoryChip from "../components/CategoryChip";
+import SectionHeader from "../components/SectionHeader";
+import PosterCard from "../components/PosterCard";
+import TheaterCard from "../components/TheaterCard";
+import EmptyState from "../components/EmptyState";
 
-import useHomeViewModel from '../viewmodels/useHomeViewModel';
 
-import { colors } from '../constants/colors';
-import { spacing, radius } from '../constants/spacing';
+import useHomeViewModel from "../viewmodels/useHomeViewModel";
+
+import { colors } from "../constants/colors";
+import { spacing, radius } from "../constants/spacing";
 
 function PosterSection({ title, subtitle, data = [], onEventPress }) {
   if (!data.length) return null;
@@ -68,6 +69,8 @@ function EmptySection({
 }
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
+
   const {
     heroBanners = [],
     categories = [],
@@ -76,7 +79,7 @@ export default function HomeScreen() {
     newEvents = [],
     nearbyEvents = [],
     theaters = [],
-    selectedCategory = 'all',
+    selectedCategory = "all",
     hasInterests = false,
     hasLocation = false,
     handleCategoryPress = () => {},
@@ -188,8 +191,6 @@ export default function HomeScreen() {
             </View>
           </View>
         </ScrollView>
-
-        <BottomTabBar activeTab="explore" onTabPress={handleTabPress} />
       </View>
     </SafeAreaView>
   );
@@ -204,11 +205,11 @@ const styles = StyleSheet.create({
   page: {
     flex: 1,
     backgroundColor: colors.whiteSoft,
-    position: 'relative',
+    position: "relative",
   },
 
   backgroundGlow: {
-    position: 'absolute',
+    position: "absolute",
     top: -100,
     right: -90,
     width: 230,
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
 
   heroCard: {
     borderRadius: radius.md,
-    overflow: 'hidden',
+    overflow: "hidden",
     backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.grayLight,
@@ -244,25 +245,24 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
 
-  // 💡 Ajustado para criar distâncias perfeitamente simétricas acima e abaixo da barra
   filterOuter: {
-    marginTop: spacing.md, // Distância exata entre o Banner e a Barra de Categorias
-    backgroundColor: 'transparent',
+    marginTop: spacing.md,
+    backgroundColor: "transparent",
   },
 
   filterBlur: {
-    paddingVertical: spacing.sm, // Deixa a barra de blur um pouco mais fina e elegante
+    paddingVertical: spacing.sm,
   },
 
   categoryRow: {
     paddingHorizontal: spacing.md,
     paddingRight: spacing.xl,
     gap: spacing.sm,
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   horizontalSection: {
-    marginTop: spacing.md, // 💡 IGUAL ao marginTop do filterOuter, garantindo a mesma distância para o "Em alta"
+    marginTop: spacing.md,
     gap: spacing.md,
   },
 
@@ -290,10 +290,10 @@ const styles = StyleSheet.create({
 
   emptyStateCard: {
     borderRadius: radius.lg,
-    backgroundColor: 'rgba(255, 255, 255, 0.94)',
+    backgroundColor: "rgba(255, 255, 255, 0.94)",
     borderWidth: 1,
     borderColor: colors.grayLight,
-    overflow: 'hidden',
+    overflow: "hidden",
 
     shadowColor: colors.black,
     shadowOffset: {
@@ -307,6 +307,6 @@ const styles = StyleSheet.create({
 
   theaterList: {
     gap: spacing.lg,
-    alignItems: 'center',
+    alignItems: "center",
   },
 });

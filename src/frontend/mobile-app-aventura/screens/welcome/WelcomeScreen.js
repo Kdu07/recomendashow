@@ -13,7 +13,7 @@ export default function WelcomeScreen({ navigation, route }) {
   const userName = route?.params?.userName ?? 'aventureiro';
 
   useWelcomeViewModel(() => {
-    navigation.replace('Home');
+    navigation.replace('MainTabs');
   });
 
   const dotAnims = useRef(DOT_DELAYS.map(() => new Animated.Value(0))).current;

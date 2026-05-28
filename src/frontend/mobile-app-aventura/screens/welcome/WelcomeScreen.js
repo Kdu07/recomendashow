@@ -10,10 +10,10 @@ const DOT_COLORS = [colors.purpleLight, colors.purpleSecondary, colors.purplePri
 const DOT_DELAYS = [0, 1666, 3333];
 
 export default function WelcomeScreen({ navigation, route }) {
-  const userName = route?.params?.userName ?? 'aventureiro';
+  const userName = route?.params?.userName ?? 'aventureiro(a)';
 
   useWelcomeViewModel(() => {
-    navigation.replace('Home');
+    navigation.replace('MainTabs');
   });
 
   const dotAnims = useRef(DOT_DELAYS.map(() => new Animated.Value(0))).current;
@@ -43,11 +43,11 @@ export default function WelcomeScreen({ navigation, route }) {
         />
 
         <Text style={styles.title}>
-          Bem-vinda,{' '}
+          Bem-vindo(a),{' '}
           <Text style={styles.name}>{userName}!</Text>
         </Text>
 
-        <Text style={styles.subtitle}>Pronta para sua próxima aventura?</Text>
+        <Text style={styles.subtitle}>Pronto(a) para sua próxima aventura?</Text>
       </View>
 
       <View style={styles.dots}>

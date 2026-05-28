@@ -47,12 +47,15 @@ export function useOnboardingViewModel(onFinish) {
   }
 
   async function _saveAndFinish() {
-    await onboardingService.save({
-      categories: selectedCategories,
-      city: selectedCity,
-      frequency: selectedFrequency,
-    });
-    onFinish();
+    try {
+      await onboardingService.save({
+        categories: selectedCategories,
+        city: selectedCity,
+        frequency: selectedFrequency,
+      });
+    } finally {
+      onFinish();
+    }
   }
 
   function goBack() {

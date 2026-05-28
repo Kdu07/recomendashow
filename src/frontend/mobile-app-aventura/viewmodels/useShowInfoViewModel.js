@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { MOCK_SHOW } from '../models/showInfoData';
+import { MOCK_SHOWS } from '../models/showInfoData';
 
-export function useShowInfoViewModel() {
-  const [show, setShow] = useState(MOCK_SHOW);
+export function useShowInfoViewModel(showId = '1') {
+  const [show, setShow] = useState(MOCK_SHOWS[showId]);
 
   function toggleFavorite() {
     setShow((prev) => ({ ...prev, isFavorited: !prev.isFavorited }));

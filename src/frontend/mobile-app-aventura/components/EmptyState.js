@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Lightbulb } from 'lucide-react-native';
 
 import { colors } from '../constants/colors';
 import { typography } from '../constants/typography';
 import { spacing, radius } from '../constants/spacing';
 
 export default function EmptyState({
-  icon = '💡',
   title,
   description,
   actionLabel,
@@ -14,8 +14,14 @@ export default function EmptyState({
 }) {
   return (
     <View style={styles.container}>
-      <View style={styles.iconContainer}>
-        <Text style={styles.icon}>{icon}</Text>
+      <View style={styles.iconOuter}>
+        <View style={styles.iconInner}>
+          <Lightbulb
+            size={34}
+            strokeWidth={2.4}
+            color={colors.peachBurnt}
+          />
+        </View>
       </View>
 
       <Text style={styles.title}>{title}</Text>
@@ -26,7 +32,7 @@ export default function EmptyState({
         <TouchableOpacity
           style={styles.actionButton}
           onPress={onActionPress}
-          activeOpacity={0.75}
+          activeOpacity={0.78}
         >
           <Text style={styles.actionText}>{actionLabel}</Text>
         </TouchableOpacity>
@@ -45,18 +51,34 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
   },
 
-  iconContainer: {
-    width: 72,
-    height: 72,
+  iconOuter: {
+    width: 82,
+    height: 82,
     borderRadius: radius.pill,
     backgroundColor: colors.whiteSoft,
+    borderWidth: 1,
+    borderColor: colors.grayLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: spacing.md,
+
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 2,
   },
 
-  icon: {
-    fontSize: 38,
+  iconInner: {
+    width: 56,
+    height: 56,
+    borderRadius: radius.pill,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   title: {
@@ -68,7 +90,7 @@ const styles = StyleSheet.create({
   },
 
   description: {
-    maxWidth: 280,
+    maxWidth: 285,
     fontSize: typography.size.sm,
     lineHeight: typography.lineHeight.sm,
     color: colors.grayText,
@@ -77,14 +99,15 @@ const styles = StyleSheet.create({
   },
 
   actionButton: {
-    paddingVertical: spacing.xs,
-    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.md,
+    backgroundColor: colors.purpleSoft,
   },
 
   actionText: {
     fontSize: typography.size.sm,
     fontWeight: typography.fontWeight.semiBold,
     color: colors.purplePrimary,
-    textDecorationLine: 'underline',
   },
 });

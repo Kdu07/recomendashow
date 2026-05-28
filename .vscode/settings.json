@@ -9,5 +9,7 @@
       "source": "PowerShell",
       "args": ["-NoExit", "-Command", "conda activate surprise"]
     }
-  }
+  },
+  "python-envs.defaultEnvManager": "ms-python.python:system",
+  "python-envs.pythonProjects": []
 }

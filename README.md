@@ -68,6 +68,167 @@ Fundada em 2008, a Aventura é referência nacional na produção de espetáculo
 
 ---
 
+---
+
+## Arquitetura da Solução
+
+A solução foi desenvolvida utilizando uma arquitetura modular baseada em separação de responsabilidades entre frontend, backend, banco de dados e camada de recomendação.
+
+### Tecnologias utilizadas
+
+| Camada | Tecnologia |
+|----------|-------------|
+| Frontend | HTML, CSS, JavaScript |
+| Backend | C# (.NET) |
+| Banco de Dados | PostgreSQL |
+| Infraestrutura | Supabase |
+| Controle de versão | Git/GitLab |
+| Ambiente de desenvolvimento | VS Code |
+
+### Estrutura do Repositório
+
+```text
+g02-2/
+│ .env
+│ .gitignore
+│ README.md
+│
+├── assets/
+├── docs/
+├── src/
+│   ├── backend/
+│   ├── frontend/
+│   ├── models/
+│   ├── dataset/
+│   └── database/
+│       ├──01_create_database.sql
+│       └──02_initial_data.sql
+│
+├── DbRunner/
+```
+
+---
+
+## Banco de Dados
+
+O banco de dados foi modelado em PostgreSQL utilizando identificadores UUID e hospedado na plataforma Supabase.
+
+A modelagem contempla entidades relacionadas ao comportamento do usuário, espetáculos, preferências e mecanismos de recomendação.
+
+Principais entidades:
+
+- Usuários
+- Preferências
+- Espetáculos
+- Teatros
+- Gêneros
+- Interações
+- Recomendações
+- Wishlist e Curtidas
+
+Relacionamentos implementados:
+
+- Usuário ↔ Preferências (1:1)
+- Usuário ↔ Interações (1:N)
+- Usuário ↔ Gêneros Favoritos (N:N)
+- Espetáculos ↔ Gêneros (N:N)
+- Teatro ↔ Espetáculos (N:N)
+- Usuário ↔ Recomendações (1:N)
+
+---
+
+## Regras de Negócio Implementadas
+
+As seguintes regras foram consideradas na modelagem:
+
+- Cada usuário possui email único
+- Usuários devem possuir idade mínima de 13 anos
+- Cada gênero possui nome único
+- Cada espetáculo possui nome único
+- Cada teatro possui nome único
+- O valor do ingresso não pode ser negativo
+- A data de encerramento do espetáculo deve ser posterior à data inicial
+- Recomendações possuem score entre 0 e 1
+- Exclusão de usuários remove automaticamente registros dependentes (`ON DELETE CASCADE`)
+- Exclusão de teatros vinculados a espetáculos utiliza restrição (`ON DELETE RESTRICT`)
+
+---
+
+## Configuração e Execução
+
+### Pré-requisitos
+
+- .NET SDK instalado
+- Conta no Supabase
+- Visual Studio Code
+
+### Variáveis de ambiente
+
+Criar um arquivo `.env` na raiz do projeto:
+
+```env
+DB_HOST=seu_host
+DB_PORT=6543
+DB_NAME=postgres
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha
+```
+
+---
+
+### Instalar dependências do executor
+
+Entrar na pasta:
+
+```bash
+cd DbRunner
+```
+
+Instalar pacotes:
+
+```bash
+dotnet add package Npgsql
+dotnet add package DotNetEnv
+```
+
+---
+
+### Executar scripts SQL
+
+```bash
+dotnet run
+```
+
+O processo realiza:
+
+1. Leitura do arquivo `.env`
+2. Conexão com Supabase
+3. Execução do script estrutural
+4. Execução dos dados iniciais
+5. Validação da conexão
+
+---
+
+## Modelo de Dados
+
+A modelagem foi construída com foco em personalização de recomendações, rastreamento de comportamento e organização das informações culturais disponibilizadas pelo Portal Aventura.
+
+O modelo utiliza:
+
+- UUID como chave primária
+- tabelas associativas para relacionamentos N:N
+- constraints de integridade
+- índices para otimização
+- enums para categorização de interações
+
+Diagramas e detalhes adicionais encontram-se na pasta:
+
+```text
+assets/
+```
+
+---
+
 ## Histórico de Versões
 
 | Versão | Data       | Descrição |

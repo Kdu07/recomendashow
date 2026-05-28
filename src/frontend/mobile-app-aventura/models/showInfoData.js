@@ -54,19 +54,20 @@ export const MOCK_SHOWS = {
       priceLabel: 'A partir de',
       price: 'R$ 120',
       buttonLabel: 'INGRESSOS',
+      url: 'https://bileto.sympla.com.br/event/95022',
     },
   },
 
   '2': {
     id: '2',
     title: 'Viva: A Vida é uma Festa, In Concert',
-    heroImage: require('../assets/header-show-info-vivaAVidaEUmaFesta.jpg'),
+    heroImage: require('../assets/header-viva.png'),
     isFavorited: false,
 
     date: {
       label: 'DATA E HORÁRIO',
       status: '30 de Maio a 7 de Junho',
-      detail: 'Sábados às 11h e 15h · Domingos às 11h e 16h',
+      detail: 'Em cartaz de 30/05 à 07/06',
     },
 
     location: {
@@ -105,6 +106,7 @@ export const MOCK_SHOWS = {
       priceLabel: 'A partir de',
       price: 'R$ 80',
       buttonLabel: 'INGRESSOS',
+      url: 'https://bileto.sympla.com.br/event/115142/d/359399',
     },
   },
 
@@ -117,7 +119,7 @@ export const MOCK_SHOWS = {
     date: {
       label: 'DATA E HORÁRIO',
       status: '18 de Junho a 12 de Julho',
-      detail: 'Sextas às 20h · Sábados às 16h e 20h · Domingos às 15h',
+      detail: 'Em cartaz de 18/06 à 12/07',
     },
 
     location: {
@@ -165,6 +167,7 @@ export const MOCK_SHOWS = {
       priceLabel: 'A partir de',
       price: 'R$ 100',
       buttonLabel: 'INGRESSOS',
+      url: 'https://bileto.sympla.com.br/event/115150/d/359512',
     },
   },
 };

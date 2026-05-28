@@ -1,19 +1,23 @@
 import { useState } from 'react';
+import { Linking } from 'react-native';
 import { MOCK_SHOWS } from '../models/showInfoData';
 
 export function useShowInfoViewModel(showId = '1') {
   const [show, setShow] = useState(MOCK_SHOWS[showId]);
+
+  const subtitle = `${show.date.status} • ${show.about.duration}`;
 
   function toggleFavorite() {
     setShow((prev) => ({ ...prev, isFavorited: !prev.isFavorited }));
   }
 
   function onPressTickets() {
-    console.warn('[ShowInfo] onPressTickets not implemented yet');
+    Linking.openURL(show.ticket.url);
   }
 
   return {
     show,
+    subtitle,
     toggleFavorite,
     onPressTickets,
   };

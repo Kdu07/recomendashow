@@ -13,8 +13,9 @@ import { colors } from '../../constants/colors';
 import { typography } from '../../constants/typography';
 import { spacing, radius } from '../../constants/spacing';
 
-export default function ShowInfoScreen() {
-  const { show, toggleFavorite, onPressTickets } = useShowInfoViewModel();
+export default function ShowInfoScreen({ route }) {
+  const showId = route?.params?.showId ?? '1';
+  const { show, toggleFavorite, onPressTickets } = useShowInfoViewModel(showId);
 
   return (
     <SafeAreaView style={styles.container}>

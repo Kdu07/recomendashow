@@ -91,6 +91,7 @@ export default function RootNavigator() {
         animation: 'fade',
       }}
     >
+<<<<<<< HEAD
       <Stack.Screen name="Auth" component={AuthScreen} />
       <Stack.Screen name="Onboarding" component={OnboardingScreen} />
       <Stack.Screen name="Splash" component={WelcomeScreen} />
@@ -100,6 +101,11 @@ export default function RootNavigator() {
       <Stack.Screen name="Institutional" component={InstitutionalScreen} />
       <Stack.Screen name="MainTabs" component={MainTabs} />
       <Stack.Screen name="ShowInfo" component={ShowInfoScreen} initialParams={{ showId: '1' }} />
+=======
+      <Stack.Screen name="Dev" component={DevPlaceholder} />
+      <Stack.Screen name="ShowInfo" component={ShowInfoScreen} initialParams={{ showId: '1' }} />
+      <Stack.Screen name="Home" component={HomeScreen} />
+>>>>>>> 5ebe043 (feat: wire ShowInfoScreen to receive showId via navigation params #182)
     </Stack.Navigator>
   );
 }

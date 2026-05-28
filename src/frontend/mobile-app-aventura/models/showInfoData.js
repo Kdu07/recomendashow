@@ -60,7 +60,7 @@ export const MOCK_SHOWS = {
   '2': {
     id: '2',
     title: 'Viva: A Vida é uma Festa, In Concert',
-    heroImage: require('../assets/home/viva.png'),
+    heroImage: require('../assets/header-show-info-vivaAVidaEUmaFesta.jpg'),
     isFavorited: false,
 
     date: {
@@ -111,7 +111,7 @@ export const MOCK_SHOWS = {
   '3': {
     id: '3',
     title: 'Mamma Mia!',
-    heroImage: require('../assets/home/mamma-mia.png'),
+    heroImage: require('../assets/header-show-info-mammaMia.jpg'),
     isFavorited: false,
 
     date: {
@@ -138,9 +138,9 @@ export const MOCK_SHOWS = {
     cast: {
       sectionLabel: 'ELENCO PRINCIPAL',
       members: [
-        { id: '1', name: 'Claudia Netto', role: 'Donna', image: null },
-        { id: '2', name: 'Totia Meireles', role: 'Tanya', image: null },
-        { id: '3', name: 'Gottsha', role: 'Rosie', image: null },
+        { id: '1', name: 'Claudia Netto', role: 'Donna', image: require('../assets/head-shot-claudiaNetto.png') },
+        { id: '2', name: 'Totia Meireles', role: 'Tanya', image: require('../assets/head-shot-totiaMeireles.png') },
+        { id: '3', name: 'Gottsha', role: 'Rosie', image: require('../assets/head-shot-gottsha.png') },
         { id: '4', name: 'Elenco de 20+ artistas', role: 'Sujeito a alteração sem aviso prévio', image: null },
       ],
     },

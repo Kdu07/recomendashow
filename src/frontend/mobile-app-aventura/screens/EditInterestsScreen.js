@@ -11,6 +11,7 @@ import AppButton from '../components/AppButton';
 import BottomTabBar from '../components/BottomTabBar';
 import InfoCard from '../components/InfoCard';
 import SelectableChip from '../components/SelectableChip';
+import ScreenHeader from '../components/ScreenHeader';
 
 import useEditInterestsViewModel from '../viewmodels/useEditInterestsViewModel';
 
@@ -38,9 +39,12 @@ export default function EditInterestsScreen({
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <Text style={styles.header}>
-          EDITAR INTERESSES
-        </Text>
+        <ScreenHeader
+          title="EDITAR INTERESSES"
+          onBackPress={() =>
+            navigation.navigate('Profile')
+          }
+        />
 
         <InfoCard
           title="Ajuste suas recomendações"

@@ -7,6 +7,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import EditInterestsScreen from './screens/EditInterestsScreen';
+import NotificationsScreen from './screens/NotificationsScreen';
+import InstitutionalScreen from './screens/InstitutionalScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +33,16 @@ export default function AppNavigator() {
         <Stack.Screen
           name="EditInterests"
           component={EditInterestsScreen}
+        />
+
+        <Stack.Screen
+          name="Notifications"
+          component={NotificationsScreen}
+        />
+
+        <Stack.Screen
+          name="Institutional"
+          component={InstitutionalScreen}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -112,6 +112,12 @@ export default function ProfileScreen({ navigation }) {
                 if (item.id === 'preferences') {
                   navigation.navigate('EditInterests');
                   return;
+                } else if (item.id === 'notifications') {
+                  navigation.navigate('Notifications');
+                  return;
+                } else if (item.id === 'institutional') {
+                  navigation.navigate('Institutional');
+                  return;
                 }
                 handleMenuPress(item);
               }}

@@ -13,3 +13,4 @@ __pycache__/
 DbRunner/bin/
 DbRunner/obj/
 .env
+.DS_Store

@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
+import React, { useRef } from 'react';
+import { View, StyleSheet, SafeAreaView, Animated } from 'react-native';
 
 import { useShowInfoViewModel } from '../../viewmodels/useShowInfoViewModel';
 import ShowHero from './components/ShowHero';
@@ -13,26 +13,53 @@ import ShowRecommendations from './components/ShowRecommendations';
 import { colors } from '../../constants/colors';
 import { spacing } from '../../constants/spacing';
 
+const HERO_HEIGHT = 260;
+const STICKY_FADE_START = 200;
+const STICKY_FADE_END = 260;
+
 export default function ShowInfoScreen({ route }) {
   const showId = route?.params?.showId ?? '1';
   const { show, subtitle, toggleFavorite, onPressTickets } = useShowInfoViewModel(showId);
 
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const heroOpacity = scrollY.interpolate({
+    inputRange: [0, HERO_HEIGHT * 0.75],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+
+  const stickyOpacity = scrollY.interpolate({
+    inputRange: [STICKY_FADE_START, STICKY_FADE_END],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  });
+
+  const headerProps = {
+    title: show.title,
+    subtitle,
+    isFavorited: show.isFavorited,
+    onToggleFavorite: toggleFavorite,
+    onPressTickets,
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
+      <Animated.ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
       >
-        <ShowHero heroImage={show.heroImage} />
+        <Animated.View style={{ opacity: heroOpacity }}>
+          <ShowHero heroImage={show.heroImage} />
+        </Animated.View>
 
-        <ShowInfoHeader
-          title={show.title}
-          subtitle={subtitle}
-          isFavorited={show.isFavorited}
-          onToggleFavorite={toggleFavorite}
-          onPressTickets={onPressTickets}
-        />
+        <ShowInfoHeader {...headerProps} />
 
         <ShowDetails location={show.location} />
 
@@ -45,7 +72,14 @@ export default function ShowInfoScreen({ route }) {
         <ShowRecommendations recommendations={show.recommendations} />
 
         <View style={styles.scrollBottomPadding} />
-      </ScrollView>
+      </Animated.ScrollView>
+
+      <Animated.View
+        style={[styles.stickyHeader, { opacity: stickyOpacity }]}
+        pointerEvents="box-none"
+      >
+        <ShowInfoHeader {...headerProps} compact />
+      </Animated.View>
     </SafeAreaView>
   );
 }
@@ -66,5 +100,12 @@ const styles = StyleSheet.create({
 
   scrollBottomPadding: {
     height: spacing.xl,
+  },
+
+  stickyHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
   },
 });

@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
 
 import { useShowInfoViewModel } from '../../viewmodels/useShowInfoViewModel';
 import ShowHero from './components/ShowHero';
+import ShowInfoHeader from './components/ShowInfoHeader';
 import ShowDetails from './components/ShowDetails';
 import ShowAbout from './components/ShowAbout';
 import ShowCast from './components/ShowCast';
@@ -10,12 +11,11 @@ import ShowCreativeTeam from './components/ShowCreativeTeam';
 import ShowRecommendations from './components/ShowRecommendations';
 
 import { colors } from '../../constants/colors';
-import { typography } from '../../constants/typography';
-import { spacing, radius } from '../../constants/spacing';
+import { spacing } from '../../constants/spacing';
 
 export default function ShowInfoScreen({ route }) {
   const showId = route?.params?.showId ?? '1';
-  const { show, toggleFavorite, onPressTickets } = useShowInfoViewModel(showId);
+  const { show, subtitle, toggleFavorite, onPressTickets } = useShowInfoViewModel(showId);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -26,9 +26,13 @@ export default function ShowInfoScreen({ route }) {
       >
         <ShowHero heroImage={show.heroImage} />
 
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>{show.title}</Text>
-        </View>
+        <ShowInfoHeader
+          title={show.title}
+          subtitle={subtitle}
+          isFavorited={show.isFavorited}
+          onToggleFavorite={toggleFavorite}
+          onPressTickets={onPressTickets}
+        />
 
         <ShowDetails location={show.location} />
 
@@ -42,21 +46,6 @@ export default function ShowInfoScreen({ route }) {
 
         <View style={styles.scrollBottomPadding} />
       </ScrollView>
-
-      <View style={styles.ticketBar}>
-        <View style={styles.priceContainer}>
-          <Text style={styles.priceLabel}>{show.ticket.priceLabel}</Text>
-          <Text style={styles.price}>{show.ticket.price}</Text>
-        </View>
-
-        <TouchableOpacity
-          style={styles.ticketButton}
-          activeOpacity={0.8}
-          onPress={onPressTickets}
-        >
-          <Text style={styles.ticketButtonLabel}>{show.ticket.buttonLabel}</Text>
-        </TouchableOpacity>
-      </View>
     </SafeAreaView>
   );
 }
@@ -75,60 +64,7 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.sm,
   },
 
-  titleContainer: {
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.sm,
-  },
-
-  title: {
-    fontSize: typography.size.xl,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.grayDark,
-  },
-
   scrollBottomPadding: {
     height: spacing.xl,
-  },
-
-  ticketBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    backgroundColor: colors.white,
-    borderTopWidth: 1,
-    borderTopColor: colors.grayLight,
-  },
-
-  priceContainer: {
-    gap: 2,
-  },
-
-  priceLabel: {
-    fontSize: typography.size.xs,
-    fontWeight: typography.fontWeight.regular,
-    color: colors.grayText,
-  },
-
-  price: {
-    fontSize: typography.size.lg,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.purplePrimary,
-  },
-
-  ticketButton: {
-    backgroundColor: colors.purplePrimary,
-    paddingHorizontal: spacing.xl,
-    paddingVertical: spacing.md,
-    borderRadius: radius.md,
-  },
-
-  ticketButtonLabel: {
-    fontSize: typography.size.sm,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.white,
-    letterSpacing: 0.5,
   },
 });

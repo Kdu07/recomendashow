@@ -10,9 +10,17 @@ import ShowCast from './components/ShowCast';
 import ShowTicketCard from './components/ShowTicketCard';
 import ShowCreativeTeam from './components/ShowCreativeTeam';
 import ShowRecommendations from './components/ShowRecommendations';
+import BottomTabBar from '../../components/BottomTabBar';
 
 import { colors } from '../../constants/colors';
 import { spacing } from '../../constants/spacing';
+
+const tabToRoute = {
+  explore: 'Home',
+  search: 'Search',
+  wishlist: 'Wishlist',
+  profile: 'Profile',
+};
 
 const HERO_HEIGHT = 260;
 const INLINE_FADE_START = 150;
@@ -20,7 +28,7 @@ const INLINE_FADE_END = 210;
 const STICKY_FADE_START = 215;
 const STICKY_FADE_END = 260;
 
-export default function ShowInfoScreen({ route }) {
+export default function ShowInfoScreen({ route, navigation }) {
   const showId = route?.params?.showId ?? '1';
   const { show, error, subtitle, toggleFavorite, onPressTickets, onPressVenue } = useShowInfoViewModel(showId);
 
@@ -103,6 +111,16 @@ export default function ShowInfoScreen({ route }) {
       >
         <ShowInfoHeader {...headerProps} compact />
       </Animated.View>
+
+      <BottomTabBar
+        activeTab="explore"
+        onTabPress={(tab) => {
+          const routeName = tabToRoute[tab];
+          if (routeName) {
+            navigation.navigate('MainTabs', { screen: routeName });
+          }
+        }}
+      />
     </SafeAreaView>
   );
 }
@@ -122,7 +140,7 @@ const styles = StyleSheet.create({
   },
 
   scrollBottomPadding: {
-    height: spacing.xl,
+    height: 100,
   },
 
   stickyHeader: {

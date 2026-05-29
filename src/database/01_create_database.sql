@@ -144,6 +144,12 @@ CREATE TABLE IF NOT EXISTS preferencias(
 
     cidade VARCHAR(100),
 
+    tags TEXT[],
+
+    faixa_preco_min DECIMAL(10,2),
+    faixa_preco_max DECIMAL(10,2),
+    receber_notificacoes BOOLEAN DEFAULT TRUE,
+
     data_atualizacao TIMESTAMP
     DEFAULT CURRENT_TIMESTAMP,
 
@@ -152,6 +158,13 @@ CREATE TABLE IF NOT EXISTS preferencias(
     REFERENCES usuarios(id)
     ON DELETE CASCADE
 );
+
+ALTER TABLE preferencias
+    ADD COLUMN IF NOT EXISTS tags TEXT[],
+    ADD COLUMN IF NOT EXISTS faixa_preco_min DECIMAL(10,2),
+    ADD COLUMN IF NOT EXISTS faixa_preco_max DECIMAL(10,2),
+    ADD COLUMN IF NOT EXISTS receber_notificacoes BOOLEAN DEFAULT TRUE,
+    ADD COLUMN IF NOT EXISTS cep VARCHAR(9);
 
 
 CREATE TABLE IF NOT EXISTS recomendacoes(

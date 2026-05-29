@@ -1,0 +1,44 @@
+{
+  "version": 2,
+  "dgSpecHash": "hVrEnHcbKjA=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\nicho\\OneDrive\\Desktop\\2ano\\mod02\\g02\\tests\\TesteConexaoBanco.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\nicho\\.nuget\\packages\\dotnetenv\\3.1.0\\dotnetenv.3.1.0.nupkg.sha512",
+    "C:\\Users\\nicho\\.nuget\\packages\\microsoft.extensions.configuration\\1.1.2\\microsoft.extensions.configuration.1.1.2.nupkg.sha512",
+    "C:\\Users\\nicho\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\1.1.2\\microsoft.extensions.configuration.abstractions.1.1.2.nupkg.sha512",
+    "C:\\Users\\nicho\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\nicho\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.0\\microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\nicho\\.nuget\\packages\\microsoft.extensions.primitives\\1.1.1\\microsoft.extensions.primitives.1.1.1.nupkg.sha512",
+    "C:\\Users\\nicho\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\nicho\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
+    "C:\\Users\\nicho\\.nuget\\packages\\npgsql\\8.0.0\\npgsql.8.0.0.nupkg.sha512",
+    "C:\\Users\\nicho\\.nuget\\packages\\sprache\\2.3.1\\sprache.2.3.1.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "message": "TesteConexaoBanco depende de Npgsql (>= 7.2.0), mas Npgsql 7.2.0 não foi encontrado. Npgsql 8.0.0 foi resolvido em vez disso.",
+      "projectPath": "C:\\Users\\nicho\\OneDrive\\Desktop\\2ano\\mod02\\g02\\tests\\TesteConexaoBanco.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\nicho\\OneDrive\\Desktop\\2ano\\mod02\\g02\\tests\\TesteConexaoBanco.csproj",
+      "libraryId": "Npgsql",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "message": "O pacote 'Npgsql' 8.0.0 tem uma alta vulnerabilidade de gravidade conhecida, https://github.com/advisories/GHSA-x9vc-6hfv-hg8c",
+      "projectPath": "C:\\Users\\nicho\\OneDrive\\Desktop\\2ano\\mod02\\g02\\tests\\TesteConexaoBanco.csproj",
+      "warningLevel": 1,
+      "filePath": "C:\\Users\\nicho\\OneDrive\\Desktop\\2ano\\mod02\\g02\\tests\\TesteConexaoBanco.csproj",
+      "libraryId": "Npgsql",
+      "targetGraphs": [
+        "net10.0"
+      ]
+    }
+  ]
+}

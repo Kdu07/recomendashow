@@ -1,22 +1,22 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, Linking, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
 import { colors } from '../../../constants/colors';
 import { typography } from '../../../constants/typography';
 import { spacing, radius } from '../../../constants/spacing';
 
-export default function ShowDetails({ location }) {
+export default function ShowDetails({ location, onPressVenue }) {
   return (
     <View style={styles.container}>
       <Text style={styles.sectionLabel}>{location.label}</Text>
 
-      <TouchableOpacity activeOpacity={0.85} onPress={() => Linking.openURL(location.venueUrl)}>
-        <Image
-          source={location.mapImage}
-          style={styles.map}
-          resizeMode="cover"
-        />
-      </TouchableOpacity>
+      {onPressVenue ? (
+        <TouchableOpacity activeOpacity={0.85} onPress={onPressVenue}>
+          <Image source={location.mapImage} style={styles.map} resizeMode="cover" />
+        </TouchableOpacity>
+      ) : (
+        <Image source={location.mapImage} style={styles.map} resizeMode="cover" />
+      )}
 
       <View style={styles.venueInfo}>
         <Text style={styles.venue}>{location.venue}</Text>

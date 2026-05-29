@@ -21,10 +21,17 @@ export function useShowInfoViewModel(showId = '1') {
     }
   }
 
+  function onPressVenue() {
+    if (show?.location?.venueUrl) {
+      Linking.openURL(show.location.venueUrl).catch(console.error);
+    }
+  }
+
   return {
     show,
     subtitle,
     toggleFavorite,
     onPressTickets,
+    onPressVenue,
   };
 }

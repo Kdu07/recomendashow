@@ -22,7 +22,7 @@ const STICKY_FADE_END = 260;
 
 export default function ShowInfoScreen({ route }) {
   const showId = route?.params?.showId ?? '1';
-  const { show, error, subtitle, toggleFavorite, onPressTickets } = useShowInfoViewModel(showId);
+  const { show, error, subtitle, toggleFavorite, onPressTickets, onPressVenue } = useShowInfoViewModel(showId);
 
   if (error) {
     return (
@@ -84,7 +84,7 @@ export default function ShowInfoScreen({ route }) {
 
         <ShowAbout about={show.about} />
 
-        <ShowDetails location={show.location} />
+        <ShowDetails location={show.location} onPressVenue={onPressVenue} />
 
         <ShowTicketCard onPress={onPressTickets} />
 

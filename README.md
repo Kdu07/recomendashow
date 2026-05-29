@@ -78,8 +78,9 @@ A solução foi desenvolvida utilizando uma arquitetura modular baseada em separ
 
 | Camada | Tecnologia |
 |----------|-------------|
-| Frontend | HTML, CSS, JavaScript |
-| Backend | C# (.NET) |
+| Frontend | React Native (JavaScript) |
+| Backend | C# (.NET 9 — ASP.NET Core) |
+| Pipeline ML | C# (.NET 9 — Microsoft.ML / MatrixFactorization) |
 | Banco de Dados | PostgreSQL |
 | Infraestrutura | Supabase |
 | Controle de versão | Git/GitLab |
@@ -88,7 +89,7 @@ A solução foi desenvolvida utilizando uma arquitetura modular baseada em separ
 ### Estrutura do Repositório
 
 ```text
-g02-2/
+g02/
 │ .env
 │ .gitignore
 │ README.md
@@ -96,15 +97,24 @@ g02-2/
 ├── assets/
 ├── docs/
 ├── src/
-│   ├── backend/
-│   ├── frontend/
-│   ├── models/
+│   ├── backend/            ← API ASP.NET Core (C#)
+│   ├── frontend/           ← App React Native
+│   ├── ml/                 ← Pipeline de treino ML (C#)
+│   │   ├── AventuraML.csproj
+│   │   ├── DataPipeline.cs
+│   │   ├── Trainer.cs
+│   │   ├── Recommender.cs
+│   │   └── Models/
+│   ├── models/             ← Artefatos do modelo treinado
+│   │   ├── model.zip       ← gerado por: cd src/ml && dotnet run train
+│   │   └── cold_start.json
 │   ├── dataset/
+│   │   └── dataset.csv
 │   └── database/
-│       ├──01_create_database.sql
-│       └──02_initial_data.sql
+│       ├── 01_create_database.sql
+│       └── 02_initial_data.sql
 │
-├── DbRunner/
+├── DbRunner/               ← Inicialização do banco (C#)
 ```
 
 ---
@@ -158,9 +168,32 @@ As seguintes regras foram consideradas na modelagem:
 
 ### Pré-requisitos
 
-- .NET SDK instalado
+- .NET 9 SDK
 - Conta no Supabase
 - Visual Studio Code
+
+### Treinar o modelo de recomendação
+
+```bash
+cd src/ml
+dotnet run train
+# Gera: src/models/model.zip e src/models/cold_start.json
+```
+
+### Testar inferência pelo CLI
+
+```bash
+cd src/ml
+dotnet run recommend 1 --n 10
+```
+
+### Subir a API de recomendação
+
+```bash
+cd src/backend
+dotnet run
+# Endpoint: GET /api/recommendation/{userId}?n=10
+```
 
 ### Variáveis de ambiente
 

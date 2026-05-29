@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Image,
+  TouchableOpacity,
   View,
   StyleSheet,
   ScrollView,
@@ -16,6 +17,7 @@ export default function HomeHeroBanner({
   banners = [],
   autoPlay = true,
   interval = 3000,
+  onBannerPress,
 }) {
   const scrollRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -60,12 +62,18 @@ export default function HomeHeroBanner({
         scrollEventThrottle={16}
       >
         {banners.map((banner) => (
-          <Image
+          <TouchableOpacity
             key={banner.id}
-            source={banner.image}
-            style={[styles.image, { width: bannerWidth }]}
-            resizeMode="cover"
-          />
+            activeOpacity={banner.showId ? 0.9 : 1}
+            onPress={() => onBannerPress?.(banner)}
+            style={{ width: bannerWidth, height: '100%' }}
+          >
+            <Image
+              source={banner.image}
+              style={[styles.image, { width: bannerWidth }]}
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
         ))}
       </ScrollView>
 

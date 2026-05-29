@@ -76,7 +76,7 @@ function EmptySection({
   );
 }
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const {
     heroBanners = [],
     categories = [],
@@ -90,12 +90,13 @@ export default function HomeScreen() {
     hasLocation = false,
     handleCategoryPress = () => {},
     handleEventPress = () => {},
+    handleBannerPress = () => {},
     handleFavoritePress = () => {},
     isEventFavorite = () => false,
     handleTheaterPress = () => {},
     handleEditInterests = () => {},
     handleAddLocation = () => {},
-  } = useHomeViewModel();
+  } = useHomeViewModel(navigation);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -106,7 +107,7 @@ export default function HomeScreen() {
         >
           <View style={styles.heroSection}>
             <View style={styles.heroCard}>
-              <HomeHeroBanner banners={heroBanners} autoPlay interval={3000} />
+              <HomeHeroBanner banners={heroBanners} autoPlay interval={3000} onBannerPress={handleBannerPress} />
             </View>
           </View>
 

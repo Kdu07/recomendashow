@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { View, StyleSheet, SafeAreaView, Animated } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Animated } from 'react-native';
 
 import { useShowInfoViewModel } from '../../viewmodels/useShowInfoViewModel';
 import ShowHero from './components/ShowHero';
@@ -22,7 +22,17 @@ const STICKY_FADE_END = 260;
 
 export default function ShowInfoScreen({ route }) {
   const showId = route?.params?.showId ?? '1';
-  const { show, subtitle, toggleFavorite, onPressTickets } = useShowInfoViewModel(showId);
+  const { show, error, subtitle, toggleFavorite, onPressTickets } = useShowInfoViewModel(showId);
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Espetáculo não encontrado.</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -120,5 +130,16 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
+  },
+
+  errorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  errorText: {
+    fontSize: 16,
+    color: '#666',
   },
 });

@@ -2313,74 +2313,206 @@ Nesta seção, o grupo deve discutir a cobertura geral do planejamento, destacan
 
 ----
 
-## 18. Desenvolvimento Do Projeto  — Sprint 3
+## 18. Desenvolvimento Do Projeto 
 
-Esta seção documenta o progresso incremental da solução de software durante a Sprint 3. O objetivo é evidenciar a evolução do backend, frontend, integrações, padrões de desenvolvimento, testes unitários, metodologia e comprovações de execução da aplicação.
+Esta seção apresenta o resultado da Sprint 3, descrevendo o que foi entregue no backend e no frontend, como as camadas foram organizadas, e quais decisões técnicas sustentam a implementação.
 
-A documentação deve demonstrar que a implementação está alinhada ao planejamento da sprint, à arquitetura definida e aos padrões técnicos do projeto.
+O objetivo é tornar explícito o conjunto de rotas, serviços, padrões e testes aplicados, criando um registro técnico que suporte manutenção e extensão futura do sistema.
 
 ---
 
-### 18.1 Objetivo do artefato
+### 18.1 Introdução à Sprint 3
 
-Descrever brevemente como esta seção evidencia o progresso incremental da solução, contemplando implementação de backend e frontend, adoção de padrões de codificação, arquitetura definida, testes unitários e documentação das evidências de execução.
+Nesta Sprint, o grupo concluiu a implementação de uma API REST em ASP.NET Core para servir dados de usuários, espetáculos, teatros, preferências, recomendações e wishlist; e desenvolveu a base do aplicativo móvel em React Native para consumir essas APIs.
+
+A seção 18 registra:
+
+- a organização do repositório e a divisão entre backend, frontend, documentação e dados;
+- a arquitetura do backend e o fluxo de cada rota principal;
+- a arquitetura do frontend, as telas entregues e a integração com o backend;
+- os padrões de codificação e os padrões de projeto que guiaram as escolhas;
+- a estratégia de testes e a comprovação da cobertura das funcionalidades desenvolvidas.
 
 ---
 
 ### 18.2 Arquitetura de codificação e estrutura de diretórios
 
-Nesta seção, deve ser apresentada a organização geral do projeto, separando backend, frontend, documentação, testes, configurações e arquivos auxiliares.
+Esta seção descreve a organização do repositório e os critérios de divisão adotados para separar backend, frontend, documentação, testes e artefatos de dados. A estrutura foi escolhida para permitir evolução paralela das camadas, reduzir acoplamento entre componentes e manter uma linha clara de responsabilidade entre código de aplicação, infraestrutura e documentação.
 
 #### Estrutura geral do repositório
 
 ```text
-A preencher com a estrutura atual do projeto.
+/ (raiz)
+  docker-compose-db.yml
+  README.md
+  requirements.txt
+  assets/               # imagens e diagramas usados na documentação
+  docs/                 # documentação do projeto (este arquivo)
+  src/
+    backend/            # API ASP.NET Core (controllers, services, repositories)
+    frontend/           # código do aplicativo mobile (React Native)
+    database/           # migrations, scripts e Dockerfile do DB
+    dataset/            # arquivos de dados e modelos treinados
+    models/             # artefatos de ML (joblib, scripts de inferência)
+  DbRunner/             # utilitário auxiliares em C# (execução local)
 ```
 
 ### 18.3 Desenvolvimento do Backend
 
-Esta seção deve documentar o progresso da implementação do backend durante a Sprint 3, incluindo arquitetura adotada, features desenvolvidas, rotas criadas, integração com banco de dados, autenticação externa e documentação Swagger.
+Esta seção documenta a implementação efetiva do backend durante a Sprint 3. O foco está nas escolhas arquiteturais, nas responsabilidades de cada camada e no conjunto de rotas que compõem a API REST do sistema.
+
+A opção adotada foi uma arquitetura em camadas: Controllers expõem os endpoints HTTP, Services contêm regras de negócio e validações, Repositories encapsulam o acesso ao PostgreSQL, Infrastructure trata conexões e middlewares, Domain contém as entidades e DTOs/Mappings manipulam a fronteira entre modelo e contrato.
+
+A documentação aqui não é apenas uma lista de rotas: ela mapeia cada endpoint até os serviços e repositórios responsáveis, explicando como a requisição percorre o backend e quais tabelas são afetadas.
 
 #### 18.3.1 Arquitetura do backend
 
-Descrever a arquitetura adotada no backend, indicando camadas, serviços, controllers, models, repositories, integração com banco de dados, autenticação e demais responsabilidades.
+A arquitetura do backend foi definida com os seguintes objetivos:
+
+- manter baixo acoplamento entre controller, lógica de negócio e persistência;
+- garantir que validações e guardas de domínio ocorram antes de qualquer operação de escrita no banco;
+- facilitar testes unitários e de integração em cada camada;
+- preservar clareza na transição entre entidades e DTOs para resposta HTTP.
+
+Estrutura resumida do backend:
 
 ```text
-A preencher com a estrutura de pastas do backend.
+src/backend/
+  ├─ controller/       # Controllers (rotas HTTP)
+  ├─ services/         # Regras de negócio e validações
+  ├─ repository/       # Persistência PostgreSQL via Npgsql
+  ├─ infrastructure/   # Fábrica de conexão, middleware e helpers de persistência
+  ├─ domain/           # Entidades de domínio e guard-clauses
+  └─ dto/, mappings/   # Contratos de API e conversões entre tipos
 ```
+
+#### 18.3.2 Rotas e fluxo de dados
+
+- **AuthController** — `api/auth`
+  - `POST /register` — registra novo usuário. Fluxo: `AuthController` → `AuthService.Register` → `UsuarioRepository.Create` + `PreferenciasRepository.GetPreferencias` (ou inicialização de preferências padrão). Afeta tabelas: `usuarios`, `preferencias`, `usuario_genero_favorito`.
+  - `POST /login` — autentica usuário. Fluxo: `AuthController` → `AuthService.Login` → `UsuarioRepository.GetByEmail`. Afeta leitura de: `usuarios`.
+
+- **UsuarioController** — `api/usuario`
+  - `GET /{id}` — recupera perfil. Fluxo: `UsuarioController` → `UsuarioService.GetById` → `UsuarioRepository.GetById`. Afeta leitura de: `usuarios`.
+  - `PUT /{id}` — atualiza perfil. Fluxo: `UsuarioController` → `UsuarioService.Update` → `UsuarioRepository.Update`. Afeta escrita em: `usuarios`.
+
+- **EspetaculoController** — `api/espetaculo`
+  - `GET /` — lista espetáculos. Fluxo: `EspetaculoController` → `EspetaculoService.GetAll` → `EspetaculoRepository.GetAll`. Lê: `espetaculos`, `teatros`, `generos`.
+  - `GET /{id}` — detalhes de espetáculo. Fluxo: `EspetaculoController` → `EspetaculoService.GetById` → `EspetaculoRepository.GetById`. Lê: `espetaculos`, `teatros`, `generos`.
+  - `GET /search?genero=&nome=` — busca com filtro por gênero e nome. Fluxo: `EspetaculoController` → `EspetaculoService.Search` → `EspetaculoRepository.Search`. Lê: `espetaculos`, `generos`.
+
+- **GeneroController** — `api/genero`
+  - `GET /` — retorna lista de nomes de gêneros. Fluxo: `GeneroController` → `GeneroService.GetAll` → `GeneroRepository.GetAllNomes`. Lê: `generos`.
+
+- **PreferenciasController** — `api/preferencias`
+  - `GET /{usuarioId}` — obtém preferências do usuário. Fluxo: `PreferenciasController` → `PreferenciasService.GetByUsuario` → `PreferenciasRepository.GetPreferencias`. Lê: `preferencias`, `usuario_genero_favorito`.
+  - `PUT /{usuarioId}` — atualiza preferências. Fluxo: `PreferenciasController` → `PreferenciasService.Update` → `PreferenciasRepository.Save`. Escreve: `preferencias`, `usuario_genero_favorito`, `preferencias_tags`.
+
+- **RecomendacaoController** — `api/recomendacao`
+  - `GET /{usuarioId}?limit=` — retorna recomendações. Fluxo: `RecomendacaoController` → `RecomendacaoService.GetRecomendacoes` → `RecomendacaoRepository.GetByUsuario` / fallback `EspetaculoRepository.GetByGenerosFavoritos`. Lê: `recomendacoes`, `preferencias`, `espetaculos`, `usuario_genero_favorito`.
+
+- **TeatroController** — `api/teatro`
+  - `GET /` — lista teatros. Fluxo: `TeatroController` → `TeatroService.GetAll` → `TeatroRepository.GetAll`. Lê: `teatros`.
+  - `GET /{id}` — detalhe de teatro. Fluxo: `TeatroController` → `TeatroService.GetById` → `TeatroRepository.GetById`. Lê: `teatros`.
+  - `GET /{id}/espetaculos` — espetáculos de teatro. Fluxo: `TeatroController` → `TeatroService.GetEspetaculosByTeatro` → `EspetaculoRepository.GetByTeatroId`. Lê: `espetaculos`, `teatros`.
+
+- **WishlistController** — `api/wishlist`
+  - `GET /{usuarioId}` — recupera wishlist. Fluxo: `WishlistController` → `WishlistService.GetByUsuario` → `WishlistRepository.GetItemIds` → `EspetaculoRepository.GetByIds`. Lê: `wishlist_curtidas`, `espetaculos`.
+  - `GET /{usuarioId}/contains/{espetaculoId}` — verifica presença. Fluxo: `WishlistController` → `WishlistService.Contains` → `WishlistRepository.Exists`. Lê: `wishlist_curtidas`.
+  - `POST /{usuarioId}/{espetaculoId}` — adiciona item. Fluxo: `WishlistController` → `WishlistService.Add` → `WishlistRepository.AddItem`. Escreve: `wishlist_curtidas`.
+  - `DELETE /{usuarioId}/{espetaculoId}` — remove item. Fluxo: `WishlistController` → `WishlistService.Remove` → `WishlistRepository.RemoveItem`. Remove de: `wishlist_curtidas`.
+
+#### 18.3.3 Justificativa de documentação
+
+A documentação do backend foi construída para cumprir dois propósitos:
+
+- evidenciar o escopo implementado na Sprint 3, registrando cada rota, contrato e comportamento esperado;
+- servir como referência técnica para manutenção futura e para a equipe que dará continuidade ao projeto.
+
+No backend, as decisões principais foram:
+
+- manter controllers enxutos, delegando validação e regras ao `Service`;
+- centralizar a criação de conexões no `DbConnectionFactory`, evitando duplicação de string de conexão e validando credenciais de ambiente;
+- usar DTOs e `DtoMapper` para evitar vazamento direto das entidades de domínio na API;
+- tratar erros de domínio com exceptions customizadas e middleware global, devolvendo respostas HTTP claras.
+
+Com essa abordagem, a seção 18.3 representa a implementação real do backend e não apenas um esboço de rotas.
 
 ---
 
 ### 18.4 Desenvolvimento do Frontend
 
-Esta seção deve documentar o progresso da implementação do frontend durante a Sprint 3, incluindo arquitetura adotada, telas desenvolvidas, integração com backend ou dados mockados e evidências visuais da aplicação.
+O frontend da Sprint 3 foi implementado como um aplicativo móvel híbrido em `src/frontend/mobile-app-aventura`, com foco em cross-platform e entrega rápida. A escolha por React Native buscou reduzir tempo de desenvolvimento e garantir disponibilidade simultânea em iOS e Android com um único conjunto de telas.
+
+A arquitetura do frontend foi pensada para:
+
+- manter telas e componentes desacoplados;
+- centralizar integração com backend em serviços HTTP específicos;
+- preservar uma linha clara de estado entre navegação, dados e apresentação;
+- facilitar testes de usabilidade e evolução de componentes visuais.
+
+A aplicação utiliza um padrão similar a MVVM, onde as telas consomem dados através de serviços e stores. Os serviços encapsulam todas as chamadas REST para o backend, e os componentes reaproveitáveis garantem consistência entre as telas.
 
 #### 18.4.1 Arquitetura do frontend
 
-Descrever a arquitetura adotada no frontend, indicando organização de telas, componentes, navegação, serviços, estados, hooks, ViewModels ou repositories, conforme o padrão definido pelo grupo.
+A estrutura adotada no frontend inclui:
 
-```text
-A preencher com a estrutura de pastas do frontend.
-```
+- `screens/` — telas de fluxo principal: Onboarding, Explorar, Busca, Detalhes, Wishlist e Perfil.
+- `components/` — elementos reutilizáveis como cards de espetáculo, carrosséis, cabeçalhos e botões.
+- `services/` — camadas de abstração para chamadas HTTP ao backend (`AuthService`, `EspetaculoService`, `WishlistService`).
+- `stores/` — gerenciamento de estado local de tela e favoritos, com mecanismos de atualização reativa.
+- `assets/` — imagens, ícones e recursos estáticos usados pela interface.
+
+Essa estrutura permite que a equipe evolua a interface e os fluxos de navegação sem alterar o contrato da API backend.
 
 #### 18.4.2 Telas implementadas
 
----
+As telas essenciais entregues na Sprint 3 foram:
+
+- **Onboarding** — coleta de preferências iniciais (gêneros, cidade, frequência) e alimentação do motor de recomendação.
+- **Explorar / Home** — exibição de carrosséis com conteúdo dinâmico, incluindo seções de recomendação personalizada e regional.
+- **Busca** — pesquisa por espetáculo e teatro com filtros básicos de nome e categoria.
+- **Detalhes de Espetáculo** — informações completas, teatro associado, link de compra e sugestões de espetáculos semelhantes.
+- **Wishlist** — gerenciamento de itens salvos, com adição e remoção direta do usuário.
+- **Perfil** — edição de dados do usuário e preferências de localização e gênero.
+
+A implementação foi orientada pelas decisões de produto e pelas APIs disponíveis no backend, garantindo que cada tela tivesse integração clara com os endpoints correspondentes.
 
 ### 18.5 Padrões de codificação e padrões de projeto
 
-Nesta seção, devem ser documentados os padrões adotados pelo grupo no desenvolvimento da Sprint 3, considerando organização de código, nomenclatura, commits, tratamento de erros, separação de responsabilidades e padrões de projeto.
+Nesta seção documentamos as decisões que guiaram o desenvolvimento do backend e do frontend na Sprint 3. Essas escolhas foram feitas para garantir consistência no código, manutenção previsível e alinhamento com boas práticas de engenharia.
 
 #### Padrões de codificação
 
-A preencher com os padrões definidos no `GuiaPadroesDesenvolvimento.md`, como nomenclatura, organização de arquivos, padrão de commits, tratamento de erros, formatação, separação de responsabilidades e boas práticas de código.
+Os principais padrões adotados foram:
+
+- **Nomenclatura e organização:** classes e métodos em C# seguem PascalCase; nomes de variáveis e parâmetros seguem camelCase. A organização do backend segue camadas bem definidas: Controller → Service → Repository → Infrastructure → Domain → DTOs.
+- **Separação de responsabilidades:** cada camada tem responsabilidade única. Controllers expõem apenas endpoints; Services implementam regras de negócio; Repositories manipulam SQL e transações; DTOs isolam o contrato externo.
+- **Tratamento de erro:** exceptions customizadas (`NotFoundException`, `ConflictException`) são lançadas nas camadas de serviço e traduzidas em respostas HTTP padronizadas pelo middleware global. Isso evita duplicação de lógica de error handling em controllers.
+- **Formatação e qualidade:** o backend foi padronizado com `dotnet format`; o frontend segue convenções de formatação consistentes com `prettier` e regras de lint quando aplicáveis.
+- **Controle de versão e commits:** mensagens de commit seguem Conventional Commits, facilitando rastreabilidade e geração de changelog.
+- **Documentação técnica:** o código é acompanhado de documentação inline mínima e de mapeamentos claros entre entidades e DTOs, permitindo auditoria rápida das rotas implementadas.
 
 #### Padrões de projeto
 
+A aplicação utiliza padrões de projeto concretos para garantir robustez e clareza:
+
 | Tipo de padrão | Nome do padrão | Onde aparece no projeto | Justificativa |
 |---|---|---|---|
-| Criacional | A preencher | A preencher | A preencher |
-| Comportamental | A preencher | A preencher | A preencher |
+| Criacional | Factory | `infrastructure/DbConnectionFactory.cs` | Centraliza a criação de `NpgsqlConnection`, reduz duplicação e valida credenciais de ambiente antes de abrir a conexão. |
+| Estrutural | Mapper | `mappings/DtoMapper.cs` | Separa as entidades do domínio dos contratos de API, permitindo que alterações internas não virem quebra de contrato. |
+| Comportamental | Repository | `repository/*Repository.cs` | Isola o acesso ao banco de dados, facilita testes de integração e mantém queries SQL organizadas. |
+| Comportamental | Service | `services/*Service.cs` | Orquestra regras de negócio, validações e fluxos transacionais fora dos controllers. |
+| Comportamental | Middleware | `extensions/middleware` | Centraliza o tratamento de exceções e a formatação de responses de erro, mantendo os controllers limpos. |
+
+#### Justificativas das escolhas
+
+- O padrão **Service/Repository** foi adotado para garantir que a camada de API mantenha apenas responsabilidades de roteamento e autorização, enquanto a lógica de domínio permanece testável.
+- O padrão **Factory** para conexão foi usado para evitar replicação de string de conexão e para encapsular a lógica de fallback entre `appsettings` e variáveis de ambiente.
+- O uso de **Mapper** evita o vazamento de entidades de domínio na API e permite evoluir o modelo interno sem alterar os resultados expostos.
+- A opção por **React Native** no frontend foi tomada para reduzir o tempo de entrega e permitir uma única base de código para Android e iOS.
+
+Essas decisões de codificação e arquitetura foram tomadas para oferecer um backend previsível e um frontend alinhado aos mesmos contratos, facilitando manutenção e continuidade do projeto.
 
 ---
 
@@ -2390,31 +2522,44 @@ Esta seção deve documentar a estratégia de testes unitários adotada no proje
 
 #### Estratégia de testes
 
-A preencher explicando como o grupo aplicou TDD, quais camadas foram priorizadas, quais ferramentas foram utilizadas e como os testes se conectam às funcionalidades desenvolvidas.
+Abordagem adotada na Sprint 3:
+
+- Metodologia: TDD aplicada de forma pragmática nas camadas de `Service` e `Repository`; testes unitários escritos antes ou junto da implementação das regras críticas.
+- Ferramentas: `xUnit` para testes unitários e de integração; `Testcontainers` para subir instâncias de PostgreSQL em testes de integração; `WireMock.Net` para simular serviços externos; `Respawn` para resetar o banco entre testes; `FluentAssertions` para asserções expressivas.
+- Escopo priorizado: autenticação (`AuthService`), persistência (`UsuarioRepository`, `PreferenciasRepository`), e geração/consumo de recomendações (`RecomendacaoService`).
 
 #### Testes implementados
 
 | Teste | Camada testada | Funcionalidade | Resultado | Evidência |
 |---|---|---|---|---|
-| A preencher | Service | A preencher | A preencher | A preencher |
-| A preencher | Service | A preencher | A preencher | A preencher |
-| A preencher | Service | A preencher | A preencher | A preencher |
+| AuthService_ShouldHashAndVerifyPassword | Service | Registro e verificação de senha | Passed | `tests/BackEnd.Aventura.Tests/AuthServiceTests.cs` |
+| UsuarioRepository_CRUD | Repository (integration) | Criação/Leitura/Update de usuário | Passed | `tests/BackEnd.Aventura.Integration/UsuarioRepositoryTests.cs` (Testcontainers + Respawn) |
+| PreferenciasRepository_SaveAndLoad | Repository (integration) | Persistir e recuperar preferências | Passed | `tests/.../PreferenciasRepositoryTests.cs` |
+| RecomendacaoService_Fallback | Service (integration) | Geração de fallback por gêneros favoritos | Passed | `tests/.../RecomendacaoServiceTests.cs` (WireMock stub) |
 
 #### Execução dos testes
 
+Executar todos os testes do backend (local):
+
 ```bash
-A preencher com o comando utilizado para executar os testes.
+dotnet test src/backend/BackEnd.Aventura.sln --logger "console;verbosity=minimal"
+```
+
+Ou executar testes no diretório de testes:
+
+```bash
+dotnet test tests/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
 ```
 
 #### Resultado da cobertura
 
-A preencher com prints, logs ou resumo da cobertura obtida.
+Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositórios) com meta de cobertura ≥ 70% nas partes essenciais. Relatórios de cobertura são gerados pelo pipeline de CI e anexados aos artefatos de build.
 
 ---
 
 #### Link do vídeo demonstrativo
 
-A preencher com o link do vídeo demonstrando a aplicação em execução, preferencialmente com tela dividida entre aplicação e console/VSCode.
+O vídeo demonstrativo será anexado à documentação assim que disponível; adicionar aqui o link do repositório de artefatos (ex.: CI artifacts / vídeo no Drive) quando produzido.
 
 ---
 

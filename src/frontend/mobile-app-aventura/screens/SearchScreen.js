@@ -27,7 +27,7 @@ function getCategoryLabel(categoryId) {
   return labels[categoryId] || 'Espetáculo';
 }
 
-export default function SearchScreen() {
+export default function SearchScreen({ navigation }) {
   const {
     searchText,
     selectedCategory,
@@ -43,7 +43,7 @@ export default function SearchScreen() {
     handleFavoritePress,
     isEventFavorite,
     handleTabPress,
-  } = useSearchViewModel();
+  } = useSearchViewModel(navigation);
 
   return (
     <SafeAreaView style={styles.safeArea}>

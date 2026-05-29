@@ -6,7 +6,7 @@ import {
   removeWishlistEvent,
 } from '../repositories/wishlistRepository';
 
-export default function useWishlistViewModel() {
+export default function useWishlistViewModel(navigation) {
   const [searchText, setSearchText] = useState('');
   const [savedEvents, setSavedEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,7 +40,9 @@ export default function useWishlistViewModel() {
   }
 
   function handleEventPress(event) {
-    console.log('Abrir detalhes do espetáculo salvo:', event.title);
+    if (event.showId) {
+      navigation.navigate('ShowInfo', { showId: event.showId });
+    }
   }
 
   async function handleRemoveFromWishlist(eventId) {

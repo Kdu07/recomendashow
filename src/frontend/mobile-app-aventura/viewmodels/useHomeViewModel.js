@@ -7,7 +7,7 @@ import {
   toggleWishlistEvent,
 } from '../repositories/wishlistRepository';
 
-export default function useHomeViewModel() {
+export default function useHomeViewModel(navigation) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [savedEventIds, setSavedEventIds] = useState([]);
 
@@ -66,7 +66,15 @@ export default function useHomeViewModel() {
   );
 
   function handleEventPress(event) {
-    console.log('Abrir detalhes do espetaculo:', event.title);
+    if (event.showId) {
+      navigation.navigate('ShowInfo', { showId: event.showId });
+    }
+  }
+
+  function handleBannerPress(banner) {
+    if (banner.showId) {
+      navigation.navigate('ShowInfo', { showId: banner.showId });
+    }
   }
 
   async function handleFavoritePress(event) {
@@ -111,6 +119,7 @@ export default function useHomeViewModel() {
 
     handleCategoryPress,
     handleEventPress,
+    handleBannerPress,
     handleFavoritePress,
     isEventFavorite,
     handleTheaterPress,

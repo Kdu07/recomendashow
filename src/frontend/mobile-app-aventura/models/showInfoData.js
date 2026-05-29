@@ -17,6 +17,7 @@ export const MOCK_SHOWS = {
       address: 'Av. das Nações Unidas, 17955',
       city: 'São Paulo, SP',
       mapImage: require('../assets/vibra-saoPaulo.png'),
+      venueUrl: 'https://www.vibrasaopaulo.com/',
     },
 
     about: {
@@ -76,6 +77,7 @@ export const MOCK_SHOWS = {
       address: 'R. Bento Branco de Andrade Filho, 722',
       city: 'São Paulo, SP',
       mapImage: require('../assets/home/btg-pactual-hall.png'),
+      venueUrl: 'https://btgpactualhall.com.br/',
     },
 
     about: {
@@ -128,6 +130,7 @@ export const MOCK_SHOWS = {
       address: 'R. Bento Branco de Andrade Filho, 722',
       city: 'São Paulo, SP',
       mapImage: require('../assets/home/btg-pactual-hall.png'),
+      venueUrl: 'https://btgpactualhall.com.br/',
     },
 
     about: {

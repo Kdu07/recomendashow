@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-const DURATION = 5000;
+const DURATION = 3500;
 
 export function useWelcomeViewModel(onFinish) {
   useEffect(() => {

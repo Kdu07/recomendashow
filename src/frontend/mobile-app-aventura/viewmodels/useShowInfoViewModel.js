@@ -5,7 +5,7 @@ import { MOCK_SHOWS } from '../models/showInfoData';
 export function useShowInfoViewModel(showId = '1') {
   const [show, setShow] = useState(MOCK_SHOWS[showId]);
 
-  const subtitle = `${show.date.status} • ${show.about.duration}`;
+  const subtitle = show.date.status;
 
   function toggleFavorite() {
     setShow((prev) => ({ ...prev, isFavorited: !prev.isFavorited }));

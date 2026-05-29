@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
 
 import { colors } from '../../../constants/colors';
 import { typography } from '../../../constants/typography';
@@ -15,10 +15,8 @@ function CastMember({ member }) {
           <Text style={styles.avatarPlaceholderText}>+</Text>
         </View>
       )}
-      <View style={styles.memberInfo}>
-        <Text style={styles.memberName}>{member.name}</Text>
-        <Text style={styles.memberRole}>{member.role}</Text>
-      </View>
+      <Text style={styles.memberName} numberOfLines={2}>{member.name}</Text>
+      <Text style={styles.memberRole} numberOfLines={2}>{member.role}</Text>
     </View>
   );
 }
@@ -26,53 +24,49 @@ function CastMember({ member }) {
 export default function ShowCast({ cast }) {
   return (
     <View style={styles.container}>
-      <View style={styles.divider} />
-
       <Text style={styles.sectionLabel}>{cast.sectionLabel}</Text>
 
-      <View style={styles.list}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.list}
+      >
         {cast.members.map((member) => (
           <CastMember key={member.id} member={member} />
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
+    paddingTop: spacing.xl,
     gap: spacing.md,
-  },
-
-  divider: {
-    height: 1,
-    backgroundColor: colors.grayLight,
-    marginBottom: spacing.sm,
   },
 
   sectionLabel: {
-    fontSize: typography.size.sm,
+    paddingHorizontal: spacing.xl,
+    fontSize: 17,
     fontWeight: typography.fontWeight.bold,
     color: colors.grayDark,
-    letterSpacing: 0.5,
   },
 
   list: {
-    gap: spacing.md,
+    paddingHorizontal: spacing.xl,
+    gap: spacing.lg,
   },
 
   member: {
-    flexDirection: 'row',
+    width: 80,
     alignItems: 'center',
-    gap: spacing.md,
+    gap: spacing.xs,
   },
 
   avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
   },
 
   avatarPlaceholder: {
@@ -87,20 +81,17 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
 
-  memberInfo: {
-    flex: 1,
-    gap: 2,
-  },
-
   memberName: {
-    fontSize: typography.size.sm,
+    fontSize: typography.size.xs,
     fontWeight: typography.fontWeight.semiBold,
     color: colors.grayDark,
+    textAlign: 'center',
   },
 
   memberRole: {
     fontSize: typography.size.xs,
     fontWeight: typography.fontWeight.regular,
     color: colors.grayText,
+    textAlign: 'center',
   },
 });

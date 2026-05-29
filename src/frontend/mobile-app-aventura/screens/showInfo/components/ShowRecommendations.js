@@ -39,7 +39,7 @@ export default function ShowRecommendations({ recommendations }) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: spacing.lg,
+    paddingTop: spacing.xl,
     gap: spacing.md,
   },
 
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: typography.size.md,
+    fontSize: 17,
     fontWeight: typography.fontWeight.bold,
     color: colors.grayDark,
   },

@@ -1,25 +1,52 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
 
 import { colors } from '../../../constants/colors';
 import { typography } from '../../../constants/typography';
 import { spacing, radius } from '../../../constants/spacing';
 
 export default function ShowCreativeTeam({ creativeTeam }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const rotation = useRef(new Animated.Value(0)).current;
+
+  function toggle() {
+    const toValue = isExpanded ? 0 : 1;
+    Animated.timing(rotation, {
+      toValue,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+    setIsExpanded((prev) => !prev);
+  }
+
+  const chevronRotation = rotation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg'],
+  });
+
   return (
     <View style={styles.container}>
-      <View style={styles.card}>
-        <Text style={styles.sectionLabel}>{creativeTeam.sectionLabel}</Text>
-
-        <View style={styles.list}>
-          {creativeTeam.members.map((member, index) => (
-            <Text key={`${member.role}-${member.name}`} style={styles.member}>
-              <Text style={styles.role}>{member.role}: </Text>
-              <Text style={styles.name}>{member.name}</Text>
-            </Text>
-          ))}
+      <TouchableOpacity style={styles.card} onPress={toggle} activeOpacity={0.8}>
+        <View style={styles.header}>
+          <Text style={styles.sectionLabel}>{creativeTeam.sectionLabel}</Text>
+          <Animated.Text
+            style={[styles.chevron, { transform: [{ rotate: chevronRotation }] }]}
+          >
+            ▾
+          </Animated.Text>
         </View>
-      </View>
+
+        {isExpanded && (
+          <View style={styles.list}>
+            {creativeTeam.members.map((member) => (
+              <Text key={`${member.role}-${member.name}`} style={styles.member}>
+                <Text style={styles.name}>{member.name}: </Text>
+                <Text style={styles.role}>{member.role}</Text>
+              </Text>
+            ))}
+          </View>
+        )}
+      </TouchableOpacity>
     </View>
   );
 }
@@ -27,21 +54,32 @@ export default function ShowCreativeTeam({ creativeTeam }) {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: spacing.xl,
-    paddingTop: spacing.sm,
+    paddingTop: spacing.xl,
   },
 
   card: {
-    backgroundColor: colors.grayLight,
+    backgroundColor: colors.whiteSoft,
     borderRadius: radius.md,
     padding: spacing.lg,
     gap: spacing.sm,
   },
 
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
   sectionLabel: {
     fontSize: typography.size.xs,
     fontWeight: typography.fontWeight.semiBold,
-    color: colors.grayText,
+    color: colors.grayDark,
     letterSpacing: 0.5,
+  },
+
+  chevron: {
+    fontSize: typography.size.md,
+    color: colors.purplePrimary,
   },
 
   list: {
@@ -54,12 +92,12 @@ const styles = StyleSheet.create({
   },
 
   role: {
-    fontWeight: typography.fontWeight.semiBold,
+    fontWeight: typography.fontWeight.regular,
     color: colors.grayDark,
   },
 
   name: {
-    fontWeight: typography.fontWeight.regular,
+    fontWeight: typography.fontWeight.semiBold,
     color: colors.grayDark,
   },
 });

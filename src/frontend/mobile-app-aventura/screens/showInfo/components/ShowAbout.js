@@ -22,7 +22,7 @@ export default function ShowAbout({ about }) {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
+    paddingTop: spacing.xl,
     gap: spacing.md,
   },
 
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   },
 
   sectionLabel: {
-    fontSize: typography.size.sm,
+    fontSize: 17,
     fontWeight: typography.fontWeight.bold,
     color: colors.grayDark,
     letterSpacing: 0.5,

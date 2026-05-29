@@ -8,21 +8,18 @@ import { spacing, radius } from '../../../constants/spacing';
 export default function ShowDetails({ location }) {
   return (
     <View style={styles.container}>
-      <View style={styles.row}>
-        <Text style={styles.icon}>📍</Text>
-        <View style={styles.rowContent}>
-          <Text style={styles.label}>{location.label}</Text>
-          <Text style={styles.primary}>{location.venue}</Text>
-          <Text style={styles.secondary}>{location.address}</Text>
-          <Text style={styles.secondary}>{location.city}</Text>
-        </View>
-      </View>
+      <Text style={styles.sectionLabel}>{location.label}</Text>
 
       <Image
         source={location.mapImage}
         style={styles.map}
         resizeMode="cover"
       />
+
+      <View style={styles.venueInfo}>
+        <Text style={styles.venue}>{location.venue}</Text>
+        <Text style={styles.address}>{location.address}</Text>
+      </View>
     </View>
   );
 }
@@ -30,54 +27,35 @@ export default function ShowDetails({ location }) {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: spacing.xl,
-    paddingTop: spacing.lg,
-    gap: spacing.lg,
-  },
-
-  row: {
-    flexDirection: 'row',
+    paddingTop: spacing.xl,
     gap: spacing.md,
-    alignItems: 'flex-start',
   },
 
-  icon: {
-    fontSize: typography.size.lg,
-    marginTop: 2,
-  },
-
-  rowContent: {
-    flex: 1,
-    gap: 2,
-  },
-
-  label: {
-    fontSize: typography.size.xs,
-    fontWeight: typography.fontWeight.semiBold,
-    color: colors.grayText,
-    letterSpacing: 0.5,
-    marginBottom: spacing.xs,
-  },
-
-  primary: {
-    fontSize: typography.size.md,
-    fontWeight: typography.fontWeight.medium,
+  sectionLabel: {
+    fontSize: 17,
+    fontWeight: typography.fontWeight.bold,
     color: colors.grayDark,
-  },
-
-  secondary: {
-    fontSize: typography.size.sm,
-    fontWeight: typography.fontWeight.regular,
-    color: colors.grayText,
-  },
-
-  divider: {
-    height: 1,
-    backgroundColor: colors.grayLight,
   },
 
   map: {
     width: '100%',
     height: 160,
     borderRadius: radius.md,
+  },
+
+  venueInfo: {
+    gap: 2,
+  },
+
+  venue: {
+    fontSize: typography.size.sm,
+    fontWeight: typography.fontWeight.bold,
+    color: colors.grayDark,
+  },
+
+  address: {
+    fontSize: typography.size.sm,
+    fontWeight: typography.fontWeight.regular,
+    color: colors.grayText,
   },
 });

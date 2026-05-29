@@ -7,6 +7,7 @@ import ShowInfoHeader from './components/ShowInfoHeader';
 import ShowDetails from './components/ShowDetails';
 import ShowAbout from './components/ShowAbout';
 import ShowCast from './components/ShowCast';
+import ShowTicketCard from './components/ShowTicketCard';
 import ShowCreativeTeam from './components/ShowCreativeTeam';
 import ShowRecommendations from './components/ShowRecommendations';
 
@@ -71,9 +72,11 @@ export default function ShowInfoScreen({ route }) {
           <ShowInfoHeader {...headerProps} />
         </Animated.View>
 
+        <ShowAbout about={show.about} />
+
         <ShowDetails location={show.location} />
 
-        <ShowAbout about={show.about} />
+        <ShowTicketCard onPress={onPressTickets} />
 
         {show.cast && <ShowCast cast={show.cast} />}
 

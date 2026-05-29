@@ -16,7 +16,7 @@ export const MOCK_SHOWS = {
       venue: 'Vibra São Paulo',
       address: 'Av. das Nações Unidas, 17955',
       city: 'São Paulo, SP',
-      mapImage: require('../assets/mapa-novica-rebelde.png'),
+      mapImage: require('../assets/vibra-saoPaulo.png'),
     },
 
     about: {
@@ -32,7 +32,7 @@ export const MOCK_SHOWS = {
         { id: '1', name: 'Malu Rodrigues', role: 'Maria', image: require('../assets/head-shot-maluRodrigues.png') },
         { id: '2', name: 'Pierre Baitelli', role: 'Capitão Georg von Trapp', image: require('../assets/head-shot-pierreBaitelli.png') },
         { id: '3', name: 'Larissa Manoela', role: 'Liesl', image: require('../assets/head-shot-larissaManoela.png') },
-        { id: '4', name: 'Elenco de 40+ atores', role: 'Incluindo 18 crianças', image: null },
+        { id: '4', name: '40+ atores', role: '', image: null },
       ],
     },
 
@@ -82,7 +82,7 @@ export const MOCK_SHOWS = {
       sectionLabel: 'SOBRE O ESPETÁCULO',
       description:
         'Uma experiência além da tela: enquanto o filme é projetado, uma orquestra ao vivo, cantores, atores e bailarinos ocupam o palco e interagem com a plateia.\n\nA história de Miguel, sua jornada à Terra dos Mortos e a celebração da cultura mexicana e dos valores familiares. Lembrar é um ato de amor.\n\nApresentado pelo Ministério da Cultura e BTG Pactual, via Lei de Incentivo à Cultura.',
-      duration: 'Com intervalo',
+      duration: 'Tempo de duração 2h30min',
     },
 
     creativeTeam: {
@@ -134,7 +134,7 @@ export const MOCK_SHOWS = {
       sectionLabel: 'SOBRE O ESPETÁCULO',
       description:
         'O fenômeno da Broadway retorna ao Brasil em 2026 com uma superprodução recheada de hits do ABBA: Dancing Queen, Mamma Mia!, The Winner Takes it All, Money Money Money e muito mais.\n\nSophie está prestes a se casar e convida três ex-namorados de sua mãe Donna para descobrir quem é seu pai. Em uma ilha grega ensolarada, amor, amizade e liberdade se encontram em um espetáculo que celebra o empoderamento feminino e a alegria de viver.',
-      duration: 'Com intervalo',
+      duration: 'Tempo de duração 2h40min',
     },
 
     cast: {
@@ -143,7 +143,7 @@ export const MOCK_SHOWS = {
         { id: '1', name: 'Claudia Netto', role: 'Donna', image: require('../assets/head-shot-claudiaNetto.png') },
         { id: '2', name: 'Totia Meireles', role: 'Tanya', image: require('../assets/head-shot-totiaMeireles.png') },
         { id: '3', name: 'Gottsha', role: 'Rosie', image: require('../assets/head-shot-gottsha.png') },
-        { id: '4', name: 'Elenco de 20+ artistas', role: 'Sujeito a alteração sem aviso prévio', image: null },
+        { id: '4', name: '20+ artistas', role: '', image: null },
       ],
     },
 

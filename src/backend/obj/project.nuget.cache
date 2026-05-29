@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "oZ6vBPoaXQ4=",
+  "dgSpecHash": "YBAayhAawv0=",
   "success": true,
   "projectFilePath": "C:\\Users\\Inteli\\Desktop\\g02\\src\\backend\\BackEnd.Aventura.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Inteli\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Inteli\\.nuget\\packages\\dotnetenv\\3.1.0\\dotnetenv.3.1.0.nupkg.sha512",
     "C:\\Users\\Inteli\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.6\\microsoft.aspnetcore.openapi.10.0.6.nupkg.sha512",
     "C:\\Users\\Inteli\\.nuget\\packages\\microsoft.extensions.apidescription.server\\10.0.0\\microsoft.extensions.apidescription.server.10.0.0.nupkg.sha512",

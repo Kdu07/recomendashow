@@ -1,11 +1,10 @@
-using System;
-using System.Collections.Generic;
+using BackEnd.Aventura.Domain;
 
 namespace BackEnd.Aventura.Repository
 {
     public interface ITeatroRepository
     {
-        IEnumerable<Teatro> GetAll();
+        IReadOnlyList<Teatro> GetAll();
         Teatro? GetById(Guid id);
     }
 }

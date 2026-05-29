@@ -1,6 +1,4 @@
-using System;
-
-namespace BackEnd.Aventura.Repository
+namespace BackEnd.Aventura.Domain
 {
     public class Espetaculo
     {
@@ -14,7 +12,16 @@ namespace BackEnd.Aventura.Repository
         public DateTime DataFim { get; private set; }
         public decimal ValorIngresso { get; private set; }
 
-        public Espetaculo(Guid id, string nome, string genero, string tipoEvento, string descricao, string urlBilheteria, DateTime dataInicio, DateTime dataFim, decimal valorIngresso)
+        public Espetaculo(
+            Guid id,
+            string nome,
+            string genero,
+            string tipoEvento,
+            string descricao,
+            string urlBilheteria,
+            DateTime dataInicio,
+            DateTime dataFim,
+            decimal valorIngresso)
         {
             Id = id;
             Nome = nome ?? throw new ArgumentNullException(nameof(nome));
@@ -29,16 +36,13 @@ namespace BackEnd.Aventura.Repository
 
         public bool PertenceAoGenero(string genero)
         {
-            if (string.IsNullOrWhiteSpace(genero))
-            {
-                throw new ArgumentException("Gênero inválido.", nameof(genero));
-            }
-
+            EntityGuards.NotNullOrWhiteSpace(genero, nameof(genero));
             return string.Equals(Genero, genero, StringComparison.OrdinalIgnoreCase);
         }
 
         public string ObterUrlCompra() => UrlBilheteria;
 
-        public bool EstaEmCartaz() => DateTime.UtcNow.Date >= DataInicio.Date && DateTime.UtcNow.Date <= DataFim.Date;
+        public bool EstaEmCartaz() =>
+            DateTime.UtcNow.Date >= DataInicio.Date && DateTime.UtcNow.Date <= DataFim.Date;
     }
 }

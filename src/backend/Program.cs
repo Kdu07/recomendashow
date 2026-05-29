@@ -1,34 +1,60 @@
-using BackEnd.Aventura.Repository;
+using BackEnd.Aventura.Extensions;
 using DotNetEnv;
 
-Env.Load("../.env");
+LoadEnvFile();
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Services
+static void LoadEnvFile()
+{
+    var candidates = new[]
+    {
+        Path.Combine(Directory.GetCurrentDirectory(), ".env"),
+        Path.Combine(Directory.GetCurrentDirectory(), "..", ".env"),
+        Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", ".env"),
+        Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", ".env"),
+    };
+
+    foreach (var path in candidates.Select(Path.GetFullPath).Distinct())
+    {
+        if (!File.Exists(path))
+        {
+            continue;
+        }
+
+        Env.Load(path);
+        return;
+    }
+}
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IEspetaculoRepository, EspetaculoRepository>();
-builder.Services.AddScoped<ITeatroRepository, TeatroRepository>();
-builder.Services.AddScoped<IPreferenciasRepository, PreferenciasRepository>();
-builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 
-builder.Services.AddScoped<IEspetaculoService, EspetaculoService>();
-builder.Services.AddScoped<ITeatroService, TeatroService>();
-builder.Services.AddScoped<IPreferenciasService, PreferenciasService>();
-builder.Services.AddScoped<IWishlistService, WishlistService>();
+builder.Services
+    .AddAventuraInfrastructure()
+    .AddAventuraApplication();
 
 var app = builder.Build();
 
-// Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler();
+app.UseCors();
 app.UseHttpsRedirection();
 app.MapControllers();
 

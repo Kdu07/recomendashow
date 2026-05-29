@@ -1,104 +1,57 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Extensions.Configuration;
+using BackEnd.Aventura.Domain;
+using BackEnd.Aventura.Infrastructure;
 using Npgsql;
 
 namespace BackEnd.Aventura.Repository
 {
     public class PreferenciasRepository : IPreferenciasRepository
     {
-        private readonly string _connectionString;
+        private readonly IDbConnectionFactory _connectionFactory;
 
-        public PreferenciasRepository(IConfiguration configuration)
+        public PreferenciasRepository(IDbConnectionFactory connectionFactory)
         {
-            if (configuration is null) throw new ArgumentNullException(nameof(configuration));
-            _connectionString = BuildConnectionString(configuration);
+            _connectionFactory = connectionFactory ?? throw new ArgumentNullException(nameof(connectionFactory));
         }
-
-        private static string BuildConnectionString(IConfiguration configuration)
-        {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            if (!string.IsNullOrWhiteSpace(connectionString))
-            {
-                return connectionString;
-            }
-
-            var host = configuration["POSTGRES_HOST"] ?? configuration["DB_HOST"];
-            var port = configuration["POSTGRES_PORT"] ?? configuration["DB_PORT"] ?? "5432";
-            var database = configuration["POSTGRES_DB"] ?? configuration["DB_NAME"];
-            var user = configuration["POSTGRES_USER"] ?? configuration["DB_USER"];
-            var password = configuration["POSTGRES_PASSWORD"] ?? configuration["DB_PASSWORD"];
-
-            if (string.IsNullOrWhiteSpace(host) || string.IsNullOrWhiteSpace(database) || string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password))
-            {
-                throw new InvalidOperationException("As variáveis de ambiente POSTGRES_HOST, POSTGRES_DB, POSTGRES_USER e POSTGRES_PASSWORD são necessárias para conectar ao PostgreSQL.");
-            }
-
-            return new NpgsqlConnectionStringBuilder
-            {
-                Host = host,
-                Port = int.TryParse(port, out var parsedPort) ? parsedPort : 5432,
-                Database = database,
-                Username = user,
-                Password = password,
-                SslMode = SslMode.Prefer
-            }.ConnectionString;
-        }
-
-        private NpgsqlConnection CreateConnection() => new NpgsqlConnection(_connectionString);
 
         public Preferencias GetPreferencias(Guid usuarioId)
         {
-            if (usuarioId == Guid.Empty) throw new ArgumentException("Id de usuário inválido.", nameof(usuarioId));
+            EntityGuards.NotEmpty(usuarioId, nameof(usuarioId));
 
-            using var connection = CreateConnection();
+            using var connection = _connectionFactory.CreateConnection();
             connection.Open();
 
             var preferencias = ReadPreferencias(connection, usuarioId);
-            if (preferencias == null)
+            if (preferencias is null)
             {
                 CreateDefaultPreferencias(connection, usuarioId);
                 preferencias = ReadPreferencias(connection, usuarioId);
             }
 
-            if (preferencias == null)
+            if (preferencias is null)
             {
                 throw new InvalidOperationException("Não foi possível carregar as preferências do usuário.");
             }
 
-            var generos = ReadGeneros(connection, usuarioId).ToList();
-            preferencias.SetGeneros(generos);
-
-            var tags = ReadTags(connection, usuarioId);
-            preferencias.SetTags(tags);
-
+            preferencias.SetGeneros(ReadGeneros(connection, usuarioId));
+            preferencias.SetTags(ReadTags(connection, usuarioId));
             return preferencias;
-        }
-
-        public Preferencias? GetPreferenciasOrNull(Guid usuarioId)
-        {
-            if (usuarioId == Guid.Empty) throw new ArgumentException("Id de usuário inválido.", nameof(usuarioId));
-
-            using var connection = CreateConnection();
-            connection.Open();
-            return ReadPreferencias(connection, usuarioId);
         }
 
         public bool Save(Preferencias preferencias)
         {
             if (preferencias is null) throw new ArgumentNullException(nameof(preferencias));
-            if (preferencias.UsuarioId == Guid.Empty) throw new ArgumentException("Id de usuário inválido.", nameof(preferencias.UsuarioId));
+            EntityGuards.NotEmpty(preferencias.UsuarioId, nameof(preferencias.UsuarioId));
 
-            using var connection = CreateConnection();
+            using var connection = _connectionFactory.CreateConnection();
             connection.Open();
             using var transaction = connection.BeginTransaction();
 
             const string sql = @"
-INSERT INTO preferencias(usuario_id, cidade, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes, data_atualizacao)
-VALUES (@UsuarioId, @Cidade, @Tags, @FaixaPrecoMin, @FaixaPrecoMax, @ReceberNotificacoes, NOW())
+INSERT INTO preferencias(usuario_id, cidade, cep, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes, data_atualizacao)
+VALUES (@UsuarioId, @Cidade, @Cep, @Tags, @FaixaPrecoMin, @FaixaPrecoMax, @ReceberNotificacoes, NOW())
 ON CONFLICT(usuario_id) DO UPDATE SET
     cidade = EXCLUDED.cidade,
+    cep = EXCLUDED.cep,
     tags = EXCLUDED.tags,
     faixa_preco_min = EXCLUDED.faixa_preco_min,
     faixa_preco_max = EXCLUDED.faixa_preco_max,
@@ -108,6 +61,7 @@ ON CONFLICT(usuario_id) DO UPDATE SET
             using var command = new NpgsqlCommand(sql, connection, transaction);
             command.Parameters.AddWithValue("@UsuarioId", preferencias.UsuarioId);
             command.Parameters.AddWithValue("@Cidade", preferencias.Cidade is null ? DBNull.Value : preferencias.Cidade);
+            command.Parameters.AddWithValue("@Cep", preferencias.Cep is null ? DBNull.Value : preferencias.Cep);
             command.Parameters.AddWithValue("@Tags", preferencias.Tags.Any() ? preferencias.Tags.ToArray() : Array.Empty<string>());
             command.Parameters.AddWithValue("@FaixaPrecoMin", (object?)preferencias.FaixaPrecoMin ?? DBNull.Value);
             command.Parameters.AddWithValue("@FaixaPrecoMax", (object?)preferencias.FaixaPrecoMax ?? DBNull.Value);
@@ -121,23 +75,10 @@ ON CONFLICT(usuario_id) DO UPDATE SET
             return true;
         }
 
-        public bool Delete(Guid usuarioId)
-        {
-            if (usuarioId == Guid.Empty) throw new ArgumentException("Id de usuário inválido.", nameof(usuarioId));
-
-            using var connection = CreateConnection();
-            connection.Open();
-
-            const string sql = @"DELETE FROM preferencias WHERE usuario_id = @UsuarioId";
-            using var command = new NpgsqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@UsuarioId", usuarioId);
-            return command.ExecuteNonQuery() > 0;
-        }
-
         private static Preferencias? ReadPreferencias(NpgsqlConnection connection, Guid usuarioId)
         {
             const string sql = @"
-SELECT id, usuario_id, cidade, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes, data_atualizacao
+SELECT id, usuario_id, cidade, cep, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes, data_atualizacao
 FROM preferencias
 WHERE usuario_id = @UsuarioId";
 
@@ -151,14 +92,14 @@ WHERE usuario_id = @UsuarioId";
 
             var id = reader.GetGuid(reader.GetOrdinal("id"));
             var cidade = reader.IsDBNull(reader.GetOrdinal("cidade")) ? null : reader.GetString(reader.GetOrdinal("cidade"));
+            var cep = reader.IsDBNull(reader.GetOrdinal("cep")) ? null : reader.GetString(reader.GetOrdinal("cep"));
             var tags = reader.IsDBNull(reader.GetOrdinal("tags")) ? Array.Empty<string>() : reader.GetFieldValue<string[]>(reader.GetOrdinal("tags"));
             var faixaMin = reader.IsDBNull(reader.GetOrdinal("faixa_preco_min")) ? null : reader.GetFieldValue<decimal?>(reader.GetOrdinal("faixa_preco_min"));
             var faixaMax = reader.IsDBNull(reader.GetOrdinal("faixa_preco_max")) ? null : reader.GetFieldValue<decimal?>(reader.GetOrdinal("faixa_preco_max"));
             var receberNotificacoes = reader.IsDBNull(reader.GetOrdinal("receber_notificacoes")) ? true : reader.GetBoolean(reader.GetOrdinal("receber_notificacoes"));
             var dataAtualizacao = reader.GetDateTime(reader.GetOrdinal("data_atualizacao"));
-            var generos = ReadGeneros(connection, usuarioId);
 
-            return Preferencias.FromData(id, usuarioId, cidade, generos, tags, faixaMin, faixaMax, receberNotificacoes, dataAtualizacao);
+            return Preferencias.FromData(id, usuarioId, cep, cidade, Array.Empty<string>(), tags, faixaMin, faixaMax, receberNotificacoes, dataAtualizacao);
         }
 
         private static void CreateDefaultPreferencias(NpgsqlConnection connection, Guid usuarioId)
@@ -184,10 +125,13 @@ WHERE ugf.usuario_id = @UsuarioId";
             using var command = new NpgsqlCommand(sql, connection);
             command.Parameters.AddWithValue("@UsuarioId", usuarioId);
             using var reader = command.ExecuteReader();
+            var generos = new List<string>();
             while (reader.Read())
             {
-                yield return reader.GetString(reader.GetOrdinal("nome"));
+                generos.Add(reader.GetString(reader.GetOrdinal("nome")));
             }
+
+            return generos;
         }
 
         private static string[] ReadTags(NpgsqlConnection connection, Guid usuarioId)

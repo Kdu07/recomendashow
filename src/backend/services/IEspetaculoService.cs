@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using BackEnd.Aventura.Repository;
+using BackEnd.Aventura.Domain;
 
 namespace BackEnd.Aventura.Services
 {
     public interface IEspetaculoService
     {
-        IEnumerable<Espetaculo> GetAllEspetaculos();
-        Espetaculo? GetEspetaculoById(Guid id);
-        IEnumerable<Espetaculo> GetEspetaculosByGenero(string genero);
+        IReadOnlyList<Espetaculo> GetAll();
+        Espetaculo GetById(Guid id);
+        IReadOnlyList<Espetaculo> Search(string? genero, string? nome);
     }
 }

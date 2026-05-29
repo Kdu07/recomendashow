@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace BackEnd.Aventura.Repository
+namespace BackEnd.Aventura.Domain
 {
     public class Teatro
     {
@@ -39,18 +35,5 @@ namespace BackEnd.Aventura.Repository
 
             _espetaculos.Add(espetaculo);
         }
-
-        public bool RemoverEspetaculo(Guid id)
-        {
-            var espetaculo = _espetaculos.FirstOrDefault(e => e.Id == id);
-            if (espetaculo is null)
-            {
-                return false;
-            }
-
-            return _espetaculos.Remove(espetaculo);
-        }
-
-        public IReadOnlyCollection<Espetaculo> BuscarEspetaculos() => Espetaculos;
     }
 }

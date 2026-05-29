@@ -2559,7 +2559,7 @@ Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositó
 
 #### Link do vídeo demonstrativo
 
-O vídeo demonstrativo será anexado à documentação assim que disponível; adicionar aqui o link do repositório de artefatos (ex.: CI artifacts / vídeo no Drive) quando produzido.
+[Vídeo demonstrativo](https://drive.google.com/file/d/1VCDSsW-dxjwJJM6786tu-Pd1RauL3sNp/view?usp=sharing)
 
 ---
 

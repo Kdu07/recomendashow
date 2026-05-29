@@ -40,8 +40,43 @@ namespace BackEnd.Aventura.Repository
             ReceberNotificacoes = true;
         }
 
+        public string? Cidade { get; private set; }
         public IReadOnlyCollection<string> Generos => _generos.AsReadOnly();
         public IReadOnlyCollection<string> Tags => _tags.AsReadOnly();
+
+        public static Preferencias FromData(
+            Guid id,
+            Guid usuarioId,
+            string? cidade,
+            IEnumerable<string> generos,
+            IEnumerable<string> tags,
+            decimal? faixaPrecoMin,
+            decimal? faixaPrecoMax,
+            bool receberNotificacoes,
+            DateTime dataAtualizacao)
+        {
+            var preferencias = new Preferencias(usuarioId)
+            {
+                Id = id,
+                Cidade = string.IsNullOrWhiteSpace(cidade) ? null : cidade.Trim(),
+                FaixaPrecoMin = faixaPrecoMin,
+                FaixaPrecoMax = faixaPrecoMax,
+                ReceberNotificacoes = receberNotificacoes,
+                DataAtualizacao = dataAtualizacao
+            };
+
+            if (generos is not null)
+            {
+                preferencias.SetGeneros(generos);
+            }
+
+            if (tags is not null)
+            {
+                preferencias.SetTags(tags);
+            }
+
+            return preferencias;
+        }
 
         public void SetGeneros(IEnumerable<string> generos)
         {

@@ -78,7 +78,7 @@ namespace BackEnd.Aventura.Controller
                 // Filtrar por gênero se fornecido
                 if (!string.IsNullOrWhiteSpace(genero))
                 {
-                    resultado = resultado.Where(e => e.PertenceAoGenero(genero));
+                    resultado = _service.GetEspetaculosByGenero(genero);
                 }
 
                 // Filtrar por nome se fornecido

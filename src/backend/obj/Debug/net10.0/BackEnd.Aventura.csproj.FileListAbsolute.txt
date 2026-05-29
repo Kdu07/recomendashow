@@ -70,3 +70,6 @@ C:\Users\Inteli\Desktop\g02\src\backend\obj\Debug\net10.0\swae.build.ex.cache
 C:\Users\Inteli\Desktop\g02\src\backend\obj\Debug\net10.0\BackEnd..5FB41203.Up2Date
 C:\Users\Inteli\Desktop\g02\src\backend\obj\Debug\net10.0\BackEnd.Aventura.genruntimeconfig.cache
 C:\Users\Inteli\Desktop\g02\src\backend\obj\Debug\net10.0\ref\BackEnd.Aventura.dll
+C:\Users\Inteli\Desktop\g02\src\backend\bin\Debug\net10.0\DotNetEnv.dll
+C:\Users\Inteli\Desktop\g02\src\backend\bin\Debug\net10.0\Npgsql.dll
+C:\Users\Inteli\Desktop\g02\src\backend\bin\Debug\net10.0\Sprache.dll

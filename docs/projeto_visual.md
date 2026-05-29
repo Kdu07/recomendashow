@@ -15,7 +15,9 @@ O Portal Aventura é uma plataforma de descoberta de espetáculos culturais que 
 A experiência mobile foi concebida com três objetivos: (1) descoberta rápida e intuitiva em poucos toques, com recomendação como centro da experiência; (2) leitura confortável em movimento com hierarquia clara, textos diretos, imagens de impacto e tamanhos de toque adequados para uso com uma mão; (3) conversão acelerada para venda removendo barreiras entre descoberta e compra através de botão sempre visível, wishlist persistente, redirecionamento direto para vendas e micro-animações confirmando ações.
 
 ### 1.4 Escopo do protótipo visual
-O protótipo abrange 11 telas em nível mockup navegável, cobrindo todos os fluxos críticos: autenticação (Splash, Login, Cadastro), onboarding do usuário (Onboarding, Boas-Vindas), descoberta de conteúdo (Home, Buscar, Detalhes do Espetáculo), gestão de preferências (Wishlist, Perfil, Editar Interesses). As interações são plenamente navegáveis, permitindo validar tanto a jornada do novo usuário quanto os fluxos de exploração e conversão para compra. 
+O protótipo abrange 11 telas em nível mockup navegável, cobrindo todos os fluxos críticos: autenticação (Splash, Login, Cadastro), onboarding do usuário (Onboarding, Boas-Vindas), descoberta de conteúdo (Home, Buscar, Detalhes do Espetáculo), gestão de preferências (Wishlist, Perfil, Editar Interesses). As interações são plenamente navegáveis, permitindo validar tanto a jornada do novo usuário quanto os fluxos de exploração e conversão para compra.
+
+Na implementação da Sprint 3, esse escopo foi materializado com dados mockados e persistência local pontual, priorizando validação visual, navegação e organização MVVM. A integração completa com os endpoints do backend está planejada para as próximas sprints.
 
 ---
 
@@ -112,7 +114,7 @@ O padrão predominante é a **barra de abas inferior fixa** (*bottom tab bar*) c
 3. **Wishlist** — ícone de coração (retenção).
 4. **Perfil** — ícone de pessoa (conta e configurações).
 
-A *tab bar* aparece em todas as telas de nível 1 e é ocultada nas telas de nível 0 (entrada/onboarding) e em telas de nível 2 de configuração (Notificações, Informações Institucionais, Editar Interesses) — nestas, a navegação se dá pelo botão "voltar" no header. Em Informações do Espetáculo, a *tab bar* pode ser substituída pela barra de ação fixa ("Salvar" + "Ingressos"), priorizando a conversão sobre a troca de contexto.
+A *tab bar* aparece em todas as telas de nível 1 e é ocultada nas telas de nível 0 (entrada/onboarding). Na implementação atual da Sprint 3, as telas de configuração acessadas pelo Perfil (Notificações, Informações Institucionais e Editar Interesses) mantêm a *tab bar* inferior para preservar acesso rápido às áreas principais, além do botão "voltar" no header. Em Informações do Espetáculo, a *tab bar* pode ser substituída pela barra de ação fixa ("Salvar" + "Ingressos"), priorizando a conversão sobre a troca de contexto.
 
 Acima da *tab bar*, cada tela usa um header próprio com regras descritas em 3.4. Filtros na Buscar abrem como *bottom sheet* sobre a tela atual, sem alterar a rota — preservando o input e o contexto da busca.
 
@@ -125,7 +127,7 @@ Acima da *tab bar*, cada tela usa um header próprio com regras descritas em 3.4
 - Nas telas de onboarding, o avanço é unidirecional pelo CTA "Continuar"; o retorno entre passos pode ser oferecido como secundário, mas o "Pular" tem prioridade visual.
 
 **Persistência e ocultação de barras ao scroll:**
-- *Tab bar* inferior: **fixa**, sem ocultação ao scroll, garantindo acesso constante às áreas principais.
+- *Tab bar* inferior: **fixa**, sem ocultação ao scroll, garantindo acesso constante às áreas principais. Na Sprint 3, esse comportamento também foi mantido nas telas secundárias de Perfil.
 - Header superior: **fixo** nas áreas principais (logo + ações). Em Informações do Espetáculo, o header pode ter comportamento *sticky* com *parallax* sobre a imagem hero.
 - Chips de categoria em Explorar: podem ser *sticky* ao scroll, mantendo o filtro visível durante a varredura do *feed*.
 - Barra de ação fixa em Informações do Espetáculo ("Salvar" + "Ingressos"): persistente em todo o scroll, alinhada à heurística de "ação visível em qualquer ponto do scroll".
@@ -133,12 +135,12 @@ Acima da *tab bar*, cada tela usa um header próprio com regras descritas em 3.4
 **Estados ativos e rotas:**
 - O ícone da aba ativa é destacado por preenchimento e/ou peso de fonte mais forte no label.
 - Tocar em uma aba já ativa **rola a tela ao topo**.
-- Cada aba mantém sua própria pilha de navegação independente — sair de Wishlist para Perfil e voltar para Wishlist preserva o estado anterior (incluindo subtelas abertas).
+- Cada aba representa uma área principal da aplicação. A implementação atual utiliza um `BottomTabNavigator` para Home, Busca, Wishlist e Perfil, com telas secundárias abertas pela pilha principal.
 
 **Títulos e ações do topo:**
 - **Áreas principais (Explorar, Wishlist, Perfil):** header com logo "Aventura" à esquerda.
 - **Buscar:** header com logo + campo de busca compacto; o campo de busca da própria tela fica logo abaixo, em destaque.
-- **Telas de configuração (Notificações, Informações Institucionais, Editar Interesses):** header simplificado com botão "voltar" à esquerda e título da seção em caixa-alta centralizado, sem ações à direita — reduzindo distrações em contexto de leitura/edição.
+- **Telas de configuração (Notificações, Informações Institucionais, Editar Interesses):** header simplificado com botão "voltar" à esquerda e título da seção, sem ações à direita — reduzindo distrações em contexto de leitura/edição.
 - **Informações do Espetáculo:** header com botão "voltar" e, opcionalmente, ação de compartilhar à direita.
 
 **Overlays e modais:**
@@ -256,24 +258,24 @@ A fidelidade média foi escolhida deliberadamente: o objetivo é validar hierarq
 
 ## 4.11 Editar Interesses
 - **Objetivo da tela:** permitir ao usuário ajustar a qualquer momento os sinais que alimentam o motor de recomendação, fechando o *loop* iniciado no onboarding.
-- **Descrição funcional:** reedição dos mesmos campos coletados no onboarding (gêneros e cidade) em uma única tela, com CTAs explícitos de salvar ou cancelar e dica auxiliar ao final.
-- **Componentes principais:** header com botão de voltar e título "Editar Interesses", *card* informativo "Ajuste suas recomendações", seção "Selecione seus interesses" (grade de tags multiseleção), contador "[N] interesses selecionados", seção "Selecione sua cidade" (lista de opções), botão primário "Salvar Alterações", botão secundário "Cancelar", dica final sobre flexibilidade de mudança.
-- **Organização do layout:** estrutura de formulário verticalizada com agrupamento por tema; CTAs no fim da página em hierarquia clara (primário sobre secundário).
-- **Comportamento mobile:** as seleções refletem o estado atual no carregamento; "Cancelar" descarta mudanças e retorna ao Perfil; "Salvar Alterações" persiste e dispara recálculo das recomendações na Explorar.
+- **Descrição funcional:** reedição dos mesmos campos coletados no onboarding (gêneros e cidade) em uma única tela, com CTA de salvar e dica auxiliar ao final.
+- **Componentes principais:** header com botão de voltar e título "Preferências", *card* informativo "Ajuste suas recomendações", seção "Interesses" (grade de tags multiseleção), contador "[N] interesses selecionados", seção "Cidade" (lista de opções), botão primário "Salvar alterações", dica final sobre flexibilidade de mudança e *tab bar* inferior.
+- **Organização do layout:** estrutura de formulário verticalizada com agrupamento por tema; CTA no fim da página em hierarquia clara.
+- **Comportamento mobile:** as seleções refletem o estado mockado no carregamento e mudam localmente durante a interação. Nesta sprint, o botão "Salvar alterações" ainda não persiste no backend nem dispara recálculo real das recomendações; esse comportamento fica previsto para a etapa de integração.
 - **Observações de usabilidade:** consolidar tudo em uma tela (ao contrário do onboarding em três passos) é apropriado aqui — o usuário já conhece o sistema e busca eficiência. A "dica" final reforça que mudar interesses é seguro e reversível, reduzindo a fricção da edição. Esta tela é também o destino do CTA do *empty state* "Para você" na Explorar (ver 4.6), fechando o fluxo do usuário que pulou o onboarding.
 
 ## 4.12 Notificações
 - **Objetivo da tela:** dar controle granular sobre os canais e tipos de comunicação, item crítico para conformidade e para manter relevância da estratégia de *push* (descrita no brainstorm).
 - **Descrição funcional:** lista de *toggles* agrupados por categoria: canais (Push, E-mail), conteúdo (Novos espetáculos, Recomendações personalizadas, Espetáculos salvos) e marketing (Newsletter, Atualizações do app).
-- **Componentes principais:** header com botão voltar e título "NOTIFICAÇÕES", *card* explicativo de topo, três blocos de toggles com título de seção, label e descrição auxiliar por item.
+- **Componentes principais:** header com botão voltar e título "Notificações", *card* explicativo de topo, blocos de toggles com título de seção, label e descrição auxiliar por item, além da *tab bar* inferior mantida na Sprint 3.
 - **Organização do layout:** agrupamento semântico em três blocos verticais, separados visualmente por títulos de seção; cada item ocupa altura confortável para alvo de toque.
-- **Comportamento mobile:** toggles aplicam mudança imediatamente (sem botão "Salvar"); alteração no canal Push pode disparar pedido de permissão nativa do sistema operacional.
+- **Comportamento mobile:** toggles aplicam mudança imediatamente no estado local da tela. A solicitação de permissão nativa para push e a persistência remota das preferências ficam para a integração futura.
 - **Observações de usabilidade:** separar canais de tipos de conteúdo respeita a expectativa do usuário de modular comunicação em duas dimensões. Descrições auxiliares por item reduzem ambiguidade sobre o que cada toggle controla, evitando *opt-outs* indesejados.
 
 ## 4.13 Informações Institucionais
 - **Objetivo da tela:** consolidar informações sobre a Aventura Teatros e canais oficiais, reforçando confiança e cumprindo expectativas de transparência institucional.
 - **Descrição funcional:** página estática com descrição da empresa, links de redes sociais, contato, site oficial e localização.
-- **Componentes principais:** header com botão voltar e título "INFORMAÇÕES INSTITUCIONAIS" + subtítulo, bloco "Sobre [Nome da Empresa]" com texto institucional e versão do app, bloco "Siga-nos" com lista de redes sociais, bloco com e-mail, site, e localização (endereço + CEP), rodapé com copyright e tagline.
+- **Componentes principais:** header com botão voltar e título "Informações", bloco "Sobre a Aventura" com texto institucional, bloco "Siga-nos" com lista de redes sociais, blocos de contato com e-mail, site e localização, rodapé com copyright e tagline, além da *tab bar* inferior.
 - **Organização do layout:** estrutura informativa em blocos verticais por categoria, com ícones para reconhecimento visual rápido das redes sociais; rodapé fecha a página com identidade da marca.
 - **Comportamento mobile:** *taps* em redes/e-mail/site/endereço abrem o app nativo correspondente (browser, mail, maps); versão do app é informativa para diagnóstico de suporte.
 - **Observações de usabilidade:** página de baixo tráfego mas alta importância simbólica — sinaliza profissionalismo e oferece pontos de contato verificáveis, especialmente relevantes para o público sênior do catálogo da Aventura. A versão do app facilita troubleshooting quando o usuário entra em contato com suporte.
@@ -827,6 +829,7 @@ Regras definidas:
 - Elementos secundários possuem menor prioridade visual em telas reduzidas.
 
 O comportamento responsivo busca garantir acessibilidade, legibilidade e consistência visual em toda a experiência mobile.
+
 ---
 
 ## 8. Considerações Finais

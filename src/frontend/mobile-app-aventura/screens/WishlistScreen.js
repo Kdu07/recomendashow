@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { Heart } from 'lucide-react-native';
 
 import SearchBar from '../components/SearchBar';
@@ -28,9 +27,7 @@ function getCategoryLabel(categoryId) {
   return labels[categoryId] || 'Espetáculo';
 }
 
-export default function WishlistScreen() {
-  const navigation = useNavigation();
-
+export default function WishlistScreen({ navigation }) {
   const {
     searchText,
     filteredWishlistEvents = [],
@@ -39,7 +36,7 @@ export default function WishlistScreen() {
     handleSearchChange,
     handleEventPress,
     handleRemoveFromWishlist,
-  } = useWishlistViewModel();
+  } = useWishlistViewModel(navigation);
 
   const shouldShowList = hasSavedEvents && hasFilteredResults;
   const shouldShowEmptyState = !hasSavedEvents;

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\cadus\\CADU_FILES\\Inteli\\Projeto 6 - Aventura\\g02\\src\\backend\\BackEnd.Aventura.csproj": {}
+    "C:\\Users\\Inteli\\Desktop\\g02\\src\\backend\\BackEnd.Aventura.csproj": {}
   },
   "projects": {
-    "C:\\Users\\cadus\\CADU_FILES\\Inteli\\Projeto 6 - Aventura\\g02\\src\\backend\\BackEnd.Aventura.csproj": {
+    "C:\\Users\\Inteli\\Desktop\\g02\\src\\backend\\BackEnd.Aventura.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\cadus\\CADU_FILES\\Inteli\\Projeto 6 - Aventura\\g02\\src\\backend\\BackEnd.Aventura.csproj",
+        "projectUniqueName": "C:\\Users\\Inteli\\Desktop\\g02\\src\\backend\\BackEnd.Aventura.csproj",
         "projectName": "BackEnd.Aventura",
-        "projectPath": "C:\\Users\\cadus\\CADU_FILES\\Inteli\\Projeto 6 - Aventura\\g02\\src\\backend\\BackEnd.Aventura.csproj",
-        "packagesPath": "C:\\Users\\cadus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\cadus\\CADU_FILES\\Inteli\\Projeto 6 - Aventura\\g02\\src\\backend\\obj\\",
+        "projectPath": "C:\\Users\\Inteli\\Desktop\\g02\\src\\backend\\BackEnd.Aventura.csproj",
+        "packagesPath": "C:\\Users\\Inteli\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Inteli\\Desktop\\g02\\src\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\cadus\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -44,9 +44,13 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
-            "CsvHelper": {
+            "BCrypt.Net-Next": {
               "target": "Package",
-              "version": "[33.0.1, )"
+              "version": "[4.0.3, )"
+            },
+            "DotNetEnv": {
+              "target": "Package",
+              "version": "[3.1.0, )"
             },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
@@ -59,6 +63,10 @@
             "Microsoft.ML.Recommender": {
               "target": "Package",
               "version": "[0.21.1, )"
+            },
+            "Npgsql": {
+              "target": "Package",
+              "version": "[10.0.2, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

@@ -30,7 +30,7 @@ function validateAuthValues(mode, values) {
   return errors;
 }
 
-export function useAuthViewModel() {
+export function useAuthViewModel(navigation) {
   const [mode, setMode] = useState(AUTH_MODES.login);
   const [values, setValues] = useState(initialAuthValues);
   const [errors, setErrors] = useState({});
@@ -92,6 +92,7 @@ export function useAuthViewModel() {
           password: values.password,
         });
       }
+      navigation.replace('Onboarding');
     } finally {
       setLoading(false);
     }

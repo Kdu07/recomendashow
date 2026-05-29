@@ -4,11 +4,13 @@ export const heroBanners = [
   {
     id: 'banner-1',
     title: 'A Noviça Rebelde',
+    showId: '1',
     image: require('../assets/home/banner-novica.png'),
   },
   {
     id: 'banner-2',
     title: 'Mamma Mia',
+    showId: '3',
     image: require('../assets/home/mamma-mia.jpg'),
   },
   {
@@ -31,6 +33,7 @@ export const trendingEvents = [
   {
     id: 'trending-1',
     title: 'Viva - In Concert',
+    showId: '2',
     categoryId: 'musical',
     city: 'Rio de Janeiro',
     location: 'Teatro Riachuelo Rio',
@@ -74,6 +77,7 @@ export const recommendedEvents = [
   {
     id: 'rec-1',
     title: 'Mamma Mia',
+    showId: '3',
     categoryId: 'musical',
     city: 'São Paulo',
     location: 'Teatro btg pactual hall',
@@ -135,6 +139,7 @@ export const newEvents = [
   {
     id: 'new-3',
     title: 'Viva - In Concert',
+    showId: '2',
     categoryId: 'musical',
     city: 'Rio de Janeiro',
     location: 'Teatro Riachuelo Rio',
@@ -174,6 +179,7 @@ export const nearbyEvents = [
   {
     id: 'nearby-1',
     title: 'Viva - In Concert',
+    showId: '2',
     categoryId: 'musical',
     city: 'Rio de Janeiro',
     location: 'Teatro Riachuelo Rio',

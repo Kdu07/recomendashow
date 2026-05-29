@@ -7,7 +7,7 @@ import {
   toggleWishlistEvent,
 } from '../repositories/wishlistRepository';
 
-export default function useSearchViewModel() {
+export default function useSearchViewModel(navigation) {
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [savedEventIds, setSavedEventIds] = useState([]);
@@ -48,7 +48,9 @@ export default function useSearchViewModel() {
   }
 
   function handleEventPress(event) {
-    console.log('Abrir detalhes do espetaculo:', event.title);
+    if (event.showId) {
+      navigation.navigate('ShowInfo', { showId: event.showId });
+    }
   }
 
   async function handleFavoritePress(event) {

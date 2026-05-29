@@ -15,7 +15,7 @@ import { colors } from '../constants/colors';
 import { spacing } from '../constants/spacing';
 import ScreenContainer from './ScreenContainer';
 
-export default function AuthScreen() {
+export default function AuthScreen({ navigation }) {
   const {
     mode,
     values,
@@ -26,7 +26,7 @@ export default function AuthScreen() {
     updateField,
     handleSubmit,
     handleGoogleAuth,
-  } = useAuthViewModel();
+  } = useAuthViewModel(navigation);
 
   return (
     <ScreenContainer style={styles.screen}>

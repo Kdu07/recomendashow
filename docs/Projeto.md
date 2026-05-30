@@ -2566,7 +2566,7 @@ Essas decisões de codificação e arquitetura foram tomadas para oferecer um ba
 
 ---
 
-### 18.6 Testes unitários e metodologia TDD
+### 18.6 Testes unitários do Backend e metodologia TDD
 
 Esta seção deve documentar a estratégia de testes unitários adotada no projeto, com foco nas funcionalidades implementadas e na aplicação da metodologia TDD.
 
@@ -2613,6 +2613,66 @@ Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositó
 
 ---
 
+### 18.7 Testes unitários do Frontend (React Native)
+ 
+Esta seção documenta a estratégia de testes unitários adotada para o frontend mobile do projeto, cobrindo as camadas de ViewModel e Service da arquitetura MVVM.
+ 
+#### Estratégia de testes
+ 
+Abordagem adotada:
+ 
+- **Metodologia:** Testes unitários escritos para validar o comportamento das camadas de lógica (`ViewModel` e `Service`), isolando dependências externas via mocks. A camada de View (Screens/Components) não é coberta por testes unitários nesta sprint — requer setup de ambiente nativo.
+- **Ferramentas:** `Jest` como runner e framework de asserções; `@testing-library/react` para renderização e interação com hooks React; `jest-environment-jsdom` para simular o ambiente de browser exigido pelo `renderHook`.
+- **Escopo priorizado:** autenticação (`useAuthViewModel`), onboarding (`useOnboardingViewModel`, `onboardingService`), busca (`useSearchViewModel`), lista de salvos (`useWishlistViewModel`, `wishlistStorageService`), notificações (`useNotificationsViewModel`) e interesses (`useEditInterestsViewModel`).
+
+#### Testes implementados
+ 
+| Teste | Camada testada | Funcionalidade | Resultado | Arquivo |
+|---|---|---|---|---|
+| `useAuthViewModel – validação (login)` | ViewModel | Validação de campos obrigatórios no login | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
+| `useAuthViewModel – validação (register)` | ViewModel | Validação de nome, senha e confirmação no cadastro | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
+| `useAuthViewModel – handleSubmit` | ViewModel | Chamada ao repositório, navegação pós-login e controle de loading | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
+| `useAuthViewModel – handleGoogleAuth` | ViewModel | Autenticação via Google e restauração de loading | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
+| `useOnboardingViewModel – toggleCategory` | ViewModel | Seleção e remoção de categorias, canContinue | Passed | `tests/viewmodels/useOnboardingViewModel.test.js` |
+| `useOnboardingViewModel – navegação` | ViewModel | Avanço e recuo entre passos do fluxo de onboarding | Passed | `tests/viewmodels/useOnboardingViewModel.test.js` |
+| `useOnboardingViewModel – finalização` | ViewModel | Persistência de preferências e callback de conclusão | Passed | `tests/viewmodels/useOnboardingViewModel.test.js` |
+| `useSearchViewModel – busca por texto` | ViewModel | Filtro por título, localização e cidade (case-insensitive) | Passed | `tests/viewmodels/useSearchViewModel.test.js` |
+| `useSearchViewModel – filtro por categoria` | ViewModel | Filtro por categoria e combinação com busca textual | Passed | `tests/viewmodels/useSearchViewModel.test.js` |
+| `useSearchViewModel – wishlist` | ViewModel | Atualização de favoritos via toggle | Passed | `tests/viewmodels/useSearchViewModel.test.js` |
+| `useWishlistViewModel – carregamento` | ViewModel | Carregamento assíncrono da wishlist, isLoading e hasSavedEvents | Passed | `tests/viewmodels/useWishlistViewModel.test.js` |
+| `useWishlistViewModel – filtro por texto` | ViewModel | Filtro de salvos por título, localização e cidade | Passed | `tests/viewmodels/useWishlistViewModel.test.js` |
+| `useWishlistViewModel – remoção` | ViewModel | Remoção de evento da wishlist e atualização da lista | Passed | `tests/viewmodels/useWishlistViewModel.test.js` |
+| `useNotificationsViewModel – toggle` | ViewModel | Ativação/desativação de opções de notificação por seção | Passed | `tests/viewmodels/useNotificationsViewModel.test.js` |
+| `useEditInterestsViewModel – toggle` | ViewModel | Seleção e remoção de interesses, contagem e seleção exclusiva de cidade | Passed | `tests/viewmodels/useEditInterestsViewModel.test.js` |
+| `wishlistStorageService – CRUD` | Service | get, save, add, remove, toggle e verificação de evento na wishlist | Passed | `tests/services/wishlistStorageService.test.js` |
+| `onboardingService – persistência` | Service | save, load e clear de preferências via AsyncStorage | Passed | `tests/services/onboardingService.test.js` |
+ 
+#### Execução dos testes
+ 
+Executar todos os testes do frontend (a partir de `mobile-app-aventura/`):
+ 
+```bash
+npm test
+```
+ 
+Com relatório de cobertura:
+ 
+```bash
+npm test -- --coverage
+```
+ 
+#### Resultado da cobertura
+ 
+Cobertura focada nas camadas de ViewModel e Service, que concentram toda a lógica de negócio do frontend. A camada de View não é coberta intencionalmente nesta sprint, pois depende de ambiente nativo para renderização.
+ 
+| Camada | Arquivos cobertos | Cobertura estimada |
+|---|---|---|
+| ViewModel | 6 arquivos | ~90–95% |
+| Service | 2 arquivos | ~95–100% |
+| Repository | Coberto via mock | — |
+| Screen/View | Não coberto | — |
+
+---
 
 ## 19. Termos e Abreviações
 

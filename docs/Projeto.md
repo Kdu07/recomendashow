@@ -201,6 +201,7 @@
 - [18.4 Desenvolvimento do Frontend](#184-desenvolvimento-do-frontend)
   - [18.4.1 Arquitetura do frontend](#1841-arquitetura-do-frontend)
   - [18.4.2 Telas implementadas](#1842-telas-implementadas)
+  - [18.4.3 Vídeo demonstrativo do frontend](#1843-vídeo-demonstrativo-do-frontend)
 - [18.5 Padrões de codificação e padrões de projeto](#185-padrões-de-codificação-e-padrões-de-projeto)
   - [Padrões de codificação](#padrões-de-codificação)
   - [Padrões de projeto](#padrões-de-projeto)
@@ -2636,17 +2637,57 @@ Todas as rotas estão expostas sob o prefixo `/api`. O Swagger UI está disponí
 
 ### 18.4 Desenvolvimento do Frontend
 
-Esta seção deve documentar o progresso da implementação do frontend durante a Sprint 3, incluindo arquitetura adotada, telas desenvolvidas, integração com backend ou dados mockados e evidências visuais da aplicação.
+O frontend da Sprint 3 foi implementado como um aplicativo móvel híbrido em `src/frontend/mobile-app-aventura`, com foco em cross-platform e entrega rápida. A escolha por React Native buscou reduzir tempo de desenvolvimento e garantir disponibilidade simultânea em iOS e Android com um único conjunto de telas.
+
+A arquitetura do frontend foi pensada para:
+
+- manter telas e componentes desacoplados;
+- separar apresentação, estado de tela e acesso a dados por meio de um padrão inspirado em MVVM;
+- preservar uma linha clara de estado entre navegação, dados e apresentação;
+- facilitar testes de usabilidade e evolução de componentes visuais.
+
+A aplicação utiliza um padrão similar a MVVM. As telas em `screens/` atuam como camada de View, os hooks em `viewmodels/` concentram estado, eventos e regras de apresentação, e os arquivos em `repositories/` abstraem a origem dos dados. Nesta sprint, a maior parte dos repositories consome dados mockados em `data/`, enquanto serviços locais em `services/` simulam autenticação e persistem dados pontuais no dispositivo, como onboarding e wishlist via `AsyncStorage`.
+
+Essa decisão foi tomada para validar fluxo, navegação, componentes e experiência de uso antes da integração completa com o backend. A integração REST real fica prevista para as próximas sprints, mantendo os repositories como ponto natural de troca entre mocks e chamadas HTTP.
 
 #### 18.4.1 Arquitetura do frontend
 
-Descrever a arquitetura adotada no frontend, indicando organização de telas, componentes, navegação, serviços, estados, hooks, ViewModels ou repositories, conforme o padrão definido pelo grupo.
+A estrutura adotada no frontend inclui:
 
-```text
-A preencher com a estrutura de pastas do frontend.
-```
+- `screens/` — telas de fluxo principal e secundário, incluindo autenticação, onboarding, Explorar, Busca, Detalhes, Wishlist, Perfil, Preferências, Notificações e Informações Institucionais.
+- `components/` — elementos reutilizáveis como cards de espetáculo, carrosséis, cabeçalhos e botões.
+- `viewmodels/` — hooks responsáveis por estado de tela, filtros, seleções, eventos de navegação e preparação dos dados para a View.
+- `repositories/` — camada de acesso a dados, hoje conectada principalmente a mocks locais e preparada para futura substituição por chamadas HTTP.
+- `services/` — serviços auxiliares para autenticação simulada e persistência local com `AsyncStorage`, como onboarding e wishlist.
+- `data/` — massas mockadas usadas na Sprint 3 para validar a experiência sem depender da API em tempo de execução.
+- `models/` — estruturas-base dos dados consumidos pelas telas e viewmodels.
+- `constants/` — tokens visuais e listas constantes, como cores, tipografia, espaçamentos e itens do menu de perfil.
+- `assets/` — imagens, ícones e recursos estáticos usados pela interface.
+
+Essa estrutura permite que a equipe evolua a interface e os fluxos de navegação com baixo acoplamento. Quando a integração com o backend for ativada, a principal mudança esperada estará nos repositories e services, preservando as telas e grande parte dos viewmodels.
 
 #### 18.4.2 Telas implementadas
+
+As telas essenciais entregues na Sprint 3 foram:
+
+- **Splash** — tela inicial de marca, usada como ponto de entrada antes do fluxo de autenticação.
+- **Login e Cadastro** — fluxo de autenticação simulado, com alternância entre entrada de usuário existente e criação de conta.
+- **Onboarding** — coleta de preferências iniciais (gêneros, cidade, frequência) e alimentação do motor de recomendação.
+- **Boas-vindas** — tela transicional após o onboarding, direcionando o usuário para a experiência principal.
+- **Explorar / Home** — exibição de carrosséis com conteúdo dinâmico, incluindo seções de recomendação personalizada e regional.
+- **Busca** — pesquisa por espetáculo e teatro com filtros básicos de nome e categoria.
+- **Detalhes de Espetáculo** — informações completas, teatro associado, link de compra e sugestões de espetáculos semelhantes.
+- **Wishlist** — gerenciamento de itens salvos, com adição e remoção direta do usuário.
+- **Perfil** — exibição dos dados do usuário e acesso às telas de preferências, notificações e informações institucionais.
+- **Preferências, Notificações e Informações Institucionais** — telas secundárias acessadas pelo Perfil, implementadas com dados mockados e interações locais nesta sprint.
+
+A implementação foi orientada pelas decisões de produto e pela estrutura esperada das APIs, mas nesta sprint o frontend opera majoritariamente com mocks locais. Isso permitiu validar o desenho das telas e a separação MVVM antes da integração real com os endpoints do backend nas próximas etapas.
+
+#### 18.4.3 Vídeo demonstrativo do frontend
+
+Como evidência complementar da Sprint 3, será adicionado aqui o link para um vídeo demonstrativo do aplicativo mobile em execução, mostrando o fluxo de navegação, as telas implementadas, a bottom tab bar, o uso de dados mockados e as interações principais do frontend.
+
+**Link do vídeo demonstrativo:** [Demonstração do frontend em execução](https://drive.google.com/drive/folders/1eGPiwsTAnqv7iXh_9Mo7P2QgqnWEykwY).
 
 ---
 

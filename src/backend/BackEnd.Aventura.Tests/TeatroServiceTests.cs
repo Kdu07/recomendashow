@@ -76,6 +76,7 @@ namespace BackEnd.Aventura.Tests
             // Arrange
             var teatro = new Teatro(Guid.NewGuid(), "Theatro Municipal", "Av. Paulista, 1578", "São Paulo", "10:00-22:00");
             var espetaculo = new Espetaculo(Guid.NewGuid(), "Macbeth", "Drama", "Show", "Uma tragédia de Shakespeare", "https://example.com/buy", DateTime.UtcNow, DateTime.UtcNow.AddMonths(3), 100m);
+            teatro.AdicionarEspetaculo(espetaculo);
             _repository.AddTeatro(teatro);
 
             // Act

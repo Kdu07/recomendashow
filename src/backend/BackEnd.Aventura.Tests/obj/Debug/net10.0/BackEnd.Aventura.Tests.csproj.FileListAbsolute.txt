@@ -112,3 +112,5 @@ C:\Users\Inteli\Desktop\g02\src\backend\BackEnd.Aventura.Tests\obj\Debug\net10.0
 C:\Users\Inteli\Desktop\g02\src\backend\BackEnd.Aventura.Tests\obj\Debug\net10.0\BackEnd.Aventura.Tests.pdb
 C:\Users\Inteli\Desktop\g02\src\backend\BackEnd.Aventura.Tests\obj\Debug\net10.0\BackEnd.Aventura.Tests.genruntimeconfig.cache
 C:\Users\Inteli\Desktop\g02\src\backend\BackEnd.Aventura.Tests\obj\Debug\net10.0\ref\BackEnd.Aventura.Tests.dll
+C:\Users\Inteli\Desktop\g02\src\backend\BackEnd.Aventura.Tests\bin\Debug\net10.0\Castle.Core.dll
+C:\Users\Inteli\Desktop\g02\src\backend\BackEnd.Aventura.Tests\bin\Debug\net10.0\Moq.dll

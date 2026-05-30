@@ -1,38 +1,23 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text } from 'react-native';
 
+import SplashScreen from './screens/SplashScreen';
 import WelcomeScreen from './screens/welcome/WelcomeScreen';
 import OnboardingScreen from './screens/onboarding/OnboardingScreen';
+import AuthScreen from './screens/AuthScreen';
+import HomeScreen from './screens/HomeScreen';
+import SearchScreen from './screens/SearchScreen';
+import WishlistScreen from './screens/WishlistScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import EditInterestsScreen from './screens/EditInterestsScreen';
 import NotificationsScreen from './screens/NotificationsScreen';
 import InstitutionalScreen from './screens/InstitutionalScreen';
-import HomeScreen from './screens/HomeScreen';
-import SearchScreen from './screens/SearchScreen';
-import WishlistScreen from './screens/WishlistScreen';
-import AuthScreen from './screens/AuthScreen';
+import ShowInfoScreen from './screens/showInfo/ShowInfoScreen';
 
 import BottomTabBar from './components/BottomTabBar';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
-function WishlistPlaceholder() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Wishlist em construção</Text>
-    </View>
-  );
-}
-
-function ProfilePlaceholder() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Perfil em construção</Text>
-    </View>
-  );
-}
 
 const routeToTab = {
   Home: 'explore',
@@ -84,20 +69,21 @@ function MainTabs() {
 export default function RootNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName="Auth"
+      initialRouteName="AppSplash"
       screenOptions={{
         headerShown: false,
         animation: 'fade',
       }}
     >
-      <Stack.Screen name="Auth" component={AuthScreen}/>
+      <Stack.Screen name="AppSplash" component={SplashScreen} />
+      <Stack.Screen name="Auth" component={AuthScreen} />
       <Stack.Screen name="Onboarding" component={OnboardingScreen} />
       <Stack.Screen name="Splash" component={WelcomeScreen} />
-      <Stack.Screen name="Welcome" component={WelcomeScreen} />
-      <Stack.Screen name="EditInterests"  component={EditInterestsScreen}/>
-      <Stack.Screen name="Notifications"  component={NotificationsScreen}/>
-      <Stack.Screen name="Institutional"  component={InstitutionalScreen}/>
+      <Stack.Screen name="EditInterests" component={EditInterestsScreen} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} />
+      <Stack.Screen name="Institutional" component={InstitutionalScreen} />
       <Stack.Screen name="MainTabs" component={MainTabs} />
+      <Stack.Screen name="ShowInfo" component={ShowInfoScreen} />
     </Stack.Navigator>
   );
 }

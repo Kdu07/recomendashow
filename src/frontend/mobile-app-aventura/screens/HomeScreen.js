@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet, ScrollView, SafeAreaView } from "react-native";
+import React, { useRef, useEffect } from "react";
+import { View, StyleSheet, ScrollView, SafeAreaView, Animated } from "react-native";
 import { BlurView } from "expo-blur";
 
 import HomeHeroBanner from "../components/HomeHeroBanner";
@@ -76,7 +76,7 @@ function EmptySection({
   );
 }
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const {
     heroBanners = [],
     categories = [],
@@ -90,23 +90,34 @@ export default function HomeScreen() {
     hasLocation = false,
     handleCategoryPress = () => {},
     handleEventPress = () => {},
+    handleBannerPress = () => {},
     handleFavoritePress = () => {},
     isEventFavorite = () => false,
     handleTheaterPress = () => {},
     handleEditInterests = () => {},
     handleAddLocation = () => {},
-  } = useHomeViewModel();
+  } = useHomeViewModel(navigation);
+
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(opacity, {
+      toValue: 1,
+      duration: 400,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.page}>
+      <Animated.View style={[styles.page, { opacity }]}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
           <View style={styles.heroSection}>
             <View style={styles.heroCard}>
-              <HomeHeroBanner banners={heroBanners} autoPlay interval={3000} />
+              <HomeHeroBanner banners={heroBanners} autoPlay interval={3000} onBannerPress={handleBannerPress} />
             </View>
           </View>
 
@@ -204,7 +215,7 @@ export default function HomeScreen() {
             </View>
           </View>
         </ScrollView>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 }

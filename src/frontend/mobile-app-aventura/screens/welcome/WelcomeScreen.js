@@ -7,10 +7,13 @@ import { typography } from '../../constants/typography';
 import { spacing } from '../../constants/spacing';
 
 const DOT_COLORS = [colors.purpleLight, colors.purpleSecondary, colors.purplePrimary];
-const DOT_DELAYS = [0, 1666, 3333];
+const DOT_DELAYS = [0, 1000, 2000];
+const FADE_OUT_START = 3000;
+const FADE_OUT_DURATION = 400;
 
 export default function WelcomeScreen({ navigation, route }) {
   const userName = route?.params?.userName ?? 'aventureiro(a)';
+  const opacity = useRef(new Animated.Value(1)).current;
 
   useWelcomeViewModel(() => {
     navigation.replace('MainTabs');
@@ -19,7 +22,7 @@ export default function WelcomeScreen({ navigation, route }) {
   const dotAnims = useRef(DOT_DELAYS.map(() => new Animated.Value(0))).current;
 
   useEffect(() => {
-    const timers = DOT_DELAYS.map((delay, i) =>
+    const dotTimers = DOT_DELAYS.map((delay, i) =>
       setTimeout(() => {
         Animated.spring(dotAnims[i], {
           toValue: 1,
@@ -30,11 +33,23 @@ export default function WelcomeScreen({ navigation, route }) {
       }, delay)
     );
 
-    return () => timers.forEach(clearTimeout);
+    const fadeTimer = setTimeout(() => {
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: FADE_OUT_DURATION,
+        useNativeDriver: true,
+      }).start();
+    }, FADE_OUT_START);
+
+    return () => {
+      dotTimers.forEach(clearTimeout);
+      clearTimeout(fadeTimer);
+    };
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.safeArea}>
+      <Animated.View style={[styles.container, { opacity }]}>
       <View style={styles.body}>
         <Image
           source={require('../../assets/logo.png')}
@@ -72,14 +87,19 @@ export default function WelcomeScreen({ navigation, route }) {
           );
         })}
       </View>
+      </Animated.View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
     backgroundColor: colors.white,
+  },
+
+  container: {
+    flex: 1,
     paddingBottom: spacing.xxxl,
   },
 

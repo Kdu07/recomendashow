@@ -1,3 +1,7 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
 dataset.csv
 .venv/
 .venv311/
@@ -5,3 +9,12 @@ venv/
 env/
 __pycache__/
 *.pyc
+.env
+DbRunner/bin/
+DbRunner/obj/
+.env
+.DS_Store
+
+# .NET build outputs
+**/bin/
+**/obj/

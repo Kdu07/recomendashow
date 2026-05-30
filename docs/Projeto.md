@@ -2,26 +2,226 @@
 
 ## Sumário
 
-- [1. Problema](#1-problema)
-- [2. Contexto da Indústria do Parceiro](#2-contexto-da-indústria-do-parceiro)
-- [3. Visão e Objetivos do Produto](#3-visão-e-objetivos-do-produto)
-- [4. O que o Produto Faz e o que Não Faz](#4-o-que-o-produto-faz-e-o-que-não-faz)
-- [5. Personas e Jornada do Usuário](#5-personas-e-jornada-do-usuário)
-- [6. Fluxo do Negócio](#6-fluxo-do-negócio)
-- [7. Brainstorming de Features](#7-brainstorming-de-features)
-- [8. Business Model Canvas do MVP](#8-business-model-canvas-do-mvp)
-- [9. Requisitos Funcionais](#9-requisitos-funcionais)
-- [10. Requisitos Não Funcionais](#10-requisitos-não-funcionais)
-- [11. Correlação entre RFs e RNFs](#11-correlação-entre-rfs-e-rnfs)
-- [12. Diagramação do banco](#12-diagramação-do-banco)
-- [13. Diagrama de Classes](#13-diagrama-de-classes)
-- [14. Diagrama de Componentes](#14-diagrama-de-componentes)
-- [15. Diagrama de Casos de uso](#15-diagrama-de-casos-de-uso)
-- [16. Linguagens e Tecnologias Utilizadas](#16-linguagens-e-tecnologias-utilizadas)
-- [17. Termos e Abreviações](#17-termos-e-abreviações)
-- [Referências](#referências)
+<details>
+<summary><a href="#1-problema">1. Problema</a></summary>
 
----
+- [Descrição do Problema](#descrição-do-problema)
+- [Relevância no Contexto do Parceiro](#relevância-no-contexto-do-parceiro)
+- [Desafios e Oportunidades](#desafios-e-oportunidades)
+
+</details>
+
+<details>
+<summary><a href="#2-contexto-da-indústria-do-parceiro">2. Contexto da Indústria do Parceiro</a></summary>
+
+- [2.1 Rivalidade entre concorrentes](#21-rivalidade-entre-concorrentes)
+- [2.2 Ameaça de novos entrantes](#22-ameaça-de-novos-entrantes)
+- [2.3 Poder de barganha dos fornecedores](#23-poder-de-barganha-dos-fornecedores)
+- [2.4 Poder de barganha dos clientes](#24-poder-de-barganha-dos-clientes)
+- [2.5 Ameaça de produtos substitutos](#25-ameaça-de-produtos-substitutos)
+- [2.6 Análise SWOT](#26-análise-swot)
+
+</details>
+
+<details>
+<summary><a href="#3-visão-e-objetivos-do-produto">3. Visão e Objetivos do Produto</a></summary>
+
+- [3.1 Visão do Produto](#31-visão-do-produto)
+- [3.2 Objetivos do Produto](#32-objetivos-do-produto)
+- [3.3 Métricas de Sucesso (KPIs)](#33-métricas-de-sucesso-kpis)
+
+</details>
+
+<details>
+<summary><a href="#4-o-que-o-produto-faz-e-o-que-não-faz">4. O que o Produto Faz e o que Não Faz</a></summary>
+
+- [4.1 O Produto É](#41-o-produto-é)
+- [4.2 O Produto Não É](#42-o-produto-não-é)
+- [4.3 O Produto Faz](#43-o-produto-faz)
+- [4.4 O Produto Não Faz](#44-o-produto-não-faz)
+
+</details>
+
+<details>
+<summary><a href="#5-personas-e-jornada-do-usuário">5. Personas e Jornada do Usuário</a></summary>
+
+- [5.1 Personas](#51-personas)
+  - [5.1.1 Ana Luiza — Cliente em Formação](#511-ana-luiza--cliente-em-formação-descoberta)
+  - [5.1.2 Marcos Abrantes — Cliente Ativo](#512-marcos-abrantes--cliente-ativo-decisão-e-consumo)
+- [5.2 Jornada do Usuário](#52-jornada-do-usuário)
+  - [5.2.1 Jornada de Ana Luiza](#521-jornada-de-ana-luiza--cliente-em-formação)
+  - [5.2.2 Jornada de Marcos Abrantes](#522-jornada-de-marcos-abrantes--cliente-ativo)
+
+</details>
+
+<details>
+<summary><a href="#6-fluxo-do-negócio">6. Fluxo do Negócio</a></summary>
+
+- [Fluxo do Negócio](#6-fluxo-do-negócio)
+
+</details>
+
+<details>
+<summary><a href="#7-brainstorming-de-features">7. Brainstorming de Features</a></summary>
+
+- [1. Visão Geral do Modelo](#1-visão-geral-do-modelo-backend--inteligência)
+- [2. Interface do Usuário](#2-interface-do-usuário-front-end)
+- [2.1 Fluxo de Cadastro e Onboarding](#21-fluxo-de-cadastro-e-onboarding)
+- [2.2 Estrutura de Navegação](#22-estrutura-de-navegação)
+- [3. Funcionalidades Core](#3-funcionalidades-core)
+- [4. Roadmap: Funcionalidades Adicionais](#4-roadmap-funcionalidades-adicionais-futuro)
+
+</details>
+
+<details>
+<summary><a href="#8-business-model-canvas-do-mvp">8. Business Model Canvas do MVP</a></summary>
+
+- [Business Model Canvas do MVP](#8-business-model-canvas-do-mvp)
+
+</details>
+
+<details>
+<summary><a href="#9-requisitos-funcionais">9. Requisitos Funcionais</a></summary>
+
+- [9.1 Elicitação e Análise de Requisitos](#91--elicitação-e-análise-de-requisitos)
+- [9.2 Especificação e Validação de Requisitos Funcionais](#92-especificação-e-validação-de-requisitos-funcionais)
+- [RF01 — Onboarding de Interesses](#rf01--onboarding-de-interesses)
+- [RF02 — Recomendação por Geolocalização](#rf02--recomendação-por-geolocalização)
+- [RF03 — Autenticação e Persistência](#rf03--autenticação-e-persistência)
+- [RF04 — Catálogo Categorizado](#rf04--catálogo-categorizado)
+- [RF05 — Busca Específica](#rf05--busca-específica)
+- [RF06 — Gestão de Wishlist](#rf06--gestão-de-wishlist)
+- [RF07 — Informações de Teatros](#rf07--informações-de-teatros)
+- [RF08 — Gestão de Perfil e Preferências](#rf08--gestão-de-perfil-e-preferências)
+- [RF09 — Redirecionamento de Compra](#rf09--redirecionamento-de-compra)
+- [RF10 — Recomendação Inteligente](#rf10--recomendação-inteligente)
+
+</details>
+
+<details>
+<summary><a href="#10-requisitos-não-funcionais">10. Requisitos Não Funcionais</a></summary>
+
+- [RNF01 — Tempo de resposta das recomendações](#rnf01--tempo-de-resposta-das-recomendações)
+- [RNF02 — Segurança das credenciais de usuário](#rnf02--segurança-das-credenciais-de-usuário)
+- [RNF03 — Conformidade com a LGPD](#rnf03--conformidade-com-a-lgpd)
+- [RNF04 — Usabilidade da interface em dispositivos móveis](#rnf04--usabilidade-da-interface-em-dispositivos-móveis)
+- [RNF05 — Disponibilidade da plataforma](#rnf05--disponibilidade-da-plataforma)
+- [RNF06 — Escalabilidade do sistema de recomendação](#rnf06--escalabilidade-do-sistema-de-recomendação)
+- [RNF07 — Precisão da geolocalização](#rnf07--precisão-da-geolocalização)
+
+</details>
+
+<details>
+<summary><a href="#11-correlação-entre-rfs-e-rnfs">11. Correlação entre RFs e RNFs</a></summary>
+
+- [Correlação entre RFs e RNFs](#11-correlação-entre-rfs-e-rnfs)
+
+</details>
+
+<details>
+<summary><a href="#12-diagramação-do-banco">12. Diagramação do banco</a></summary>
+
+- [12.1 Diagrama Lógico](#121---diagrama-lógico)
+- [12.2 Entidades e Relacionamentos](#122---entidades-e-relacionamentos)
+- [12.3 Justificativa e Regras de Negócio](#123---justificativa-e-regras-de-negócio)
+- [12.4 Diagrama Conceitual](#124-diagrama-conceitual)
+- [12.4.1 Dicionário de Dados e Mapeamento](#1241-dicionário-de-dados-e-mapeamento)
+- [12.4.2 Definição de Chaves e Integridade Referencial](#1242-definição-de-chaves-e-integridade-referencial)
+- [12.4.3 Regras de Normalização Aplicadas](#1243-regras-de-normalização-aplicadas)
+- [12.4.4 Justificativa e Rastreabilidade](#1244-justificativa-e-rastreabilidade)
+
+</details>
+
+<details>
+<summary><a href="#13-diagrama-de-classes">13. Diagrama de Classes</a></summary>
+
+- [Teatro](#teatro)
+- [Espetaculo](#espetaculo)
+- [Usuario](#usuario)
+- [Wishlist](#wishlist)
+- [Preferencias](#preferencias-value-object)
+- [Interacao](#interacao)
+- [Recomendacao](#recomendacao)
+- [SistemaRecomendacao](#sistemarecomendacao)
+- [TipoInteracao](#tipointeracao-enumeration)
+- [Relacionamentos](#relacionamentos)
+- [Observações e Decisões de Design](#observações-e-decisões-de-design)
+
+</details>
+
+<details>
+<summary><a href="#14-diagrama-de-componentes">14. Diagrama de Componentes</a></summary>
+
+- [Packages](#packages)
+- [Componentes](#componentes)
+- [Interfaces](#interfaces)
+- [Responsabilidades do Storage Bucket](#responsabilidades-do-storage-bucket)
+- [Responsabilidades do PostgreSQL](#responsabilidades-do-postgresql)
+- [Decisões](#decisões)
+
+</details>
+
+<details>
+<summary><a href="#15-diagrama-de-casos-de-uso">15. Diagrama de Casos de uso</a></summary>
+
+- [Atores](#atores)
+- [Casos de Uso](#casos-de-uso)
+- [Relacionamentos do Diagrama](#relacionamentos-do-diagrama)
+- [Associação entre Requisitos Funcionais e Casos de Uso](#associação-entre-requisitos-funcionais-e-casos-de-uso)
+
+</details>
+
+<details>
+<summary><a href="#16-linguagens-e-tecnologias-utilizadas">16. Linguagens e Tecnologias Utilizadas</a></summary>
+
+- [Linguagens e Tecnologias Utilizadas](#16-linguagens-e-tecnologias-utilizadas)
+
+</details>
+
+<details>
+<summary><a href="#17-planejamento-de-testes">17. Planejamento de Testes</a></summary>
+
+- [17.1 Objetivo do planejamento de testes](#171-objetivo-do-planejamento-de-testes)
+- [17.2 Estratégia geral de testes](#172-estratégia-geral-de-testes)
+- [17.3 Testes de funcionalidade](#173-testes-de-funcionalidade)
+- [17.4 Testes de requisitos não funcionais](#174-testes-de-requisitos-não-funcionais)
+- [17.5 Testes de usabilidade](#175-testes-de-usabilidade)
+- [17.6 Testes de APIs externas](#176-testes-de-apis-externas)
+- [17.7 Testes de integração](#177-testes-de-integração)
+- [17.8 Discussão geral de abrangência dos testes](#178-discussão-geral-de-abrangência-dos-testes)
+</details>
+
+<details>
+<summary><a href="#18-desenvolvimento-do-projeto--sprint-3">18. Desenvolvimento Do Projeto — Sprint 3</a></summary>
+
+- [18.1 Objetivo do artefato](#181-objetivo-do-artefato)
+- [18.2 Arquitetura de codificação e estrutura de diretórios](#182-arquitetura-de-codificação-e-estrutura-de-diretórios)
+- [18.3 Desenvolvimento do Backend](#183-desenvolvimento-do-backend)
+  - [18.3.1 Arquitetura do backend](#1831-arquitetura-do-backend)
+- [18.4 Desenvolvimento do Frontend](#184-desenvolvimento-do-frontend)
+  - [18.4.1 Arquitetura do frontend](#1841-arquitetura-do-frontend)
+  - [18.4.2 Telas implementadas](#1842-telas-implementadas)
+  - [18.4.3 Vídeo demonstrativo do frontend](#1843-vídeo-demonstrativo-do-frontend)
+- [18.5 Padrões de codificação e padrões de projeto](#185-padrões-de-codificação-e-padrões-de-projeto)
+  - [Padrões de codificação](#padrões-de-codificação)
+  - [Padrões de projeto](#padrões-de-projeto)
+- [18.6 Testes unitários e metodologia TDD](#186-testes-unitários-e-metodologia-tdd)
+  - [Estratégia de testes](#estratégia-de-testes)
+  - [Testes implementados](#testes-implementados)
+  - [Execução dos testes](#execução-dos-testes)
+  - [Resultado da cobertura](#resultado-da-cobertura)
+  - [Link do vídeo demonstrativo](#link-do-vídeo-demonstrativo)
+
+</details>
+
+<details>
+<summary><a href="#19-termos-e-abreviações">19. Termos e Abreviações</a></summary>
+
+- [Termos e Abreviações](#19-termos-e-abreviações)
+
+</details>
+
+- [Referências](#referências)
 
 ## 1. Problema
 
@@ -507,125 +707,159 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 
 ## 10. Requisitos Não Funcionais
-
-
 ### RNF01 — Tempo de resposta das recomendações
 
-**Característica ISO 25010:** Eficiência de Desempenho
+**Característica ISO 25010:** Eficiência de Desempenho → **Comportamento Temporal**
 
-**User story:** Como usuário, quero que as recomendações personalizadas e os carrosséis da home carreguem em até 3 segundos, para que eu possa explorar o catálogo sem frustração e manter o interesse na navegação.
+**User story:** Como usuário, quero que as recomendações personalizadas e os carrosséis da home carreguem rapidamente, para que eu possa explorar o catálogo sem frustração e manter o interesse na navegação.
 
-**Testes de usuário:**
+**Critério de Aceitação:** sob carga nominal (até 200 usuários simultâneos), o tempo de renderização completa das prateleiras de recomendação tem **p95 ≤ 3 s** e **média ≤ 2 s**.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Usuário autenticado com perfil de onboarding preenchido e wishlist contendo ao menos 1 item e conexão estável de no mínimo 10 Mbps. |
-| Procedimento de teste | Acessar a Home do Portal e medir, o tempo entre o carregamento da página e a renderização completa das prateleiras de recomendação. Repetir 5 vezes em horários distintos. |
-| Resultado esperado | O tempo médio de carregamento das recomendações deve ser ≤ 3 segundos em pelo menos 4 das 5 execuções. |
-| Pós-condição | Carrosséis renderizados com itens personalizados e logs de performance armazenados para análise. |
+| Pré-condição | Usuário autenticado com onboarding preenchido, wishlist com ao menos 1 item e conexão estável de no mínimo 10 Mbps. |
+| Procedimento | Acessar a Home do Portal e medir, via ferramenta de performance (ex.: Lighthouse/DevTools, marca de `paint` das prateleiras), o tempo entre o início do carregamento e a renderização completa dos carrosséis. Coletar uma amostra de pelo menos 30 execuções em horários distintos. |
+| Resultado esperado | A amostra apresenta p95 ≤ 3 s e média ≤ 2 s; nenhuma execução isolada ultrapassa 5 s (p99). |
+| Pós-condição | Carrosséis renderizados com itens personalizados e logs de performance (timestamps por percentil) armazenados para análise. |
 
 ---
 
 ### RNF02 — Segurança das credenciais de usuário
 
-**Característica ISO 25010:** Segurança
+**Característica ISO 25010:** Segurança → **Confidencialidade** e **Integridade**
 
-**User story:** Como usuário cadastrado, quero que minha senha e dados pessoais (nome, idade, gênero, CEP) sejam armazenados e transmitidos de forma criptografada, para que minhas informações não sejam expostas em caso de tentativa de invasão ou interceptação.
+**User story:** Como usuário cadastrado, quero que minha senha e meus dados pessoais (nome, idade, gênero, CEP) sejam armazenados e transmitidos de forma criptografada, para que minhas informações não sejam expostas em caso de tentativa de invasão ou interceptação.
 
-**Testes de usuário:**
+**Critério de Aceitação:** 100% do tráfego de autenticação ocorre via HTTPS/TLS 1.2+; senhas são persistidas com função de hash forte e com *salt* (ex.: bcrypt/Argon2), de forma não reversível; nenhum dado sensível trafega ou é registrado em texto plano.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Usuário cadastrado com e-mail e senha válidos e banco de dados de teste populado. |
-| Procedimento de teste | Inspecionar o tráfego de rede no momento do login com ferramenta como DevTools, verificando uso de HTTPS/TLS. Consultar diretamente o banco de dados e verificar se a senha está armazenada com hash e não em texto plano. |
-| Resultado esperado | Todo tráfego ocorre via HTTPS, nenhuma senha é armazenada em texto plano no banco e o hash não é reversível. |
-| Pós-condição | Sessão autenticada com token seguro e nenhum dado sensível visível em logs ou no payload em texto plano. |
+| Procedimento | Inspecionar o tráfego de rede no momento do login (DevTools → aba Network), confirmando HTTPS/TLS. Consultar diretamente o banco e verificar o formato de armazenamento da senha. Tentar reverter o hash de uma senha conhecida. |
+| Resultado esperado | Todo o tráfego usa HTTPS; a senha aparece como hash com *salt*, não em texto plano; a tentativa de reversão do hash falha. |
+| Pós-condição | Sessão autenticada com token seguro; nenhum dado sensível visível em logs ou no *payload* em texto plano. |
 
 ---
 
-### RNF03 — Conformidade com a LGPD
+### RNF03 — Privacidade e direitos do titular (LGPD)
 
-**Característica ISO 25010:** Segurança / Conformidade
+**Característica ISO 25010:** Segurança → **Confidencialidade (foco em Privacidade de dados pessoais)** e **Responsabilização**
 
-**User story:** Como usuário, quero poder consultar, editar e excluir meus dados pessoais e preferências a qualquer momento, para que a plataforma respeite meus direitos garantidos pela LGPD e eu mantenha controle sobre minhas informações.
+**User story:** Como usuário, quero consultar, editar e excluir meus dados pessoais e preferências a qualquer momento, para que a plataforma respeite os direitos garantidos pela LGPD e eu mantenha controle sobre minhas informações.
 
-**Testes de usuário:**
+**Critério de Aceitação:** o usuário consegue visualizar, editar e solicitar a exclusão de todos os seus dados pessoais; após a exclusão, **0** registros pessoais permanecem associados ao identificador do usuário na base (dados removidos ou anonimizados de forma irreversível) em até **15 dias**; toda solicitação de exclusão fica registrada em log de auditoria.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Usuário autenticado com dados de perfil preenchidos no onboarding (idade, gênero, CEP, preferências). |
-| Procedimento de teste | Acessar a área de Perfil → tentar editar cada campo de dado pessoal e preferências. Em seguida, solicitar exclusão da conta e verificar se os dados são efetivamente removidos ou anonimizados na base. |
-| Resultado esperado | O usuário consegue visualizar, editar e excluir seus dados e após a exclusão, os registros pessoais não estão mais associados ao identificador do usuário na base. |
-| Pós-condição | Processo de exclusão/edição concluído com sucesso. |
+| Procedimento | Acessar Perfil → editar cada campo de dado pessoal e de preferência. Em seguida, solicitar a exclusão da conta e consultar a base verificando se os dados foram removidos/anonimizados. Conferir o log de auditoria da solicitação. |
+| Resultado esperado | A edição e a exclusão são concluídas; consulta à base não retorna registros pessoais vinculados ao ID do usuário; o evento de exclusão consta no log de auditoria. |
+| Pós-condição | Processo de exclusão/edição concluído; trilha de auditoria preservada (sem reidentificar o titular). |
 
 ---
 
-### RNF04 — Usabilidade da interface em dispositivos móveis
+### RNF04 — Usabilidade e responsividade em dispositivos móveis
 
-**Característica ISO 25010:** Usabilidade
+**Característica ISO 25010:** Usabilidade → **Operabilidade**, **Apreensibilidade** e **Acessibilidade**
 
-**User story:** Como espectador que acessa o portal pelo celular, quero que toda a navegação (home, busca, wishlist, perfil e fluxo de onboarding) seja totalmente responsiva e intuitiva em telas a partir de 480px, para que eu possa descobrir espetáculos e gerenciar minhas preferências em qualquer dispositivo.
+**User story:** Como espectador que acessa o portal pelo celular, quero que toda a navegação (home, busca, wishlist, perfil e onboarding) seja responsiva e intuitiva em telas a partir de 480 px, para que eu possa descobrir espetáculos e gerenciar minhas preferências em qualquer dispositivo.
 
-**Testes de usuário:**
+**Critério de Aceitação:** taxa de conclusão das tarefas ≥ 90% sem ajuda externa; pontuação **SUS ≥ 70**; nenhum elemento cortado ou inacessível nas larguras de 480 px a 1920 px.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Aplicação publicada em ambiente de homologação, dispositivos disponíveis com larguras de 480px e 720px. |
-| Procedimento de teste | Realizar teste de usabilidade com 5 usuários, solicitando: completar o onboarding, buscar um espetáculo, adicionar à wishlist, acessar perfil e seguir para a bilheteria. Medir taxa de conclusão e SUS (System Usability Scale). |
-| Resultado esperado | Taxa de conclusão ≥ 90% das tarefas sem ajuda externa; pontuação SUS ≥ 70; nenhum elemento cortado ou inacessível nas resoluções testadas. |
-| Pós-condição | Relatório de usabilidade documentado; eventuais ajustes de UI registrados como backlog. |
+| Pré-condição | Aplicação publicada em homologação; dispositivos/emuladores disponíveis nas larguras de 480 px e 720 px. |
+| Procedimento | Teste com 5 usuários executando: completar o onboarding, buscar um espetáculo, adicionar à wishlist, acessar o perfil e seguir para a bilheteria. Medir taxa de conclusão por tarefa e aplicar o questionário SUS ao final. |
+| Resultado esperado | Taxa de conclusão ≥ 90%; SUS ≥ 70; nenhum elemento cortado nas resoluções testadas. |
+| Pós-condição | Relatório de usabilidade documentado; ajustes de UI registrados no backlog. |
 
 ---
 
 ### RNF05 — Disponibilidade da plataforma
 
-**Característica ISO 25010:** Confiabilidade
+**Característica ISO 25010:** Confiabilidade → **Disponibilidade**
 
-**User story:** Como usuário do Portal Aventura, quero que a plataforma esteja disponível 99% do tempo no horário comercial e em horários de pico, para que eu possa consultar a programação e ser direcionado à bilheteria sem indisponibilidades.
+**User story:** Como usuário do Portal Aventura, quero que a plataforma esteja disponível na maior parte do tempo, inclusive em horários de pico, para que eu possa consultar a programação e ser direcionado à bilheteria sem indisponibilidades.
 
-**Testes de usuário:**
+**Critério de Aceitação:** disponibilidade mensal ≥ **99%** (equivalente a no máximo ~7 h 18 min de indisponibilidade por mês), medida em janela contínua de 30 dias.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Plataforma publicada em ambiente de produção com monitoramento ativo. |
-| Procedimento de teste | Monitorar a disponibilidade do portal por um período contínuo de 10 dias, registrando todas as interrupções e suas durações. |
-| Resultado esperado | Disponibilidade mensal ≥ 99%. |
-| Pós-condição | Relatório de uptime gerado e incidentes registrados com causa raiz. |
+| Pré-condição | Plataforma publicada em produção com monitoramento ativo (ex.: ferramenta de *uptime* com checagem a cada 1 min). |
+| Procedimento | Monitorar a disponibilidade do portal por um período contínuo de 30 dias, registrando cada interrupção e sua duração. |
+| Resultado esperado | Uptime do período ≥ 99%. |
+| Pós-condição | Relatório de uptime gerado; incidentes registrados com causa-raiz. |
 
 ---
 
-### RNF06 — Escalabilidade do sistema de recomendação
+### RNF06 — Capacidade sob carga em pico de campanha
 
-**Característica ISO 25010:** Escalabilidade
+**Característica ISO 25010:** Eficiência de Desempenho → **Capacidade**
 
-**User story:** Como gestor da Aventura, quero que a plataforma suporte ao menos 1.000 usuários simultâneos sem degradação perceptível das recomendações, para que campanhas de lançamento de espetáculos não comprometam a experiência dos espectadores.
+**Premissa do volume-alvo:** o número de 1.000 usuários simultâneos representa uma estimativa de pico durante lançamentos de espetáculo/campanhas de marketing da Aventura. Esse valor deve ser recalibrado quando o parceiro disponibilizar os dados reais de tráfego do Portal.
 
-**Testes de usuário:**
+**User story:** Como gestor da Aventura, quero que a plataforma suporte ao menos 1.000 usuários simultâneos sem degradação perceptível das recomendações, para que campanhas de lançamento não comprometam a experiência dos espectadores.
+
+**Critério de Aceitação:** com 1.000 usuários concorrentes por 15 min, o tempo de resposta tem **p95 ≤ 3 s** e **p99 ≤ 5 s**, taxa de erro **< 1%** e nenhuma queda de serviço.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Ambiente de homologação configurado com infraestrutura equivalente à produção. |
-| Procedimento de teste | Executar teste de carga simulando 1.000 usuários concorrentes navegando pela home, acessando carrosséis de recomendação e adicionando itens à wishlist por 15 minutos. |
-| Resultado esperado | Tempo médio de resposta ≤ 3s, taxa de erro < 1% e nenhuma queda do serviço durante o teste. |
-| Pós-condição | Métricas de CPU, memória e latência registradas e eventuais gargalos documentados. |
+| Pré-condição | Ambiente de homologação com infraestrutura equivalente à de produção. |
+| Procedimento | Executar teste de carga (ex.: k6 ou Locust) simulando 1.000 usuários concorrentes navegando pela home, acessando carrosséis e adicionando itens à wishlist, por 15 min. |
+| Resultado esperado | p95 ≤ 3 s, p99 ≤ 5 s, taxa de erro < 1% e nenhuma indisponibilidade durante o teste. |
+| Pós-condição | Métricas de CPU, memória e latência registradas; gargalos documentados. |
 
 ---
 
 ### RNF07 — Precisão da geolocalização
 
-**Característica ISO 25010:** Adequação Funcional
+**Característica ISO 25010:** Adequação Funcional → **Correção Funcional**
 
-**User story:** Como usuário localizado no Rio de Janeiro ou em São Paulo, quero que o sistema identifique corretamente minha cidade a partir do CEP ou da geolocalização do dispositivo, para que as recomendações priorizem espetáculos da minha região com precisão.
+**User story:** Como usuário localizado no Rio de Janeiro ou em São Paulo, quero que o sistema identifique corretamente minha cidade a partir do CEP ou da geolocalização do dispositivo, para que as recomendações priorizem espetáculos da minha região.
 
-**Testes de usuário:**
+**Critério de Aceitação:** a cidade correta é identificada em **≥ 95%** dos casos; quando identificada, os espetáculos da região correspondente aparecem entre as primeiras posições da seção regional.
+
+**Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | Usuários de teste cadastrados com CEPs reais de SP e RJ, permissão de geolocalização concedida em parte dos casos. |
-| Procedimento de teste | Acessar a home com 10 perfis distintos (5 SP e 5 RJ), verificar se as recomendações da seção regional priorizam espetáculos da cidade correta. Repetir o teste com geolocalização do navegador ativada. |
-| Resultado esperado | A cidade correta é identificada em ≥ 95% dos casos e os espetáculos da região correspondente aparecem nas primeiras posições. |
-| Pós-condição | Logs de geolocalização registrados (sem armazenar coordenadas precisas, apenas cidade), respeitando a LGPD. |
+| Pré-condição | Usuários de teste cadastrados com CEPs reais de SP e RJ; permissão de geolocalização concedida em parte dos casos. |
+| Procedimento | Acessar a home com 10 perfis distintos (5 SP, 5 RJ) e verificar a seção regional. Repetir com a geolocalização do navegador ativada. |
+| Resultado esperado | Cidade correta em ≥ 95% dos casos; espetáculos da região correta nas primeiras posições. |
+| Pós-condição | Logs de geolocalização registrados apenas no nível de cidade (sem coordenadas precisas), respeitando a LGPD. |
 
+---
+
+### RNF08 — Modularidade do serviço de recomendação
+
+**Característica ISO 25010:** Manutenibilidade → **Modularidade**, **Modificabilidade** e **Testabilidade**
+
+**User story:** Como desenvolvedor do projeto, quero que o serviço de recomendação seja modular e independente dos demais serviços, para que mudanças no algoritmo não exijam alterações em outros módulos nem causem regressões.
+
+**Critério de Aceitação:** alterar ou reimplantar o serviço de recomendação **não** requer alteração no serviço de gestão de conteúdo (baixo acoplamento); a cobertura de testes automatizados é **≥ 70%** nos módulos críticos do serviço; um *deploy* do serviço de recomendação não derruba os demais serviços.
+
+**Teste de usuário:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | Repositório com serviços separados, *pipeline* de CI configurado e suíte de testes automatizados. |
+| Procedimento | Modificar o algoritmo de recomendação (ex.: trocar KNN por SVD), rodar a suíte de testes, medir a cobertura e reimplantar apenas esse serviço. Verificar o estado dos demais serviços durante e após o *deploy*. |
+| Resultado esperado | Nenhuma alteração necessária fora do serviço de recomendação; cobertura ≥ 70% nos módulos críticos; demais serviços permanecem disponíveis durante o *deploy*. |
+| Pós-condição | Relatório de cobertura (CI) e log de *deploy* registrados. |
+
+---
 
 
 ## 11. Correlação entre RFs e RNFs
@@ -634,14 +868,14 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 | RNF | RF relacionados | Justificativa |
 |---|---|---|
-| RNF01 | RF01, RF02, RF04, RF06 | O tempo de resposta impacta diretamente as funcionalidades de descoberta e personalização: o questionário de onboarding (RF01), as sugestões por geolocalização (RF02), a navegação pelo catálogo de espetáculos (RF04) e a interação com a Wishlist (RF06) dependem de carregamento ágil para que o usuário não abandone o fluxo antes de receber as recomendações. |
+| RNF01 | RF01, RF02, RF04, RF05, RF06, RF10 | O tempo de resposta impacta diretamente as funcionalidades de descoberta e personalização: o onboarding (RF01), as sugestões por geolocalização (RF02), a navegação pelo catálogo (RF04), a busca específica (RF05), a interação com a Wishlist (RF06) e, sobretudo, o feed de recomendação inteligente (RF10) dependem de carregamento ágil para que o usuário não abandone o fluxo antes de receber as sugestões. |
 | RNF02 | RF03, RF08 | A proteção criptográfica de credenciais e dados pessoais sustenta diretamente o cadastro/login (RF03), em que senhas trafegam e são armazenadas, e a gestão de perfil e preferências (RF08), que manipula dados sensíveis como idade, gênero e CEP coletados no onboarding. |
-| RNF03 | RF03, RF08 | A conformidade com a LGPD é o que dá validade legal ao cadastro do usuário (RF03) e operacionaliza o direito de visualizar, editar e excluir dados pessoais e preferências previsto na gestão de perfil (RF08), garantindo transparência e controle sobre as informações coletadas. |
-| RNF04 | RF01, RF04, RF09 | A responsividade mobile é crítica nos pontos de maior fricção da jornada: o onboarding (RF01), em que o usuário responde ao questionário inicial pelo celular; a exploração do catálogo (RF04); e o redirecionamento para a bilheteria externa (RF09), em que qualquer falha de layout pode interromper a conversão em venda. |
-| RNF05 | RF02, RF04, RF07, RF09 | A disponibilidade da plataforma sustenta toda a jornada de descoberta e conversão: recomendações regionais (RF02), exploração do catálogo (RF04), consulta de informações dos teatros (RF07) e direcionamento à bilheteria (RF09) precisam estar ativos especialmente em horários de pico, como vésperas de estreia. |
-| RNF06 | RF01, RF02, RF04, RF06 | A escalabilidade garante que o motor de recomendação mantenha o desempenho mesmo com muitos usuários simultâneos realizando onboarding (RF01), recebendo sugestões por geolocalização (RF02), navegando pelo catálogo (RF04) e atualizando a Wishlist (RF06) — funcionalidades que dependem de processamento personalizado por usuário. |
+| RNF03 | RF03, RF08 | A privacidade e o controle do titular sobre seus dados (LGPD) operacionalizam o direito de visualizar, editar e excluir dados pessoais e preferências previsto na gestão de perfil (RF08) e dão validade ao tratamento dos dados coletados no cadastro (RF03), garantindo transparência e rastreabilidade das solicitações. |
+| RNF04 | RF01, RF04, RF05, RF06, RF08, RF09 | A responsividade mobile é crítica em toda a jornada citada na própria user story: o onboarding pelo celular (RF01), a exploração do catálogo (RF04), a busca (RF05), a gestão da Wishlist (RF06), a edição de perfil (RF08) e o redirecionamento à bilheteria externa (RF09), em que qualquer quebra de layout pode interromper a conversão em venda. |
+| RNF05 | RF02, RF04, RF05, RF07, RF09, RF10 | A disponibilidade da plataforma sustenta toda a jornada de descoberta e conversão: recomendações regionais (RF02), exploração do catálogo (RF04), busca (RF05), consulta de informações dos teatros (RF07), feed de recomendação personalizada (RF10) e direcionamento à bilheteria (RF09) precisam estar ativos especialmente em horários de pico, como vésperas de estreia. |
+| RNF06 | RF01, RF02, RF04, RF06, RF09, RF10 | A capacidade sob carga garante que o motor de recomendação mantenha o desempenho com muitos usuários simultâneos realizando onboarding (RF01), recebendo sugestões por geolocalização (RF02) e personalizadas (RF10), navegando pelo catálogo (RF04) e atualizando a Wishlist (RF06). Inclui o redirecionamento à bilheteria (RF09), caminho crítico de conversão que tende a concentrar acessos justamente nos picos de campanha. |
 | RNF07 | RF02, RF04 | A precisão da geolocalização é pré-requisito direto da filtragem regional (RF02), que prioriza eventos da cidade do usuário (RJ ou SP), e influencia a organização do catálogo (RF04), em que prateleiras regionais aparecem como destaque na home. |
-
+| RNF08 | RF01, RF02, RF08, RF10 | A modularidade do serviço de recomendação permite evoluir o algoritmo sem afetar os demais módulos. Atinge as funcionalidades alimentadas pelo motor: onboarding (RF01), recomendação por geolocalização (RF02), recomendação inteligente (RF10) e a atualização do vetor de interesses feita na gestão de perfil (RF08). |
 ---
 
 ## 12. Diagramação do banco
@@ -1262,7 +1496,1536 @@ O frontend seguirá o padrão MVVM (Model-View-ViewModel), separando a interface
 
 O ViaCEP é uma API pública e gratuita que retorna dados de endereço a partir de um CEP informado. No projeto, ela será usada durante o onboarding do usuário para identificar automaticamente a cidade a partir do CEP cadastrado, sem que o usuário precise informar isso manualmente. Essa informação é essencial para o sistema de recomendação, que filtra os espetáculos de acordo com a cidade do usuário, sendo São Paulo ou Rio de Janeiro.
 
-## 17. Termos e Abreviações
+---
+
+## 17. Planejamento de Testes
+
+Esta seção apresenta a estrutura de planejamento de testes do sistema de recomendação da Aventura. O objetivo é organizar a validação sistemática da solução, cobrindo testes funcionais, testes de requisitos não funcionais, testes de usabilidade, testes de APIs externas e testes de integração.
+
+O planejamento foi estruturado para garantir que os principais fluxos do sistema sejam avaliados antes da entrega final, considerando tanto o comportamento esperado da aplicação quanto possíveis falhas, limitações técnicas e cenários negativos.
+
+A validação do sistema deve considerar o contexto do produto: um aplicativo mobile com onboarding, catálogo de espetáculos, recomendações personalizadas, wishlist, perfil, notificações, integração com APIs externas e redirecionamento para ticketeiras parceiras.
+
+---
+
+### 17.1 Objetivo do planejamento de testes
+
+O objetivo do planejamento de testes é definir como o sistema será validado ao longo da Sprint 3, garantindo que os requisitos funcionais, requisitos não funcionais, integrações e fluxos de uso sejam verificados de forma organizada.
+
+Os testes devem permitir identificar falhas de comportamento, problemas de usabilidade, inconsistências de integração, erros de comunicação com APIs externas e possíveis limitações de desempenho, segurança ou disponibilidade.
+
+Este planejamento também busca garantir que cada cenário de teste possua:
+
+- propósito;
+- pré-condições;
+- instruções de execução;
+- cenário positivo;
+- cenário negativo;
+- pós-condições;
+- critérios de validação;
+- discussão de abrangência.
+
+---
+
+### 17.2 Estratégia geral de testes
+
+A estratégia de testes do projeto está organizada em cinco frentes principais:
+
+1. **Testes de funcionalidade:** validam se os requisitos funcionais do sistema estão sendo cumpridos corretamente.
+2. **Testes de requisitos não funcionais:** avaliam atributos de qualidade, como desempenho, segurança, disponibilidade, usabilidade e manutenibilidade.
+3. **Testes de usabilidade:** verificam se usuários externos conseguem compreender e executar os principais fluxos da aplicação.
+4. **Testes de APIs externas:** validam o comportamento esperado das integrações com serviços externos, como ViaCEP e ticketeiras.
+5. **Testes de integração:** verificam a comunicação entre frontend, backend, banco de dados, motor de recomendação e sistemas externos.
+
+Os testes deverão contemplar cenários positivos e negativos, garantindo que o sistema seja avaliado tanto em fluxos esperados quanto em situações de erro.
+
+---
+
+### 17.3 Testes de funcionalidade
+
+Esta seção evolui os testes de usuário definidos junto a cada Requisito Funcional (RFs da seção 9.2) para casos de teste funcionais completos, com propósito explícito, pré-condições, cenários positivos e negativos, instruções de execução, pós-condições e critério objetivo de sucesso. Dessa forma O plano de testes funcionais cobre **100% dos 10 RFs definidos na seção 9.2**.
+
+A premissa adotada foi garantir cobertura mínima de **um caso de teste principal por RF** (TF-01 a TF-10), priorizando os fluxos da jornada crítica do usuário: descoberta → personalização → wishlist → conversão. Os cenários negativos foram desenhados para validar tratamento de erro, validações de entrada, indisponibilidade de serviços externos e estados-limite da aplicação.
+
+**Casos de teste:** [TF-01](#tf-01) · [TF-02](#tf-02) · [TF-03](#tf-03) · [TF-04](#tf-04) · [TF-05](#tf-05) · [TF-06](#tf-06) · [TF-07](#tf-07) · [TF-08](#tf-08) · [TF-09](#tf-09) · [TF-10](#tf-10)
+
+#### TF-01
+
+**Requisito relacionado:** RF01
+
+**Funcionalidade testada:** Onboarding de interesses não-bloqueante (gênero, cidade, frequência) com possibilidade de pular perguntas
+
+**Propósito:** Verificar que (i) as preferências respondidas são persistidas e direcionam a personalização das seções da tela Explorar e (ii) perguntas puladas resultam em placeholders/CTAs nas seções dependentes ("Escolhidos para você" e "Perto de você") sem bloquear a navegação.
+
+**Pré-condições:** Conta recém-criada sem preferências salvas; usuário autenticado na tela de Onboarding; base com espetáculos cadastrados em SP e RJ e em múltiplos gêneros.
+
+**Cenário positivo:** Usuário responde gênero "Musical" e cidade "São Paulo", conclui o onboarding e chega à tela Explorar com as seções "Escolhidos para você" e "Perto de você" populadas com conteúdo aderente às respostas (musicais em SP).
+
+**Cenários negativos:**
+
+- **(a)** Usuário pula todas as perguntas — sistema permite avançar e a tela Explorar exibe placeholders/CTAs nas seções "Escolhidos para você" e "Perto de você" convidando o usuário a definir as preferências, sem bloquear a navegação.
+- **(b)** Usuário responde parcialmente (ex.: informa apenas a cidade) — sistema persiste o que foi respondido; "Perto de você" carrega normalmente, mas "Escolhidos para você" exibe o CTA para definir gênero.
+
+**Instruções de execução:**
+
+1. Criar conta nova de teste.
+2. Acessar a tela de Onboarding e responder gênero "Musical" e cidade "São Paulo".
+3. Concluir o onboarding e conferir as seções "Escolhidos para você" e "Perto de você" na tela Explorar.
+4. Repetir o fluxo com uma nova conta pulando todas as perguntas e conferir os placeholders/CTAs (cenário negativo a).
+5. Repetir com resposta parcial (apenas cidade) e conferir o estado das duas seções (cenário negativo b).
+
+**Pós-condições:** Preferências respondidas (totais ou parciais) gravadas em `Usuario.preferencias` no banco; usuário marcado como "onboarding concluído" independentemente das respostas; nenhuma resposta é exigida para liberar o acesso à Explorar.
+
+**Critério de sucesso:** Preferências respondidas são persistidas corretamente no banco em 100% dos casos; as seções "Escolhidos para você" e "Perto de você" refletem corretamente o estado das preferências (conteúdo populado quando há resposta, placeholder/CTA quando não há); a navegação nunca é bloqueada por ausência de respostas.
+
+---
+
+#### TF-02
+
+**Requisito relacionado:** RF02
+
+**Funcionalidade testada:** Curadoria automática do carrossel "Perto de você" na tela Explorar conforme a cidade definida pelo usuário no onboarding ou no perfil (cidades suportadas: Rio de Janeiro e São Paulo)
+
+**Propósito:** Verificar que (i) o carrossel "Perto de você" expõe exclusivamente espetáculos cujo teatro está localizado na cidade definida pelo usuário, (ii) alterações posteriores na cidade via Perfil refletem corretamente na próxima carga da tela Explorar e (iii) quando a cidade não é definida, o carrossel exibe o empty state correto convidando o usuário a informá-la.
+
+**Pré-condições:** Usuário logado; base populada com espetáculos ativos em SP e RJ vinculados a teatros com a cidade preenchida corretamente.
+
+**Cenário positivo:** Usuário com cidade = SP definida (no onboarding ou no Perfil) acessa a tela Explorar e o carrossel "Perto de você" expõe exclusivamente cards de espetáculos cujo teatro está localizado em São Paulo.
+
+**Cenários negativos:**
+
+- **(a)** Usuário acessa o Perfil, altera a cidade de SP para RJ, salva e retorna à Explorar — o carrossel "Perto de você" recarrega exibindo apenas espetáculos do RJ, sem nenhum card de SP remanescente.
+- **(b)** Usuário acessa a Explorar sem cidade definida (pulou a pergunta no onboarding e nunca preencheu no Perfil) — o carrossel "Perto de você" exibe o empty state com o título "Adicione sua localidade", o texto "Compartilhar conosco sua cidade nos ajuda a encontrar espetáculos perto de você." e o botão "Adicionar cidade" que direciona para a tela de Perfil.
+
+**Instruções de execução:**
+
+1. Logar com usuário que possui cidade = SP definida (via onboarding ou Perfil).
+2. Acessar a tela Explorar e conferir, no carrossel "Perto de você", a cidade do teatro em cada card exibido.
+3. Acessar Perfil, alterar a cidade para RJ, salvar e retornar à Explorar.
+4. Conferir novamente o carrossel "Perto de você" e validar que todos os cards são de teatros do RJ (cenário negativo a).
+5. Logar com uma conta sem cidade definida (criada pulando a pergunta no onboarding) e acessar a Explorar para conferir o empty state do carrossel "Perto de você", incluindo título, texto e botão (cenário negativo b).
+6. Clicar em "Adicionar cidade" e validar que o app direciona o usuário para a tela de Perfil.
+
+**Pós-condições:** Cidade do perfil atualizada no banco em caso de alteração; nenhum dado de espetáculo é modificado pela navegação.
+
+**Critério de sucesso:** Em todos os carregamentos com cidade definida, 100% dos cards exibidos no carrossel "Perto de você" possuem teatro com cidade igual à cidade do usuário; alterações de cidade via Perfil refletem corretamente na próxima visita à Explorar; quando não há cidade definida, o empty state é renderizado com o título, o texto e o botão exatos, e o botão direciona corretamente para o Perfil.
+
+---
+
+#### TF-03
+
+**Requisito relacionado:** RF03
+
+**Funcionalidade testada:** Autenticação do usuário (login via e-mail/senha ou via Auth0) e gestão da sessão persistente até o logout explícito pelo Perfil
+
+**Propósito:** Verificar que (i) o login com credenciais válidas — seja por e-mail/senha, seja via Auth0 — autentica o usuário e libera o acesso ao app, (ii) a sessão permanece ativa entre aberturas do app até que o usuário execute logout explícito pelo Perfil, (iii) o app exige login desde a abertura, sem permitir uso anônimo e (iv) tentativas de login com credenciais incorretas exibem feedback visual ao usuário e permitem nova tentativa.
+
+**Pré-condições:** Aplicativo instalado e iniciado; conta válida cadastrada na base, com pelo menos 2 itens previamente salvos na Wishlist para validação da persistência; conta com cidade e gênero já definidos para evitar interferência do Onboarding na execução do teste.
+
+**Cenário positivo:** Usuário insere e-mail e senha válidos na tela de Login, é autenticado e acessa a tela Explorar; ao abrir "Minha Wishlist", os itens previamente salvos estão presentes e íntegros.
+
+**Cenários negativos:**
+
+- **(a)** Usuário escolhe entrar via Auth0 em vez de e-mail/senha — o fluxo do provedor externo conclui com sucesso e o usuário acessa a Explorar normalmente.
+- **(b)** Usuário autenticado fecha o app completamente (encerrando a tarefa em background) e reabre — o app abre direto na Explorar, sem solicitar credenciais novamente, comprovando a persistência da sessão.
+- **(c)** Usuário autenticado acessa Perfil → Logout — o app retorna à tela de Login e nenhuma feature fica acessível até uma nova autenticação.
+- **(d)** Usuário insere e-mail e/ou senha incorretos e confirma — uma notificação com a mensagem "Credenciais de login inválidas" é exibida no topo da tela e os campos de e-mail e senha são reabertos para que o usuário tente novamente, sem bloqueio ou contador de tentativas.
+
+**Instruções de execução:**
+
+1. Abrir o app pela primeira vez no dispositivo (estado deslogado) e validar que a tela de Login é exibida antes de qualquer conteúdo, sem permitir acesso anônimo.
+2. Inserir e-mail e senha válidos e confirmar.
+3. Conferir o acesso à tela Explorar e validar, em "Minha Wishlist", que os itens previamente salvos estão presentes (cenário positivo).
+4. Em uma segunda conta de teste, repetir o passo 1 e optar por entrar via Auth0; concluir o fluxo do provedor externo e validar o acesso ao app (cenário negativo a).
+5. Com o app já autenticado, fechar a aplicação completamente (encerrar a tarefa em background) e reabrir; conferir que o app abre direto na Explorar (cenário negativo b).
+6. Acessar Perfil → Logout e validar o retorno à tela de Login; tentar interagir com qualquer feature do app para confirmar que o acesso está bloqueado (cenário negativo c).
+7. Na tela de Login, inserir e-mail e/ou senha incorretos e confirmar; validar a exibição da notificação "Credenciais de login inválidas" e a reabertura dos campos de e-mail e senha para nova tentativa (cenário negativo d).
+
+**Pós-condições:** Sessão ativa registrada para o usuário após login bem-sucedido; sessão encerrada após logout explícito pelo Perfil; itens da Wishlist mantidos íntegros no banco independentemente do estado da sessão.
+
+**Critério de sucesso:** Login com credenciais válidas via e-mail/senha e via Auth0 autentica o usuário em ambos os caminhos e libera o acesso à Explorar; a sessão persiste entre fechamentos e reaberturas do app; o logout pelo Perfil encerra a sessão e bloqueia o acesso a qualquer feature até nova autenticação; nenhum acesso ao app é permitido sem login prévio; tentativas com credenciais incorretas exibem a notificação "Credenciais de login inválidas" e permitem nova tentativa sem bloquear o usuário.
+
+---
+
+#### TF-04
+
+**Requisito relacionado:** RF04
+
+**Funcionalidade testada:** Catálogo categorizado por gênero distribuído nos carrosséis da aba Explorar ("Em alta", "Pra você", "Novidades" e "Perto de você") e no carrossel "Espetáculos semelhantes" da página de detalhes do espetáculo, com filtro por categoria aplicável na Explorar
+
+**Propósito:** Verificar que (i) ao aplicar um filtro por gênero na aba Explorar, os carrosséis dessa aba passam a exibir apenas espetáculos da categoria selecionada, (ii) ao remover o filtro, os carrosséis voltam ao estado original sem restrição por gênero e (iii) cada espetáculo do catálogo está obrigatoriamente associado a uma categoria válida (Musical, Drama, Balé infantil, Corporativo, Comédia ou Dança).
+
+**Pré-condições:** Usuário logado com cidade e preferências definidas; base com espetáculos cadastrados nas seis categorias suportadas (Musical, Drama, Balé infantil, Corporativo, Comédia e Dança); cada espetáculo possui categoria obrigatoriamente associada no banco.
+
+**Cenário positivo:** Usuário acessa a aba Explorar, aplica o filtro "Comédia" e os carrosséis "Em alta", "Pra você", "Novidades" e "Perto de você" passam a exibir apenas cards de espetáculos da categoria Comédia, mantendo a estrutura visual e o scroll horizontal de cada carrossel.
+
+**Cenários negativos:**
+
+- **(a)** Usuário remove o filtro "Comédia" — os quatro carrosséis voltam a exibir a curadoria completa, sem restrição por gênero, recuperando o estado original da Explorar.
+- **(b)** Usuário aplica o filtro em uma categoria menos representada (ex.: "Balé infantil") e algum carrossel não possui espetáculos correspondentes naquela combinação (ex.: nenhum balé infantil em "Perto de você" para a cidade do perfil) — o carrossel afetado é exibido vazio ou ocultado, sem quebrar a tela nem misturar resultados de outras categorias.
+
+**Instruções de execução:**
+
+1. Logar com usuário que possui cidade e preferências definidas.
+2. Acessar a aba Explorar e conferir o estado padrão dos quatro carrosséis (sem filtro aplicado).
+3. Aplicar o filtro "Comédia" e validar, em cada carrossel da Explorar, que todos os cards exibidos pertencem à categoria Comédia.
+4. Remover o filtro e conferir que os quatro carrosséis voltam ao estado anterior (cenário negativo a).
+5. Aplicar o filtro "Balé infantil" e percorrer os quatro carrosséis, registrando o comportamento de cada um (carrossel populado, vazio ou ocultado), sem que a tela apresente erro (cenário negativo b).
+6. Clicar em qualquer card exibido durante o teste para validar que o app navega corretamente para a página de detalhes do respectivo espetáculo.
+
+**Pós-condições:** Nenhuma alteração de dados do usuário; preferências, cidade do perfil e Wishlist permanecem intactas; o filtro aplicado é descartado ao sair da aba Explorar ou ao remover explicitamente.
+
+**Critério de sucesso:** Quando há filtro ativo, 100% dos cards exibidos nos carrosséis da Explorar pertencem à categoria selecionada; remover o filtro restaura o estado original; carrosséis sem espetáculos para a combinação filtro+regra são renderizados de forma consistente (vazios ou ocultados) sem quebrar a UI; cliques em cards encaminham para a página de detalhes correta.
+
+---
+
+#### TF-05
+
+**Requisito relacionado:** RF05
+
+**Funcionalidade testada:** Busca de espetáculos por título ou por nome de teatro na aba "Buscar", com confirmação explícita (não em tempo real, sem histórico) e exibição de empty state quando não há resultados
+
+**Propósito:** Verificar que (i) a busca por um título de espetáculo cadastrado retorna o espetáculo correspondente nos resultados, (ii) a busca por um nome de teatro cadastrado retorna todos os espetáculos em cartaz naquele teatro, (iii) a busca por um termo (título ou teatro) não cadastrado exibe o empty state "Nenhum espetáculo encontrado" e (iv) clicar em um resultado encaminha o usuário à página de detalhes do respectivo espetáculo.
+
+**Pré-condições:** Usuário logado e na aba "Buscar"; base com pelo menos 3 espetáculos cadastrados com títulos conhecidos (ex.: "A Noviça Rebelde", "Hamlet Revisitado", "O Mágico de Oz") e seus respectivos teatros (ex.: "Vibra São Paulo", "Teatro Sérgio Cardoso"); campo de busca disponível com o placeholder "Buscar espetáculos, teatros...".
+
+**Cenário positivo:**
+
+- **(i)** Usuário digita "A Noviça Rebelde" no campo de busca, confirma a busca (Enter) e a lista de resultados exibe o card do espetáculo "A Noviça Rebelde", contendo título, teatro, cidade e categoria.
+- **(ii)** Usuário digita "Vibra São Paulo" no campo de busca, confirma e a lista de resultados exibe todos os espetáculos em cartaz nesse teatro (incluindo "A Noviça Rebelde"), com os respectivos metadados.
+
+**Cenários negativos:**
+
+- **(a)** Usuário digita um termo inexistente (ex.: "Espetáculo XYZ123" ou "Teatro Inexistente") e confirma a busca — a tela exibe o empty state "Nenhum espetáculo encontrado", sem cards de resultado nem mistura com a seção "Recomendados para você".
+- **(b)** Usuário clica em um dos cards retornados pela busca — o app navega corretamente para a página de detalhes do respectivo espetáculo, com título, teatro, cidade e categoria coerentes com o card.
+
+**Instruções de execução:**
+
+1. Logar e acessar a aba "Buscar" pela bottom nav.
+2. Conferir o estado inicial da tela: campo de busca com placeholder "Buscar espetáculos, teatros...", ícone de filtro à direita e seção "Recomendados para você" abaixo.
+3. Digitar "A Noviça Rebelde" no campo de busca e confirmar (Enter); validar que o resultado exibe o card do espetáculo correspondente (cenário positivo i).
+4. Limpar o campo, digitar "Vibra São Paulo" e confirmar; validar que a lista exibe todos os espetáculos em cartaz nesse teatro, incluindo "A Noviça Rebelde" (cenário positivo ii).
+5. Limpar o campo, digitar "Espetáculo XYZ123" e confirmar; validar a exibição do empty state "Nenhum espetáculo encontrado" (cenário negativo a).
+6. Buscar novamente "A Noviça Rebelde", clicar no card resultante e validar que o app navega para a página de detalhes correspondente (cenário negativo b).
+
+**Pós-condições:** Nenhuma alteração de dados do usuário ou do catálogo; nenhuma persistência do termo buscado (não há histórico de buscas).
+
+**Critério de sucesso:** Busca por título de espetáculo cadastrado retorna o resultado correto com os metadados completos; busca por nome de teatro cadastrado retorna todos os espetáculos em cartaz nesse teatro; busca por termo inexistente exibe o empty state "Nenhum espetáculo encontrado"; cliques em cards encaminham corretamente para a página de detalhes do respectivo espetáculo.
+
+---
+
+#### TF-06
+
+**Requisito relacionado:** RF06
+
+**Funcionalidade testada:** Gestão da Wishlist: adição apenas a partir da página de detalhes do espetáculo (coração no canto superior direito), remoção pela página de detalhes ou pela aba Wishlist, com feedback visual por notificação a cada operação
+
+**Propósito:** Verificar que (i) adicionar um espetáculo via página de detalhes persiste o vínculo na Wishlist do usuário e dispara notificação de confirmação, (ii) remover um espetáculo pela própria página de detalhes ou pela aba Wishlist encerra o vínculo e dispara notificação de confirmação, (iii) quando a Wishlist está vazia, a aba exibe o empty state correto convidando o usuário a explorar espetáculos e (iv) a aba Wishlist permite apenas visualizar e remover, não dispondo de mecanismo para adicionar novos espetáculos.
+
+**Pré-condições:** Usuário logado com Wishlist inicialmente vazia; base com espetáculos cadastrados (ex.: "A Noviça Rebelde" em cartaz no "Vibra São Paulo"); permissões de notificação concedidas no dispositivo de teste.
+
+**Cenário positivo:** Usuário acessa a página de detalhes de "A Noviça Rebelde", clica no coraçãozinho no canto superior direito — o ícone passa ao estado preenchido (roxo), são exibidas as notificações in-app e push com a mensagem "item adicionado à wishlist" e, ao acessar a aba Wishlist, o espetáculo aparece listado com coraçãozinho preenchido, título, teatro, cidade e categoria.
+
+**Cenários negativos:**
+
+- **(a)** Usuário com Wishlist vazia acessa a aba Wishlist — visualiza o empty state com o título "Você ainda não salvou nenhum espetáculo", o texto "Explore e salve seus favoritos para acompanhá-los depois" e o botão "Explorar espetáculos" que direciona para a aba Explorar.
+- **(b)** Usuário remove o espetáculo clicando no coraçãozinho — seja na página de detalhes, seja na aba Wishlist — são exibidas as notificações com a mensagem "item removido da wishlist", o vínculo é encerrado e, se era o único item, a aba volta ao empty state.
+- **(c)** Usuário inspeciona a aba Wishlist e confirma que a única ação disponível por item é remover (clique no coraçãozinho), sem nenhum mecanismo para adicionar novos espetáculos a partir dessa tela; a adição exige navegar até a página de detalhes de um espetáculo.
+
+**Instruções de execução:**
+
+1. Logar com usuário que possui a Wishlist vazia e acessar a aba Wishlist; validar o empty state com título, texto e botão "Explorar espetáculos" (cenário negativo a).
+2. Clicar em "Explorar espetáculos" e confirmar a navegação para a aba Explorar.
+3. Abrir a página de detalhes de "A Noviça Rebelde" e clicar no coraçãozinho no canto superior direito; validar a mudança do ícone para o estado preenchido e a exibição das notificações "item adicionado à wishlist" (cenário positivo).
+4. Acessar a aba Wishlist e conferir que o espetáculo está listado com coraçãozinho preenchido e metadados completos (título, teatro, cidade, categoria).
+5. Clicar no coraçãozinho do item diretamente na aba Wishlist; validar as notificações "item removido da wishlist" e o retorno ao empty state (cenário negativo b — remoção via Wishlist).
+6. Repetir os passos 3 e 4 para readicionar o espetáculo; em seguida, voltar à página de detalhes e clicar no coraçãozinho; validar a remoção e as notificações (cenário negativo b — remoção via detalhes).
+7. Inspecionar a aba Wishlist e confirmar que não existe botão, atalho ou interação que permita adicionar novos espetáculos diretamente dessa tela (cenário negativo c).
+
+**Pós-condições:** Cada operação de adicionar ou remover persiste ou remove imediatamente o vínculo entre o usuário e o espetáculo no banco; nenhuma alteração nos dados do espetáculo, nas preferências do usuário ou na cidade do perfil.
+
+**Critério de sucesso:** Adicionar via página de detalhes persiste o espetáculo na Wishlist do usuário e dispara as notificações "item adicionado à wishlist"; remover (via página de detalhes ou via aba Wishlist) encerra o vínculo e dispara as notificações "item removido da wishlist"; quando vazia, a aba Wishlist exibe o empty state com título, texto e botão "Explorar espetáculos" funcional; a aba Wishlist não oferece, em nenhuma condição, mecanismo para adicionar novos espetáculos.
+
+---
+
+#### TF-07
+
+**Requisito relacionado:** RF07
+
+**Funcionalidade testada:** Seção "Conheça os Teatros: espaços culturais que fazem a diferença" na aba Explorar, posicionada logo após os 4 carrosséis do catálogo, exibindo cards de teatros com imagem, título e local, e um botão "Conhecer" que direciona para o site externo do respectivo teatro
+
+**Propósito:** Verificar que (i) a seção é renderizada corretamente na Explorar, abaixo dos 4 carrosséis, (ii) cada teatro cadastrado aparece como um card com imagem, título e local preenchidos, (iii) o botão "Conhecer" direciona o usuário para o site externo correto do respectivo teatro e (iv) a única interação possível no card é o botão "Conhecer" (não há página interna de detalhes do teatro dentro do app).
+
+**Pré-condições:** Usuário logado e na aba Explorar; base com pelo menos 2 teatros cadastrados, cada um com imagem, título, local e URL externa válida (ex.: "Vibra São Paulo" e "Teatro Sérgio Cardoso").
+
+**Cenário positivo:** Usuário acessa a aba Explorar, rola até a seção "Conheça os Teatros: espaços culturais que fazem a diferença" posicionada logo após os 4 carrosséis, e visualiza um card para cada teatro cadastrado, com imagem, título, local e botão "Conhecer" visíveis e preenchidos.
+
+**Cenários negativos:**
+
+- **(a)** Usuário clica no botão "Conhecer" de um teatro (ex.: "Vibra São Paulo") — o app abre o site externo cadastrado para esse teatro em uma nova janela ou navegador, mantendo o estado da Explorar para retorno posterior.
+- **(b)** Usuário tenta interagir com outras partes do card (imagem, título, local) — apenas o botão "Conhecer" é interativo; não existe página interna de detalhes do teatro acessível dentro do app.
+
+**Instruções de execução:**
+
+1. Logar e acessar a aba Explorar.
+2. Rolar a tela para baixo até passar os 4 carrosséis ("Em alta", "Pra você", "Novidades" e "Perto de você") e localizar a seção "Conheça os Teatros: espaços culturais que fazem a diferença".
+3. Conferir que cada teatro cadastrado aparece como um card com imagem, título, local e botão "Conhecer" (cenário positivo).
+4. Clicar no botão "Conhecer" do card de "Vibra São Paulo" e validar que o app abre o site externo cadastrado para esse teatro (cenário negativo a).
+5. Retornar à Explorar e tentar interagir com a imagem, o título e o local de outro card; validar que essas regiões não acionam navegação, e que o botão "Conhecer" é a única interação disponível (cenário negativo b).
+
+**Pós-condições:** Nenhuma alteração de dados do usuário ou do catálogo; nenhuma persistência do clique no botão "Conhecer".
+
+**Critério de sucesso:** A seção "Conheça os Teatros: espaços culturais que fazem a diferença" é exibida na Explorar, após os 4 carrosséis, com todos os teatros cadastrados representados por cards completos (imagem, título, local, botão "Conhecer"); o botão "Conhecer" abre o site externo correto do respectivo teatro; nenhuma outra parte do card aciona navegação dentro do app.
+
+---
+
+#### TF-08
+
+**Requisito relacionado:** RF08
+
+**Funcionalidade testada:** Gestão dos dados do usuário pela aba Perfil: edição de nome e e-mail via botão "Editar Perfil" e edição de interesses (categorias) e cidade via atalho "Preferências e cidade" → tela "Editar Interesses", com persistência mediante o botão "Salvar Alterações" e notificação push "Preferências atualizadas"
+
+**Propósito:** Verificar que (i) o usuário pode editar nome e e-mail a partir da aba Perfil, (ii) o usuário pode editar interesses e cidade na tela "Editar Interesses" e salvar com feedback visual via notificação push, (iii) as alterações são persistidas no banco e se refletem imediatamente nas seções da Explorar que dependem dessas preferências e (iv) o caminho de chegada à tela "Editar Interesses" inclui tanto o atalho "Preferências e cidade" no Perfil quanto o CTA "Adicionar cidade" do empty state do carrossel "Perto de você" (fechamento do fluxo iniciado em TF-01 e TF-02).
+
+**Pré-condições:** Usuário logado com preferências já definidas; base com espetáculos cadastrados em SP e RJ em múltiplas categorias (Musical, Drama, Ballet, Infantil, Corporativo, Circo, Comédia e Dança, conforme exibido na tela "Editar Interesses"); permissão de notificação concedida no dispositivo de teste.
+
+**Cenário positivo:** Usuário acessa a aba Perfil, abre "Preferências e cidade", ajusta os interesses (ex.: marca "Musical", "Drama" e "Dança") e seleciona a cidade ("Rio de Janeiro"), clica em "Salvar Alterações" — recebe a notificação push "Preferências atualizadas"; ao retornar à Explorar, os carrosséis dependentes (incluindo "Perto de você") refletem as novas preferências.
+
+**Cenários negativos:**
+
+- **(a)** Usuário clica no botão "Editar Perfil" no topo da aba Perfil e altera o nome e/ou o e-mail — não existe botão de salvar explícito; a alteração é persistida automaticamente (auto-save) e os dados atualizados passam a ser exibidos na aba Perfil.
+- **(b)** Usuário desmarca todos os interesses na tela "Editar Interesses" e clica em "Salvar Alterações" — o sistema aceita a alteração sem bloqueio, pois não há validação de mínimo de interesses, e a notificação "Preferências atualizadas" é exibida normalmente.
+- **(c)** Usuário que pulou a pergunta de cidade no onboarding acessa a Explorar, visualiza o empty state "Adicione sua localidade" no carrossel "Perto de você" e clica em "Adicionar cidade" — é direcionado para a tela "Editar Interesses"; seleciona a cidade (ex.: "São Paulo"), clica em "Salvar Alterações" e retorna à Explorar; o carrossel "Perto de você" passa a renderizar espetáculos da cidade selecionada (cobertura cruzada com TF-02 e fechamento do fluxo iniciado em TF-01).
+- **(d)** Usuário na tela "Editar Interesses" clica no botão "Limpar Filtros" — toda a seleção atualmente marcada (interesses e cidade) é desfeita visualmente; a alteração só é persistida ao clicar em "Salvar Alterações", permitindo que o usuário desista da limpeza saindo da tela sem salvar.
+
+**Instruções de execução:**
+
+1. Logar com usuário que possui preferências definidas e acessar a aba Perfil; conferir os dados exibidos (foto, nome, e-mail) e os 3 atalhos disponíveis ("Preferências e cidade", "Notificações", "Informações Institucionais").
+2. Clicar em "Preferências e cidade" e validar a tela "Editar Interesses" com as seções "SELECIONE SEUS INTERESSES" e "SELECIONE SUA CIDADE" (opções: São Paulo, Rio de Janeiro, Outra).
+3. Alterar a seleção de interesses (ex.: marcar Musical, Drama, Dança) e a cidade (Rio de Janeiro), clicar em "Salvar Alterações" e validar a notificação push "Preferências atualizadas" (cenário positivo).
+4. Retornar ao Perfil, clicar em "Editar Perfil" e alterar o nome e/ou o e-mail; sem nenhuma ação explícita de salvamento, validar que os dados atualizados aparecem imediatamente na aba Perfil (cenário negativo a — auto-save).
+5. Voltar à tela "Editar Interesses", desmarcar todos os interesses e clicar em "Salvar Alterações"; validar que o sistema aceita a alteração e exibe a notificação "Preferências atualizadas" (cenário negativo b).
+6. Logar com uma segunda conta sem cidade definida (criada pulando a pergunta no onboarding), acessar a Explorar e validar o empty state do carrossel "Perto de você" (TF-02). Clicar em "Adicionar cidade", validar o direcionamento para a tela "Editar Interesses", selecionar a cidade, salvar e retornar à Explorar; conferir que o carrossel "Perto de você" passa a exibir espetáculos da cidade escolhida (cenário negativo c).
+7. Voltar à tela "Editar Interesses" com seleções já feitas e clicar em "Limpar Filtros"; validar que todas as seleções (interesses e cidade) são desmarcadas visualmente e que a limpeza só é persistida ao clicar em "Salvar Alterações" — sair da tela antes de salvar deve manter as preferências anteriores (cenário negativo d).
+
+**Pós-condições:** Dados de nome, e-mail, interesses e cidade do usuário persistidos no banco; cache de recomendações invalidado para refletir as novas preferências na próxima carga da Explorar.
+
+**Critério de sucesso:** Edição de nome e e-mail é aplicada automaticamente (auto-save) e visível na aba Perfil; edição de interesses e cidade é persistida no banco e dispara a notificação push "Preferências atualizadas"; alterações refletem nas seções dependentes da Explorar na próxima carga; navegação a partir do CTA "Adicionar cidade" chega corretamente à tela "Editar Interesses" e, após salvar, o carrossel "Perto de você" reflete a nova cidade; o botão "Limpar Filtros" desmarca toda a seleção visualmente sem persistir, exigindo clique em "Salvar Alterações" para efetivar a limpeza.
+
+---
+
+#### TF-09
+
+**Requisito relacionado:** RF09
+
+**Funcionalidade testada:** Botão "ingresso" sticky no rodapé da página de detalhes do espetáculo (posicionado logo acima da bottom nav, sempre visível independentemente da rolagem), acompanhado do indicador "ingresso a partir de R$ X", com redirecionamento para a URL externa de bilheteria em navegador externo do dispositivo
+
+**Propósito:** Verificar que (i) o botão "ingresso" e o indicador de preço permanecem fixos e visíveis em qualquer ponto da rolagem da página de detalhes, (ii) o preço exibido corresponde ao valor mínimo cadastrado para o espetáculo, (iii) o clique no botão abre a URL externa de bilheteria correta em navegador externo do dispositivo, independentemente da ticketeira (Sympla, Ingresso.com ou outras) e (iv) o app preserva o estado da página de detalhes ao retorno do navegador externo.
+
+**Pré-condições:** Usuário logado e na página de detalhes de um espetáculo (ex.: "A Noviça Rebelde"); espetáculo com URL externa de bilheteria e valor mínimo cadastrados (URL é obrigatória no cadastro, conforme regra do produto); dispositivo de teste com navegador padrão configurado.
+
+**Cenário positivo:** Usuário acessa a página de detalhes de "A Noviça Rebelde", visualiza no rodapé fixo o botão "ingresso" ao lado do texto "ingresso a partir de R$ X" e, ao clicar no botão, o app abre o navegador externo do dispositivo na URL cadastrada para esse espetáculo.
+
+**Cenários negativos:**
+
+- **(a)** Usuário rola a página de detalhes em toda a extensão (até o final e de volta ao topo) — o botão "ingresso" e o indicador de preço permanecem fixos no rodapé, logo acima da bottom nav, sempre visíveis e clicáveis.
+- **(b)** Usuário repete o teste em espetáculos com ticketeiras distintas (ex.: um cadastrado na Sympla, outro em ticketeira diferente) — o redirecionamento abre o domínio correto em cada caso, demonstrando que a funcionalidade independe da ticketeira de destino.
+- **(c)** Após o redirecionamento e retorno ao app pelo botão "voltar" do dispositivo, a página de detalhes do espetáculo é mantida no estado em que estava (rolagem, conteúdo carregado), sem reinício ou perda de contexto.
+
+**Instruções de execução:**
+
+1. Logar e acessar a página de detalhes de "A Noviça Rebelde" via qualquer caminho (Explorar, Wishlist ou Buscar).
+2. Conferir, no rodapé fixo da tela, a presença do botão "ingresso" e do texto "ingresso a partir de R$ X" com valor coerente com o cadastrado para o espetáculo (cenário positivo — visualização).
+3. Rolar a página até o final e depois retornar ao topo; validar que o botão "ingresso" e o indicador de preço permanecem fixos no rodapé em todos os pontos da rolagem (cenário negativo a).
+4. Clicar no botão "ingresso" e validar que o app abre o navegador externo do dispositivo na URL cadastrada para o espetáculo (cenário positivo — redirecionamento).
+5. Repetir o passo 4 em pelo menos dois espetáculos com ticketeiras distintas, conferindo que cada URL aberta corresponde ao destino correto (cenário negativo b).
+6. Após o redirecionamento ao navegador, retornar ao app pelo botão "voltar" do dispositivo e validar que a página de detalhes do espetáculo é mantida no estado anterior (cenário negativo c).
+
+**Pós-condições:** Nenhuma alteração de estado dentro do app; nenhum registro de métrica de hand-off é gerado (rastreamento de clique no botão está previsto como evolução futura e não faz parte do escopo desta versão).
+
+**Critério de sucesso:** O botão "ingresso" e o indicador "ingresso a partir de R$ X" permanecem fixos e visíveis em qualquer rolagem da página de detalhes; o clique no botão abre o navegador externo na URL correta para o respectivo espetáculo, independentemente da ticketeira cadastrada; o app preserva o estado da página de detalhes ao retorno do navegador externo.
+
+---
+
+#### TF-10
+
+**Requisito relacionado:** RF10
+
+**Funcionalidade testada:** Motor de recomendação inteligente: carrossel "Pra você" na aba Explorar (alimentado pelas preferências do onboarding e pelo comportamento de navegação do usuário) e seção "Espetáculos semelhantes" na página de detalhes (baseada no gênero do espetáculo e na proximidade geográfica da cidade do usuário), com empty state e CTA para usuário que pulou o onboarding
+
+**Propósito:** Verificar que (i) o carrossel "Pra você" exibe espetáculos compatíveis com os gêneros selecionados no onboarding e com o comportamento de navegação do usuário, (ii) a seção "Espetáculos semelhantes" na página de detalhes exibe espetáculos do mesmo gênero e de teatros na cidade do perfil do usuário, (iii) usuário que pulou o onboarding visualiza um empty state com CTA no lugar do carrossel "Pra você" e (iv) a seção "Espetáculos semelhantes" é renderizada de forma consistente mesmo quando o volume de sugestões é reduzido.
+
+**Pré-condições:** Dois perfis de teste: (A) usuário com onboarding concluído (gênero = "Musical", cidade = São Paulo) e histórico de ao menos 3 espetáculos do gênero Musical navegados; (B) usuário que pulou todas as perguntas do onboarding e nunca definiu preferências; base com espetáculos cadastrados em múltiplos gêneros (ao menos Musical e Drama), distribuídos entre SP e RJ, e um gênero com poucas ocorrências cadastradas para validação de borda.
+
+**Cenário positivo:** Usuário A acessa a aba Explorar e o carrossel "Pra você" exibe espetáculos do gênero Musical, alinhados ao perfil definido no onboarding e ao comportamento de navegação; ao abrir a página de detalhes de um dos espetáculos musicais, a seção "Espetáculos semelhantes" exibe outros espetáculos do gênero Musical com teatro em São Paulo.
+
+**Cenários negativos:**
+
+- **(a)** Usuário B (onboarding pulado) acessa a aba Explorar — onde o carrossel "Pra você" seria exibido, aparece um empty state com CTA convidando o usuário a definir suas preferências; a navegação no restante da Explorar não é bloqueada.
+- **(b)** Usuário A abre a página de detalhes de um espetáculo de gênero diferente (ex.: "Drama") — a seção "Espetáculos semelhantes" exibe espetáculos de Drama em São Paulo, sem misturar resultados de outros gêneros.
+- **(c)** Usuário A acessa um espetáculo de gênero com poucas ocorrências cadastradas para SP — a seção "Espetáculos semelhantes" é renderizada vazia ou ocultada, sem erro e sem exibir espetáculos de gênero incompatível.
+
+**Instruções de execução:**
+
+1. Logar com o Usuário A (onboarding = Musical, SP) e acessar a aba Explorar.
+2. Localizar o carrossel "Pra você" e conferir que os espetáculos exibidos pertencem ao gênero Musical (cenário positivo — carrossel).
+3. Abrir a página de detalhes de um espetáculo do carrossel; rolar até a seção "Espetáculos semelhantes" e conferir que os itens exibidos são do gênero Musical e de teatros em São Paulo (cenário positivo — seção de detalhes).
+4. Retornar à Explorar, abrir a página de detalhes de um espetáculo de Drama; conferir que "Espetáculos semelhantes" exibe apenas espetáculos de Drama em São Paulo, sem mistura de gêneros (cenário negativo b).
+5. Abrir a página de detalhes de um espetáculo de gênero com poucas ocorrências cadastradas para SP; conferir que "Espetáculos semelhantes" é renderizado vazio ou ocultado sem erro (cenário negativo c).
+6. Deslogar e logar com o Usuário B (onboarding pulado); acessar a Explorar e confirmar a presença do empty state com CTA no lugar do carrossel "Pra você", sem bloqueio de navegação nas demais seções (cenário negativo a).
+
+**Pós-condições:** Nenhuma alteração nas preferências do usuário, no catálogo ou no histórico de navegação; o comportamento de navegação registrado durante a execução do teste pode ser desconsiderado para fins de análise do motor.
+
+**Critério de sucesso:** O carrossel "Pra você" exibe espetáculos compatíveis com o perfil do usuário (gênero do onboarding e comportamento de navegação), com aderência mínima de 70% dos itens exibidos ao gênero de preferência; a seção "Espetáculos semelhantes" exibe espetáculos do mesmo gênero e da cidade do usuário em ≥ 70% das sugestões, sem misturar gêneros incompatíveis; o empty state com CTA é renderizado corretamente para usuário sem onboarding concluído e não bloqueia a navegação; a seção "Espetáculos semelhantes" é renderizada de forma consistente (vazia, ocultada ou populada) independentemente do volume de resultados disponíveis.
+
+---
+
+### 17.4 Testes de requisitos não funcionais
+
+Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atributos de qualidade como desempenho, segurança, disponibilidade, usabilidade, compatibilidade e escalabilidade.
+
+#### RNF01 — Tempo de Resposta das Recomendações
+ 
+**Cenário Positivo:** Carregamento dentro do SLA com conexão estável
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário autenticado com perfil de onboarding preenchido e wishlist com ao menos 1 item. Conexão de rede estável de no mínimo 10 Mbps. Cache de recomendações aquecido (warm). |
+| **Procedimento** | 1: Abrir DevTools → abas Network e Performance. 2: Acessar a Home do Portal e registrar o timestamp de início. 3: Aguardar o carregamento completo dos carrosséis (evento `load` + elementos visuais renderizados). 4: Registrar o tempo total de carregamento. 5: Repetir 20 vezes em horários distintos (manhã, tarde, noite). 6. Calcular p50, p95 e média dos tempos coletados. |
+| **Resultado Esperado** | p95 ≤ 3 segundos; média ≤ 2 segundos; nenhuma exceção de timeout na série de 20 execuções. |
+| **Pós-condição** | Carrosséis renderizados com itens personalizados; logs de performance armazenados; relatório de métricas gerado. |
+ 
+**Cenário Negativo 1:** Degradação sob latência de rede elevada (simulação de 3G)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário autenticado com perfil preenchido. Conexão de rede simulada em Slow 3G (~1,5 Mbps, 300 ms de latência) via DevTools → Network Throttling. |
+| **Procedimento** | 1: Ativar throttling para "Slow 3G" no DevTools. 2: Acessar a Home e medir o tempo de carregamento dos carrosséis. 3: Repetir 5 vezes. 4: Verificar o comportamento da interface durante a espera (spinner, skeleton screen, mensagem de erro). 5: Registrar se o sistema ultrapassa o limite de timeout configurado. |
+| **Resultado Esperado** | O sistema exibe feedback visual adequado (skeleton screen ou spinner) enquanto aguarda; após timeout configurado (ex.: 10 s) apresenta mensagem amigável de erro, sem tela em branco ou crash silencioso. Métricas de latência registradas nos logs de observabilidade. |
+| **Pós-condição** | Log de timeout registrado; alertas de degradação disparados no painel de monitoramento; usuário não abandonado sem feedback. |
+ 
+**Cenário Negativo 2:** Falha do serviço de recomendação (backend indisponível)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário autenticado com perfil preenchido. Serviço de recomendação desligado ou mockado com resposta 503. |
+| **Procedimento** | 1: Derrubar (ou mockar com 503) o endpoint de recomendações. 2: Acessar a Home do Portal. 3: Verificar se a página exibe fallback (carrossel com itens populares genéricos ou mensagem de erro). 4: Verificar se os demais módulos da Home continuam funcionando normalmente. |
+| **Resultado Esperado** | A Home carrega com conteúdo de fallback (destaques genéricos) ou mensagem "Não foi possível carregar recomendações". Os demais carrosséis não personalizados continuam funcionando. Nenhum erro 500 exposto ao usuário. |
+| **Pós-condição** | Erro registrado nos logs de aplicação; alerta disparado para a equipe de operações; usuário permanece em página funcional. |
+ 
+#### RNF02 — Segurança das Credenciais de Usuário
+ 
+**Cenário Positivo:** Tráfego criptografado e senha hasheada corretamente
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário cadastrado com e-mail e senha válidos. Banco de dados de teste populado. Ferramentas: DevTools (aba Network), acesso direto ao banco (read-only). |
+| **Procedimento** | 1: Abrir DevTools → aba Network, filtro XHR/Fetch. 2: Realizar login com usuário de teste. 3: Inspecionar a requisição: verificar protocolo HTTPS e versão TLS (≥ 1.2). 4: Verificar que o payload não contém senha em texto plano. 5: Consultar o banco de dados: o campo `password` deve conter hash bcrypt/Argon2 (prefixo `$2b$`, `$argon2id$`), nunca texto plano. 6: Verificar arquivos de log, nenhum dado sensível deve aparecer. |
+| **Resultado Esperado** | 100% do tráfego via HTTPS/TLS 1.2+; senha armazenada com hash não reversível; nenhum dado sensível em logs ou payload em texto plano. |
+| **Pós-condição** | Sessão autenticada com token seguro (JWT/Bearer); evidências de conformidade registradas para auditoria. |
+ 
+**Cenário Negativo 1:** Tentativa de brute force (múltiplos logins com senha inválida)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário cadastrado. Script de automação (ex.: curl, Postman) configurado para simular múltiplas tentativas de login com senhas incorretas. |
+| **Procedimento** | 1: Executar 10 tentativas consecutivas de login com senha incorreta para o mesmo usuário. 2: Verificar se o sistema implementa bloqueio temporário ou CAPTCHA após N tentativas (N definido pela política de segurança). 3: Verificar se as tentativas são registradas em log de segurança (com timestamp, IP, user-agent). 4: Tentar login com credenciais corretas após o bloqueio, verificar comportamento (desbloqueio por tempo ou por e-mail). |
+| **Resultado Esperado** | Após atingir o limite configurado (ex.: 5 tentativas), o sistema bloqueia o login temporariamente ou exige CAPTCHA; todas as tentativas são registradas em log de segurança; usuário legítimo pode recuperar acesso por canal seguro. |
+| **Pós-condição** | Log de tentativas de acesso indevido gerado; alerta de segurança disparado (se configurado); conta não comprometida. |
+ 
+---
+ 
+**Cenário Negativo 2:** Tentativa de downgrade de HTTPS para HTTP
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Ambiente de teste com proxy intermediário (ex.: Burp Suite em modo passivo) configurado para tentar interceptar tráfego HTTP. |
+| **Procedimento** | 1: Configurar proxy para tentar interceptar requisições em HTTP. 2: Tentar acessar diretamente a URL via HTTP (ex.: `http://portal-aventura.com/login`). 3: Verificar se o servidor redireciona automaticamente para HTTPS (301/302). 4: Verificar se o header `Strict-Transport-Security` (HSTS) está presente na resposta. |
+| **Resultado Esperado** | Toda requisição HTTP redirecionada para HTTPS; header HSTS presente com `max-age` ≥ 31536000; nenhuma credencial transmitida em texto claro. |
+| **Pós-condição** | Evidência de conformidade com HSTS registrada; relatório de segurança atualizado. |
+ 
+#### RNF03 — Privacidade e direitos do titular (LGPD)
+ 
+**Cenário Positivo 1:** Edição e consulta de dados pessoais pelo usuário
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário autenticado com dados de perfil preenchidos no onboarding (nome, idade, gênero, CEP, preferências de gênero cultural). |
+| **Procedimento** | 1: Acessar Perfil → seção de dados pessoais. 2: Editar cada campo disponível (nome, CEP, preferências) e salvar. 3: Verificar se as alterações são persistidas corretamente na interface e no banco. 4: Verificar se existe indicação clara das finalidades de uso de cada dado. 5: Verificar se o registro de consentimento (opt-in) está armazenado com data, IP e finalidade. |
+| **Resultado Esperado** | Todos os campos editáveis alterados com sucesso; alterações refletidas imediatamente na interface; registro de consentimento atualizado e disponível para auditoria. |
+| **Pós-condição** | Dados atualizados na base; log de auditoria de edição gerado com timestamp e identificador do usuário. |
+ 
+**Cenário Positivo 2:** Solicitação e conclusão de exclusão de conta
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário autenticado com dados de perfil e histórico de interações (wishlist, preferências). |
+| **Procedimento** | 1: Acessar Perfil → opção "Excluir minha conta". 2: Confirmar a exclusão conforme o fluxo definido (confirmação por e-mail ou senha). 3: Aguardar até 30 dias (simular com processo acelerado em ambiente de teste). 4: Verificar no banco se os dados pessoais foram removidos ou anonimizados (campos como nome, e-mail, CEP devem ser nulos ou substituídos por token anônimo). 5: Verificar se dados analíticos agregados sem identificação pessoal foram preservados conforme política. |
+| **Resultado Esperado** | Dados pessoais identificáveis removidos ou anonimizados em até 30 dias; conta não permite novo login; dados agregados anônimos preservados conforme política de retenção. |
+| **Pós-condição** | Registro de exclusão gerado com data e confirmação; log de auditoria arquivado para eventual comprovação perante a ANPD. |
+ 
+---
+ 
+**Cenário Negativo 1:** Tentativa de acesso a dados de outro usuário
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Dois usuários de teste cadastrados (User A e User B). User A autenticado com token de sessão ativo. |
+| **Procedimento** | 1: Autenticar como User A e obter o token de sessão. 2: Tentar acessar diretamente a rota de perfil de User B (ex.: `GET /api/users/{id_user_b}/profile`) usando o token de User A. 3: Tentar editar ou excluir dados de User B via requisição direta à API (Postman/curl). 4: Registrar as respostas HTTP recebidas. |
+| **Resultado Esperado** | O sistema retorna HTTP 403 (Forbidden) para todas as tentativas; nenhum dado de User B é retornado ou modificado; tentativa registrada em log de segurança. |
+| **Pós-condição** | Log de tentativa de acesso não autorizado gerado; nenhum dado exposto indevidamente. |
+ 
+**Cenário Negativo 2:** Fluxo de onboarding sem registro formal de consentimento
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Novo usuário em processo de cadastro/onboarding. Ferramenta de inspeção de banco de dados disponível. |
+| **Procedimento** | 1: Realizar o cadastro completo tentando pular a etapa de consentimento (caso o sistema permita). 2: Verificar se o sistema bloqueia o avanço sem o registro formal de opt-in. 3: Verificar no banco se há registro de consentimento associado ao novo usuário antes de qualquer tratamento de dado. |
+| **Resultado Esperado** | O sistema não permite conclusão do cadastro sem registro formal de consentimento para ao menos a finalidade principal; ausência de opt-in bloqueia o fluxo com mensagem clara ao usuário. |
+| **Pós-condição** | Evidência de conformidade com o Art. 7º da LGPD (consentimento como base legal) documentada. |
+
+#### RNF04 — Usabilidade e responsividade em dispositivos móveis
+ 
+**Cenário Positivo:** Conclusão das tarefas principais em mobile (480px e 720px)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Aplicação publicada em ambiente de homologação. Dispositivos reais ou emulados com larguras de 480px e 720px (iOS e Android). 5 usuários recrutados representando o público-alvo. |
+| **Procedimento** | 1: Solicitar a cada usuário que realize, sem ajuda: (a) completar o onboarding; (b) buscar um espetáculo pelo nome; (c) adicionar à wishlist; (d) acessar a área de Perfil; (e) clicar em "Ir para bilheteria". 2: Observar e registrar onde cada usuário hesita, erra ou pede ajuda. 3: Aplicar o questionário SUS ao final de cada sessão. 4: Verificar visualmente que nenhum elemento é cortado, sobreposto ou inacessível nas resoluções testadas. |
+| **Resultado Esperado** | Taxa de conclusão ≥ 90% das tarefas sem ajuda; pontuação SUS ≥ 70; nenhum elemento cortado ou inacessível; botões de ação com área de toque ≥ 44×44px. |
+| **Pós-condição** | Relatório de usabilidade gerado com gravações de sessão (se autorizado), heatmaps e lista de problemas; ajustes de UI registrados no backlog. |
+ 
+**Cenário Negativo 1:** Interface em resolução abaixo do mínimo suportado (320px)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Aplicação em homologação. Emulador configurado para largura de 320px (dispositivos muito antigos ou com zoom ativado). |
+| **Procedimento** | 1: Acessar a Home, tela de Busca, Perfil e Wishlist com viewport de 320px. 2: Verificar quebras de layout: elementos sobrepostos, texto cortado, botões inacessíveis, scroll horizontal indesejado. 3: Registrar cada elemento problemático com screenshot. |
+| **Resultado Esperado** | O sistema exibe mensagem orientando o usuário a ampliar a janela OU a interface se degrada de forma controlada (sem conteúdo sobreposto). Nenhuma funcionalidade crítica fica completamente inacessível; eventuais limitações são comunicadas claramente. |
+| **Pós-condição** | Lista de problemas em 320px documentada; decisão formal da equipe registrada (suportar ou não a resolução). |
+ 
+**Cenário Negativo 2:** Fluxo de onboarding com erro de validação em mobile
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Novo usuário em dispositivo móvel (480px). Campos obrigatórios do onboarding identificados. |
+| **Procedimento** | 1: Iniciar o onboarding e tentar avançar com campos obrigatórios em branco ou com dados inválidos (ex.: CEP com letras, e-mail sem @). 2: Verificar se as mensagens de erro são exibidas próximas ao campo com problema. 3: Verificar se o teclado virtual cobre a mensagem de erro ou o campo em questão. 4: Verificar se o botão de avanço fica desabilitado ou exibe feedback enquanto há erro. |
+| **Resultado Esperado** | Mensagens de erro visíveis e legíveis sem scroll adicional; campo em erro recebe foco automaticamente; teclado virtual não oculta a mensagem crítica; botão desabilitado com feedback visual claro. |
+| **Pós-condição** | Problemas de UX em formulários mobile documentados; correções priorizadas no backlog. |
+ 
+#### RNF05 — Disponibilidade da Plataforma
+
+**Cenário Positivo:** Monitoramento contínuo com disponibilidade dentro do SLA
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Plataforma publicada em produção com monitoramento ativo (ex.: UptimeRobot, Datadog, AWS CloudWatch). Health check endpoint configurado (`GET /health` retorna 200). |
+| **Procedimento** | 1: Configurar monitoramento com verificações a cada 1 minuto por 24 horas contínuas. 2: Registrar todas as respostas HTTP do health check. 3: Calcular disponibilidade: (minutos com resposta 200 / 1440) × 100. 4: Verificar se alertas são disparados corretamente em caso de queda (e-mail, Slack, PagerDuty). 5: Calcular downtime total e comparar com SLA (≤ 14,4 minutos em 24h). |
+| **Resultado Esperado** | Disponibilidade ≥ 99% na janela de 24h (downtime ≤ 14,4 min); alertas disparados em até 2 minutos após detecção de queda; relatório de uptime gerado automaticamente. |
+| **Pós-condição** | Relatório de uptime gerado; incidentes (se houver) registrados com causa raiz e MTTR. |
+ 
+**Cenário Negativo 1:** Simulação de queda de serviço e tempo de recuperação (RTO)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Ambiente de produção ou staging com acesso administrativo. Runbook de recuperação disponível. |
+| **Procedimento** | 1: Simular queda do serviço (ex.: desligar instância principal, simular erro de banco de dados). 2: Registrar o timestamp exato da queda. 3: Verificar se o monitoramento detecta e alerta em até 2 minutos. 4: Acionar o procedimento de recuperação (failover automático ou manual). 5: Registrar o timestamp de restauração completa e calcular o RTO. |
+| **Resultado Esperado** | Alerta gerado em até 2 minutos; serviço restaurado dentro do RTO definido; dados sem corrupção após recuperação; usuários recebem página de manutenção amigável durante a indisponibilidade. |
+| **Pós-condição** | Incidente documentado com causa raiz, timeline e RTO observado. Post-mortem agendado se o RTO for ultrapassado. |
+
+**Cenário Negativo 2:** Acesso durante janela de manutenção sem comunicação prévia
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário não informado sobre janela de manutenção. Manutenção programada em horário de pico. |
+| **Procedimento** | 1: Simular acesso de usuário durante janela de manutenção planejada. 2: Verificar se o sistema exibe página de manutenção com mensagem amigável, previsão de retorno e canal de contato. 3: Verificar se o usuário é redirecionado automaticamente após a restauração do serviço. |
+| **Resultado Esperado** | Página de manutenção exibida com mensagem clara, previsão de retorno e informações de contato; nenhum erro 500 exposto; após restauração, usuário redirecionado automaticamente ou orientado a atualizar a página. |
+| **Pós-condição** | Processo de comunicação de manutenção revisado; notificação proativa a usuários incluída no plano de manutenção futuro. |
+
+#### RNF06 — Capacidade sob carga em pico de campanha
+
+**Cenário Positivo:** Teste de carga com 100 usuários simultâneos dentro do SLA
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Ambiente de homologação configurado com infraestrutura equivalente à produção. Ferramenta de carga instalada (k6 ou JMeter). Scripts simulando fluxo: login → home com carrosséis → adicionar à wishlist. |
+| **Procedimento** | 1: Configurar script com ramp-up gradual: 0 → 50 → 100 usuários em 5 minutos. 2: Manter 100 usuários concorrentes por 15 minutos contínuos. 3: Monitorar em tempo real: latência p50/p95, taxa de erro HTTP, CPU e memória dos servidores. 4: Analisar relatório completo ao final. 5: Verificar logs por erros, timeouts ou circuit breakers acionados. |
+| **Resultado Esperado** | Tempo médio de resposta ≤ 3s; p95 ≤ 5s; taxa de erro HTTP < 1%; nenhuma queda de serviço; CPU < 80% e memória < 85% durante toda a execução. |
+| **Pós-condição** | Relatório de carga exportado (HTML/JSON); métricas arquivadas; gargalos documentados como backlog de otimização. |
+ 
+**Cenário Negativo 1:** Sobrecarga além da capacidade projetada (150 usuários)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Mesmo ambiente de homologação. Script de carga adaptado para 150 usuários concorrentes. |
+| **Procedimento** | 1: Executar teste de stress com 150 usuários simultâneos por 10 minutos. 2: Monitorar latência, taxa de erro, comportamento do auto-scaling, circuit breakers e filas. 3: Verificar se o sistema aplica degradação elegante (ex.: desabilitar recomendações personalizadas e servir cache genérico). 4: Verificar se usuários recebem feedback adequado em caso de lentidão ou erro. |
+| **Resultado Esperado** | O sistema não trava completamente; aplica degradação elegante com fallback para cache/conteúdo genérico; taxa de erro pode superar 1% porém sem perda total de funcionalidade; auto-scaling (se existente) acionado e registrado em logs; usuário recebe mensagem amigável. |
+| **Pós-condição** | Comportamento sob sobrecarga documentado; limites reais de capacidade registrados; plano de escalonamento revisado. |
+ 
+**Cenário Negativo 2:** Spike repentino de tráfego (0 → 100 usuários em 30 segundos)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Ambiente de homologação. Script configurado para spike sem ramp-up gradual: 0 para 100 usuários em 30 segundos. |
+| **Procedimento** | 1: Executar spike test: 0 para 100 usuários em 30 segundos. 2: Observar latência e taxa de erro nos primeiros 2 minutos após o spike. 3: Verificar se o sistema se recupera sozinho após o pico (estabilização da latência). 4: Verificar se circuit breakers ou rate limiters foram acionados. |
+| **Resultado Esperado** | Sistema não cai durante o spike; latência pode elevar-se brevemente, mas retorna ao SLA em até 60 segundos após estabilização da carga; nenhuma perda de dados (wishlist, perfil) durante o pico. |
+| **Pós-condição** | Métricas de spike registradas; comportamento de auto-scaling documentado; thresholds de alerta ajustados se necessário. |
+ 
+#### RNF07 — Precisão da Geolocalização
+ 
+**Cenário Positivo 1:** Identificação correta de cidade por CEP (SP e RJ)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | 10 perfis de usuário de teste: 5 com CEPs reais de São Paulo e 5 com CEPs reais do Rio de Janeiro. Banco de dados de CEPs atualizado. |
+| **Procedimento** | 1: Para cada perfil, acessar a Home com geolocalização do navegador desativada. 2: Verificar na seção regional se a cidade exibida corresponde ao CEP cadastrado. 3: Verificar se ao menos um espetáculo da cidade correta aparece nas 3 primeiras posições da seção regional. 4: Repetir com geolocalização do navegador ativada. 5: Registrar acertos e erros por perfil. |
+| **Resultado Esperado** | Cidade identificada corretamente em ≥ 95% dos perfis (≥ 19 de 20); espetáculos da região correspondente nas 3 primeiras posições; geolocalização do dispositivo, quando ativada, tem prioridade sobre o CEP. |
+| **Pós-condição** | Logs de geolocalização registrados (apenas cidade, sem coordenadas precisas) em conformidade com a LGPD; relatório de precisão gerado. |
+ 
+**Cenário Positivo 2:** Identificação por geolocalização com CEP ausente (novo usuário)
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário novo sem CEP cadastrado (onboarding incompleto). Geolocalização do navegador ativada e permissão concedida. Usuário fisicamente em São Paulo (ou emulado via DevTools). |
+| **Procedimento** | 1: Acessar o Portal com novo usuário sem CEP. 2: Conceder permissão de geolocalização quando solicitado. 3: Verificar se a seção regional exibe espetáculos de SP. 4: Negar a permissão de geolocalização e verificar o comportamento de fallback (ex.: prompt para inserir CEP ou exibição de conteúdo genérico). |
+| **Resultado Esperado** | Com permissão concedida: região de SP identificada corretamente, seção regional exibe espetáculos de SP. Com permissão negada: sistema apresenta fallback gracioso sem erro ou tela em branco. |
+| **Pós-condição** | Log de geolocalização registrado sem coordenadas precisas; consentimento de uso de geolocalização registrado. |
+ 
+**Cenário Negativo 1:** CEP inválido ou inexistente
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário de teste com CEP inválido cadastrado (ex.: 00000-000, 99999-999 ou CEP de outro país). Geolocalização desativada. |
+| **Procedimento** | 1: Acessar a Home com usuário portador de CEP inválido. 2: Verificar se o sistema tenta validar o CEP contra base oficial (ex.: ViaCEP). 3: Verificar o comportamento: exibe conteúdo genérico, solicita correção do CEP ou usa geolocalização como fallback? 4: Verificar se o campo CEP no perfil permite salvar valores inválidos (validação na entrada). |
+| **Resultado Esperado** | O sistema não quebra nem exibe recomendações erradas; apresenta fallback claro; campo CEP no perfil valida o formato antes de salvar; CEP inválido não é persistido sem aviso. |
+| **Pós-condição** | Log de CEP inválido registrado; usuário orientado a corrigir o dado; nenhum dado incorreto armazenado sem sinalização. |
+ 
+**Cenário Negativo 2:** Permissão de geolocalização negada e CEP não cadastrado
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Usuário novo sem CEP e com geolocalização do navegador negada. |
+| **Procedimento** | 1: Acessar o Portal negando a permissão de geolocalização. 2: Navegar pela Home sem fornecer CEP. 3: Verificar o comportamento da seção regional: exibe conteúdo genérico, solicita ação do usuário ou exibe mensagem explicativa? 4: Verificar se a página carrega sem erros e as demais seções funcionam normalmente. |
+| **Resultado Esperado** | A seção regional exibe conteúdo genérico ou mensagem orientando o usuário a fornecer sua localização; nenhuma seção quebra ou exibe erro técnico; as demais funcionalidades da Home operam normalmente. |
+| **Pós-condição** | Experiência de usuário sem localização documentada; decisão de UX registrada no backlog (ex.: exibir modal de boas-vindas solicitando CEP). |
+ 
+#### RNF08 — Modularidade do Serviço de Recomendação
+ 
+**Cenário Positivo:** Troca de algoritmo sem impacto nos demais serviços
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Repositório com serviços separados. Pipeline de CI configurado com suíte de testes automatizados e relatório de cobertura (ex.: pytest-cov ou Jest --coverage). Algoritmo atual de recomendação documentado. |
+| **Procedimento** | 1. Modificar o algoritmo de recomendação (ex.: substituir KNN por SVD) apenas dentro do serviço de recomendação. 2. Executar a suíte de testes automatizados do serviço de recomendação e verificar cobertura nos módulos críticos. 3. Verificar que nenhum arquivo fora do repositório do serviço de recomendação precisou ser alterado. 4. Reimplantar apenas o serviço de recomendação via pipeline. 5. Verificar o estado dos demais serviços (catálogo, gateway, bilheteria) durante e após o deploy. |
+| **Resultado Esperado** | Nenhuma alteração necessária fora do serviço de recomendação; cobertura ≥ 70% nos módulos críticos reportada pelo CI; demais serviços permanecem com status 200 no health check durante todo o deploy. |
+| **Pós-condição** | Relatório de cobertura exportado como artefato do CI; log de deploy registrado; versão do algoritmo documentada no changelog. |
+
+**Cenário Negativo 1:** Deploy do serviço de recomendação causa indisponibilidade em outro serviço
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Ambiente de homologação com todos os serviços ativos e monitorados. Health check endpoints configurados para cada serviço. |
+| **Procedimento** | 1. Iniciar o deploy do serviço de recomendação. 2. Durante o deploy, executar health checks contínuos (a cada 10 segundos) em todos os demais serviços (catálogo, gateway, autenticação). 3. Registrar qualquer resposta diferente de 200 nos demais serviços durante e após o deploy. 4. Verificar se o serviço de recomendação implementa deploy sem downtime (ex.: rolling update ou blue-green). |
+| **Resultado Esperado** | Todos os demais serviços permanecem com status 200 durante todo o deploy; o serviço de recomendação implementa estratégia de zero-downtime deployment; qualquer falha de isolamento é registrada como incidente de acoplamento. |
+| **Pós-condição** | Log de health checks durante o deploy exportado; incidentes de acoplamento registrados como dívida técnica prioritária. |
+
+**Cenário Negativo 2:** Cobertura de testes abaixo do critério de aceitação
+ 
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Pipeline de CI configurado com ferramenta de cobertura (pytest-cov, Jest --coverage ou equivalente). Threshold de cobertura mínima configurado no pipeline (≥ 70%). |
+| **Procedimento** | 1. Simular a adição de novo código nos módulos críticos do serviço de recomendação sem os respectivos testes unitários. 2. Executar o pipeline de CI. 3. Verificar se o pipeline falha automaticamente ao detectar cobertura abaixo de 70% nos módulos críticos. 4. Verificar se o relatório de cobertura indica claramente quais linhas/funções não estão cobertas. |
+| **Resultado Esperado** | Pipeline retorna exit code 1 e bloqueia o merge/deploy quando cobertura < 70% nos módulos críticos; relatório HTML de cobertura indica exatamente as linhas não cobertas; desenvolvedor é notificado automaticamente. |
+| **Pós-condição** | Relatório de cobertura com falha exportado como artefato; testes faltantes registrados como tarefa no backlog antes do próximo deploy. |
+
+### 17.5 Testes de usabilidade
+
+Os testes de usabilidade têm como objetivo avaliar se usuários externos ao grupo conseguem compreender e executar os principais fluxos do aplicativo mobile do Portal Aventura de forma clara, intuitiva e sem auxílio excessivo.
+
+A avaliação será realizada com pelo menos **5 usuários externos ao grupo**, considerando diferentes níveis de familiaridade com aplicativos mobile e diferentes frequências de consumo cultural. Os testes serão conduzidos a partir do mockup navegável ou da versão funcional disponível do aplicativo.
+
+Durante a execução, serão observados tempo de realização das tarefas, quantidade de erros, dúvidas verbalizadas, taxa de sucesso e percepção geral de facilidade de uso. Ao final, será aplicado o questionário **SUS — System Usability Scale**, com o objetivo de mensurar a percepção dos participantes sobre a usabilidade do sistema.
+
+---
+
+#### Perfil dos participantes
+
+| Participante | Perfil | Familiaridade com apps mobile | Frequência de consumo cultural | Observações |
+|---|---|---|---|---|
+| P1 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
+| P2 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
+| P3 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
+| P4 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
+| P5 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
+
+---
+
+#### Roteiro de testes de usabilidade
+
+
+| ID do teste | Fluxo avaliado | Propósito | Pré-condições | Tarefa do usuário | Cenário positivo | Cenário negativo | Pós-condições | Critério de sucesso | Métricas observadas |
+|---|---|---|---|---|---|---|---|---|---|
+| TU-01 | Cadastro e login | Avaliar se o usuário consegue criar uma conta ou acessar o aplicativo sem dificuldade. | O usuário está na tela inicial do aplicativo e ainda não está autenticado. | Criar uma conta ou realizar login utilizando os campos disponíveis. | O usuário preenche os dados corretamente, conclui o cadastro/login e acessa o fluxo inicial do app. | O usuário não encontra a opção de cadastro/login, preenche dados incorretos ou não entende mensagens de erro. | Usuário autenticado e direcionado para o onboarding ou tela inicial. | O usuário conclui o cadastro/login sem ajuda externa. | Tempo de execução, erros de preenchimento, dúvidas verbalizadas e taxa de sucesso. |
+| TU-02 | Onboarding de preferências | Verificar se o usuário consegue concluir o onboarding inicial de forma rápida e compreende que suas respostas personalizam a experiência. | O usuário está autenticado e acessa o aplicativo pela primeira vez. | Selecionar cidade, interesses culturais e frequência de ida ao teatro. | O usuário entende as etapas, seleciona as opções e conclui o onboarding. | O usuário não entende o objetivo das perguntas, não sabe quantas opções selecionar ou abandona o fluxo. | Preferências iniciais registradas ou simuladas no sistema. | O usuário conclui o onboarding e compreende que suas escolhas influenciam as recomendações. | Tempo de conclusão, quantidade de dúvidas, erros de navegação e taxa de conclusão. |
+| TU-03 | Home e recomendações iniciais | Avaliar se os primeiros espetáculos exibidos na Home estão coerentes com as preferências informadas no onboarding. | O usuário concluiu o onboarding e foi direcionado para a Home. | Observar os primeiros espetáculos exibidos na Home e indicar se eles combinam com as preferências selecionadas. | O usuário reconhece que os espetáculos recomendados estão relacionados aos interesses escolhidos. | O usuário percebe recomendações incoerentes ou não entende por que aqueles espetáculos aparecem. | Usuário visualiza a Home e interpreta a seção de recomendações. | O usuário identifica coerência entre preferências iniciais e recomendações exibidas. | Percepção de relevância, comentários do usuário, dúvidas, taxa de aceitação das recomendações e tempo até identificar a seção. |
+| TU-04 | Busca de espetáculo | Verificar se o usuário consegue encontrar um espetáculo, teatro ou categoria utilizando a busca. | O usuário está na área principal do aplicativo e possui acesso à barra inferior. | Acessar a tela de busca e procurar um espetáculo, teatro ou categoria de interesse. | O usuário encontra o campo de busca, compreende os resultados e seleciona um item relevante. | O usuário não identifica a busca, não entende os resultados ou não percebe a função de filtro. | Resultado de busca visualizado ou espetáculo selecionado. | O usuário encontra um item relevante sem ajuda externa. | Tempo de busca, erros de navegação, uso de filtros, dúvidas e taxa de sucesso. |
+| TU-05 | Detalhes do espetáculo e redirecionamento externo | Avaliar se o usuário entende as informações do espetáculo e compreende que a compra ocorre fora do aplicativo. | O usuário selecionou um espetáculo pela Home, recomendações ou busca. | Abrir os detalhes do espetáculo, localizar data, local, sinopse e identificar a ação de compra/redirecionamento. | O usuário encontra as informações principais e entende que será direcionado para uma ticketeira externa. | O usuário não encontra informações importantes ou acredita que o pagamento será feito dentro do aplicativo. | Usuário compreende as informações do espetáculo e o redirecionamento para a ticketeira. | O usuário consegue explicar o espetáculo e entende o redirecionamento externo. | Tempo para localizar informações, dúvidas sobre compra, confiança no redirecionamento e compreensão do botão. |
+| TU-06 | Adicionar espetáculo à Wishlist | Avaliar se o usuário entende como salvar um espetáculo na Wishlist. | O usuário está visualizando um card ou a tela de detalhes de um espetáculo. | Adicionar um espetáculo à Wishlist usando o botão ou ícone de favorito. | O usuário identifica o ícone de favorito, salva o espetáculo e percebe que a ação foi realizada. | O usuário não entende o ícone, não percebe feedback visual ou não sabe se o item foi salvo. | Espetáculo salvo na Wishlist ou ação simulada no protótipo. | O usuário consegue favoritar um espetáculo sem ajuda e entende que ele foi salvo. | Tempo de execução, erros de toque, dúvidas sobre o ícone, compreensão do feedback visual e taxa de sucesso. |
+| TU-07 | Acessar Wishlist | Avaliar se o usuário consegue encontrar a Wishlist e visualizar os espetáculos salvos. | O usuário já favoritou pelo menos um espetáculo ou está diante do estado vazio da Wishlist. | Acessar a Wishlist pela barra inferior e verificar os espetáculos salvos. | O usuário encontra a Wishlist, entende a lista de favoritos ou compreende o estado vazio. | O usuário não encontra a Wishlist, não entende o estado vazio ou não sabe como voltar a explorar espetáculos. | Wishlist acessada e estado da lista compreendido. | O usuário consegue acessar a Wishlist e explicar sua função. | Tempo de navegação, erros, dúvidas, compreensão da barra inferior e taxa de sucesso. |
+| TU-08 | Perfil e edição de preferências | Verificar se o usuário consegue acessar o perfil e alterar suas preferências de cidade ou interesses culturais. | O usuário está logado e possui acesso à barra inferior de navegação. | Acessar o Perfil, entrar em Preferências e Cidade, editar interesses ou cidade e salvar alterações. | O usuário encontra a opção correta, altera preferências e entende que isso impacta as recomendações. | O usuário não encontra a edição de preferências, não entende o impacto da alteração ou não consegue salvar. | Preferências atualizadas ou simuladas no sistema. | O usuário consegue acessar o perfil e editar preferências sem ajuda externa. | Tempo de execução, erros de navegação, dúvidas, compreensão da relação entre preferências e recomendações e taxa de sucesso. |
+
+---
+
+#### Questionário SUS
+
+Após a execução dos testes, cada participante deverá responder ao questionário SUS, utilizando escala de 1 a 5, em que:
+
+- **1** representa “discordo totalmente”;
+- **5** representa “concordo totalmente”.
+
+| Item | Afirmação | Nota de 1 a 5 |
+|---|---|---|
+| 1 | Eu acho que gostaria de usar este sistema com frequência. | A preencher |
+| 2 | Eu achei o sistema desnecessariamente complexo. | A preencher |
+| 3 | Eu achei o sistema fácil de usar. | A preencher |
+| 4 | Eu acho que precisaria de ajuda de uma pessoa técnica para usar este sistema. | A preencher |
+| 5 | Eu achei que as funcionalidades do sistema estavam bem integradas. | A preencher |
+| 6 | Eu achei que havia muita inconsistência no sistema. | A preencher |
+| 7 | Eu imagino que a maioria das pessoas aprenderia a usar este sistema rapidamente. | A preencher |
+| 8 | Eu achei o sistema muito difícil de usar. | A preencher |
+| 9 | Eu me senti confiante usando o sistema. | A preencher |
+| 10 | Eu precisei aprender muitas coisas antes de conseguir usar o sistema. | A preencher |
+
+---
+
+#### Métricas analisadas
+
+Além do questionário SUS, serão observadas métricas qualitativas e quantitativas durante a execução dos testes.
+
+| Métrica | Descrição | Forma de coleta |
+|---|---|---|
+| Taxa de sucesso | Indica se o usuário conseguiu concluir a tarefa proposta. | Observação direta durante o teste. |
+| Tempo de execução | Mede quanto tempo o usuário levou para concluir cada tarefa. | Cronometragem manual ou gravação da sessão. |
+| Número de erros | Registra cliques incorretos, caminhos errados ou ações mal compreendidas. | Observação direta durante o teste. |
+| Dúvidas verbalizadas | Registra comentários, inseguranças ou perguntas feitas pelo participante. | Anotações do avaliador. |
+| Percepção de relevância | Avalia se o usuário percebe coerência nas recomendações exibidas. | Pergunta direta após a tarefa de recomendação. |
+| Confiança no redirecionamento | Avalia se o usuário entende e confia no envio para ticketeiras externas. | Pergunta direta após a tarefa de detalhes do espetáculo. |
+| Pontuação SUS | Mede a percepção geral de usabilidade do sistema. | Questionário SUS aplicado ao final do teste. |
+
+---
+
+#### Discussão de abrangência
+
+Os testes de usabilidade propostos cobrem os principais fluxos da jornada mobile do Portal Aventura, desde a entrada do usuário no aplicativo até a personalização, descoberta de espetáculos e gerenciamento de preferências.
+
+Os cenários contemplam cadastro e login, onboarding, recomendações iniciais na Home, busca, detalhes do espetáculo, redirecionamento para ticketeiras externas, Wishlist, Perfil e edição de preferências. Esses fluxos foram priorizados porque representam a experiência central do produto e impactam diretamente a proposta de valor da solução: recomendar espetáculos relevantes com base nos interesses do usuário.
+
+A amostra mínima de 5 usuários externos permite identificar problemas iniciais de navegação, compreensão da interface, clareza dos rótulos, efetividade da barra inferior e percepção de relevância das recomendações. Como limitação, os resultados representam uma avaliação qualitativa inicial e devem ser complementados posteriormente com uma amostra maior, testes em ambiente funcional completo e análise de comportamento após uso contínuo da aplicação.
+
+A aplicação do questionário SUS complementa a observação das tarefas, permitindo obter uma medida padronizada da percepção de usabilidade do sistema. Dessa forma, o planejamento combina avaliação prática de tarefas com uma métrica reconhecida de experiência do usuário.
+
+---
+
+### 17.6 Testes de APIs externas
+
+O sistema integra a API **ViaCEP** para validação, autocomplete e enriquecimento automático de endereços. Essa integração é essencial para suportar a geolocalização dos usuários e entregar recomendações personalizadas na seção “Perto de você”, com foco nas cidades de São Paulo e Rio de Janeiro.
+
+| ID do teste | API externa | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso | Ferramentas |
+|-------------|-------------|-----------|---------------|------------------|------------------|------------------------|---------------|---------------------|-------------|
+| 01 | ViaCEP | Validar CEP e enriquecer automaticamente os dados completos de endereço (logradouro, bairro, cidade e UF) | Usuário autenticado na tela de cadastro ou edição de perfil com conexão estável | Envio de CEP válido e existente (ex: 01310-100) | - | 1. Realizar requisição GET para `https://viacep.com.br/ws/{CEP}/json/`<br>2. Validar status code, tempo de resposta e estrutura da resposta JSON<br>3. Confirmar o mapeamento correto dos dados no backend e persistência no banco | Dados de endereço enriquecidos são salvos no perfil do usuário e utilizados nos filtros geográficos | HTTP 200, todos os campos principais preenchidos corretamente, tempo de resposta ≤ 1,5s | Postman / Insomnia / cURL |
+| 02 | ViaCEP | Testar tratamento robusto de CEPs inválidos, mal formatados ou inexistentes | Conexão com internet disponível | - | Envio de CEP inválido (ex: 123, 99999-999 ou com caracteres alfabéticos) | 1. Enviar requisição com CEP inválido<br>2. Validar resposta da API e lógica de tratamento aplicada pelo backend<br>3. Verificar feedback exibido ao usuário | Sistema exibe mensagem clara e permite prosseguimento com fallback | HTTP 200 com `erro: true` tratado corretamente, fluxo mantido sem interrupções, log registrado | Postman / Insomnia |
+| 03 | ViaCEP | Avaliar performance, latência, timeout e resiliência sob diferentes condições de rede | Ambiente de homologação com ferramentas de simulação de rede | Resposta rápida em condições normais de rede | Alta latência ou indisponibilidade temporária da API | 1. Executar 30 consultas sequenciais com CEPs válidos<br>2. Aplicar Network Throttling (4G, Slow 3G e Offline)<br>3. Simular timeout forçado<br>4. Registrar todas as métricas de performance | Sistema aplica fallback de forma transparente e mantém a jornada do usuário fluida | Tempo médio ≤ 1,2s (p95 ≤ 2,0s), taxa de sucesso ≥ 98%, tratamento graceful sem impacto na experiência | Postman / Insomnia + Chrome DevTools + Network Throttling |
+
+**Métricas dos Testes:**
+
+Os testes da integração com ViaCEP foram projetados com alto rigor para garantir desempenho, confiabilidade e excelente experiência do usuário. As principais métricas avaliadas são:
+
+- **Tempo de Resposta**: Média ≤ 1,2 segundos e p95 ≤ 2,0 segundos em rede normal. Em condições de Slow 3G, o p95 não deve exceder 4,5 segundos.
+- **Taxa de Sucesso**: ≥ 98% das requisições tratadas com sucesso ou fallback adequado.
+- **Taxa de Erro Tratado**: 100% dos erros (CEP inválido ou falhas de conexão) devem ser capturados e tratados de forma amigável.
+- **Latência Máxima Aceitável**: Timeout configurado em 8 segundos, com ativação automática de fallback.
+- **Eficiência de Cache**: Taxa de acerto ≥ 75% em consultas repetidas, reduzindo chamadas à API externa.
+- **Resiliência**: 100% dos fluxos críticos (cadastro e edição de perfil) devem ser completados mesmo em cenários de rede degradada.
+- **Monitoramento**: Todos os eventos são logados com contexto completo (CEP, tempo de resposta, código de erro e usuário) para análise contínua.
+
+Essa abordagem assegura que a integração com ViaCEP contribua positivamente para a qualidade geral do sistema, oferecendo rapidez, precisão e robustez na geolocalização dos usuários do Portal Aventura.
+
+---
+
+### 17.7 Testes de integração
+
+Nesta seção são planejados os testes das interações entre componentes internos e sistemas externos da Plataforma Aventura. O módulo VHS (*Virtual HTTP Store*) é utilizado como mecanismo de cache temporário obrigatório para todas as integrações com APIs externas (TI-04 e TI-05), garantindo estabilidade, isolamento e reprodutibilidade dos testes mesmo em cenários de indisponibilidade de terceiros.
+
+---
+
+#### 17.7.1 Configuração do módulo VHS
+
+O VHS atua como camada intermediária entre o Backend e qualquer serviço HTTP externo. Ele intercepta as chamadas, armazena as respostas em cache com TTL configurável e as serve em requisições subsequentes idênticas. Nos testes, o VHS opera em modo *test* com TTLs reduzidos, cache flush entre suítes e inspeção habilitada via `VhsTestClient`.
+
+
+
+#### 17.7.1 Tabela de testes
+
+| ID do teste | Integração avaliada | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso | Ferramentas | Uso do VHS |
+|---|---|---|---|---|---|---|---|---|---|---|
+| TI-01 | Frontend Mobile → Backend | Validar que as requisições HTTP originadas pelo app mobile chegam corretamente ao Backend, com autenticação JWT, serialização de payloads e tratamento de erros. Cobre os fluxos de Conta e Perfil (cadastro, login, onboarding, edição de preferências) e Exploração (catálogo, busca, detalhes, wishlist). | (1) Backend em execução; (2) banco PostgreSQL disponível; (3) dados seed de espetáculos inseridos;| Usuário realiza login com credenciais válidas: `POST /api/auth/login { email, password }`. O Backend retorna HTTP 200 com `{ token, expiresIn, userId }`. O token JWT é válido, assinado e pode ser utilizado em chamadas subsequentes. | Usuário envia `POST /api/auth/login` com senha incorreta. O Backend retorna HTTP 401 com `{ error: "InvalidCredentials" }`, sem token no response e sem exposição de dados internos. | (1) Executar `dotnet test --filter Category=TI-01`; (2) o Testcontainers sobe automaticamente o container PostgreSQL; (3) o Respawn reseta o banco antes de cada teste individual; (4) o `WebApplicationFactory` hospeda o Backend in-process; (5) as asserções validam status HTTP, campos do body e estado do banco via query direta. | (1) Token descartado ao final da suíte; (2) banco resetado via Respawn; (3) nenhum container residual em execução. | HTTP 200 e token válido no cenário positivo; HTTP 401 sem token no cenário negativo; nenhum HTTP 500 em qualquer fluxo; sem exposição de stack trace no body de erro. | xUnit, WebApplicationFactory (ASP.NET Core 8), Testcontainers (.NET), Respawn, FluentAssertions, Bogus | Não se aplica |
+| TI-02 | Backend → Banco de Dados | Validar a camada de persistência: criação, leitura, atualização e remoção de entidades críticas (usuários, espetáculos, wishlist e interações), garantindo integridade referencial, ausência de duplicatas e comportamento correto em falhas de banco. | (1) PostgreSQL 15+ via Testcontainers com migrations aplicadas; (2) Respawn configurado para reset entre testes; (3) dados seed para espetáculos, teatros e usuário base; (4) connection string apontando para o container de teste. | Usuário é inserido via repositório com dados válidos. A consulta subsequente pelo e-mail retorna o registro com todos os campos obrigatórios (`name`, `email`, `passwordHash`, `createdAt`) preenchidos corretamente e sem a senha em texto puro. | Tentativa de inserir um segundo usuário com o mesmo e-mail. O banco lança violação de unique constraint; o repositório propaga a exceção sem realizar commit; o banco permanece com apenas um registro para o e-mail. | (1) Executar `dotnet test --filter Category=TI-02`; (2) cada teste recebe uma instância limpa do banco via Respawn; (3) as asserções validam tanto o retorno do repositório quanto o estado do banco por query direta; (4) para cenários de wishlist duplicada, verificar contagem de registros após duas inserções do mesmo par `(userId, espetaculoId)`. | (1) Banco resetado via Respawn; (2) sem registros órfãos por FK; (3) nenhum container residual. | Entidades persistidas corretamente com todos os campos no cenário positivo; violação de constraint tratada sem HTTP 500 e sem duplicata no negativo; todas as operações de leitura completadas em menos de 200 ms. | xUnit, Testcontainers (.NET), Respawn, FluentAssertions, Bogus | Não se aplica |
+| TI-03 | Backend → Serviço de Recomendação | Validar que o Backend consulta corretamente o Serviço de Recomendação via `IRecommendationService`, recebe a lista personalizada de espetáculos e trata adequadamente os cenários de fallback (usuário sem histórico) e indisponibilidade do serviço. | (1) Serviço de Recomendação disponível (instância real via Testcontainers ou stub via WireMock.Net); (2) banco com interações seed (mínimo 10 interações por usuário de teste em gênero Musical); (3) usuário "novo" sem nenhuma interação criado para o cenário de fallback; (4) modelo de recomendação inicial disponível no Bucket Storage ou mockado. | Backend chama `GET /api/recomendacoes` com token de usuário que possui 10+ interações em espetáculos do gênero Musical. O Serviço de Recomendação retorna HTTP 200 com lista de 5 a 10 espetáculos, com peso maior para o gênero Musical e sem nenhum espetáculo já visualizado pelo usuário. | Backend chama `GET /api/recomendacoes` com o Serviço de Recomendação indisponível (WireMock retornando HTTP 503). O Backend retorna HTTP 503 com `{ error: "ServiceUnavailable", retryAfter }`, sem HTTP 500, sem exposição de stack trace e com o evento registrado nos logs. | (1) Executar `dotnet test --filter Category=TI-03`; (2) o WireMock.Net simula o Serviço de Recomendação; (3) configurar WireMock para o cenário positivo com response de lista válida e para o negativo com HTTP 503; (4) inspecionar call count do WireMock para garantir que o Backend realizou exatamente uma chamada; (5) no cenário de fallback, verificar que a lista retornada contém espetáculos populares e não está vazia. | (1) WireMock resetado entre testes; (2) banco resetado via Respawn; (3) nenhuma recomendação persiste no banco do teste anterior. | Lista de recomendações retornada com campos obrigatórios (`id`, `titulo`, `score`) no positivo; HTTP 503 tratado com mensagem amigável no negativo; fallback retorna lista não vazia para usuário sem histórico; nenhum HTTP 500 em qualquer cenário. | xUnit, WireMock.Net, Testcontainers (.NET), Respawn, FluentAssertions | Não se aplica |
+| TI-04 | Backend → API externa (ViaCEP) | Validar a integração com o ViaCEP para preenchimento automático de endereço durante o cadastro, garantindo que o VHS armazene e sirva as respostas em cache, e que o Backend trate corretamente CEPs inválidos e indisponibilidade do serviço externo. | (1) WireMock.Net simulando `https://viacep.com.br/ws/{cep}/json/`; (2) VHS configurado com TTL de 24 h para CEP válido e 5 min para CEP inexistente; (3) cache VHS limpo via `VhsTestClient.Flush()` antes de cada suíte; (4) Backend configurado para rotear todas as chamadas ao ViaCEP através do VHS (nenhuma chamada direta permitida). | Backend recebe `POST /api/address/lookup { cep: "01310100" }`. A chamada passa pelo VHS (cache miss na primeira execução, `X-Cache: MISS`), o WireMock retorna os dados do CEP e o Backend responde HTTP 200 com `{ logradouro, bairro, cidade, estado }`. O VHS armazena a resposta com TTL de 24 h. Na segunda execução idêntica, o VHS responde com `X-Cache: HIT` sem consultar o WireMock. | Backend recebe `POST /api/address/lookup` com o WireMock configurado para retornar HTTP 503. O VHS não possui a resposta em cache. O Backend retorna HTTP 503 com mensagem amigável ("Serviço de CEP temporariamente indisponível"), orienta o preenchimento manual e não armazena o erro 5xx no cache do VHS. | (1) Executar `dotnet test --filter Category=TI-04`; (2) usar `VhsTestClient.Flush()` no `BeforeEach`; (3) executar o cenário positivo duas vezes e inspecionar `X-Cache` no segundo response e o `CallCount` do WireMock (deve ser 1, não 2); (4) para o negativo de indisponibilidade, parar o WireMock e verificar que o VHS não criou entrada de erro; (5) para CEP inválido (ex: `"00000"`), verificar HTTP 400 sem nenhuma chamada ao WireMock ou ao VHS. | (1) Cache VHS limpo ao final da suíte; (2) WireMock resetado; (3) nenhuma entrada de erro 5xx armazenada no VHS. | HTTP 200 com dados de endereço no positivo; `X-Cache: HIT` e call count = 1 do WireMock na segunda chamada idêntica; HTTP 400 para CEP mal formatado sem chamada ao serviço externo; HTTP 503 amigável quando ViaCEP indisponível e cache vazio; nenhum HTTP 500 em qualquer cenário. | xUnit, WireMock.Net, VhsTestClient, WebApplicationFactory, FluentAssertions | **Sim** — cache miss/hit de CEPs válidos (TTL 24 h); cache de not-found (TTL 5 min); nenhuma chamada ao ViaCEP real em nenhum cenário de teste. |
+| TI-05 | Backend → Ticketera externa | Validar que o Backend obtém, cacheia via VHS e entrega corretamente os links de compra da ticketera parceira, e que trata de forma adequada links indisponíveis, espetáculos sem link cadastrado e indisponibilidade total do serviço externo. | (1) WireMock.Net simulando o endpoint de links da ticketera parceira; (2) VHS configurado com TTL de 1 h para links válidos e 5 min para respostas de erro 4xx/5xx; (3) cache VHS limpo via `VhsTestClient.Flush()` antes de cada suíte; (4) espetáculo com `compraUrl` válida e espetáculo com `compraUrl` nula cadastrados no banco seed. | Backend recebe `GET /api/espetaculos/{id}/compra-link`. O VHS não possui a URL em cache (cache miss). O Backend consulta a ticketera via WireMock, que retorna a URL de compra válida. O Backend responde HTTP 200 com `{ url, expiresAt }` e registra evento `clique_compra` para analytics. O VHS armazena o link com TTL de 1 h. Na segunda chamada idêntica, `X-Cache: HIT` e o WireMock não é consultado novamente. | Backend recebe `GET /api/espetaculos/{id}/compra-link` com o WireMock retornando HTTP 503 e o VHS sem cache para aquele espetáculo. O Backend retorna HTTP 503 com mensagem amigável, sem expor detalhes internos. Para espetáculo com `compraUrl` nula no banco, o Backend retorna HTTP 404 com `{ error: "PurchaseLinkNotAvailable" }` sem sequer consultar o VHS ou a ticketera. | (1) Executar `dotnet test --filter Category=TI-05`; (2) usar `VhsTestClient.Flush()` no `BeforeEach`; (3) executar a chamada positiva duas vezes, verificar `X-Cache: HIT` na segunda e call count = 1 do WireMock; (4) para o negativo de indisponibilidade, configurar WireMock com HTTP 503 e verificar que o VHS não armazenou o erro; (5) para espetáculo sem link, verificar que a chamada retorna HTTP 404 sem nenhuma consulta ao WireMock ou ao VHS; (6) verificar que o evento `clique_compra` foi registrado no banco apenas no cenário positivo. | (1) Cache VHS limpo ao final da suíte; (2) WireMock resetado; (3) nenhuma entrada de erro armazenada no VHS; (4) evento `clique_compra` registrado somente em chamadas bem-sucedidas. | HTTP 200 com URL válida no positivo; `X-Cache: HIT` e call count = 1 do WireMock na segunda chamada; HTTP 404 com mensagem clara para espetáculo sem link, sem consulta ao VHS ou à ticketera; HTTP 503 amigável com ticketera indisponível e cache vazio; nenhum HTTP 500 em qualquer cenário. | xUnit, WireMock.Net, VhsTestClient, WebApplicationFactory, Respawn, FluentAssertions | **Sim** — cache de links válidos (TTL 1 h); cache de not-found (TTL 5 min); nenhuma chamada à ticketera real em nenhum cenário de teste. |
+
+---
+
+#### 17.7.2 Método de validação dos resultados
+
+A validação de cada teste combina quatro camadas de verificação:
+
+**Status HTTP e body do response** — todas as asserções verificam o código de status esperado (200, 201, 400, 401, 404, 503) e os campos obrigatórios do JSON de resposta.
+
+**Estado do banco de dados** — após cada operação de escrita, uma query direta ao PostgreSQL (via Testcontainers) confirma que o registro foi criado, atualizado ou removido conforme esperado, e que não há duplicatas nem registros órfãos por violação de FK.
+
+**Comportamento do VHS (TI-04 e TI-05)** — o `VhsTestClient` é usado para inspecionar o header `X-Cache` (HIT ou MISS), verificar o `CallCount` do WireMock (garantindo que a segunda chamada idêntica não atinge o serviço externo) e confirmar que respostas de erro 5xx não foram armazenadas em cache.
+
+**Logs e rastreabilidade** — o `X-Correlation-Id` é propagado em todas as requisições e verificado nos logs do Serilog/Seq, garantindo rastreabilidade ponta a ponta; a ausência de stack trace em responses de erro é validada como critério explícito de sucesso.
+
+---
+
+#### 17.7.3 Discussão de abrangência
+
+As cinco integrações mapeadas cobrem todos os fluxos críticos identificados no Diagrama de Casos de Uso e no Diagrama de Componentes:
+
+**TI-01 (Frontend → Backend)** é o ponto de entrada de toda a jornada do usuário — cadastro, login, onboarding, busca e wishlist. Sua prioridade é máxima porque qualquer falha aqui impede o acesso a todas as demais funcionalidades.
+
+**TI-02 (Backend → Banco)** garante a integridade da camada de persistência, que sustenta tanto o catálogo quanto as interações que alimentam o motor de recomendação. Sem essa camada estável, os testes de TI-03 perdem confiabilidade.
+
+**TI-03 (Backend → Serviço de Recomendação)** valida o diferencial central do produto — a personalização. O uso de WireMock aqui é deliberado: isola o comportamento do Backend do algoritmo interno do serviço, permitindo testar contratos e fallbacks sem depender do modelo treinado.
+
+**TI-04 (Backend → ViaCEP)** e **TI-05 (Backend → Ticketera)** são as únicas integrações com serviços externos reais e, por isso, são as que mais se beneficiam do VHS. O módulo elimina a dependência de disponibilidade e de estado dos terceiros durante os testes, tornando as suítes completamente determinísticas e executáveis offline. Adicionalmente, os cenários de cache hit/miss validam explicitamente que o VHS está funcionando como camada de proteção — e não apenas como detalhe de implementação — por meio do WireMock call count e do header `X-Cache`.
+
+A combinação VHS + WireMock garante que nenhum teste de integração realiza chamadas a serviços externos reais, o que atende ao princípio de isolamento de ambiente e viabiliza a execução no pipeline de CI sem necessidade de credenciais ou conectividade com terceiros.
+
+---
+
+### 17.8 Discussão geral de abrangência dos testes
+
+A preencher após a conclusão das subseções anteriores.
+
+Nesta seção, o grupo deve discutir a cobertura geral do planejamento, destacando quais dimensões do sistema foram contempladas, quais riscos permanecem e quais seriam os próximos passos para execução dos testes.
+
+----
+
+## 18. Desenvolvimento Do Projeto  — Sprint 3
+
+Esta seção documenta o progresso incremental da solução de software durante a Sprint 3. O objetivo é evidenciar a evolução do backend, frontend, integrações, padrões de desenvolvimento, testes unitários, metodologia e comprovações de execução da aplicação.
+
+---
+### 18.1 Objetivo da sessão
+
+Esta seção evidencia o progresso incremental da solução durante a Sprint 3, contemplando:
+
+- Implementação completa do backend em .NET 10 com arquitetura em camadas (Domain, Repository, Service, Controller);
+- Implementação do aplicativo mobile em React Native com Expo, adotando o padrão MVVM;
+- Adoção de padrões de codificação formalizados (nomenclatura, commits, separação de responsabilidades);
+- Suíte de testes unitários com 109 testes aprovados, cobrindo Domínio, Serviços, Controllers, Mappers, Middlewares e Infraestrutura;
+- Documentação das rotas REST disponibilizadas pelo backend;
+- Evidências de execução da aplicação e da suíte de testes.
+
+---
+
+### 18.2 Arquitetura de codificação e estrutura de diretórios
+
+A organização geral do repositório separa claramente backend, frontend, banco de dados, modelos de machine learning, dataset, documentação e ferramentas auxiliares.
+
+#### Estrutura geral do repositório
+
+```text
+g02/
+├── .env                         # Variáveis de ambiente (não versionado)
+├── .gitignore
+├── README.md                    # Visão geral e instruções do projeto
+├── docker-compose-db.yml        # Sobe container PostgreSQL local via Docker
+├── requirements.txt             # Dependências Python para ML/análise
+│
+├── DbRunner/                    # Utilitário C# para aplicar scripts SQL
+│   ├── DbRunner.csproj
+│   └── Program.cs
+│
+├── assets/                      # Imagens e diagramas do projeto
+│
+├── docs/                        # Documentação técnica e de negócio
+│
+└── src/
+    ├── aad/                     # Jupyter Notebooks de análise e modelagem ML
+    │   ├── 01_analise_exploratoria_dados.ipynb
+    │   ├── 02_knn.ipynb
+    │   ├── 03_svd.ipynb
+    │   └── 04_avaliacao_inferencia.ipynb
+    │
+    ├── dataset/                 # Dataset CSV utilizado no treinamento
+    │   └── dataset.csv
+    │
+    ├── models/                  # Modelos treinados e script de inferência
+    │   ├── inference.py
+    │   ├── svd_model.joblib
+    │   ├── knn_surprise_model.pkl
+    │   └── final_model.joblib
+    │
+    ├── database/                # Scripts SQL e Dockerfile do banco de dados
+    │   ├── 01_create_database.sql
+    │   ├── 02_initial_data.sql
+    │   └── Dockerfile
+    │
+    ├── backend/                 # Web API REST em .NET 10
+    │   ├── BackEnd.Aventura.csproj
+    │   ├── Program.cs
+    │   ├── appsettings.json
+    │   ├── controller/
+    │   ├── domain/
+    │   ├── dto/
+    │   ├── exceptions/
+    │   ├── extensions/
+    │   ├── infrastructure/
+    │   ├── mappings/
+    │   ├── repository/
+    │   ├── services/
+    │   └── BackEnd.Aventura.Tests/
+    │       ├── Fakes/
+    │       └── *.Tests.cs
+    │
+    └── frontend/
+        └── mobile-app-aventura/ # App React Native com Expo
+            ├── App.js
+            ├── RootNavigator.js
+            ├── components/
+            ├── constants/
+            ├── data/
+            ├── models/
+            ├── repositories/
+            ├── screens/
+            ├── services/
+            └── viewmodels/
+```
+
+---
+
+### 18.3 Desenvolvimento do Backend
+
+#### 18.3.1 Arquitetura do backend
+
+O backend foi desenvolvido em **.NET 10 (C#)** e segue uma arquitetura em camadas inspirada nos princípios de **Domain-Driven Design (DDD)** e **Clean Architecture**, com clara separação de responsabilidades entre as camadas.
+
+```text
+src/backend/
+├── domain/            # Entidades ricas de domínio com regras de negócio encapsuladas
+│   ├── Espetaculo.cs
+│   ├── Preferencias.cs
+│   ├── Recomendacao.cs
+│   ├── Teatro.cs
+│   ├── Usuario.cs
+│   └── EntityGuards.cs
+│
+├── repository/        # Interfaces (contratos) dos repositórios de dados
+│   ├── IEspetaculoRepository.cs
+│   ├── IGeneroRepository.cs
+│   ├── IPreferenciasRepository.cs
+│   ├── IRecomendacaoRepository.cs
+│   ├── ITeatroRepository.cs
+│   ├── IUsuarioRepository.cs
+│   ├── IWishlistRepository.cs
+│   ├── EspetaculoRepository.cs
+│   ├── GeneroRepository.cs
+│   ├── PreferenciasRepository.cs
+│   ├── RecomendacaoRepository.cs
+│   ├── TeatroRepository.cs
+│   ├── UsuarioRepository.cs
+│   └── WishlistRepository.cs
+│
+├── services/          # Lógica de aplicação e orquestração entre repositórios
+│   ├── AuthService.cs
+│   ├── EspetaculoService.cs
+│   ├── GeneroService.cs
+│   ├── PreferenciasService.cs
+│   ├── RecomendacaoService.cs
+│   ├── TeatroService.cs
+│   ├── UsuarioService.cs
+│   └── WishlistService.cs
+│
+├── controller/        # Controllers da API REST (recebem requisições HTTP)
+│   ├── AuthController.cs
+│   ├── EspetaculoController.cs
+│   ├── GeneroController.cs
+│   ├── PreferenciasController.cs
+│   ├── RecomendacaoController.cs
+│   ├── TeatroController.cs
+│   ├── UsuarioController.cs
+│   └── WishlistController.cs
+│
+├── dto/               # Objetos de transferência de dados (entrada e saída da API)
+│   ├── AuthDtos.cs
+│   ├── EspetaculoDto.cs
+│   ├── PreferenciasDto.cs
+│   ├── PreferenciasUpdateDto.cs
+│   ├── RecomendacaoDto.cs
+│   └── TeatroDto.cs
+│
+├── mappings/          # Extensões de mapeamento entre entidades de domínio e DTOs
+│   └── DtoMapper.cs
+│
+├── exceptions/        # Exceções de domínio personalizadas
+│   ├── NotFoundException.cs
+│   └── ConflictException.cs
+│
+├── infrastructure/    # Infraestrutura: fábrica de conexões e middleware global
+│   ├── DbConnectionFactory.cs
+│   ├── IDbConnectionFactory.cs
+│   ├── middleware/
+│   │   └── GlobalExceptionHandler.cs
+│   └── persistence/
+│       ├── EspetaculoMapper.cs
+│       └── EspetaculoQueries.cs
+│
+└── extensions/        # Registro de dependências via Injeção de Dependência
+    └── DependencyInjection.cs
+```
+
+**Decisões arquiteturais justificadas:**
+
+- **ADO.NET direto com Npgsql** (sem ORM): Escolha deliberada para ter controle total sobre as queries SQL, eliminar overhead de mapeamento de ORM e garantir máxima performance. O padrão Repository abstrai os detalhes de persistência das camadas superiores.
+- **Entidades de domínio ricas**: As classes de domínio (como `Usuario`, `Teatro`, `Preferencias`) expõem métodos de comportamento (ex: `AtualizarPerfil`, `AdicionarEspetaculo`, `SetGeneros`) em vez de serem simples bags de propriedades. Isso garante que as regras de negócio sejam sempre aplicadas no lugar certo.
+- **EntityGuards**: Classe estática utilitária que centraliza validações de argumentos (nulos, vazios, guids vazios), evitando código duplicado em construtores e métodos.
+- **GlobalExceptionHandler**: Middleware que mapeia exceções de domínio para códigos HTTP corretos (`NotFoundException` → 404, `ConflictException` → 409, `ArgumentException` → 400), retornando respostas no padrão RFC 7807 (`ProblemDetails`).
+- **Injeção de Dependência via `IServiceCollection`**: Toda a configuração de DI fica centralizada em `DependencyInjection.cs`, mantendo o `Program.cs` limpo.
+
+---
+
+#### 18.3.2 Rotas da API REST
+
+Todas as rotas estão expostas sob o prefixo `/api`. O Swagger UI está disponível em `/swagger` no ambiente de desenvolvimento.
+
+##### Auth — `/api/auth`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `POST` | `/api/auth/register` | Registra um novo usuário. Valida nome, e-mail, senha (mínimo 6 caracteres) e idade (mínimo 13 anos). Cria preferências padrão automaticamente. | `201 Created` | `400 Bad Request` (dados inválidos), `409 Conflict` (e-mail duplicado) |
+| `POST` | `/api/auth/login` | Autentica usuário por e-mail e senha. A senha é verificada contra o hash BCrypt armazenado. | `200 OK` | `400 Bad Request` (campo vazio), `401 Unauthorized` (credenciais inválidas) |
+
+**Payload de resposta (`AuthResponse`):**
+```json
+{
+  "usuarioId": "uuid",
+  "nome": "string",
+  "email": "string"
+}
+```
+
+---
+
+##### Espetáculos — `/api/espetaculo`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/espetaculo` | Retorna todos os espetáculos cadastrados. | `200 OK` | — |
+| `GET` | `/api/espetaculo/{id}` | Retorna um espetáculo pelo seu UUID. | `200 OK` | `404 Not Found` |
+| `GET` | `/api/espetaculo/search?genero=&nome=` | Busca espetáculos filtrando por gênero e/ou nome (ambos opcionais, case-insensitive). | `200 OK` | — |
+
+**Payload de resposta (`EspetaculoDto`):**
+```json
+{
+  "id": "uuid",
+  "nome": "string",
+  "genero": "string",
+  "tipoEvento": "string",
+  "descricao": "string",
+  "urlBilheteria": "string",
+  "dataInicio": "datetime",
+  "dataFim": "datetime",
+  "valorIngresso": 0.00,
+  "emCartaz": true
+}
+```
+
+---
+
+##### Teatros — `/api/teatro`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/teatro` | Retorna todos os teatros cadastrados. | `200 OK` | — |
+| `GET` | `/api/teatro/{id}` | Retorna um teatro pelo seu UUID, incluindo os espetáculos associados. | `200 OK` | `404 Not Found` |
+| `GET` | `/api/teatro/{id}/espetaculos` | Retorna os espetáculos de um teatro específico. | `200 OK` | `404 Not Found` |
+
+**Payload de resposta (`TeatroDto`):**
+```json
+{
+  "id": "uuid",
+  "nome": "string",
+  "endereco": "string",
+  "cidade": "string",
+  "horarioFuncionamento": "string",
+  "espetaculos": [ /* array de EspetaculoDto */ ]
+}
+```
+
+---
+
+##### Usuários — `/api/usuario`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/usuario/{id}` | Retorna os dados públicos de um usuário pelo UUID. | `200 OK` | `404 Not Found` |
+| `PUT` | `/api/usuario/{id}` | Atualiza nome e/ou idade do usuário. A idade mínima de 13 anos é validada no domínio. | `200 OK` | `400 Bad Request`, `404 Not Found` |
+
+---
+
+##### Preferências — `/api/preferencias`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/preferencias/{usuarioId}` | Retorna as preferências do usuário. Se ainda não existirem, são criadas com valores padrão automaticamente. | `200 OK` | — |
+| `PUT` | `/api/preferencias/{usuarioId}` | Atualiza as preferências (gêneros, tags, localização, faixa de preço, notificações). Todos os campos são opcionais. | `200 OK` | `400 Bad Request` (ex: `faixaPrecoMin` maior que `faixaPrecoMax`) |
+
+**Payload de atualização (`PreferenciasUpdateDto`):**
+```json
+{
+  "generos": ["Drama", "Musical"],
+  "tags": ["familiar", "classico"],
+  "cidade": "São Paulo",
+  "cep": "01310-100",
+  "faixaPrecoMin": 50.00,
+  "faixaPrecoMax": 300.00,
+  "receberNotificacoes": true
+}
+```
+
+---
+
+##### Wishlist — `/api/wishlist`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/wishlist/{usuarioId}` | Retorna a lista de espetáculos salvos pelo usuário. | `200 OK` | — |
+| `GET` | `/api/wishlist/{usuarioId}/contains/{espetaculoId}` | Verifica se um espetáculo específico está na wishlist do usuário. | `200 OK` (retorna `true` ou `false`) | — |
+| `POST` | `/api/wishlist/{usuarioId}/{espetaculoId}` | Adiciona um espetáculo à wishlist. Valida existência do espetáculo e duplicidade. | `201 Created` | `404 Not Found` (espetáculo não existe), `409 Conflict` (já adicionado) |
+| `DELETE` | `/api/wishlist/{usuarioId}/{espetaculoId}` | Remove um espetáculo da wishlist do usuário. | `204 No Content` | `404 Not Found` (item não está na wishlist) |
+
+---
+
+##### Recomendações — `/api/recomendacao`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/recomendacao/{usuarioId}?limit=10` | Retorna as top-N recomendações personalizadas para o usuário (padrão: 10, máximo: 50). Se não houver recomendações calculadas, retorna um fallback baseado nos gêneros favoritos do usuário. | `200 OK` | `400 Bad Request` (limit fora do intervalo 1–50) |
+
+**Payload de resposta (`RecomendacaoItemDto`):**
+```json
+{
+  "espetaculo": { /* EspetaculoDto */ },
+  "score": 0.92,
+  "motivo": "Baseado nos seus gêneros favoritos"
+}
+```
+
+---
+
+##### Gêneros — `/api/genero`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/genero` | Retorna a lista de todos os gêneros musicais/teatrais cadastrados. | `200 OK` | — |
+
+---
+
+### 18.4 Desenvolvimento do Frontend
+
+O frontend da Sprint 3 foi implementado como um aplicativo móvel híbrido em `src/frontend/mobile-app-aventura`, com foco em cross-platform e entrega rápida. A escolha por React Native buscou reduzir tempo de desenvolvimento e garantir disponibilidade simultânea em iOS e Android com um único conjunto de telas.
+
+A arquitetura do frontend foi pensada para:
+
+- manter telas e componentes desacoplados;
+- separar apresentação, estado de tela e acesso a dados por meio de um padrão inspirado em MVVM;
+- preservar uma linha clara de estado entre navegação, dados e apresentação;
+- facilitar testes de usabilidade e evolução de componentes visuais.
+
+A aplicação utiliza um padrão similar a MVVM. As telas em `screens/` atuam como camada de View, os hooks em `viewmodels/` concentram estado, eventos e regras de apresentação, e os arquivos em `repositories/` abstraem a origem dos dados. Nesta sprint, a maior parte dos repositories consome dados mockados em `data/`, enquanto serviços locais em `services/` simulam autenticação e persistem dados pontuais no dispositivo, como onboarding e wishlist via `AsyncStorage`.
+
+Essa decisão foi tomada para validar fluxo, navegação, componentes e experiência de uso antes da integração completa com o backend. A integração REST real fica prevista para as próximas sprints, mantendo os repositories como ponto natural de troca entre mocks e chamadas HTTP.
+
+#### 18.4.1 Arquitetura do frontend
+
+A estrutura adotada no frontend inclui:
+
+- `screens/` — telas de fluxo principal e secundário, incluindo autenticação, onboarding, Explorar, Busca, Detalhes, Wishlist, Perfil, Preferências, Notificações e Informações Institucionais.
+- `components/` — elementos reutilizáveis como cards de espetáculo, carrosséis, cabeçalhos e botões.
+- `viewmodels/` — hooks responsáveis por estado de tela, filtros, seleções, eventos de navegação e preparação dos dados para a View.
+- `repositories/` — camada de acesso a dados, hoje conectada principalmente a mocks locais e preparada para futura substituição por chamadas HTTP.
+- `services/` — serviços auxiliares para autenticação simulada e persistência local com `AsyncStorage`, como onboarding e wishlist.
+- `data/` — massas mockadas usadas na Sprint 3 para validar a experiência sem depender da API em tempo de execução.
+- `models/` — estruturas-base dos dados consumidos pelas telas e viewmodels.
+- `constants/` — tokens visuais e listas constantes, como cores, tipografia, espaçamentos e itens do menu de perfil.
+- `assets/` — imagens, ícones e recursos estáticos usados pela interface.
+
+Essa estrutura permite que a equipe evolua a interface e os fluxos de navegação com baixo acoplamento. Quando a integração com o backend for ativada, a principal mudança esperada estará nos repositories e services, preservando as telas e grande parte dos viewmodels.
+
+#### 18.4.2 Telas implementadas
+
+As telas essenciais entregues na Sprint 3 foram:
+
+- **Splash** — tela inicial de marca, usada como ponto de entrada antes do fluxo de autenticação.
+- **Login e Cadastro** — fluxo de autenticação simulado, com alternância entre entrada de usuário existente e criação de conta.
+- **Onboarding** — coleta de preferências iniciais (gêneros, cidade, frequência) e alimentação do motor de recomendação.
+- **Boas-vindas** — tela transicional após o onboarding, direcionando o usuário para a experiência principal.
+- **Explorar / Home** — exibição de carrosséis com conteúdo dinâmico, incluindo seções de recomendação personalizada e regional.
+- **Busca** — pesquisa por espetáculo e teatro com filtros básicos de nome e categoria.
+- **Detalhes de Espetáculo** — informações completas, teatro associado, link de compra e sugestões de espetáculos semelhantes.
+- **Wishlist** — gerenciamento de itens salvos, com adição e remoção direta do usuário.
+- **Perfil** — exibição dos dados do usuário e acesso às telas de preferências, notificações e informações institucionais.
+- **Preferências, Notificações e Informações Institucionais** — telas secundárias acessadas pelo Perfil, implementadas com dados mockados e interações locais nesta sprint.
+
+A implementação foi orientada pelas decisões de produto e pela estrutura esperada das APIs, mas nesta sprint o frontend opera majoritariamente com mocks locais. Isso permitiu validar o desenho das telas e a separação MVVM antes da integração real com os endpoints do backend nas próximas etapas.
+
+#### 18.4.3 Vídeo demonstrativo do frontend
+
+Como evidência complementar da Sprint 3, será adicionado aqui o link para um vídeo demonstrativo do aplicativo mobile em execução, mostrando o fluxo de navegação, as telas implementadas, a bottom tab bar, o uso de dados mockados e as interações principais do frontend.
+
+**Link do vídeo demonstrativo:** [Demonstração do frontend em execução](https://drive.google.com/drive/folders/1eGPiwsTAnqv7iXh_9Mo7P2QgqnWEykwY).
+
+---
+
+### 18.5 Padrões de codificação e padrões de projeto
+
+Nesta seção documentamos as decisões que guiaram o desenvolvimento do backend e do frontend na Sprint 3. Essas escolhas foram feitas para garantir consistência no código, manutenção previsível e alinhamento com boas práticas de engenharia.
+
+#### Padrões de codificação
+
+Os principais padrões adotados foram:
+
+- **Nomenclatura e organização:** classes e métodos em C# seguem PascalCase; nomes de variáveis e parâmetros seguem camelCase. A organização do backend segue camadas bem definidas: Controller → Service → Repository → Infrastructure → Domain → DTOs.
+- **Separação de responsabilidades:** cada camada tem responsabilidade única. Controllers expõem apenas endpoints; Services implementam regras de negócio; Repositories manipulam SQL e transações; DTOs isolam o contrato externo.
+- **Tratamento de erro:** exceptions customizadas (`NotFoundException`, `ConflictException`) são lançadas nas camadas de serviço e traduzidas em respostas HTTP padronizadas pelo middleware global. Isso evita duplicação de lógica de error handling em controllers.
+- **Formatação e qualidade:** o backend foi padronizado com `dotnet format`; o frontend segue convenções de formatação consistentes com `prettier` e regras de lint quando aplicáveis.
+- **Controle de versão e commits:** mensagens de commit seguem Conventional Commits, facilitando rastreabilidade e geração de changelog.
+- **Documentação técnica:** o código é acompanhado de documentação inline mínima e de mapeamentos claros entre entidades e DTOs, permitindo auditoria rápida das rotas implementadas.
+
+#### Padrões de projeto
+
+A aplicação utiliza padrões de projeto concretos para garantir robustez e clareza:
+
+| Tipo de padrão | Nome do padrão | Onde aparece no projeto | Justificativa |
+|---|---|---|---|
+| Criacional | Factory | `infrastructure/DbConnectionFactory.cs` | Centraliza a criação de `NpgsqlConnection`, reduz duplicação e valida credenciais de ambiente antes de abrir a conexão. |
+| Estrutural | Mapper | `mappings/DtoMapper.cs` | Separa as entidades do domínio dos contratos de API, permitindo que alterações internas não virem quebra de contrato. |
+| Comportamental | Repository | `repository/*Repository.cs` | Isola o acesso ao banco de dados, facilita testes de integração e mantém queries SQL organizadas. |
+| Comportamental | Service | `services/*Service.cs` | Orquestra regras de negócio, validações e fluxos transacionais fora dos controllers. |
+| Comportamental | Middleware | `extensions/middleware` | Centraliza o tratamento de exceções e a formatação de responses de erro, mantendo os controllers limpos. |
+
+#### Justificativas das escolhas
+
+- O padrão **Service/Repository** foi adotado para garantir que a camada de API mantenha apenas responsabilidades de roteamento e autorização, enquanto a lógica de domínio permanece testável.
+- O padrão **Factory** para conexão foi usado para evitar replicação de string de conexão e para encapsular a lógica de fallback entre `appsettings` e variáveis de ambiente.
+- O uso de **Mapper** evita o vazamento de entidades de domínio na API e permite evoluir o modelo interno sem alterar os resultados expostos.
+- A opção por **React Native** no frontend foi tomada para reduzir o tempo de entrega e permitir uma única base de código para Android e iOS.
+
+Essas decisões de codificação e arquitetura foram tomadas para oferecer um backend previsível e um frontend alinhado aos mesmos contratos, facilitando manutenção e continuidade do projeto.
+
+---
+
+### 18.6 Testes unitários do Backend e metodologia TDD
+
+Esta seção deve documentar a estratégia de testes unitários adotada no projeto, com foco nas funcionalidades implementadas e na aplicação da metodologia TDD.
+
+#### Estratégia de testes
+
+Abordagem adotada na Sprint 3:
+
+- Metodologia: TDD aplicada de forma pragmática nas camadas de `Service` e `Repository`; testes unitários escritos antes ou junto da implementação das regras críticas.
+- Ferramentas: `xUnit` para testes unitários e de integração; `Testcontainers` para subir instâncias de PostgreSQL em testes de integração; `WireMock.Net` para simular serviços externos; `Respawn` para resetar o banco entre testes; `FluentAssertions` para asserções expressivas.
+- Escopo priorizado: autenticação (`AuthService`), persistência (`UsuarioRepository`, `PreferenciasRepository`), e geração/consumo de recomendações (`RecomendacaoService`).
+
+#### Testes implementados
+
+| Teste | Camada testada | Funcionalidade | Resultado | Evidência |
+|---|---|---|---|---|
+| AuthService_ShouldHashAndVerifyPassword | Service | Registro e verificação de senha | Passed | `tests/BackEnd.Aventura.Tests/AuthServiceTests.cs` |
+| UsuarioRepository_CRUD | Repository (integration) | Criação/Leitura/Update de usuário | Passed | `tests/BackEnd.Aventura.Integration/UsuarioRepositoryTests.cs` (Testcontainers + Respawn) |
+| PreferenciasRepository_SaveAndLoad | Repository (integration) | Persistir e recuperar preferências | Passed | `tests/.../PreferenciasRepositoryTests.cs` |
+| RecomendacaoService_Fallback | Service (integration) | Geração de fallback por gêneros favoritos | Passed | `tests/.../RecomendacaoServiceTests.cs` (WireMock stub) |
+
+#### Execução dos testes
+
+Executar todos os testes do backend (local):
+
+```bash
+dotnet test src/backend/BackEnd.Aventura.sln --logger "console;verbosity=minimal"
+```
+
+Ou executar testes no diretório de testes:
+
+```bash
+dotnet test tests/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
+```
+
+#### Resultado da cobertura
+
+Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositórios) com meta de cobertura ≥ 70% nas partes essenciais. Relatórios de cobertura são gerados pelo pipeline de CI e anexados aos artefatos de build.
+
+---
+
+#### Link do vídeo demonstrativo
+
+[Vídeo demonstrativo](https://drive.google.com/file/d/1VCDSsW-dxjwJJM6786tu-Pd1RauL3sNp/view?usp=sharing)
+
+---
+
+### 18.7 Testes unitários do Frontend (React Native)
+ 
+Esta seção documenta a estratégia de testes unitários adotada para o frontend mobile do projeto, cobrindo as camadas de ViewModel e Service da arquitetura MVVM.
+ 
+#### Estratégia de testes
+ 
+Abordagem adotada:
+ 
+- **Metodologia:** Testes unitários escritos para validar o comportamento das camadas de lógica (`ViewModel` e `Service`), isolando dependências externas via mocks. A camada de View (Screens/Components) não é coberta por testes unitários nesta sprint — requer setup de ambiente nativo.
+- **Ferramentas:** `Jest` como runner e framework de asserções; `@testing-library/react` para renderização e interação com hooks React; `jest-environment-jsdom` para simular o ambiente de browser exigido pelo `renderHook`.
+- **Escopo priorizado:** autenticação (`useAuthViewModel`), onboarding (`useOnboardingViewModel`, `onboardingService`), busca (`useSearchViewModel`), lista de salvos (`useWishlistViewModel`, `wishlistStorageService`), notificações (`useNotificationsViewModel`) e interesses (`useEditInterestsViewModel`).
+
+#### Testes implementados
+ 
+| Teste | Camada testada | Funcionalidade | Resultado | Arquivo |
+|---|---|---|---|---|
+| `useAuthViewModel – validação (login)` | ViewModel | Validação de campos obrigatórios no login | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
+| `useAuthViewModel – validação (register)` | ViewModel | Validação de nome, senha e confirmação no cadastro | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
+| `useAuthViewModel – handleSubmit` | ViewModel | Chamada ao repositório, navegação pós-login e controle de loading | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
+| `useAuthViewModel – handleGoogleAuth` | ViewModel | Autenticação via Google e restauração de loading | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
+| `useOnboardingViewModel – toggleCategory` | ViewModel | Seleção e remoção de categorias, canContinue | Passed | `tests/viewmodels/useOnboardingViewModel.test.js` |
+| `useOnboardingViewModel – navegação` | ViewModel | Avanço e recuo entre passos do fluxo de onboarding | Passed | `tests/viewmodels/useOnboardingViewModel.test.js` |
+| `useOnboardingViewModel – finalização` | ViewModel | Persistência de preferências e callback de conclusão | Passed | `tests/viewmodels/useOnboardingViewModel.test.js` |
+| `useSearchViewModel – busca por texto` | ViewModel | Filtro por título, localização e cidade (case-insensitive) | Passed | `tests/viewmodels/useSearchViewModel.test.js` |
+| `useSearchViewModel – filtro por categoria` | ViewModel | Filtro por categoria e combinação com busca textual | Passed | `tests/viewmodels/useSearchViewModel.test.js` |
+| `useSearchViewModel – wishlist` | ViewModel | Atualização de favoritos via toggle | Passed | `tests/viewmodels/useSearchViewModel.test.js` |
+| `useWishlistViewModel – carregamento` | ViewModel | Carregamento assíncrono da wishlist, isLoading e hasSavedEvents | Passed | `tests/viewmodels/useWishlistViewModel.test.js` |
+| `useWishlistViewModel – filtro por texto` | ViewModel | Filtro de salvos por título, localização e cidade | Passed | `tests/viewmodels/useWishlistViewModel.test.js` |
+| `useWishlistViewModel – remoção` | ViewModel | Remoção de evento da wishlist e atualização da lista | Passed | `tests/viewmodels/useWishlistViewModel.test.js` |
+| `useNotificationsViewModel – toggle` | ViewModel | Ativação/desativação de opções de notificação por seção | Passed | `tests/viewmodels/useNotificationsViewModel.test.js` |
+| `useEditInterestsViewModel – toggle` | ViewModel | Seleção e remoção de interesses, contagem e seleção exclusiva de cidade | Passed | `tests/viewmodels/useEditInterestsViewModel.test.js` |
+| `wishlistStorageService – CRUD` | Service | get, save, add, remove, toggle e verificação de evento na wishlist | Passed | `tests/services/wishlistStorageService.test.js` |
+| `onboardingService – persistência` | Service | save, load e clear de preferências via AsyncStorage | Passed | `tests/services/onboardingService.test.js` |
+ 
+#### Execução dos testes
+ 
+Executar todos os testes do frontend (a partir de `mobile-app-aventura/`):
+ 
+```bash
+npm test
+```
+ 
+Com relatório de cobertura:
+ 
+```bash
+npm test -- --coverage
+```
+ 
+#### Resultado da cobertura
+ 
+Cobertura focada nas camadas de ViewModel e Service, que concentram toda a lógica de negócio do frontend. A camada de View não é coberta intencionalmente nesta sprint, pois depende de ambiente nativo para renderização.
+ 
+| Camada | Arquivos cobertos | Cobertura estimada |
+|---|---|---|
+| ViewModel | 6 arquivos | ~90–95% |
+| Service | 2 arquivos | ~95–100% |
+| Repository | Coberto via mock | — |
+| Screen/View | Não coberto | — |
+
+---
+
+### 18.8 Testes unitários do Backend
+
+Esta seção documenta a estratégia de testes unitários adotada para o backend da aplicação.
+
+#### Estratégia de testes
+
+Abordagem adotada:
+
+- **Metodologia:** Testes unitários escritos em padrão AAA (Arrange, Act, Assert), cobrindo as camadas de Domain, Service e Controller de forma isolada. Repositórios são substituídos por fakes in-memory para eliminar dependência de banco de dados nos testes unitários.
+- **Ferramentas:** `xUnit` como framework de testes; `Moq` para mock de dependências nos testes de Controller; repositórios Fake escritos manualmente para testes de Service e Domain; `Microsoft.AspNetCore.Http` para simulação de contexto HTTP nos testes de middleware.
+- **Escopo priorizado:** entidades de domínio (`Usuario`, `Espetaculo`, `Teatro`, `Preferencias`, `Recomendacao`), serviços de aplicação (`AuthService`, `EspetaculoService`, `TeatroService`, `WishlistService`, `UsuarioService`, `PreferenciasService`, `RecomendacaoService`, `GeneroService`), controllers, infraestrutura (`DbConnectionFactory`, injeção de dependência) e middleware de exceções (`GlobalExceptionHandler`).
+
+#### Testes implementados
+
+| Teste | Camada testada | Funcionalidade | Resultado | Arquivo |
+|---|---|---|---|---|
+| `Register_ValidData_ShouldCreateUser` | Service | Registro de usuário com dados válidos | Passed | `AuthServiceTests.cs` |
+| `Register_DuplicateEmail_ShouldThrow` | Service | Rejeição de e-mail duplicado com `ConflictException` | Passed | `AuthServiceTests.cs` |
+| `Register_InvalidEmail_ShouldThrow` | Service | Validação de formato de e-mail | Passed | `AuthServiceTests.cs` |
+| `Register_PasswordTooShort_ShouldThrow` | Service | Senha mínima de 6 caracteres | Passed | `AuthServiceTests.cs` |
+| `Register_UnderageUser_ShouldThrow` | Service | Rejeição de usuário menor de idade | Passed | `AuthServiceTests.cs` |
+| `Register_EmptyName_ShouldThrow` | Service | Rejeição de nome vazio | Passed | `AuthServiceTests.cs` |
+| `Login_ValidCredentials_ShouldReturnAuthResponse` | Service | Login com credenciais corretas | Passed | `AuthServiceTests.cs` |
+| `Login_InvalidEmail_ShouldThrow` | Service | Login com e-mail inexistente | Passed | `AuthServiceTests.cs` |
+| `Login_InvalidPassword_ShouldThrow` | Service | Login com senha incorreta | Passed | `AuthServiceTests.cs` |
+| `Register_ShouldReturnCreatedAndResponse` | Controller | Endpoint POST /auth/register retorna 201 | Passed | `AuthControllerTests.cs` |
+| `Login_ShouldReturnOkAndResponse` | Controller | Endpoint POST /auth/login retorna 200 | Passed | `AuthControllerTests.cs` |
+| `GetAll_WithEspetaculos_ShouldReturnAll` | Service | Listagem de todos os espetáculos | Passed | `EspetaculoServiceTests.cs` |
+| `GetById_NonExistentEspetaculo_ShouldThrow` | Service | `NotFoundException` para espetáculo inexistente | Passed | `EspetaculoServiceTests.cs` |
+| `Search_ByGenero_ShouldReturnMatches` | Service | Busca de espetáculos por gênero | Passed | `EspetaculoServiceTests.cs` |
+| `Search_ByGeneroAndNome_ShouldReturnMatches` | Service | Busca combinada por gênero e nome | Passed | `EspetaculoServiceTests.cs` |
+| `Search_NomeIsCaseInsensitive` | Service | Busca por nome sem distinção de maiúsculas | Passed | `EspetaculoServiceTests.cs` |
+| `GetAll_ShouldReturnOkAndList` (Espetaculo) | Controller | Endpoint GET /espetaculos retorna 200 com lista | Passed | `EspetaculoControllerTests.cs` |
+| `Search_ShouldReturnOkAndFilteredList` | Controller | Endpoint GET /espetaculos/search retorna lista filtrada | Passed | `EspetaculoControllerTests.cs` |
+| `GetAll_WithTeatros_ShouldReturnAll` | Service | Listagem de todos os teatros | Passed | `TeatroServiceTests.cs` |
+| `GetById_NonExistentTeatro_ShouldThrow` | Service | `NotFoundException` para teatro inexistente | Passed | `TeatroServiceTests.cs` |
+| `GetEspetaculos_TeatroWithEspetaculos_ShouldReturnAll` | Service | Espetáculos de um teatro específico | Passed | `TeatroServiceTests.cs` |
+| `GetEspetaculos_NonExistentTeatro_ShouldThrow` | Service | `NotFoundException` ao buscar espetáculos de teatro inexistente | Passed | `TeatroServiceTests.cs` |
+| `GetEspetaculos_ShouldReturnOkAndEspetaculosList` | Controller | Endpoint GET /teatros/{id}/espetaculos retorna 200 | Passed | `TeatroControllerTests.cs` |
+| `GetWishlist_ValidUser_ShouldReturnEspetaculos` | Service | Recuperação da wishlist de um usuário | Passed | `WishlistServiceTests.cs` |
+| `Add_AlreadyInWishlist_ShouldThrowConflictException` | Service | Rejeição de espetáculo duplicado na wishlist | Passed | `WishlistServiceTests.cs` |
+| `Add_NonExistentEspetaculo_ShouldThrowNotFoundException` | Service | `NotFoundException` ao adicionar espetáculo inválido | Passed | `WishlistServiceTests.cs` |
+| `Add_Valid_ShouldAddToWishlist` | Service | Adição válida de espetáculo à wishlist | Passed | `WishlistServiceTests.cs` |
+| `Remove_Valid_ShouldRemoveFromWishlist` | Service | Remoção de espetáculo da wishlist | Passed | `WishlistServiceTests.cs` |
+| `Remove_NonExistent_ShouldThrowNotFoundException` | Service | `NotFoundException` ao remover item inexistente | Passed | `WishlistServiceTests.cs` |
+| `Contains_ChecksRepository` | Service | Verificação de presença de espetáculo na wishlist | Passed | `WishlistServiceTests.cs` |
+| `Add_ShouldReturnCreated` | Controller | Endpoint POST /wishlist retorna 201 | Passed | `WishlistControllerTests.cs` |
+| `Remove_ShouldReturnNoContent` | Controller | Endpoint DELETE /wishlist retorna 204 | Passed | `WishlistControllerTests.cs` |
+| `Contains_ShouldReturnOkAndBool` | Controller | Endpoint GET /wishlist/contains retorna 200 com booleano | Passed | `WishlistControllerTests.cs` |
+| `GetById_ExistingUser_ShouldReturnUser` | Service | Recuperação de dados do usuário por ID | Passed | `UsuarioServiceTests.cs` |
+| `GetById_NonExistentUser_ShouldThrow` | Service | `NotFoundException` para usuário inexistente | Passed | `UsuarioServiceTests.cs` |
+| `Update_ExistingUserWithValidData_ShouldUpdate` | Service | Atualização de nome e idade do usuário | Passed | `UsuarioServiceTests.cs` |
+| `Update_UserWithInvalidAge_ShouldThrow` | Service | Rejeição de idade inválida na atualização | Passed | `UsuarioServiceTests.cs` |
+| `Update_OnlyName_ShouldUpdateName` | Service | Atualização parcial preservando campos não informados | Passed | `UsuarioServiceTests.cs` |
+| `GetById_PreservesAllUserData` | Service | Integridade de todos os campos retornados | Passed | `UsuarioServiceTests.cs` |
+| `Update_ShouldReturnOkAndUpdatedDto` | Controller | Endpoint PUT /usuarios/{id} retorna 200 | Passed | `UsuarioControllerTests.cs` |
+| `Update_ValidDto_ShouldUpdateAndSave` | Service | Atualização de todas as preferências do usuário | Passed | `PreferenciasServiceTests.cs` |
+| `Update_NullDto_ShouldThrowArgumentNullException` | Service | Rejeição de DTO nulo em preferências | Passed | `PreferenciasServiceTests.cs` |
+| `GetPreferencias_ShouldReturnOkAndDto` | Controller | Endpoint GET /preferencias/{id} retorna 200 | Passed | `PreferenciasControllerTests.cs` |
+| `UpdatePreferencias_ShouldReturnOkAndUpdatedDto` | Controller | Endpoint PUT /preferencias/{id} retorna 200 | Passed | `PreferenciasControllerTests.cs` |
+| `GetRecomendacoes_NoStoredData_ShouldReturnFallback` | Service | Fallback quando não há dados de recomendação armazenados | Passed | `RecomendacaoServiceTests.cs` |
+| `GetRecomendacoes_WithStoredData_ShouldReturnStored` | Service | Recomendações armazenadas retornadas com score correto | Passed | `RecomendacaoServiceTests.cs` |
+| `GetRecomendacoes_RespectLimit` | Service | Limite máximo de recomendações respeitado | Passed | `RecomendacaoServiceTests.cs` |
+| `GetRecomendacoes_InvalidLimit_Zero_ShouldThrow` | Service | Rejeição de limite 0 | Passed | `RecomendacaoServiceTests.cs` |
+| `GetRecomendacoes_InvalidLimit_OverFifty_ShouldThrow` | Service | Rejeição de limite acima de 50 | Passed | `RecomendacaoServiceTests.cs` |
+| `GetRecomendacoes_EmptyGuId_ShouldThrow` | Service | Rejeição de usuário com GUID vazio | Passed | `RecomendacaoServiceTests.cs` |
+| `GetRecomendacoes_ShouldReturnOkAndList` | Controller | Endpoint GET /recomendacoes/{id} retorna 200 com lista | Passed | `RecomendacaoControllerTests.cs` |
+| `GetAll_WithGeneros_ShouldReturnAll` | Service | Listagem de todos os gêneros disponíveis | Passed | `GeneroServiceTests.cs` |
+| `GetAll_ReturnsReadOnlyList` | Service | Retorno tipado como `IReadOnlyList<string>` | Passed | `GeneroServiceTests.cs` |
+| `GetAll_ShouldReturnOkAndList` (Genero) | Controller | Endpoint GET /generos retorna 200 com lista | Passed | `GeneroControllerTests.cs` |
+| `TryHandleAsync_ArgumentException_ShouldReturn400` | Middleware | Exceções de argumento mapeadas para HTTP 400 | Passed | `GlobalExceptionHandlerTests.cs` |
+| `TryHandleAsync_UnauthorizedAccessException_ShouldReturn401` | Middleware | Acesso não autorizado mapeado para HTTP 401 | Passed | `GlobalExceptionHandlerTests.cs` |
+| `TryHandleAsync_NotFoundException_ShouldReturn404` | Middleware | Recurso não encontrado mapeado para HTTP 404 | Passed | `GlobalExceptionHandlerTests.cs` |
+| `TryHandleAsync_ConflictException_ShouldReturn409` | Middleware | Conflito de recurso mapeado para HTTP 409 | Passed | `GlobalExceptionHandlerTests.cs` |
+| `TryHandleAsync_GenericException_ShouldReturn500` | Middleware | Erros inesperados mapeados para HTTP 500 com log de erro | Passed | `GlobalExceptionHandlerTests.cs` |
+| `Constructor_WithDefaultConnection_ShouldSucceed` | Infrastructure | Criação de conexão via connection string completa | Passed | `DbConnectionFactoryTests.cs` |
+| `Constructor_WithIndividualSettings_ShouldSucceed` | Infrastructure | Criação de conexão via variáveis individuais de ambiente | Passed | `DbConnectionFactoryTests.cs` |
+| `Constructor_NullConfiguration_ShouldThrowArgumentNullException` | Infrastructure | Rejeição de configuração nula | Passed | `DbConnectionFactoryTests.cs` |
+| `AddAventuraInfrastructure_ShouldRegisterInfrastructureServices` | DI | Registro correto de todos os repositórios no container | Passed | `DependencyInjectionTests.cs` |
+| `AddAventuraApplication_ShouldRegisterApplicationServices` | DI | Registro correto de todos os serviços no container | Passed | `DependencyInjectionTests.cs` |
+| `ToDto_Espetaculo_ShouldMapCorrectly` | Mapping | Mapeamento de `Espetaculo` para `EspetaculoDto` | Passed | `DtoMapperTests.cs` |
+| `ToDto_Teatro_ShouldMapCorrectly` | Mapping | Mapeamento de `Teatro` para `TeatroDto` com espetáculos | Passed | `DtoMapperTests.cs` |
+| `ToDto_Preferencias_ShouldMapCorrectly` | Mapping | Mapeamento de `Preferencias` para `PreferenciasDto` | Passed | `DtoMapperTests.cs` |
+| `ToDto_Recomendacao_ShouldMapCorrectly` | Mapping | Mapeamento de `Recomendacao` para `RecomendacaoItemDto` com score | Passed | `DtoMapperTests.cs` |
+| `Create_ValidParameters_ShouldCreateUsuario` | Domain | Criação de entidade `Usuario` com dados válidos | Passed | `UsuarioTests.cs` |
+| `Create_InvalidAge_Throws` | Domain | Guard de idade mínima na entidade `Usuario` | Passed | `UsuarioTests.cs` |
+| `AtualizarPerfil_UpdateNameAndAge_ShouldUpdate` | Domain | Atualização de nome e idade via método de domínio | Passed | `UsuarioTests.cs` |
+| `AtualizarPerfil_InvalidAge_Throws` | Domain | Guard de idade mínima na atualização de perfil | Passed | `UsuarioTests.cs` |
+| `SetGeneros_AddsUniqueAndTrim` | Domain | Deduplicação e trim de gêneros em `Preferencias` | Passed | `PreferenciasTests.cs` |
+| `AtualizarFaixaPreco_Invalid_Throws` | Domain | Rejeição de faixa de preço inválida (min > max) | Passed | `PreferenciasTests.cs` |
+| `SetLocalizacao_TrimsAndNulls` | Domain | Trim automático de CEP e cidade em `Preferencias` | Passed | `PreferenciasTests.cs` |
+| `AdicionarEspetaculo_AddsSuccessfully` | Domain | Adição de espetáculo a um teatro | Passed | `TeatroTests.cs` |
+| `AdicionarEspetaculo_Duplicate_Throws` | Domain | Rejeição de espetáculo duplicado em `Teatro` | Passed | `TeatroTests.cs` |
+| `PertenceAoGenero_IsCaseInsensitive` | Domain | Comparação de gênero sem distinção de maiúsculas | Passed | `EspetaculoTests.cs` |
+| `EstaEmCartaz_ReturnsTrueWhenBetweenDates` | Domain | Verificação de espetáculo em cartaz por datas | Passed | `EspetaculoTests.cs` |
+| `NotEmpty_EmptyGuid_Throws` | Domain | Guard de GUID vazio em `EntityGuards` | Passed | `EntityGuardsTests.cs` |
+| `NotNullOrWhiteSpace_Valid_Trims` | Domain | Guard de string com trim automático | Passed | `EntityGuardsTests.cs` |
+| `NotFoundException_ShouldSetMessageAndInheritFromException` | Domain | Estrutura e herança de `NotFoundException` | Passed | `ExceptionTests.cs` |
+| `ConflictException_ShouldSetMessageAndInheritFromException` | Domain | Estrutura e herança de `ConflictException` | Passed | `ExceptionTests.cs` |
+
+#### Execução dos testes
+
+Executar todos os testes do backend (a partir da raiz do projeto):
+
+```bash
+dotnet test BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
+```
+
+Com saída detalhada:
+
+```bash
+dotnet test BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj --logger "console;verbosity=detailed"
+```
+
+#### Resultado da cobertura
+
+Cobertura focada nas camadas de Domain, Service, Controller, Middleware e Infraestrutura. Os repositórios reais não são cobertos por testes unitários — são substituídos por fakes — e serão alvo de testes de integração em sprints futuras.
+
+| Camada | Arquivos cobertos | Cobertura estimada |
+|---|---|---|
+| Domain | 6 entidades + guards + exceptions | ~90% |
+| Service | 8 serviços | ~85–95% |
+| Controller | 8 controllers | ~90% |
+| Middleware | `GlobalExceptionHandler` | 100% |
+| Infrastructure | `DbConnectionFactory`, DI | ~80% |
+| Mapping | `DtoMapper` | ~90% |
+| Repository (real) | Não coberto | — |
+
+---
+
+### 18.9 Documentação de API (Swagger)
+
+Esta seção documenta a API REST do backend, exposta via Swagger UI em ambiente de desenvolvimento.
+
+#### Configuração
+
+A documentação é habilitada automaticamente pelo ASP.NET em ambiente de desenvolvimento, configurada em `Program.cs`:
+
+```csharp
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+```
+
+A API está disponível em `http://localhost:5253` em ambiente local. A interface interativa do Swagger pode ser acessada em `http://localhost:5253/swagger`.
+
+#### Endpoints documentados
+
+| Grupo | Método | Rota | Descrição | Resposta de sucesso |
+|---|---|---|---|---|
+| Auth | POST | `/auth/register` | Cadastro de novo usuário | 201 Created + `AuthResponse` |
+| Auth | POST | `/auth/login` | Autenticação de usuário | 200 OK + `AuthResponse` |
+| Usuários | GET | `/usuarios/{id}` | Consulta de perfil por ID | 200 OK + `UsuarioResponse` |
+| Usuários | PUT | `/usuarios/{id}` | Atualização de nome e/ou idade | 200 OK + `UsuarioResponse` |
+| Espetáculos | GET | `/espetaculos` | Listagem de todos os espetáculos | 200 OK + `EspetaculoDto[]` |
+| Espetáculos | GET | `/espetaculos/{id}` | Detalhe de um espetáculo por ID | 200 OK + `EspetaculoDto` |
+| Espetáculos | GET | `/espetaculos/search?genero=&nome=` | Busca por gênero e/ou nome | 200 OK + `EspetaculoDto[]` |
+| Teatros | GET | `/teatros` | Listagem de todos os teatros | 200 OK + `TeatroDto[]` |
+| Teatros | GET | `/teatros/{id}` | Detalhe de um teatro por ID | 200 OK + `TeatroDto` |
+| Teatros | GET | `/teatros/{id}/espetaculos` | Espetáculos de um teatro | 200 OK + `EspetaculoDto[]` |
+| Preferências | GET | `/preferencias/{usuarioId}` | Consulta de preferências do usuário | 200 OK + `PreferenciasDto` |
+| Preferências | PUT | `/preferencias/{usuarioId}` | Atualização de preferências | 200 OK + `PreferenciasDto` |
+| Wishlist | GET | `/wishlist/{usuarioId}` | Lista de espetáculos salvos | 200 OK + `EspetaculoDto[]` |
+| Wishlist | POST | `/wishlist/{usuarioId}/{espetaculoId}` | Adiciona espetáculo à wishlist | 201 Created |
+| Wishlist | DELETE | `/wishlist/{usuarioId}/{espetaculoId}` | Remove espetáculo da wishlist | 204 No Content |
+| Wishlist | GET | `/wishlist/{usuarioId}/contains/{espetaculoId}` | Verifica se espetáculo está salvo | 200 OK + `bool` |
+| Recomendações | GET | `/recomendacoes/{usuarioId}?limit=` | Recomendações personalizadas (limite 1–50) | 200 OK + `RecomendacaoItemDto[]` |
+| Gêneros | GET | `/generos` | Listagem de gêneros disponíveis | 200 OK + `string[]` |
+
+#### Respostas de erro padronizadas
+
+Todos os endpoints retornam erros no formato `ProblemDetails` (RFC 7807), gerenciado pelo `GlobalExceptionHandler`:
+
+| HTTP Status | Título | Origem |
+|---|---|---|
+| 400 Bad Request | Requisição inválida | `ArgumentException` |
+| 401 Unauthorized | Não autorizado | `UnauthorizedAccessException` |
+| 404 Not Found | Recurso não encontrado | `NotFoundException` |
+| 409 Conflict | Conflito | `ConflictException` |
+| 500 Internal Server Error | Erro interno | Exceções não tratadas |
+
+---
+
+## 19. Termos e Abreviações
 
 | Termo / Abreviação | Definição |
 |---|---|

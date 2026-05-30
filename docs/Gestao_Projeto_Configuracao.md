@@ -1,6 +1,33 @@
 # Gestão e configuração
 
+| Informação | Detalhe |
+|---|---|
+| Projeto | Nome do Projeto |
+| Grupo | G02 |
+| Sprint Atual | Sprint 3 |
+| Data da Última Atualização | 27/05/2026 |
+
 Este documento descreve as práticas de gerenciamento de configuração adotadas pela equipe para controle de versões, organização de branches e manutenção da integridade do repositório. Também define diretrizes para criação, uso e integração de branches, garantindo consistência e colaboração no desenvolvimento.
+
+---
+
+# Sumário
+
+1. Gitflow  
+2. Convenções para nomeação  
+3. Fluxo de branch  
+4. Estratégias de merge e pull request  
+5. Ciclo de Vida das Branches  
+6. Relação com issues  
+7. Políticas operacionais de Git  
+8. Versionamento Semântico (SemVer)  
+9. Política de Commits  
+10. Exemplos práticos de aplicação no projeto  
+11. Retrospectiva da Sprint 1  
+12. Planejamento da Sprint 2  
+13. Evolução entre Sprints  
+
+---
 
 # 1 - Gitflow
 
@@ -209,13 +236,39 @@ Caso existam conflitos, eles devem ser resolvidos localmente antes do envio fina
 
 Os commits devem ser pequenos, objetivos e relacionados ao escopo da branch. Recomenda-se utilizar mensagens claras, indicando o tipo de alteração realizada.
 
-**Exemplos:**
+### Estrutura
+
+```txt
+tipo(escopo): descrição
+```
+
+### Tipos permitidos
+
+| Tipo | Utilização |
+|---|---|
+| feat | Nova funcionalidade |
+| fix | Correção de bug |
+| docs | Alterações em documentação |
+| refactor | Refatoração sem alteração funcional |
+| test | Criação ou ajuste de testes |
+| chore | Manutenção e configuração |
+| style | Ajustes de formatação |
+
+### Exemplos
 
 ```bash
 docs: update configuration management policies
 feat: add user authentication flow
 fix: adjust login validation
 chore: update project dependencies
+```
+
+### Relação com issues
+
+Sempre que possível, os commits devem referenciar a issue correspondente.
+
+```bash
+feat(auth): implementar middleware JWT (#42)
 ```
 
 ## 7.4 - Merge
@@ -251,9 +304,39 @@ Exclusão local:
 git branch -d feature/nome-da-funcionalidade
 ```
 
-# 8 - Exemplos práticos de aplicação no projeto
+# 8 - Versionamento Semântico (SemVer)
 
-## 8.1 - Exemplo de fluxo para documentação
+O projeto utiliza o padrão de versionamento semântico (Semantic Versioning), estruturado no formato:
+
+```txt
+MAJOR.MINOR.PATCH
+```
+
+## Exemplo
+
+```txt
+1.4.2
+```
+
+## Regras de versionamento
+
+| Tipo | Descrição |
+|---|---|
+| MAJOR | Alterações incompatíveis ou mudanças estruturais significativas |
+| MINOR | Inclusão de novas funcionalidades compatíveis |
+| PATCH | Correções de bugs e pequenos ajustes |
+
+## Exemplos
+
+| Versão | Motivo |
+|---|---|
+| 1.0.0 | Primeira entrega estável |
+| 1.1.0 | Nova funcionalidade adicionada |
+| 1.1.1 | Correção de bug |
+
+# 9 - Exemplos práticos de aplicação no projeto
+
+## 9.1 - Exemplo de fluxo para documentação
 
 Uma alteração neste próprio documento deve seguir o fluxo abaixo:
 
@@ -287,7 +370,7 @@ git push origin docs/configuration-management-sprint-planning
 8. Fazer merge após aprovação
 9. Excluir a branch após o merge
 
-## 8.2 - Exemplo de fluxo para funcionalidade
+## 9.2 - Exemplo de fluxo para funcionalidade
 
 Caso a equipe precise implementar uma nova tela de login, o fluxo recomendado seria:
 
@@ -313,7 +396,7 @@ git push origin feature/tela-login
 
 O Pull Request deve ser aberto para a `develop`, revisado por outro integrante e, após aprovação, a branch deve ser mesclada e excluída.
 
-## 8.3 - Evidência de uso das políticas
+## 9.3 - Evidência de uso das políticas
 
 A equipe aplica as políticas de gestão de configuração por meio das seguintes práticas:
 
@@ -327,11 +410,11 @@ A equipe aplica as políticas de gestão de configuração por meio das seguinte
 
 Essas práticas reduzem conflitos, aumentam a rastreabilidade das entregas e tornam o histórico do projeto mais organizado.
 
-# 9 - Retrospectiva da Sprint 1
+# 10 - Retrospectiva da Sprint 1
 
 A retrospectiva da Sprint 1 tem como objetivo analisar o desempenho da equipe, identificando pontos positivos, dificuldades encontradas e ações de melhoria para a próxima sprint.
 
-## 9.1 - Pontos fortes
+## 10.1 - Pontos fortes
 
 - Boa priorização de tarefas, garantindo fluxo contínuo de trabalho sem ociosidade da equipe  
 - Quebra adequada das tarefas, evitando commits muito grandes e facilitando revisão  
@@ -339,26 +422,25 @@ A retrospectiva da Sprint 1 tem como objetivo analisar o desempenho da equipe, i
 - Uso consistente de issues e commits seguindo o padrão Conventional Commits  
 - Estruturação inicial organizada do repositório, facilitando o entendimento do projeto  
 
-## 9.2 - Pontos fracos
+## 10.2 - Pontos fracos
 
-- Falta de validação contínua com professores devido ao curto tempo da sprint  
-- Demora na aprovação de Merge Requests, impactando o fluxo de integração   
+- Parte dos artefatos foi validada apenas próximo da entrega final, gerando retrabalho em diagramas e ajustes estruturais após feedback recebido  
+- Algumas Merge Requests permaneceram abertas por longos períodos, impactando o fluxo de integração e atrasando tarefas dependentes  
 
-## 9.3 - Ações de melhoria
+## 10.3 - Ações de melhoria
 
-- Planejar validações com professores antes das entregas finais  
-- Estabelecer tempo máximo para revisão de Merge Requests (ex: até 24h)  
-- Priorizar abertura antecipada de PRs, mesmo que parciais, para acelerar feedback  
-- Manter granularidade das tarefas e commits, garantindo continuidade do bom fluxo de trabalho  
+| Problema | Ação | Indicador de Sucesso |
+|---|---|---|
+| Falta de validação contínua | Planejar checkpoints com professores antes das entregas | Redução de retrabalho |
+| Demora na aprovação de PRs | Estabelecer prazo máximo de revisão de 24h | Redução do tempo de merge |
+| Feedback tardio | Abrir PRs parciais para revisão antecipada | Revisões mais rápidas |
+| Tasks muito amplas | Quebrar tarefas grandes em subtarefas menores | Aumento da granularidade |
 
-
-
-
-# 10 - Planejamento da Sprint 2
+# 11 - Planejamento da Sprint 2
 
 O planejamento da Sprint 2 organiza as entregas com base nos artefatos definidos, estruturando as tarefas de forma detalhada, priorizada e com estimativas realistas.
 
-## 10.1 - Critério de estimativa
+## 11.1 - Critério de estimativa
 
 | Tamanho | Tempo estimado |
 |------|------|
@@ -368,75 +450,12 @@ O planejamento da Sprint 2 organiza as entregas com base nos artefatos definidos
 | G | Até 2 horas |
 | GG | Acima de 2 horas  |
 
+# 12 - Evolução entre Sprints
 
-## 10.2 - Lista priorizada de tarefas
-
-| Prioridade | Artefato | Task | Descrição | Estimativa | Dependência |
-|------|------|------|------|------|------|
-| 1 | Modelagem de Dados | Identificar entidades do domínio | Levantar entidades principais com base no problema | M | Nenhuma |
-| 1 | Projeto Visual | Definir estrutura do app | Organizar telas e navegação | M | Nenhuma |
-| 1 | Solução Técnica | Definir atores do sistema | Identificar usuários do sistema | P | Nenhuma |
-| 2 | Modelagem de Dados | Definir atributos das entidades | Listar atributos relevantes | M | Entidades |
-| 2 | Projeto Visual | Criar wireframes | Desenhar estrutura das telas mobile | G | Estrutura |
-| 2 | Solução Técnica | Criar casos de uso | Mapear interações usuário-sistema | M | Atores |
-| 3 | Modelagem de Dados | Definir relacionamentos | Mapear relações entre entidades | M | Entidades |
-| 3 | Solução Técnica | Escrever user stories | Detalhar casos de uso | M | Casos de uso |
-| 3 | Projeto Visual | Ajustar layout mobile | Garantir usabilidade mobile | M | Wireframe |
-| 4 | Modelagem de Dados | Converter para modelo lógico | Transformar entidades em tabelas | M | Modelo conceitual |
-| 4 | Recomendação | Revisar dataset da Sprint 1 | Avaliar qualidade dos dados | M | Nenhuma |
-| 4 | Solução Técnica | Definir tecnologias | Justificar stack utilizada | M | Nenhuma |
-| 5 | Modelagem de Dados | Definir PKs e FKs | Garantir integridade referencial | P | Modelo lógico |
-| 5 | Recomendação | Limpar dados | Tratar inconsistências | M | Dataset |
-| 5 | Projeto Visual | Criar mockup navegável | Desenvolver protótipo visual | G | Wireframe |
-| 6 | Modelagem de Dados | Aplicar normalização | Ajustar redundâncias | M | Modelo lógico |
-| 6 | Recomendação | Criar estrutura user-item | Transformar base para recomendação | G | Dados limpos |
-| 6 | Projeto Visual | Aplicar identidade visual | Definir cores e estilo | M | Mockup |
-| 7 | Recomendação | Implementar KNN | Aplicar algoritmo | G | Matriz pronta |
-| 7 | Solução Técnica | Criar diagrama de classes | Representar domínio | G | Modelagem |
-| 7 | Projeto Visual | Documentar decisões | Explicar escolhas de design | M | Mockup |
-| 8 | Recomendação | Implementar SVD | Aplicar decomposição | G | Matriz pronta |
-| 8 | Solução Técnica | Criar diagrama de componentes | Representar arquitetura | G | Tecnologias |
-| 9 | Recomendação | Comparar modelos | Avaliar desempenho | M | Modelos |
-| 9 | Recomendação | Calcular métricas | Aplicar RMSE, MAE etc | M | Modelos |
-| 10 | Recomendação | Exportar modelo | Salvar modelo treinado | P | Modelo final |
-| 10 | Recomendação | Criar função de inferência | Gerar recomendações | M | Modelo exportado |
-| 11 | Gestão | Revisar entregas | Conferir artefatos | M | Todas |
-| 11 | Gestão | Ajustar documentação | Padronizar Markdown | M | Revisão |
-| 12 | Gestão | Validar critérios | Conferir requisitos | P | Documento |
-| 12 | Gestão | Abrir Pull Request | Subir branch final | P | Finalização |
-
-
-## 10.3 - Sequenciamento lógico
-
-A execução da Sprint 2 será realizada de forma paralela entre os diferentes artefatos, respeitando as dependências entre tarefas para garantir produtividade e consistência das entregas.
-
-### Passo 1
-Inicialmente, a equipe deve iniciar simultaneamente três frentes principais: a modelagem de dados, com a identificação de entidades e atributos do domínio; o projeto visual, com a definição da estrutura do aplicativo e criação dos wireframes; e a solução técnica, com a definição dos atores do sistema e elaboração dos primeiros casos de uso.
-
-### Passo 2
-Com a evolução da modelagem de dados, o grupo deve avançar até a construção do modelo lógico, permitindo que outras frentes utilizem essa base estruturada. Em paralelo, deve-se iniciar a análise e preparação do dataset da Sprint 1, incluindo limpeza e tratamento dos dados.
-
-### Passo 3
-Na sequência, a equipe pode continuar em paralelo com o desenvolvimento dos mockups navegáveis no projeto visual e com a construção dos diagramas UML na solução técnica, garantindo alinhamento entre interface, arquitetura e domínio do problema.
-
-### Passo 4
-Após a preparação dos dados, deve-se construir a matriz usuário-item e, em seguida, implementar os modelos de recomendação utilizando as abordagens KNN e SVD. Com os modelos implementados, é necessário realizar a avaliação por meio de métricas adequadas e definir o modelo com melhor desempenho.
-
-### Passo 5
-Com os resultados consolidados, a equipe deve finalizar os artefatos técnicos, incluindo a exportação do modelo treinado, a implementação da função de inferência e a consolidação dos diagramas e documentações.
-
-### Passo 6
-Por fim, deve ser realizada uma revisão geral do projeto, verificando a consistência entre os artefatos e realizando ajustes necessários na documentação. Após essa etapa, a equipe deve validar o atendimento aos critérios da entrega e realizar a abertura do Pull Request para revisão final.
-
-
-## 10.4 - Critérios de conclusão da Sprint 2
-
-A Sprint 2 será considerada concluída quando:
-
-- Todos os artefatos estiverem desenvolvidos conforme especificação  
-- O modelo de recomendação estiver funcional e avaliado  
-- Os diagramas UML estiverem completos e coerentes  
-- O projeto visual estiver navegável e documentado  
-- A modelagem de dados estiver consistente e normalizada  
-- O documento estiver estruturado em Markdown na pasta `docs`  
-- O Pull Request tiver sido aberto, revisado e aprovado  
+| Aspecto | Sprint 1 | Sprint 2 | Evolução |
+|---|---|---|---|
+| Planejamento | Tasks muito amplas | Maior granularidade | Melhorando |
+| Pull Requests | Revisões lentas | Revisões mais frequentes | Parcial |
+| Organização Git | Estrutura inicial | Fluxo consolidado | Melhorou |
+| Conventional Commits | Uso parcial | Uso padronizado | Melhorou |
+| Validação contínua | Próxima da entrega | Checkpoints definidos | Melhorando |

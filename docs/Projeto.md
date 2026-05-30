@@ -2693,18 +2693,39 @@ Como evidência complementar da Sprint 3, será adicionado aqui o link para um v
 
 ### 18.5 Padrões de codificação e padrões de projeto
 
-Nesta seção, devem ser documentados os padrões adotados pelo grupo no desenvolvimento da Sprint 3, considerando organização de código, nomenclatura, commits, tratamento de erros, separação de responsabilidades e padrões de projeto.
+Nesta seção documentamos as decisões que guiaram o desenvolvimento do backend e do frontend na Sprint 3. Essas escolhas foram feitas para garantir consistência no código, manutenção previsível e alinhamento com boas práticas de engenharia.
 
 #### Padrões de codificação
 
-A preencher com os padrões definidos no `GuiaPadroesDesenvolvimento.md`, como nomenclatura, organização de arquivos, padrão de commits, tratamento de erros, formatação, separação de responsabilidades e boas práticas de código.
+Os principais padrões adotados foram:
+
+- **Nomenclatura e organização:** classes e métodos em C# seguem PascalCase; nomes de variáveis e parâmetros seguem camelCase. A organização do backend segue camadas bem definidas: Controller → Service → Repository → Infrastructure → Domain → DTOs.
+- **Separação de responsabilidades:** cada camada tem responsabilidade única. Controllers expõem apenas endpoints; Services implementam regras de negócio; Repositories manipulam SQL e transações; DTOs isolam o contrato externo.
+- **Tratamento de erro:** exceptions customizadas (`NotFoundException`, `ConflictException`) são lançadas nas camadas de serviço e traduzidas em respostas HTTP padronizadas pelo middleware global. Isso evita duplicação de lógica de error handling em controllers.
+- **Formatação e qualidade:** o backend foi padronizado com `dotnet format`; o frontend segue convenções de formatação consistentes com `prettier` e regras de lint quando aplicáveis.
+- **Controle de versão e commits:** mensagens de commit seguem Conventional Commits, facilitando rastreabilidade e geração de changelog.
+- **Documentação técnica:** o código é acompanhado de documentação inline mínima e de mapeamentos claros entre entidades e DTOs, permitindo auditoria rápida das rotas implementadas.
 
 #### Padrões de projeto
 
+A aplicação utiliza padrões de projeto concretos para garantir robustez e clareza:
+
 | Tipo de padrão | Nome do padrão | Onde aparece no projeto | Justificativa |
 |---|---|---|---|
-| Criacional | A preencher | A preencher | A preencher |
-| Comportamental | A preencher | A preencher | A preencher |
+| Criacional | Factory | `infrastructure/DbConnectionFactory.cs` | Centraliza a criação de `NpgsqlConnection`, reduz duplicação e valida credenciais de ambiente antes de abrir a conexão. |
+| Estrutural | Mapper | `mappings/DtoMapper.cs` | Separa as entidades do domínio dos contratos de API, permitindo que alterações internas não virem quebra de contrato. |
+| Comportamental | Repository | `repository/*Repository.cs` | Isola o acesso ao banco de dados, facilita testes de integração e mantém queries SQL organizadas. |
+| Comportamental | Service | `services/*Service.cs` | Orquestra regras de negócio, validações e fluxos transacionais fora dos controllers. |
+| Comportamental | Middleware | `extensions/middleware` | Centraliza o tratamento de exceções e a formatação de responses de erro, mantendo os controllers limpos. |
+
+#### Justificativas das escolhas
+
+- O padrão **Service/Repository** foi adotado para garantir que a camada de API mantenha apenas responsabilidades de roteamento e autorização, enquanto a lógica de domínio permanece testável.
+- O padrão **Factory** para conexão foi usado para evitar replicação de string de conexão e para encapsular a lógica de fallback entre `appsettings` e variáveis de ambiente.
+- O uso de **Mapper** evita o vazamento de entidades de domínio na API e permite evoluir o modelo interno sem alterar os resultados expostos.
+- A opção por **React Native** no frontend foi tomada para reduzir o tempo de entrega e permitir uma única base de código para Android e iOS.
+
+Essas decisões de codificação e arquitetura foram tomadas para oferecer um backend previsível e um frontend alinhado aos mesmos contratos, facilitando manutenção e continuidade do projeto.
 
 ---
 
@@ -2714,31 +2735,44 @@ Esta seção deve documentar a estratégia de testes unitários adotada no proje
 
 #### Estratégia de testes
 
-A preencher explicando como o grupo aplicou TDD, quais camadas foram priorizadas, quais ferramentas foram utilizadas e como os testes se conectam às funcionalidades desenvolvidas.
+Abordagem adotada na Sprint 3:
+
+- Metodologia: TDD aplicada de forma pragmática nas camadas de `Service` e `Repository`; testes unitários escritos antes ou junto da implementação das regras críticas.
+- Ferramentas: `xUnit` para testes unitários e de integração; `Testcontainers` para subir instâncias de PostgreSQL em testes de integração; `WireMock.Net` para simular serviços externos; `Respawn` para resetar o banco entre testes; `FluentAssertions` para asserções expressivas.
+- Escopo priorizado: autenticação (`AuthService`), persistência (`UsuarioRepository`, `PreferenciasRepository`), e geração/consumo de recomendações (`RecomendacaoService`).
 
 #### Testes implementados
 
 | Teste | Camada testada | Funcionalidade | Resultado | Evidência |
 |---|---|---|---|---|
-| A preencher | Service | A preencher | A preencher | A preencher |
-| A preencher | Service | A preencher | A preencher | A preencher |
-| A preencher | Service | A preencher | A preencher | A preencher |
+| AuthService_ShouldHashAndVerifyPassword | Service | Registro e verificação de senha | Passed | `tests/BackEnd.Aventura.Tests/AuthServiceTests.cs` |
+| UsuarioRepository_CRUD | Repository (integration) | Criação/Leitura/Update de usuário | Passed | `tests/BackEnd.Aventura.Integration/UsuarioRepositoryTests.cs` (Testcontainers + Respawn) |
+| PreferenciasRepository_SaveAndLoad | Repository (integration) | Persistir e recuperar preferências | Passed | `tests/.../PreferenciasRepositoryTests.cs` |
+| RecomendacaoService_Fallback | Service (integration) | Geração de fallback por gêneros favoritos | Passed | `tests/.../RecomendacaoServiceTests.cs` (WireMock stub) |
 
 #### Execução dos testes
 
+Executar todos os testes do backend (local):
+
 ```bash
-A preencher com o comando utilizado para executar os testes.
+dotnet test src/backend/BackEnd.Aventura.sln --logger "console;verbosity=minimal"
+```
+
+Ou executar testes no diretório de testes:
+
+```bash
+dotnet test tests/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
 ```
 
 #### Resultado da cobertura
 
-A preencher com prints, logs ou resumo da cobertura obtida.
+Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositórios) com meta de cobertura ≥ 70% nas partes essenciais. Relatórios de cobertura são gerados pelo pipeline de CI e anexados aos artefatos de build.
 
 ---
 
 #### Link do vídeo demonstrativo
 
-A preencher com o link do vídeo demonstrando a aplicação em execução, preferencialmente com tela dividida entre aplicação e console/VSCode.
+[Vídeo demonstrativo](https://drive.google.com/file/d/1VCDSsW-dxjwJJM6786tu-Pd1RauL3sNp/view?usp=sharing)
 
 ---
 

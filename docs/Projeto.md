@@ -2317,37 +2317,320 @@ Nesta seção, o grupo deve discutir a cobertura geral do planejamento, destacan
 
 Esta seção documenta o progresso incremental da solução de software durante a Sprint 3. O objetivo é evidenciar a evolução do backend, frontend, integrações, padrões de desenvolvimento, testes unitários, metodologia e comprovações de execução da aplicação.
 
-A documentação deve demonstrar que a implementação está alinhada ao planejamento da sprint, à arquitetura definida e aos padrões técnicos do projeto.
-
 ---
+### 18.1 Objetivo da sessão
 
-### 18.1 Objetivo do artefato
+Esta seção evidencia o progresso incremental da solução durante a Sprint 3, contemplando:
 
-Descrever brevemente como esta seção evidencia o progresso incremental da solução, contemplando implementação de backend e frontend, adoção de padrões de codificação, arquitetura definida, testes unitários e documentação das evidências de execução.
+- Implementação completa do backend em .NET 10 com arquitetura em camadas (Domain, Repository, Service, Controller);
+- Implementação do aplicativo mobile em React Native com Expo, adotando o padrão MVVM;
+- Adoção de padrões de codificação formalizados (nomenclatura, commits, separação de responsabilidades);
+- Suíte de testes unitários com 109 testes aprovados, cobrindo Domínio, Serviços, Controllers, Mappers, Middlewares e Infraestrutura;
+- Documentação das rotas REST disponibilizadas pelo backend;
+- Evidências de execução da aplicação e da suíte de testes.
 
 ---
 
 ### 18.2 Arquitetura de codificação e estrutura de diretórios
 
-Nesta seção, deve ser apresentada a organização geral do projeto, separando backend, frontend, documentação, testes, configurações e arquivos auxiliares.
+A organização geral do repositório separa claramente backend, frontend, banco de dados, modelos de machine learning, dataset, documentação e ferramentas auxiliares.
 
 #### Estrutura geral do repositório
 
 ```text
-A preencher com a estrutura atual do projeto.
+g02/
+├── .env                         # Variáveis de ambiente (não versionado)
+├── .gitignore
+├── README.md                    # Visão geral e instruções do projeto
+├── docker-compose-db.yml        # Sobe container PostgreSQL local via Docker
+├── requirements.txt             # Dependências Python para ML/análise
+│
+├── DbRunner/                    # Utilitário C# para aplicar scripts SQL
+│   ├── DbRunner.csproj
+│   └── Program.cs
+│
+├── assets/                      # Imagens e diagramas do projeto
+│
+├── docs/                        # Documentação técnica e de negócio
+│
+└── src/
+    ├── aad/                     # Jupyter Notebooks de análise e modelagem ML
+    │   ├── 01_analise_exploratoria_dados.ipynb
+    │   ├── 02_knn.ipynb
+    │   ├── 03_svd.ipynb
+    │   └── 04_avaliacao_inferencia.ipynb
+    │
+    ├── dataset/                 # Dataset CSV utilizado no treinamento
+    │   └── dataset.csv
+    │
+    ├── models/                  # Modelos treinados e script de inferência
+    │   ├── inference.py
+    │   ├── svd_model.joblib
+    │   ├── knn_surprise_model.pkl
+    │   └── final_model.joblib
+    │
+    ├── database/                # Scripts SQL e Dockerfile do banco de dados
+    │   ├── 01_create_database.sql
+    │   ├── 02_initial_data.sql
+    │   └── Dockerfile
+    │
+    ├── backend/                 # Web API REST em .NET 10
+    │   ├── BackEnd.Aventura.csproj
+    │   ├── Program.cs
+    │   ├── appsettings.json
+    │   ├── controller/
+    │   ├── domain/
+    │   ├── dto/
+    │   ├── exceptions/
+    │   ├── extensions/
+    │   ├── infrastructure/
+    │   ├── mappings/
+    │   ├── repository/
+    │   ├── services/
+    │   └── BackEnd.Aventura.Tests/
+    │       ├── Fakes/
+    │       └── *.Tests.cs
+    │
+    └── frontend/
+        └── mobile-app-aventura/ # App React Native com Expo
+            ├── App.js
+            ├── RootNavigator.js
+            ├── components/
+            ├── constants/
+            ├── data/
+            ├── models/
+            ├── repositories/
+            ├── screens/
+            ├── services/
+            └── viewmodels/
 ```
+
+---
 
 ### 18.3 Desenvolvimento do Backend
 
-Esta seção deve documentar o progresso da implementação do backend durante a Sprint 3, incluindo arquitetura adotada, features desenvolvidas, rotas criadas, integração com banco de dados, autenticação externa e documentação Swagger.
-
 #### 18.3.1 Arquitetura do backend
 
-Descrever a arquitetura adotada no backend, indicando camadas, serviços, controllers, models, repositories, integração com banco de dados, autenticação e demais responsabilidades.
+O backend foi desenvolvido em **.NET 10 (C#)** e segue uma arquitetura em camadas inspirada nos princípios de **Domain-Driven Design (DDD)** e **Clean Architecture**, com clara separação de responsabilidades entre as camadas.
 
 ```text
-A preencher com a estrutura de pastas do backend.
+src/backend/
+├── domain/            # Entidades ricas de domínio com regras de negócio encapsuladas
+│   ├── Espetaculo.cs
+│   ├── Preferencias.cs
+│   ├── Recomendacao.cs
+│   ├── Teatro.cs
+│   ├── Usuario.cs
+│   └── EntityGuards.cs
+│
+├── repository/        # Interfaces (contratos) dos repositórios de dados
+│   ├── IEspetaculoRepository.cs
+│   ├── IGeneroRepository.cs
+│   ├── IPreferenciasRepository.cs
+│   ├── IRecomendacaoRepository.cs
+│   ├── ITeatroRepository.cs
+│   ├── IUsuarioRepository.cs
+│   ├── IWishlistRepository.cs
+│   ├── EspetaculoRepository.cs
+│   ├── GeneroRepository.cs
+│   ├── PreferenciasRepository.cs
+│   ├── RecomendacaoRepository.cs
+│   ├── TeatroRepository.cs
+│   ├── UsuarioRepository.cs
+│   └── WishlistRepository.cs
+│
+├── services/          # Lógica de aplicação e orquestração entre repositórios
+│   ├── AuthService.cs
+│   ├── EspetaculoService.cs
+│   ├── GeneroService.cs
+│   ├── PreferenciasService.cs
+│   ├── RecomendacaoService.cs
+│   ├── TeatroService.cs
+│   ├── UsuarioService.cs
+│   └── WishlistService.cs
+│
+├── controller/        # Controllers da API REST (recebem requisições HTTP)
+│   ├── AuthController.cs
+│   ├── EspetaculoController.cs
+│   ├── GeneroController.cs
+│   ├── PreferenciasController.cs
+│   ├── RecomendacaoController.cs
+│   ├── TeatroController.cs
+│   ├── UsuarioController.cs
+│   └── WishlistController.cs
+│
+├── dto/               # Objetos de transferência de dados (entrada e saída da API)
+│   ├── AuthDtos.cs
+│   ├── EspetaculoDto.cs
+│   ├── PreferenciasDto.cs
+│   ├── PreferenciasUpdateDto.cs
+│   ├── RecomendacaoDto.cs
+│   └── TeatroDto.cs
+│
+├── mappings/          # Extensões de mapeamento entre entidades de domínio e DTOs
+│   └── DtoMapper.cs
+│
+├── exceptions/        # Exceções de domínio personalizadas
+│   ├── NotFoundException.cs
+│   └── ConflictException.cs
+│
+├── infrastructure/    # Infraestrutura: fábrica de conexões e middleware global
+│   ├── DbConnectionFactory.cs
+│   ├── IDbConnectionFactory.cs
+│   ├── middleware/
+│   │   └── GlobalExceptionHandler.cs
+│   └── persistence/
+│       ├── EspetaculoMapper.cs
+│       └── EspetaculoQueries.cs
+│
+└── extensions/        # Registro de dependências via Injeção de Dependência
+    └── DependencyInjection.cs
 ```
+
+**Decisões arquiteturais justificadas:**
+
+- **ADO.NET direto com Npgsql** (sem ORM): Escolha deliberada para ter controle total sobre as queries SQL, eliminar overhead de mapeamento de ORM e garantir máxima performance. O padrão Repository abstrai os detalhes de persistência das camadas superiores.
+- **Entidades de domínio ricas**: As classes de domínio (como `Usuario`, `Teatro`, `Preferencias`) expõem métodos de comportamento (ex: `AtualizarPerfil`, `AdicionarEspetaculo`, `SetGeneros`) em vez de serem simples bags de propriedades. Isso garante que as regras de negócio sejam sempre aplicadas no lugar certo.
+- **EntityGuards**: Classe estática utilitária que centraliza validações de argumentos (nulos, vazios, guids vazios), evitando código duplicado em construtores e métodos.
+- **GlobalExceptionHandler**: Middleware que mapeia exceções de domínio para códigos HTTP corretos (`NotFoundException` → 404, `ConflictException` → 409, `ArgumentException` → 400), retornando respostas no padrão RFC 7807 (`ProblemDetails`).
+- **Injeção de Dependência via `IServiceCollection`**: Toda a configuração de DI fica centralizada em `DependencyInjection.cs`, mantendo o `Program.cs` limpo.
+
+---
+
+#### 18.3.2 Rotas da API REST
+
+Todas as rotas estão expostas sob o prefixo `/api`. O Swagger UI está disponível em `/swagger` no ambiente de desenvolvimento.
+
+##### Auth — `/api/auth`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `POST` | `/api/auth/register` | Registra um novo usuário. Valida nome, e-mail, senha (mínimo 6 caracteres) e idade (mínimo 13 anos). Cria preferências padrão automaticamente. | `201 Created` | `400 Bad Request` (dados inválidos), `409 Conflict` (e-mail duplicado) |
+| `POST` | `/api/auth/login` | Autentica usuário por e-mail e senha. A senha é verificada contra o hash BCrypt armazenado. | `200 OK` | `400 Bad Request` (campo vazio), `401 Unauthorized` (credenciais inválidas) |
+
+**Payload de resposta (`AuthResponse`):**
+```json
+{
+  "usuarioId": "uuid",
+  "nome": "string",
+  "email": "string"
+}
+```
+
+---
+
+##### Espetáculos — `/api/espetaculo`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/espetaculo` | Retorna todos os espetáculos cadastrados. | `200 OK` | — |
+| `GET` | `/api/espetaculo/{id}` | Retorna um espetáculo pelo seu UUID. | `200 OK` | `404 Not Found` |
+| `GET` | `/api/espetaculo/search?genero=&nome=` | Busca espetáculos filtrando por gênero e/ou nome (ambos opcionais, case-insensitive). | `200 OK` | — |
+
+**Payload de resposta (`EspetaculoDto`):**
+```json
+{
+  "id": "uuid",
+  "nome": "string",
+  "genero": "string",
+  "tipoEvento": "string",
+  "descricao": "string",
+  "urlBilheteria": "string",
+  "dataInicio": "datetime",
+  "dataFim": "datetime",
+  "valorIngresso": 0.00,
+  "emCartaz": true
+}
+```
+
+---
+
+##### Teatros — `/api/teatro`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/teatro` | Retorna todos os teatros cadastrados. | `200 OK` | — |
+| `GET` | `/api/teatro/{id}` | Retorna um teatro pelo seu UUID, incluindo os espetáculos associados. | `200 OK` | `404 Not Found` |
+| `GET` | `/api/teatro/{id}/espetaculos` | Retorna os espetáculos de um teatro específico. | `200 OK` | `404 Not Found` |
+
+**Payload de resposta (`TeatroDto`):**
+```json
+{
+  "id": "uuid",
+  "nome": "string",
+  "endereco": "string",
+  "cidade": "string",
+  "horarioFuncionamento": "string",
+  "espetaculos": [ /* array de EspetaculoDto */ ]
+}
+```
+
+---
+
+##### Usuários — `/api/usuario`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/usuario/{id}` | Retorna os dados públicos de um usuário pelo UUID. | `200 OK` | `404 Not Found` |
+| `PUT` | `/api/usuario/{id}` | Atualiza nome e/ou idade do usuário. A idade mínima de 13 anos é validada no domínio. | `200 OK` | `400 Bad Request`, `404 Not Found` |
+
+---
+
+##### Preferências — `/api/preferencias`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/preferencias/{usuarioId}` | Retorna as preferências do usuário. Se ainda não existirem, são criadas com valores padrão automaticamente. | `200 OK` | — |
+| `PUT` | `/api/preferencias/{usuarioId}` | Atualiza as preferências (gêneros, tags, localização, faixa de preço, notificações). Todos os campos são opcionais. | `200 OK` | `400 Bad Request` (ex: `faixaPrecoMin` maior que `faixaPrecoMax`) |
+
+**Payload de atualização (`PreferenciasUpdateDto`):**
+```json
+{
+  "generos": ["Drama", "Musical"],
+  "tags": ["familiar", "classico"],
+  "cidade": "São Paulo",
+  "cep": "01310-100",
+  "faixaPrecoMin": 50.00,
+  "faixaPrecoMax": 300.00,
+  "receberNotificacoes": true
+}
+```
+
+---
+
+##### Wishlist — `/api/wishlist`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/wishlist/{usuarioId}` | Retorna a lista de espetáculos salvos pelo usuário. | `200 OK` | — |
+| `GET` | `/api/wishlist/{usuarioId}/contains/{espetaculoId}` | Verifica se um espetáculo específico está na wishlist do usuário. | `200 OK` (retorna `true` ou `false`) | — |
+| `POST` | `/api/wishlist/{usuarioId}/{espetaculoId}` | Adiciona um espetáculo à wishlist. Valida existência do espetáculo e duplicidade. | `201 Created` | `404 Not Found` (espetáculo não existe), `409 Conflict` (já adicionado) |
+| `DELETE` | `/api/wishlist/{usuarioId}/{espetaculoId}` | Remove um espetáculo da wishlist do usuário. | `204 No Content` | `404 Not Found` (item não está na wishlist) |
+
+---
+
+##### Recomendações — `/api/recomendacao`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/recomendacao/{usuarioId}?limit=10` | Retorna as top-N recomendações personalizadas para o usuário (padrão: 10, máximo: 50). Se não houver recomendações calculadas, retorna um fallback baseado nos gêneros favoritos do usuário. | `200 OK` | `400 Bad Request` (limit fora do intervalo 1–50) |
+
+**Payload de resposta (`RecomendacaoItemDto`):**
+```json
+{
+  "espetaculo": { /* EspetaculoDto */ },
+  "score": 0.92,
+  "motivo": "Baseado nos seus gêneros favoritos"
+}
+```
+
+---
+
+##### Gêneros — `/api/genero`
+
+| Método | Rota | Descrição | Código de Sucesso | Erros possíveis |
+|--------|------|-----------|:-----------------:|-----------------|
+| `GET` | `/api/genero` | Retorna a lista de todos os gêneros musicais/teatrais cadastrados. | `200 OK` | — |
 
 ---
 

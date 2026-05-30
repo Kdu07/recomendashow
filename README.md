@@ -103,11 +103,8 @@ A organização atual da solução contempla os seguintes módulos:
 
 | Camada | Tecnologia |
 |----------|-------------|
-| Frontend mobile | React Native, Expo, JavaScript |
-| Backend | C# / .NET |
-| Serviço de recomendação | C# / .NET, modelo SVD e métricas de avaliação |
-| Serviço de treinamento | C# / .NET e processamento de dados |
-| Análise e experimentação | Python, Jupyter Notebooks |
+| Frontend | HTML, CSS, JavaScript |
+| Backend | C# (.NET) |
 | Banco de Dados | PostgreSQL |
 | Infraestrutura de banco | Supabase e Docker Compose para ambiente local |
 | Controle de versão | Git/GitLab |
@@ -117,53 +114,25 @@ A organização atual da solução contempla os seguintes módulos:
 
 ```text
 g02-2/
-│ .env.example
+│ .env
 │ .gitignore
 │ docker-compose-db.yml
 │ README.md
 │ requirements.txt
 │
 ├── assets/
-│   ├── design/
-│   └── mock/
-│
-├── data/
+├── docs/
+├── src/
+│   ├── backend/
+│   ├── frontend/
 │   ├── models/
-│   └── raw/
+│   ├── dataset/
+│   └── database/
+│       ├──01_create_database.sql
+│       └──02_initial_data.sql
 │
 ├── DbRunner/
-│
-├── docs/
-│   ├── Index.md
-│   ├── Projeto.md
-│   ├── Gestao_Projeto_Configuracao.md
-│   ├── Gestão_projeto_SP2.md
-│   ├── Gestão_projeto_SP3.md
-│   └── projeto_visual.md
-│
-├── notebooks/
-│
-└── src/
-    ├── backend/
-    ├── database/
-    ├── frontend/
-    │   └── mobile-app-aventura/
-    ├── recommendation-service/
-    └── training-service/
 ```
-
-| Caminho | Finalidade |
-|---|---|
-| `assets/` | Imagens, diagramas, mockups e materiais visuais do projeto. |
-| `data/` | Dados brutos e modelos treinados utilizados nos experimentos e serviços. |
-| `DbRunner/` | Executor .NET responsável por aplicar os scripts SQL no banco configurado. |
-| `docs/` | Documentação acadêmica, técnica, visual e de gestão do projeto. |
-| `notebooks/` | Notebooks de análise exploratória, experimentação e avaliação de modelos. |
-| `src/backend/` | Backend principal em C#/.NET. |
-| `src/database/` | Scripts SQL e Dockerfile do banco PostgreSQL. |
-| `src/frontend/mobile-app-aventura/` | Aplicação mobile em React Native/Expo. |
-| `src/recommendation-service/` | Serviço de recomendação e métricas do modelo. |
-| `src/training-service/` | Serviço de treinamento e processamento dos dados. |
 
 ---
 
@@ -217,11 +186,8 @@ As seguintes regras foram consideradas na modelagem:
 ### Pré-requisitos
 
 - .NET SDK instalado
-- Node.js e npm instalados
-- Expo CLI ou execução via `npx expo`
-- Docker e Docker Compose, caso utilize o banco local
-- Conta ou projeto configurado no Supabase, caso utilize banco hospedado
-- Visual Studio Code ou editor equivalente
+- Conta no Supabase
+- Visual Studio Code
 
 ### Variáveis de ambiente
 

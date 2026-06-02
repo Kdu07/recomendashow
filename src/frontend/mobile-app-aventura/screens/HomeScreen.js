@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, SafeAreaView, Animated } from "react-native";
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, Animated, Image, Modal, TouchableOpacity } from "react-native";
 import { BlurView } from "expo-blur";
+import { Ionicons } from "@expo/vector-icons";
 
 import HomeHeroBanner from "../components/HomeHeroBanner";
 import CategoryChip from "../components/CategoryChip";
@@ -14,6 +15,7 @@ import SystemStatus from "../components/SystemStatus";
 import useHomeViewModel from "../viewmodels/useHomeViewModel";
 
 import { colors } from "../constants/colors";
+import { typography } from "../constants/typography";
 import { spacing, radius } from "../constants/spacing";
 
 function PosterSection({
@@ -77,8 +79,63 @@ function EmptySection({
   );
 }
 
+function TheaterDetailsModal({ theater, visible, onClose }) {
+  if (!theater) return null;
+
+  return (
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.theaterModal}>
+          <Image source={theater.image} style={styles.theaterModalImage} resizeMode="cover" />
+
+          <TouchableOpacity
+            style={styles.modalCloseButton}
+            onPress={onClose}
+            activeOpacity={0.75}
+          >
+            <Ionicons name="close" size={20} color={colors.grayDark} />
+          </TouchableOpacity>
+
+          <ScrollView
+            contentContainerStyle={styles.theaterModalContent}
+            showsVerticalScrollIndicator={false}
+          >
+            <Text style={styles.theaterModalCity}>{theater.city}</Text>
+            <Text style={styles.theaterModalTitle}>{theater.name}</Text>
+            <Text style={styles.theaterModalLocation}>{theater.location}</Text>
+
+            <View style={styles.capacityBadge}>
+              <Ionicons name="people-outline" size={16} color={colors.purplePrimary} />
+              <Text style={styles.capacityText}>{theater.capacity}</Text>
+            </View>
+
+            <Text style={styles.theaterModalDescription}>
+              {theater.description}
+            </Text>
+
+            <View style={styles.highlightsList}>
+              {theater.highlights?.map((highlight) => (
+                <View key={highlight} style={styles.highlightItem}>
+                  <Ionicons name="checkmark-circle" size={16} color={colors.purplePrimary} />
+                  <Text style={styles.highlightText}>{highlight}</Text>
+                </View>
+              ))}
+            </View>
+          </ScrollView>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
 export default function HomeScreen({ navigation }) {
   const [systemStatus, setSystemStatus] = useState(null);
+  const [selectedTheater, setSelectedTheater] = useState(null);
 
   const {
     heroBanners = [],
@@ -120,6 +177,11 @@ export default function HomeScreen({ navigation }) {
         ? "Espetáculo adicionado à wishlist."
         : "Espetáculo removido da wishlist.",
     });
+  }
+
+  function handleTheaterOpen(theater) {
+    handleTheaterPress(theater);
+    setSelectedTheater(theater);
   }
 
   return (
@@ -223,7 +285,7 @@ export default function HomeScreen({ navigation }) {
                   name={theater.name}
                   location={theater.location}
                   image={theater.image}
-                  onPress={() => handleTheaterPress(theater)}
+                  onPress={() => handleTheaterOpen(theater)}
                 />
               ))}
             </View>
@@ -234,6 +296,12 @@ export default function HomeScreen({ navigation }) {
           message={systemStatus?.message}
           type={systemStatus?.type}
           onDismiss={() => setSystemStatus(null)}
+        />
+
+        <TheaterDetailsModal
+          theater={selectedTheater}
+          visible={Boolean(selectedTheater)}
+          onClose={() => setSelectedTheater(null)}
         />
       </Animated.View>
     </SafeAreaView>
@@ -341,5 +409,122 @@ const styles = StyleSheet.create({
   theaterList: {
     gap: spacing.lg,
     alignItems: "center",
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(17, 24, 39, 0.42)",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: spacing.md,
+  },
+
+  theaterModal: {
+    width: "100%",
+    maxWidth: 380,
+    maxHeight: "86%",
+    borderRadius: radius.lg,
+    overflow: "hidden",
+    backgroundColor: colors.white,
+    borderWidth: 1,
+    borderColor: colors.grayLight,
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.16,
+    shadowRadius: 24,
+    elevation: 12,
+  },
+
+  theaterModalImage: {
+    width: "100%",
+    height: 170,
+    backgroundColor: colors.purpleSoft,
+  },
+
+  modalCloseButton: {
+    position: "absolute",
+    top: spacing.md,
+    right: spacing.md,
+    width: 36,
+    height: 36,
+    borderRadius: radius.pill,
+    backgroundColor: "rgba(255, 255, 255, 0.92)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: colors.grayLight,
+  },
+
+  theaterModalContent: {
+    padding: spacing.lg,
+    gap: spacing.sm,
+  },
+
+  theaterModalCity: {
+    fontSize: typography.size.xs,
+    lineHeight: typography.lineHeight.xs,
+    fontWeight: typography.fontWeight.semiBold,
+    color: colors.purplePrimary,
+    textTransform: "uppercase",
+  },
+
+  theaterModalTitle: {
+    fontSize: typography.size.lg,
+    lineHeight: typography.lineHeight.lg,
+    fontWeight: typography.fontWeight.bold,
+    color: colors.grayDark,
+  },
+
+  theaterModalLocation: {
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
+    color: colors.grayText,
+  },
+
+  capacityBadge: {
+    alignSelf: "flex-start",
+    marginTop: spacing.xs,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.pill,
+    backgroundColor: colors.purpleSoft,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.xs,
+  },
+
+  capacityText: {
+    fontSize: typography.size.xs,
+    lineHeight: typography.lineHeight.xs,
+    fontWeight: typography.fontWeight.semiBold,
+    color: colors.purplePrimary,
+  },
+
+  theaterModalDescription: {
+    marginTop: spacing.xs,
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.md,
+    color: colors.grayDark,
+  },
+
+  highlightsList: {
+    marginTop: spacing.sm,
+    gap: spacing.sm,
+  },
+
+  highlightItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: spacing.sm,
+  },
+
+  highlightText: {
+    flex: 1,
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
+    color: colors.grayText,
   },
 });

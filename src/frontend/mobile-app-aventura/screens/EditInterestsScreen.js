@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 
 import AppButton from '../components/AppButton';
-import BottomTabBar from '../components/BottomTabBar';
 import InfoCard from '../components/InfoCard';
 import SelectableChip from '../components/SelectableChip';
 import ScreenHeader from '../components/ScreenHeader';
@@ -132,23 +131,6 @@ export default function EditInterestsScreen({
         </ScrollView>
       </SafeAreaView>
 
-      <BottomTabBar
-        activeTab="profile"
-        onTabPress={(tab) => {
-          if (tab === 'explore') {
-            navigation.navigate('MainTabs', {
-              screen: 'Home',
-            });
-
-            return;
-          }
-
-          if (tab === 'profile') {
-            navigation.navigate('MainTabs', { screen: 'Profile' });
-          }
-        }}
-      />
-
       <SystemStatus
         message={systemStatus?.message}
         type={systemStatus?.type}
@@ -172,7 +154,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: spacing.md,
     paddingTop: spacing.md,
-    paddingBottom: 140,
+    paddingBottom: spacing.xxxl,
     gap: spacing.lg,
   },
 

@@ -8,7 +8,6 @@ import {
   SafeAreaView,
 } from 'react-native';
 
-import BottomTabBar from '../components/BottomTabBar';
 import ContactCard from '../components/ContactCard';
 import SettingsSection from '../components/SettingsSection';
 import SocialLinkCard from '../components/SocialLinkCard';
@@ -120,23 +119,6 @@ export default function InstitutionalScreen({
         </ScrollView>
       </SafeAreaView>
 
-      <BottomTabBar
-        activeTab="profile"
-        onTabPress={(tab) => {
-          if (tab === 'explore') {
-            navigation.navigate('MainTabs', {
-              screen: 'Home',
-            });
-
-            return;
-          }
-
-          if (tab === 'profile') {
-            navigation.navigate('MainTabs', { screen: 'Profile' });
-          }
-        }}
-      />
-
       <SystemStatus
         message={systemStatus?.message}
         type={systemStatus?.type}
@@ -160,7 +142,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: spacing.md,
     paddingTop: spacing.md,
-    paddingBottom: 140,
+    paddingBottom: spacing.xxxl,
     gap: spacing.lg,
   },
 

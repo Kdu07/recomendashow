@@ -172,40 +172,47 @@
 </details>
 
 <details>
-<summary><a href="#16-linguagens-e-tecnologias-utilizadas">16. Linguagens e Tecnologias Utilizadas</a></summary>
+<summary><a href="#16-diagrama-de-implantação">16. Diagrama de Implantação</a></summary>
 
-- [Linguagens e Tecnologias Utilizadas](#16-linguagens-e-tecnologias-utilizadas)
+- [Diagrama de Implantação](#16-diagrama-de-implantação)
 
 </details>
 
 <details>
-<summary><a href="#17-planejamento-de-testes">17. Planejamento de Testes</a></summary>
+<summary><a href="#17-linguagens-e-tecnologias-utilizadas">17. Linguagens e Tecnologias Utilizadas</a></summary>
 
-- [17.1 Objetivo do planejamento de testes](#171-objetivo-do-planejamento-de-testes)
-- [17.2 Estratégia geral de testes](#172-estratégia-geral-de-testes)
-- [17.3 Testes de funcionalidade](#173-testes-de-funcionalidade)
-- [17.4 Testes de requisitos não funcionais](#174-testes-de-requisitos-não-funcionais)
-- [17.5 Testes de usabilidade](#175-testes-de-usabilidade)
-- [17.6 Testes de APIs externas](#176-testes-de-apis-externas)
-- [17.7 Testes de integração](#177-testes-de-integração)
-- [17.8 Discussão geral de abrangência dos testes](#178-discussão-geral-de-abrangência-dos-testes)
+- [Linguagens e Tecnologias Utilizadas](#17-linguagens-e-tecnologias-utilizadas)
+
 </details>
 
 <details>
-<summary><a href="#18-desenvolvimento-do-projeto--sprint-3">18. Desenvolvimento Do Projeto — Sprint 3</a></summary>
+<summary><a href="#18-planejamento-de-testes">18. Planejamento de Testes</a></summary>
 
-- [18.1 Objetivo do artefato](#181-objetivo-do-artefato)
-- [18.2 Arquitetura de codificação e estrutura de diretórios](#182-arquitetura-de-codificação-e-estrutura-de-diretórios)
-- [18.3 Desenvolvimento do Backend](#183-desenvolvimento-do-backend)
-  - [18.3.1 Arquitetura do backend](#1831-arquitetura-do-backend)
-- [18.4 Desenvolvimento do Frontend](#184-desenvolvimento-do-frontend)
-  - [18.4.1 Arquitetura do frontend](#1841-arquitetura-do-frontend)
-  - [18.4.2 Telas implementadas](#1842-telas-implementadas)
-  - [18.4.3 Vídeo demonstrativo do frontend](#1843-vídeo-demonstrativo-do-frontend)
-- [18.5 Padrões de codificação e padrões de projeto](#185-padrões-de-codificação-e-padrões-de-projeto)
+- [18.1 Objetivo do planejamento de testes](#181-objetivo-do-planejamento-de-testes)
+- [18.2 Estratégia geral de testes](#182-estratégia-geral-de-testes)
+- [18.3 Testes de funcionalidade](#183-testes-de-funcionalidade)
+- [18.4 Testes de requisitos não funcionais](#184-testes-de-requisitos-não-funcionais)
+- [18.5 Testes de usabilidade](#185-testes-de-usabilidade)
+- [18.6 Testes de APIs externas](#186-testes-de-apis-externas)
+- [18.7 Testes de integração](#187-testes-de-integração)
+- [18.8 Discussão geral de abrangência dos testes](#188-discussão-geral-de-abrangência-dos-testes)
+</details>
+
+<details>
+<summary><a href="#19-desenvolvimento-do-projeto--sprint-3">19. Desenvolvimento Do Projeto — Sprint 3</a></summary>
+
+- [19.1 Objetivo do artefato](#191-objetivo-do-artefato)
+- [19.2 Arquitetura de codificação e estrutura de diretórios](#192-arquitetura-de-codificação-e-estrutura-de-diretórios)
+- [19.3 Desenvolvimento do Backend](#193-desenvolvimento-do-backend)
+  - [19.3.1 Arquitetura do backend](#1931-arquitetura-do-backend)
+- [19.4 Desenvolvimento do Frontend](#194-desenvolvimento-do-frontend)
+  - [19.4.1 Arquitetura do frontend](#1941-arquitetura-do-frontend)
+  - [19.4.2 Telas implementadas](#1942-telas-implementadas)
+  - [19.4.3 Vídeo demonstrativo do frontend](#1943-vídeo-demonstrativo-do-frontend)
+- [19.5 Padrões de codificação e padrões de projeto](#195-padrões-de-codificação-e-padrões-de-projeto)
   - [Padrões de codificação](#padrões-de-codificação)
   - [Padrões de projeto](#padrões-de-projeto)
-- [18.6 Testes unitários e metodologia TDD](#186-testes-unitários-e-metodologia-tdd)
+- [19.6 Testes unitários e metodologia TDD](#196-testes-unitários-e-metodologia-tdd)
   - [Estratégia de testes](#estratégia-de-testes)
   - [Testes implementados](#testes-implementados)
   - [Execução dos testes](#execução-dos-testes)
@@ -215,9 +222,9 @@
 </details>
 
 <details>
-<summary><a href="#19-termos-e-abreviações">19. Termos e Abreviações</a></summary>
+<summary><a href="#20-termos-e-abreviações">20. Termos e Abreviações</a></summary>
 
-- [Termos e Abreviações](#19-termos-e-abreviações)
+- [Termos e Abreviações](#20-termos-e-abreviações)
 
 </details>
 
@@ -1460,7 +1467,17 @@ O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visual
 | RF09 — Redirecionamento de Compra | UC13 — Acessar link de compra |
 | RF10 — Recomendação Inteligente | UC09 — Receber recomendações personalizadas |
 
-## 16. Linguagens e Tecnologias Utilizadas
+## 16. Diagrama de Implantação
+
+O diagrama de implantação abaixo apresenta a arquitetura física do Portal Aventura, destacando os ambientes de execução, os componentes implantados e suas comunicações. A solução é composta pelo aplicativo móvel, API Gateway, Backend ASP.NET Core, Training Job, Sistema de Recomendação, banco de dados PostgreSQL, armazenamento S3 e serviços externos. As conexões entre os componentes utilizam protocolos como HTTPS e TCP, garantindo a comunicação entre os serviços da plataforma.
+
+<div align="center">
+  <sub>Imagem 10 - Diagrama de Componentes UML</sub><br>
+  <img src="../assets/diagrama-de-componentes.drawio.png" width="100%" alt="Diagrama de Componentes UML"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+
+## 17. Linguagens e Tecnologias Utilizadas
 
 O projeto segue uma Arquitetura Orientada a Serviços (SOA), com camadas bem definidas de apresentação, serviços e dados. As tecnologias foram escolhidas para atender aos requisitos funcionais e não funcionais do sistema, e são descritas a seguir.
 
@@ -1498,7 +1515,7 @@ O ViaCEP é uma API pública e gratuita que retorna dados de endereço a partir 
 
 ---
 
-## 17. Planejamento de Testes
+## 18. Planejamento de Testes
 
 Esta seção apresenta a estrutura de planejamento de testes do sistema de recomendação da Aventura. O objetivo é organizar a validação sistemática da solução, cobrindo testes funcionais, testes de requisitos não funcionais, testes de usabilidade, testes de APIs externas e testes de integração.
 
@@ -1508,7 +1525,7 @@ A validação do sistema deve considerar o contexto do produto: um aplicativo mo
 
 ---
 
-### 17.1 Objetivo do planejamento de testes
+### 18.1 Objetivo do planejamento de testes
 
 O objetivo do planejamento de testes é definir como o sistema será validado ao longo da Sprint 3, garantindo que os requisitos funcionais, requisitos não funcionais, integrações e fluxos de uso sejam verificados de forma organizada.
 
@@ -1527,7 +1544,7 @@ Este planejamento também busca garantir que cada cenário de teste possua:
 
 ---
 
-### 17.2 Estratégia geral de testes
+### 18.2 Estratégia geral de testes
 
 A estratégia de testes do projeto está organizada em cinco frentes principais:
 
@@ -1541,7 +1558,7 @@ Os testes deverão contemplar cenários positivos e negativos, garantindo que o 
 
 ---
 
-### 17.3 Testes de funcionalidade
+### 18.3 Testes de funcionalidade
 
 Esta seção evolui os testes de usuário definidos junto a cada Requisito Funcional (RFs da seção 9.2) para casos de teste funcionais completos, com propósito explícito, pré-condições, cenários positivos e negativos, instruções de execução, pós-condições e critério objetivo de sucesso. Dessa forma O plano de testes funcionais cobre **100% dos 10 RFs definidos na seção 9.2**.
 
@@ -1880,7 +1897,7 @@ A premissa adotada foi garantir cobertura mínima de **um caso de teste principa
 
 ---
 
-### 17.4 Testes de requisitos não funcionais
+### 18.4 Testes de requisitos não funcionais
 
 Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atributos de qualidade como desempenho, segurança, disponibilidade, usabilidade, compatibilidade e escalabilidade.
 
@@ -2138,7 +2155,7 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
 | **Resultado Esperado** | Pipeline retorna exit code 1 e bloqueia o merge/deploy quando cobertura < 70% nos módulos críticos; relatório HTML de cobertura indica exatamente as linhas não cobertas; desenvolvedor é notificado automaticamente. |
 | **Pós-condição** | Relatório de cobertura com falha exportado como artefato; testes faltantes registrados como tarefa no backlog antes do próximo deploy. |
 
-### 17.5 Testes de usabilidade
+### 18.5 Testes de usabilidade
 
 Os testes de usabilidade têm como objetivo avaliar se usuários externos ao grupo conseguem compreender e executar os principais fluxos do aplicativo mobile do Portal Aventura de forma clara, intuitiva e sem auxílio excessivo.
 
@@ -2226,7 +2243,7 @@ A aplicação do questionário SUS complementa a observação das tarefas, permi
 
 ---
 
-### 17.6 Testes de APIs externas
+### 18.6 Testes de APIs externas
 
 O sistema integra a API **ViaCEP** para validação, autocomplete e enriquecimento automático de endereços. Essa integração é essencial para suportar a geolocalização dos usuários e entregar recomendações personalizadas na seção “Perto de você”, com foco nas cidades de São Paulo e Rio de Janeiro.
 
@@ -2252,19 +2269,19 @@ Essa abordagem assegura que a integração com ViaCEP contribua positivamente pa
 
 ---
 
-### 17.7 Testes de integração
+### 18.7 Testes de integração
 
 Nesta seção são planejados os testes das interações entre componentes internos e sistemas externos da Plataforma Aventura. O módulo VHS (*Virtual HTTP Store*) é utilizado como mecanismo de cache temporário obrigatório para todas as integrações com APIs externas (TI-04 e TI-05), garantindo estabilidade, isolamento e reprodutibilidade dos testes mesmo em cenários de indisponibilidade de terceiros.
 
 ---
 
-#### 17.7.1 Configuração do módulo VHS
+#### 18.7.1 Configuração do módulo VHS
 
 O VHS atua como camada intermediária entre o Backend e qualquer serviço HTTP externo. Ele intercepta as chamadas, armazena as respostas em cache com TTL configurável e as serve em requisições subsequentes idênticas. Nos testes, o VHS opera em modo *test* com TTLs reduzidos, cache flush entre suítes e inspeção habilitada via `VhsTestClient`.
 
 
 
-#### 17.7.1 Tabela de testes
+#### 18.7.1 Tabela de testes
 
 | ID do teste | Integração avaliada | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso | Ferramentas | Uso do VHS |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -2276,7 +2293,7 @@ O VHS atua como camada intermediária entre o Backend e qualquer serviço HTTP e
 
 ---
 
-#### 17.7.2 Método de validação dos resultados
+#### 18.7.2 Método de validação dos resultados
 
 A validação de cada teste combina quatro camadas de verificação:
 
@@ -2290,7 +2307,7 @@ A validação de cada teste combina quatro camadas de verificação:
 
 ---
 
-#### 17.7.3 Discussão de abrangência
+#### 18.7.3 Discussão de abrangência
 
 As cinco integrações mapeadas cobrem todos os fluxos críticos identificados no Diagrama de Casos de Uso e no Diagrama de Componentes:
 
@@ -2306,7 +2323,7 @@ A combinação VHS + WireMock garante que nenhum teste de integração realiza c
 
 ---
 
-### 17.8 Discussão geral de abrangência dos testes
+### 18.8 Discussão geral de abrangência dos testes
 
 A preencher após a conclusão das subseções anteriores.
 
@@ -2314,12 +2331,12 @@ Nesta seção, o grupo deve discutir a cobertura geral do planejamento, destacan
 
 ----
 
-## 18. Desenvolvimento Do Projeto  — Sprint 3
+## 19. Desenvolvimento Do Projeto  — Sprint 3
 
 Esta seção documenta o progresso incremental da solução de software durante a Sprint 3. O objetivo é evidenciar a evolução do backend, frontend, integrações, padrões de desenvolvimento, testes unitários, metodologia e comprovações de execução da aplicação.
 
 ---
-### 18.1 Objetivo da sessão
+### 19.1 Objetivo da sessão
 
 Esta seção evidencia o progresso incremental da solução durante a Sprint 3, contemplando:
 
@@ -2332,7 +2349,7 @@ Esta seção evidencia o progresso incremental da solução durante a Sprint 3, 
 
 ---
 
-### 18.2 Arquitetura de codificação e estrutura de diretórios
+### 19.2 Arquitetura de codificação e estrutura de diretórios
 
 A organização geral do repositório separa claramente backend, frontend, banco de dados, modelos de machine learning, dataset, documentação e ferramentas auxiliares.
 
@@ -2408,9 +2425,9 @@ g02/
 
 ---
 
-### 18.3 Desenvolvimento do Backend
+### 19.3 Desenvolvimento do Backend
 
-#### 18.3.1 Arquitetura do backend
+#### 19.3.1 Arquitetura do backend
 
 O backend foi desenvolvido em **.NET 10 (C#)** e segue uma arquitetura em camadas inspirada nos princípios de **Domain-Driven Design (DDD)** e **Clean Architecture**, com clara separação de responsabilidades entre as camadas.
 
@@ -2498,7 +2515,7 @@ src/backend/
 
 ---
 
-#### 18.3.2 Rotas da API REST
+#### 19.3.2 Rotas da API REST
 
 Todas as rotas estão expostas sob o prefixo `/api`. O Swagger UI está disponível em `/swagger` no ambiente de desenvolvimento.
 
@@ -2635,7 +2652,7 @@ Todas as rotas estão expostas sob o prefixo `/api`. O Swagger UI está disponí
 
 ---
 
-### 18.4 Desenvolvimento do Frontend
+### 19.4 Desenvolvimento do Frontend
 
 O frontend da Sprint 3 foi implementado como um aplicativo móvel híbrido em `src/frontend/mobile-app-aventura`, com foco em cross-platform e entrega rápida. A escolha por React Native buscou reduzir tempo de desenvolvimento e garantir disponibilidade simultânea em iOS e Android com um único conjunto de telas.
 
@@ -2650,7 +2667,7 @@ A aplicação utiliza um padrão similar a MVVM. As telas em `screens/` atuam co
 
 Essa decisão foi tomada para validar fluxo, navegação, componentes e experiência de uso antes da integração completa com o backend. A integração REST real fica prevista para as próximas sprints, mantendo os repositories como ponto natural de troca entre mocks e chamadas HTTP.
 
-#### 18.4.1 Arquitetura do frontend
+#### 19.4.1 Arquitetura do frontend
 
 A estrutura adotada no frontend inclui:
 
@@ -2666,7 +2683,7 @@ A estrutura adotada no frontend inclui:
 
 Essa estrutura permite que a equipe evolua a interface e os fluxos de navegação com baixo acoplamento. Quando a integração com o backend for ativada, a principal mudança esperada estará nos repositories e services, preservando as telas e grande parte dos viewmodels.
 
-#### 18.4.2 Telas implementadas
+#### 19.4.2 Telas implementadas
 
 As telas essenciais entregues na Sprint 3 foram:
 
@@ -2683,7 +2700,7 @@ As telas essenciais entregues na Sprint 3 foram:
 
 A implementação foi orientada pelas decisões de produto e pela estrutura esperada das APIs, mas nesta sprint o frontend opera majoritariamente com mocks locais. Isso permitiu validar o desenho das telas e a separação MVVM antes da integração real com os endpoints do backend nas próximas etapas.
 
-#### 18.4.3 Vídeo demonstrativo do frontend
+#### 19.4.3 Vídeo demonstrativo do frontend
 
 Como evidência complementar da Sprint 3, será adicionado aqui o link para um vídeo demonstrativo do aplicativo mobile em execução, mostrando o fluxo de navegação, as telas implementadas, a bottom tab bar, o uso de dados mockados e as interações principais do frontend.
 
@@ -2691,7 +2708,7 @@ Como evidência complementar da Sprint 3, será adicionado aqui o link para um v
 
 ---
 
-### 18.5 Padrões de codificação e padrões de projeto
+### 19.5 Padrões de codificação e padrões de projeto
 
 Nesta seção documentamos as decisões que guiaram o desenvolvimento do backend e do frontend na Sprint 3. Essas escolhas foram feitas para garantir consistência no código, manutenção previsível e alinhamento com boas práticas de engenharia.
 
@@ -2729,7 +2746,7 @@ Essas decisões de codificação e arquitetura foram tomadas para oferecer um ba
 
 ---
 
-### 18.6 Testes unitários do Backend e metodologia TDD
+### 19.6 Testes unitários do Backend e metodologia TDD
 
 Esta seção deve documentar a estratégia de testes unitários adotada no projeto, com foco nas funcionalidades implementadas e na aplicação da metodologia TDD.
 
@@ -2776,7 +2793,7 @@ Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositó
 
 ---
 
-### 18.7 Testes unitários do Frontend (React Native)
+### 19.7 Testes unitários do Frontend (React Native)
  
 Esta seção documenta a estratégia de testes unitários adotada para o frontend mobile do projeto, cobrindo as camadas de ViewModel e Service da arquitetura MVVM.
  
@@ -2837,7 +2854,7 @@ Cobertura focada nas camadas de ViewModel e Service, que concentram toda a lógi
 
 ---
 
-### 18.8 Testes unitários do Backend
+### 19.8 Testes unitários do Backend
 
 Esta seção documenta a estratégia de testes unitários adotada para o backend da aplicação.
 
@@ -2967,7 +2984,7 @@ Cobertura focada nas camadas de Domain, Service, Controller, Middleware e Infrae
 
 ---
 
-### 18.9 Documentação de API (Swagger)
+### 19.9 Documentação de API (Swagger)
 
 Esta seção documenta a API REST do backend, exposta via Swagger UI em ambiente de desenvolvimento.
 
@@ -3025,7 +3042,7 @@ Todos os endpoints retornam erros no formato `ProblemDetails` (RFC 7807), gerenc
 
 ---
 
-## 19. Termos e Abreviações
+## 20. Termos e Abreviações
 
 | Termo / Abreviação | Definição |
 |---|---|

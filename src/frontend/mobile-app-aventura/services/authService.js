@@ -1,10 +1,10 @@
 import { createAuthUser } from '../models/authModels';
 
-const MOCK_USER = createAuthUser({
-  id: 'user-1',
-  name: 'Usuario Aventura',
-  email: 'usuario@aventura.com',
-});
+// Configure a base URL apropriada para seu ambiente.
+// Se você rodar o backend na mesma máquina e testar no emulador/dispositivo, ajuste conforme necessário.
+const API_BASE = global.__DEV__
+  ? 'http://172.20.10.3:5253'
+  : 'http://localhost:5253';
 
 function waitForMockResponse() {
   return new Promise((resolve) => {
@@ -12,20 +12,31 @@ function waitForMockResponse() {
   });
 }
 
-export async function loginWithEmail({ email }) {
-  await waitForMockResponse();
+export async function loginWithEmail(credentials) {
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    });
 
-  return {
-    user: createAuthUser({
-      ...MOCK_USER,
-      email,
-    }),
-    token: 'mock-auth-token',
-  };
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Login failed: ${res.status} ${text}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('loginWithEmail error:', error);
+    throw error;
+  }
 }
 
 export async function registerWithEmail({ name, email }) {
-  await waitForMockResponse();
+    await waitForMockResponse();
 
   return {
     user: createAuthUser({

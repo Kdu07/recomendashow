@@ -1,8 +1,12 @@
 using BackEnd.Aventura.Extensions;
+using BackEnd.Aventura.Services;
 using DotNetEnv;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+
 
 static void LoadEnvFile()
 {
@@ -60,6 +64,8 @@ static void LoadEnvFileFallback(string path)
 }
 
 LoadEnvFile();
+
+builder.Configuration.AddEnvironmentVariables();
 
 
 builder.Services.AddControllers();

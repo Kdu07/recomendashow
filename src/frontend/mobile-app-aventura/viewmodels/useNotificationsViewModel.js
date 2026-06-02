@@ -18,6 +18,15 @@ export default function useNotificationsViewModel() {
     sectionId,
     optionId
   ) {
+    const currentSection = sections.find((section) => section.id === sectionId);
+    const currentOption = currentSection?.options.find((option) => option.id === optionId);
+    const changedOption = currentOption
+      ? {
+          title: currentOption.title,
+          enabled: !currentOption.enabled,
+        }
+      : null;
+
     setSections((previous) =>
       previous.map((section) => {
         if (section.id !== sectionId) {
@@ -42,6 +51,8 @@ export default function useNotificationsViewModel() {
         };
       })
     );
+
+    return changedOption;
   }
 
   return {

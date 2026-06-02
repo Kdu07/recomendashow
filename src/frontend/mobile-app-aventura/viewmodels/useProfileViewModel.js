@@ -16,14 +16,6 @@ export default function useProfileViewModel() {
     console.log('Abrir item:', item.title);
   }
 
-  function handleEditProfile() {
-    console.log('Editar perfil');
-  }
-
-  function handleLogout() {
-    console.log('Logout');
-  }
-
   function handleTabPress(tab) {
     console.log('Navegar para:', tab);
   }
@@ -33,8 +25,6 @@ export default function useProfileViewModel() {
     menuItems,
 
     handleMenuPress,
-    handleEditProfile,
-    handleLogout,
     handleTabPress,
   };
 }

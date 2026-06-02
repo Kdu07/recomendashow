@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView, SafeAreaView, Animated } from "react-native";
 import { BlurView } from "expo-blur";
 
@@ -8,6 +8,7 @@ import SectionHeader from "../components/SectionHeader";
 import PosterCard from "../components/PosterCard";
 import TheaterCard from "../components/TheaterCard";
 import EmptyState from "../components/EmptyState";
+import SystemStatus from "../components/SystemStatus";
 
 
 import useHomeViewModel from "../viewmodels/useHomeViewModel";
@@ -77,6 +78,8 @@ function EmptySection({
 }
 
 export default function HomeScreen({ navigation }) {
+  const [systemStatus, setSystemStatus] = useState(null);
+
   const {
     heroBanners = [],
     categories = [],
@@ -107,6 +110,17 @@ export default function HomeScreen({ navigation }) {
       useNativeDriver: true,
     }).start();
   }, []);
+
+  async function handleFavoriteWithStatus(event) {
+    const result = await handleFavoritePress(event);
+
+    setSystemStatus({
+      type: result?.added ? "success" : "info",
+      message: result?.added
+        ? "Espetáculo adicionado à wishlist."
+        : "Espetáculo removido da wishlist.",
+    });
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -144,7 +158,7 @@ export default function HomeScreen({ navigation }) {
             title="Em alta"
             data={trendingEvents}
             onEventPress={handleEventPress}
-            onFavoritePress={handleFavoritePress}
+            onFavoritePress={handleFavoriteWithStatus}
             isEventFavorite={isEventFavorite}
           />
 
@@ -154,7 +168,7 @@ export default function HomeScreen({ navigation }) {
               subtitle="Baseado nos seus gostos"
               data={recommendedEvents}
               onEventPress={handleEventPress}
-              onFavoritePress={handleFavoritePress}
+              onFavoritePress={handleFavoriteWithStatus}
               isEventFavorite={isEventFavorite}
             />
           ) : (
@@ -172,7 +186,7 @@ export default function HomeScreen({ navigation }) {
             title="Novidades"
             data={newEvents}
             onEventPress={handleEventPress}
-            onFavoritePress={handleFavoritePress}
+            onFavoritePress={handleFavoriteWithStatus}
             isEventFavorite={isEventFavorite}
           />
 
@@ -182,7 +196,7 @@ export default function HomeScreen({ navigation }) {
               subtitle="Espetáculos na sua cidade"
               data={nearbyEvents}
               onEventPress={handleEventPress}
-              onFavoritePress={handleFavoritePress}
+              onFavoritePress={handleFavoriteWithStatus}
               isEventFavorite={isEventFavorite}
             />
           ) : (
@@ -215,6 +229,12 @@ export default function HomeScreen({ navigation }) {
             </View>
           </View>
         </ScrollView>
+
+        <SystemStatus
+          message={systemStatus?.message}
+          type={systemStatus?.type}
+          onDismiss={() => setSystemStatus(null)}
+        />
       </Animated.View>
     </SafeAreaView>
   );

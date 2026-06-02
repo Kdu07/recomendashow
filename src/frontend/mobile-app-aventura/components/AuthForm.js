@@ -42,7 +42,7 @@ export default function AuthForm({
     {
       name: 'password',
       label: 'Senha',
-      placeholder: isLogin ? 'Digite sua senha' : 'Minimo 8 caracteres',
+      placeholder: isLogin ? 'Digite sua senha' : 'Mínimo 8 caracteres',
       secureTextEntry: true,
       textContentType: isLogin ? 'password' : 'newPassword',
       autoComplete: isLogin ? 'password' : 'new-password',

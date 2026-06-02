@@ -9,6 +9,7 @@ import {
   Image,
   SafeAreaView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import useProfileViewModel from '../viewmodels/useProfileViewModel';
 
@@ -30,9 +31,7 @@ function MenuItem({
     >
       <View style={styles.menuLeft}>
         <View style={styles.iconContainer}>
-          <Text style={styles.icon}>
-            {icon}
-          </Text>
+          <Ionicons name={icon} size={22} color={colors.purplePrimary} />
         </View>
 
         <View style={styles.menuCopy}>
@@ -46,9 +45,9 @@ function MenuItem({
         </View>
       </View>
 
-      <Text style={styles.chevron}>
-        &gt;
-      </Text>
+      <View style={styles.chevronContainer}>
+        <Ionicons name="chevron-forward" size={20} color={colors.grayText} />
+      </View>
     </TouchableOpacity>
   );
 }
@@ -59,8 +58,6 @@ export default function ProfileScreen({ navigation }) {
     menuItems,
 
     handleMenuPress,
-    handleEditProfile,
-    handleLogout,
   } = useProfileViewModel();
 
   return (
@@ -89,14 +86,6 @@ export default function ProfileScreen({ navigation }) {
                 {user.email}
               </Text>
 
-              <TouchableOpacity
-                onPress={handleEditProfile}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.editProfile}>
-                  Editar perfil
-                </Text>
-              </TouchableOpacity>
             </View>
           </View>
 
@@ -131,7 +120,7 @@ export default function ProfileScreen({ navigation }) {
 
           <TouchableOpacity
             style={styles.logoutButton}
-            onPress={handleLogout}
+            onPress={() => navigation.replace('Auth')}
             activeOpacity={0.7}
           >
             <Text style={styles.logoutText}>
@@ -219,14 +208,6 @@ const styles = StyleSheet.create({
     color: colors.grayText,
   },
 
-  editProfile: {
-    marginTop: spacing.xs,
-    fontSize: typography.size.sm,
-    lineHeight: typography.lineHeight.sm,
-    color: colors.purplePrimary,
-    fontWeight: typography.fontWeight.semiBold,
-  },
-
   menuList: {
     gap: spacing.md,
   },
@@ -278,11 +259,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  icon: {
-    fontSize: 22,
-    color: colors.purplePrimary,
-  },
-
   menuTitle: {
     fontSize: typography.size.md,
     lineHeight: typography.lineHeight.md,
@@ -298,9 +274,13 @@ const styles = StyleSheet.create({
     color: colors.grayText,
   },
 
-  chevron: {
-    fontSize: 28,
-    color: colors.grayText,
+  chevronContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: radius.pill,
+    backgroundColor: colors.whiteSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   logoutButton: {

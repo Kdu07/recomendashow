@@ -41,13 +41,13 @@ export function useAuthViewModel(navigation) {
   const content = useMemo(() => {
     if (isLogin) {
       return {
-        subtitle: 'Entre para descobrir experiencias culturais unicas e personalizadas para voce.',
+        subtitle: 'Entre para descobrir experiências culturais únicas e personalizadas para você.',
         submitLabel: 'Entrar',
       };
     }
 
     return {
-      subtitle: 'Crie sua conta para salvar preferencias e receber recomendacoes personalizadas.',
+      subtitle: 'Crie sua conta para salvar preferências e receber recomendações personalizadas.',
       submitLabel: 'Criar conta',
     };
   }, [isLogin]);
@@ -74,7 +74,10 @@ export function useAuthViewModel(navigation) {
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-      return;
+      return {
+        ok: false,
+        reason: 'validation',
+      };
     }
 
     setLoading(true);
@@ -93,6 +96,9 @@ export function useAuthViewModel(navigation) {
         });
       }
       navigation.replace('Onboarding');
+      return {
+        ok: true,
+      };
     } finally {
       setLoading(false);
     }

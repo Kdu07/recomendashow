@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   View,
@@ -12,6 +12,7 @@ import InfoCard from '../components/InfoCard';
 import NotificationToggleItem from '../components/NotificationToggleItem';
 import SettingsSection from '../components/SettingsSection';
 import ScreenHeader from '../components/ScreenHeader';
+import SystemStatus from '../components/SystemStatus';
 
 import useNotificationsViewModel from '../viewmodels/useNotificationsViewModel';
 
@@ -21,10 +22,23 @@ import { spacing } from '../constants/spacing';
 export default function NotificationsScreen({
   navigation,
 }) {
+  const [systemStatus, setSystemStatus] = useState(null);
+
   const {
     sections,
     handleToggleOption,
   } = useNotificationsViewModel();
+
+  function handleToggleWithStatus(sectionId, optionId) {
+    const result = handleToggleOption(sectionId, optionId);
+
+    setSystemStatus({
+      type: result?.enabled ? 'success' : 'info',
+      message: result?.enabled
+        ? `${result.title} ativado.`
+        : `${result?.title || 'Notificação'} desativado.`,
+    });
+  }
 
   return (
     <View style={styles.page}>
@@ -57,7 +71,7 @@ export default function NotificationsScreen({
                   subtitle={option.subtitle}
                   enabled={option.enabled}
                   onToggle={() =>
-                    handleToggleOption(
+                    handleToggleWithStatus(
                       section.id,
                       option.id
                     )
@@ -87,6 +101,12 @@ export default function NotificationsScreen({
             navigation.navigate('MainTabs', { screen: 'Profile' });
           }
         }}
+      />
+
+      <SystemStatus
+        message={systemStatus?.message}
+        type={systemStatus?.type}
+        onDismiss={() => setSystemStatus(null)}
       />
     </View>
   );

@@ -4,7 +4,6 @@ export const CATEGORIES = [
   { id: 'ballet', label: 'Ballet' },
   { id: 'infantil', label: 'Infantil' },
   { id: 'corporativo', label: 'Corporativo' },
-  { id: 'circo', label: 'Circo' },
   { id: 'comedia', label: 'Comédia' },
   { id: 'danca', label: 'Dança' },
 ];

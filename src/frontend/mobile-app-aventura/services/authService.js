@@ -24,7 +24,17 @@ export async function loginWithEmail({ email }) {
   };
 }
 
-export async function registerWithEmail({ name, email }) {
+export async function registerWithEmail({
+  name,
+  email,
+  age,
+  cep,
+  street,
+  number,
+  complement,
+  neighborhood,
+  city,
+}) {
   await waitForMockResponse();
 
   return {
@@ -32,6 +42,13 @@ export async function registerWithEmail({ name, email }) {
       id: 'new-user',
       name,
       email,
+      age,
+      cep,
+      street,
+      number,
+      complement,
+      neighborhood,
+      city,
     }),
     token: 'mock-register-token',
   };

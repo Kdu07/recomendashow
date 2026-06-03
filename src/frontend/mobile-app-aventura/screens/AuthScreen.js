@@ -27,6 +27,7 @@ export default function AuthScreen({ navigation }) {
     loading,
     setMode,
     updateField,
+    validateRegisterStep,
     handleSubmit,
     handleGoogleAuth,
   } = useAuthViewModel(navigation);
@@ -75,6 +76,7 @@ export default function AuthScreen({ navigation }) {
               submitLabel={content.submitLabel}
               loading={loading}
               onChangeField={updateField}
+              onValidateStep={validateRegisterStep}
               onSubmit={handleSubmitWithStatus}
               onGoogleAuth={handleGoogleAuthWithStatus}
             />

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Image, Text, StyleSheet, StatusBar } from 'react-native';
+import { Animated, Image, Text, StyleSheet, StatusBar, Platform } from 'react-native';
 
 import { colors } from '../constants/colors';
 import { typography } from '../constants/typography';
@@ -16,7 +16,7 @@ export default function SplashScreen({ navigation }) {
       Animated.timing(opacity, {
         toValue: 0,
         duration: FADE_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }).start(() => {
         navigation.replace('Auth');
       });

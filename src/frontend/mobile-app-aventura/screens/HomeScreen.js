@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, Animated, Image, Modal, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ScrollView, SafeAreaView, Animated, Image, Modal, TouchableOpacity, Platform } from "react-native";
 import { BlurView } from "expo-blur";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -164,7 +164,7 @@ export default function HomeScreen({ navigation }) {
     Animated.timing(opacity, {
       toValue: 1,
       duration: 400,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     }).start();
   }, []);
 

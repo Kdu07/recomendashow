@@ -126,7 +126,7 @@ export default function ShowInfoScreen({ route, navigation }) {
         showsVerticalScrollIndicator={false}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true }
+          { useNativeDriver: Platform.OS !== 'web' }
         )}
         scrollEventThrottle={16}
       >

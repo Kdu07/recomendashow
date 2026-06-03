@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Animated, StyleSheet, Platform } from 'react-native';
 
 import { colors } from '../../../constants/colors';
 import { typography } from '../../../constants/typography';
@@ -14,7 +14,7 @@ export default function ShowCreativeTeam({ creativeTeam }) {
     Animated.timing(rotation, {
       toValue,
       duration: 200,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     }).start();
     setIsExpanded((prev) => !prev);
   }

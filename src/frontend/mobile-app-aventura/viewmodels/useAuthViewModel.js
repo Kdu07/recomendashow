@@ -7,6 +7,38 @@ import {
 } from '../repositories/authRepository';
 import { AUTH_MODES, initialAuthValues } from '../models/authModels';
 
+function parseBrazilianDate(value) {
+  const [day, month, year] = String(value ?? '').split('/').map(Number);
+
+  if (!day || !month || !year) {
+    return null;
+  }
+
+  const date = new Date(year, month - 1, day);
+  const isValidDate = (
+    date.getFullYear() === year
+    && date.getMonth() === month - 1
+    && date.getDate() === day
+  );
+
+  return isValidDate ? date : null;
+}
+
+function getAgeFromDate(date) {
+  const today = new Date();
+  let age = today.getFullYear() - date.getFullYear();
+  const hasHadBirthdayThisYear = (
+    today.getMonth() > date.getMonth()
+    || (today.getMonth() === date.getMonth() && today.getDate() >= date.getDate())
+  );
+
+  if (!hasHadBirthdayThisYear) {
+    age -= 1;
+  }
+
+  return age;
+}
+
 function validateAuthValues(mode, values, scope = 'all') {
   const errors = {};
   const isLogin = mode === AUTH_MODES.login;
@@ -19,13 +51,15 @@ function validateAuthValues(mode, values, scope = 'all') {
   }
 
   if (!isLogin && shouldValidateAccount) {
-    const ageValue = String(values.age ?? '').trim();
-    const age = Number(ageValue);
+    const birthDateValue = String(values.birthDate ?? '').trim();
+    const birthDate = parseBrazilianDate(birthDateValue);
 
-    if (!ageValue) {
-      errors.age = 'Informe sua idade.';
-    } else if (!Number.isInteger(age) || age < 13) {
-      errors.age = 'Informe uma idade válida a partir de 13 anos.';
+    if (!birthDateValue) {
+      errors.birthDate = 'Informe sua data de nascimento.';
+    } else if (!birthDate) {
+      errors.birthDate = 'Informe uma data válida no formato DD/MM/AAAA.';
+    } else if (getAgeFromDate(birthDate) < 13) {
+      errors.birthDate = 'Você precisa ter pelo menos 13 anos.';
     }
   }
 
@@ -134,7 +168,7 @@ export function useAuthViewModel(navigation) {
         await createUserAccount({
           name: values.name,
           email: values.email,
-          age: Number(values.age),
+          birthDate: values.birthDate,
           cep: values.cep.replace(/\D/g, ''),
           street: values.street,
           number: values.number,

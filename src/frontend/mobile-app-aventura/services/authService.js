@@ -27,7 +27,7 @@ export async function loginWithEmail({ email }) {
 export async function registerWithEmail({
   name,
   email,
-  age,
+  birthDate,
   cep,
   street,
   number,
@@ -42,7 +42,7 @@ export async function registerWithEmail({
       id: 'new-user',
       name,
       email,
-      age,
+      birthDate,
       cep,
       street,
       number,

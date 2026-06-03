@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import {
   View,
@@ -6,10 +6,10 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
   SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 
 import useProfileViewModel from '../viewmodels/useProfileViewModel';
 
@@ -56,9 +56,16 @@ export default function ProfileScreen({ navigation }) {
   const {
     user,
     menuItems,
+    refreshProfile,
 
     handleMenuPress,
   } = useProfileViewModel();
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshProfile();
+    }, [refreshProfile])
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -72,10 +79,9 @@ export default function ProfileScreen({ navigation }) {
           </Text>
 
           <View style={styles.profileCard}>
-            <Image
-              source={{ uri: user.avatar }}
-              style={styles.avatar}
-            />
+            <View style={styles.avatar}>
+              <Ionicons name={user.avatarIcon || 'person'} size={40} color={colors.purplePrimary} />
+            </View>
 
             <View style={styles.profileInfo}>
               <Text style={styles.name}>
@@ -85,8 +91,17 @@ export default function ProfileScreen({ navigation }) {
               <Text style={styles.email}>
                 {user.email}
               </Text>
-
             </View>
+
+            <TouchableOpacity
+              style={styles.editProfileButton}
+              onPress={() => navigation.navigate('EditProfile')}
+              activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel="Editar perfil"
+            >
+              <Ionicons name="create-outline" size={20} color={colors.purplePrimary} />
+            </TouchableOpacity>
           </View>
 
           <View style={styles.menuList}>
@@ -188,11 +203,27 @@ const styles = StyleSheet.create({
     width: 84,
     height: 84,
     borderRadius: 42,
+    backgroundColor: colors.purpleSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: colors.purpleLight,
   },
 
   profileInfo: {
     flex: 1,
     gap: spacing.xs,
+  },
+
+  editProfileButton: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.pill,
+    backgroundColor: colors.whiteSoft,
+    borderWidth: 1,
+    borderColor: colors.grayLight,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   name: {

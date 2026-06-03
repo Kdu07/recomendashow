@@ -23,7 +23,7 @@ jest.mock('../models/authModels', () => ({
   initialAuthValues: {
     name: '',
     email: '',
-    age: '',
+    birthDate: '',
     cep: '',
     street: '',
     number: '',
@@ -137,7 +137,7 @@ describe('useAuthViewModel – validação (register)', () => {
     act(() => {
       result.current.updateField('name', 'Ana');
       result.current.updateField('email', 'ana@email.com');
-      result.current.updateField('age', '18');
+      result.current.updateField('birthDate', '01/01/2000');
       result.current.updateField('cep', '01310-100');
       result.current.updateField('street', 'Avenida Paulista');
       result.current.updateField('number', '1000');
@@ -150,7 +150,7 @@ describe('useAuthViewModel – validação (register)', () => {
     expect(result.current.errors.confirmPassword).toBe('As senhas precisam ser iguais.');
   });
 
-  test('idade vazia gera erro', async () => {
+  test('data de nascimento vazia gera erro', async () => {
     const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
     act(() => result.current.setMode('register'));
     act(() => {
@@ -165,16 +165,16 @@ describe('useAuthViewModel – validação (register)', () => {
       result.current.updateField('confirmPassword', '123456');
     });
     await act(async () => { await result.current.handleSubmit(); });
-    expect(result.current.errors.age).toBe('Informe sua idade.');
+    expect(result.current.errors.birthDate).toBe('Informe sua data de nascimento.');
   });
 
-  test('idade menor que 13 gera erro', async () => {
+  test('data de nascimento com menos de 13 anos gera erro', async () => {
     const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
     act(() => result.current.setMode('register'));
     act(() => {
       result.current.updateField('name', 'Ana');
       result.current.updateField('email', 'ana@email.com');
-      result.current.updateField('age', '12');
+      result.current.updateField('birthDate', '01/01/2015');
       result.current.updateField('cep', '01310-100');
       result.current.updateField('street', 'Avenida Paulista');
       result.current.updateField('number', '1000');
@@ -184,7 +184,7 @@ describe('useAuthViewModel – validação (register)', () => {
       result.current.updateField('confirmPassword', '123456');
     });
     await act(async () => { await result.current.handleSubmit(); });
-    expect(result.current.errors.age).toBe('Informe uma idade válida a partir de 13 anos.');
+    expect(result.current.errors.birthDate).toBe('Você precisa ter pelo menos 13 anos.');
   });
 
   test('CEP inválido gera erro', async () => {
@@ -193,7 +193,7 @@ describe('useAuthViewModel – validação (register)', () => {
     act(() => {
       result.current.updateField('name', 'Ana');
       result.current.updateField('email', 'ana@email.com');
-      result.current.updateField('age', '18');
+      result.current.updateField('birthDate', '01/01/2000');
       result.current.updateField('cep', '123');
       result.current.updateField('city', 'São Paulo');
       result.current.updateField('password', '123456');
@@ -209,7 +209,7 @@ describe('useAuthViewModel – validação (register)', () => {
     act(() => {
       result.current.updateField('name', 'Ana');
       result.current.updateField('email', 'ana@email.com');
-      result.current.updateField('age', '18');
+      result.current.updateField('birthDate', '01/01/2000');
       result.current.updateField('cep', '01310-100');
       result.current.updateField('number', '1000');
       result.current.updateField('neighborhood', 'Bela Vista');
@@ -227,7 +227,7 @@ describe('useAuthViewModel – validação (register)', () => {
     act(() => {
       result.current.updateField('name', 'Ana');
       result.current.updateField('email', 'ana@email.com');
-      result.current.updateField('age', '18');
+      result.current.updateField('birthDate', '01/01/2000');
       result.current.updateField('cep', '01310-100');
       result.current.updateField('street', 'Avenida Paulista');
       result.current.updateField('neighborhood', 'Bela Vista');
@@ -245,7 +245,7 @@ describe('useAuthViewModel – validação (register)', () => {
     act(() => {
       result.current.updateField('name', 'Ana');
       result.current.updateField('email', 'ana@email.com');
-      result.current.updateField('age', '18');
+      result.current.updateField('birthDate', '01/01/2000');
       result.current.updateField('cep', '01310-100');
       result.current.updateField('street', 'Avenida Paulista');
       result.current.updateField('number', '1000');
@@ -263,7 +263,7 @@ describe('useAuthViewModel – validação (register)', () => {
     act(() => {
       result.current.updateField('name', 'Ana');
       result.current.updateField('email', 'ana@email.com');
-      result.current.updateField('age', '18');
+      result.current.updateField('birthDate', '01/01/2000');
       result.current.updateField('cep', '01310-100');
       result.current.updateField('street', 'Avenida Paulista');
       result.current.updateField('number', '1000');
@@ -284,7 +284,7 @@ describe('useAuthViewModel – validação (register)', () => {
     act(() => {
       result.current.updateField('name', 'Ana');
       result.current.updateField('email', 'ana@email.com');
-      result.current.updateField('age', '18');
+      result.current.updateField('birthDate', '01/01/2000');
       result.current.updateField('cep', '01310-100');
       result.current.updateField('street', 'Avenida Paulista');
       result.current.updateField('number', '1000');
@@ -318,14 +318,14 @@ describe('useAuthViewModel – handleSubmit', () => {
     expect(nav.replace).toHaveBeenCalledWith('Onboarding');
   });
 
-  test('register chama createUserAccount com name, email, age, endereco e password', async () => {
+  test('register chama createUserAccount com name, email, birthDate, endereco e password', async () => {
     const nav = makeNavigation();
     const { result } = renderHook(() => useAuthViewModel(nav));
     act(() => result.current.setMode('register'));
     act(() => {
       result.current.updateField('name', 'Ana');
       result.current.updateField('email', 'ana@email.com');
-      result.current.updateField('age', '18');
+      result.current.updateField('birthDate', '01/01/2000');
       result.current.updateField('cep', '01310-100');
       result.current.updateField('street', 'Avenida Paulista');
       result.current.updateField('number', '1000');
@@ -339,7 +339,7 @@ describe('useAuthViewModel – handleSubmit', () => {
     expect(createUserAccount).toHaveBeenCalledWith({
       name: 'Ana',
       email: 'ana@email.com',
-      age: 18,
+      birthDate: '01/01/2000',
       cep: '01310100',
       street: 'Avenida Paulista',
       number: '1000',

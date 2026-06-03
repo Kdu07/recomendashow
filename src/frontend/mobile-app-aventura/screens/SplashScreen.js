@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Image, Text, StyleSheet, StatusBar } from 'react-native';
 
+import { getAuthToken } from '../services/tokenStorageService';
 import { colors } from '../constants/colors';
 import { typography } from '../constants/typography';
 import { spacing } from '../constants/spacing';
@@ -17,8 +18,9 @@ export default function SplashScreen({ navigation }) {
         toValue: 0,
         duration: FADE_DURATION,
         useNativeDriver: true,
-      }).start(() => {
-        navigation.replace('Auth');
+      }).start(async () => {
+        const token = await getAuthToken();
+        navigation.replace(token ? 'MainTabs' : 'Auth');
       });
     }, DISPLAY_DURATION);
 

@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 
+import { signOut } from '../repositories/authRepository';
 import { getProfileData } from '../repositories/profileRepository';
 
-export default function useProfileViewModel() {
+export default function useProfileViewModel(navigation) {
   const profileData = useMemo(
     () => getProfileData(),
     []
@@ -20,8 +21,12 @@ export default function useProfileViewModel() {
     console.log('Editar perfil');
   }
 
-  function handleLogout() {
-    console.log('Logout');
+  async function handleLogout() {
+    await signOut();
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Auth' }],
+    });
   }
 
   function handleTabPress(tab) {

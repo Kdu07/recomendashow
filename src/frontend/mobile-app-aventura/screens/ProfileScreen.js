@@ -61,7 +61,7 @@ export default function ProfileScreen({ navigation }) {
     handleMenuPress,
     handleEditProfile,
     handleLogout,
-  } = useProfileViewModel();
+  } = useProfileViewModel(navigation);
 
   return (
     <SafeAreaView style={styles.safeArea}>

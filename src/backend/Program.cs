@@ -2,6 +2,8 @@ using BackEnd.Aventura.Extensions;
 using BackEnd.Aventura.Services;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -71,14 +73,20 @@ LoadEnvFile();
 builder.Configuration.AddEnvironmentVariables();
 
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    var authenticatedPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+    options.Filters.Add(new AuthorizeFilter(authenticatedPolicy));
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // JWT configuration
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY")
     ?? builder.Configuration["Jwt:Key"]
-    ?? throw new InvalidOperationException("JWT key não configurada.");
+    ?? throw new InvalidOperationException("JWT key is not configured.");
 var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "BackEnd.Aventura";
 var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "BackEnd.AventuraClient";
 
@@ -95,6 +103,7 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
+        ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtIssuer,
         ValidAudience = jwtAudience,

@@ -1,38 +1,57 @@
 import { createAuthUser } from '../models/authModels';
+import { API_BASE } from './apiClient';
+import { clearAuthStorage, saveAuthData } from './tokenStorageService';
 
-// Configure a base URL apropriada para seu ambiente.
-// Se você rodar o backend na mesma máquina e testar no emulador/dispositivo, ajuste conforme necessário.
-const API_BASE = global.__DEV__
-  ? 'http://172.20.10.3:5253'
-  : 'http://localhost:5253';
-
-function waitForMockResponse() {
-  return new Promise((resolve) => {
-    setTimeout(resolve, 400);
-  });
+function normalizeAuthResponse(data) {
+  return {
+    usuarioId: data.usuarioId ?? data.UsuarioId,
+    nome: data.nome ?? data.Nome,
+    email: data.email ?? data.Email,
+    token: data.token ?? data.Token,
+  };
 }
 
-export async function loginWithEmail(credentials) {
+export async function persistAuthResponse(data) {
+  const auth = normalizeAuthResponse(data);
+
+  if (!auth.token) {
+    throw new Error('Resposta de autenticação sem token.');
+  }
+
+  await saveAuthData(auth);
+  return auth;
+}
+
+async function postAuth(path, payload) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Autenticação falhou: ${res.status} ${text}`);
+  }
+
+  return res.json();
+}
+
+export async function loginWithEmail({ email, password }) {
   try {
-    const res = await fetch(`${API_BASE}/api/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(credentials),
+    const data = await postAuth('/api/auth/login', {
+      Email: email,
+      Senha: password,
     });
-
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error(`Login failed: ${res.status} ${text}`);
-    }
-
-    const data = await res.json();
-    return data;
+    return persistAuthResponse(data);
   } catch (error) {
     console.error('loginWithEmail error:', error);
     throw error;
   }
+}
+
+export async function logout() {
+  await clearAuthStorage();
 }
 
 export async function registerWithEmail({ name, email }) {

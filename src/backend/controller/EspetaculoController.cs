@@ -14,7 +14,6 @@ namespace BackEnd.Aventura.Controller
         {
             _service = service;
         }
-
         [HttpGet]
         [ProducesResponseType(typeof(IReadOnlyList<EspetaculoDto>), StatusCodes.Status200OK)]
         public ActionResult<IReadOnlyList<EspetaculoDto>> GetAll() =>

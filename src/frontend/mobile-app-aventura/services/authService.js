@@ -11,6 +11,7 @@ function normalizeAuthResponse(data) {
   };
 }
 
+<<<<<<< HEAD
 export async function persistAuthResponse(data) {
   const auth = normalizeAuthResponse(data);
 
@@ -56,12 +57,33 @@ export async function logout() {
 
 export async function registerWithEmail({ name, email }) {
     await waitForMockResponse();
+=======
+export async function registerWithEmail({
+  name,
+  email,
+  birthDate,
+  cep,
+  street,
+  number,
+  complement,
+  neighborhood,
+  city,
+}) {
+  await waitForMockResponse();
+>>>>>>> origin/develop
 
   return {
     user: createAuthUser({
       id: 'new-user',
       name,
       email,
+      birthDate,
+      cep,
+      street,
+      number,
+      complement,
+      neighborhood,
+      city,
     }),
     token: 'mock-register-token',
   };

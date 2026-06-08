@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   View,
@@ -8,11 +8,11 @@ import {
   SafeAreaView,
 } from 'react-native';
 
-import BottomTabBar from '../components/BottomTabBar';
 import ContactCard from '../components/ContactCard';
 import SettingsSection from '../components/SettingsSection';
 import SocialLinkCard from '../components/SocialLinkCard';
 import ScreenHeader from '../components/ScreenHeader';
+import SystemStatus from '../components/SystemStatus';
 
 import useInstitutionalViewModel from '../viewmodels/useInstitutionalViewModel';
 
@@ -23,6 +23,8 @@ import { radius, spacing } from '../constants/spacing';
 export default function InstitutionalScreen({
   navigation,
 }) {
+  const [systemStatus, setSystemStatus] = useState(null);
+
   const {
     aboutText,
     socialLinks,
@@ -30,6 +32,21 @@ export default function InstitutionalScreen({
 
     handleSocialPress,
   } = useInstitutionalViewModel();
+
+  function handleSocialPressWithStatus(link) {
+    handleSocialPress(link);
+    setSystemStatus({
+      type: 'info',
+      message: `Abrindo ${link.platform}.`,
+    });
+  }
+
+  function handleContactPressWithStatus(info) {
+    setSystemStatus({
+      type: 'info',
+      message: `Abrindo ${info.label}.`,
+    });
+  }
 
   return (
     <View style={styles.page}>
@@ -62,9 +79,7 @@ export default function InstitutionalScreen({
                 icon={link.icon}
                 platform={link.platform}
                 username={link.username}
-                onPress={() =>
-                  handleSocialPress(link)
-                }
+                onPress={() => handleSocialPressWithStatus(link)}
                 showDivider={
                   index !== socialLinks.length - 1
                 }
@@ -83,6 +98,7 @@ export default function InstitutionalScreen({
                 link={
                   info.id !== 'location'
                 }
+                onPress={() => handleContactPressWithStatus(info)}
               />
             </SettingsSection>
           ))}
@@ -103,21 +119,10 @@ export default function InstitutionalScreen({
         </ScrollView>
       </SafeAreaView>
 
-      <BottomTabBar
-        activeTab="profile"
-        onTabPress={(tab) => {
-          if (tab === 'explore') {
-            navigation.navigate('MainTabs', {
-              screen: 'Home',
-            });
-
-            return;
-          }
-
-          if (tab === 'profile') {
-            navigation.navigate('MainTabs', { screen: 'Profile' });
-          }
-        }}
+      <SystemStatus
+        message={systemStatus?.message}
+        type={systemStatus?.type}
+        onDismiss={() => setSystemStatus(null)}
       />
     </View>
   );
@@ -137,7 +142,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: spacing.md,
     paddingTop: spacing.md,
-    paddingBottom: 140,
+    paddingBottom: spacing.xxxl,
     gap: spacing.lg,
   },
 
@@ -149,6 +154,15 @@ const styles = StyleSheet.create({
 
     padding: spacing.lg,
     gap: spacing.sm,
+
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.04,
+    shadowRadius: 10,
+    elevation: 2,
   },
 
   sectionTitle: {

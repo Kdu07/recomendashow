@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { Animated } from 'react-native';
+import { Animated, Platform } from 'react-native';
 
 import { useOnboardingViewModel } from '../../viewmodels/useOnboardingViewModel';
 import OnboardingCategoriesView from './views/OnboardingCategoriesView';
@@ -23,12 +23,12 @@ export default function OnboardingScreen({ navigation }) {
       Animated.timing(translateY, {
         toValue: 0,
         duration: 320,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
       Animated.timing(opacity, {
         toValue: 1,
         duration: 260,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
     ]).start();
   }, [vm.step]);
@@ -40,12 +40,12 @@ export default function OnboardingScreen({ navigation }) {
       Animated.timing(translateY, {
         toValue: exitY,
         duration: 200,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
       Animated.timing(opacity, {
         toValue: 0,
         duration: 160,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }),
     ]).start(() => {
       action();

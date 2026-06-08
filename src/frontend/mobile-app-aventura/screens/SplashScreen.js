@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Image, Text, StyleSheet, StatusBar } from 'react-native';
+import { Animated, Image, Text, StyleSheet, StatusBar, Platform } from 'react-native';
 
 import { getAuthToken } from '../services/tokenStorageService';
 import { colors } from '../constants/colors';

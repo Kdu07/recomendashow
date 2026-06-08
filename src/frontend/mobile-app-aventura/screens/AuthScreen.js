@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -10,12 +10,15 @@ import {
 import AuthForm from '../components/AuthForm';
 import AuthHeader from '../components/AuthHeader';
 import AuthModeSwitch from '../components/AuthModeSwitch';
+import SystemStatus from '../components/SystemStatus';
 import { useAuthViewModel } from '../viewmodels/useAuthViewModel';
 import { colors } from '../constants/colors';
 import { spacing } from '../constants/spacing';
 import ScreenContainer from './ScreenContainer';
 
 export default function AuthScreen({ navigation }) {
+  const [systemStatus, setSystemStatus] = useState(null);
+
   const {
     mode,
     values,
@@ -24,9 +27,30 @@ export default function AuthScreen({ navigation }) {
     loading,
     setMode,
     updateField,
+    validateRegisterStep,
     handleSubmit,
     handleGoogleAuth,
   } = useAuthViewModel(navigation);
+
+  async function handleSubmitWithStatus() {
+    const result = await handleSubmit();
+
+    if (result?.reason === 'validation') {
+      setSystemStatus({
+        type: 'warning',
+        message: 'Revise os campos destacados para continuar.',
+      });
+    }
+  }
+
+  async function handleGoogleAuthWithStatus() {
+    setSystemStatus({
+      type: 'info',
+      message: 'Iniciando autenticação com Google.',
+    });
+
+    await handleGoogleAuth();
+  }
 
   return (
     <ScreenContainer style={styles.screen}>
@@ -42,7 +66,6 @@ export default function AuthScreen({ navigation }) {
         >
           <AuthHeader
             subtitle={content.subtitle}
-            mode={mode}
           />
 
           <View style={styles.formArea}>
@@ -53,14 +76,21 @@ export default function AuthScreen({ navigation }) {
               submitLabel={content.submitLabel}
               loading={loading}
               onChangeField={updateField}
-              onSubmit={handleSubmit}
-              onGoogleAuth={handleGoogleAuth}
+              onValidateStep={validateRegisterStep}
+              onSubmit={handleSubmitWithStatus}
+              onGoogleAuth={handleGoogleAuthWithStatus}
             />
           </View>
 
           <AuthModeSwitch mode={mode} onChange={setMode} />
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <SystemStatus
+        message={systemStatus?.message}
+        type={systemStatus?.type}
+        onDismiss={() => setSystemStatus(null)}
+      />
     </ScreenContainer>
   );
 }

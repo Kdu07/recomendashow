@@ -69,9 +69,9 @@ describe('useSearchViewModel – estado inicial', () => {
     expect(result.current.filteredEvents).toEqual(MOCK_RECOMMENDED);
   });
 
-  test('sectionTitle padrão é "Recomendado para voce"', () => {
+  test('sectionTitle padrão é "Recomendado para você"', () => {
     const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
-    expect(result.current.sectionTitle).toBe('Recomendado para voce');
+    expect(result.current.sectionTitle).toBe('Recomendado para você');
   });
 });
 
@@ -119,7 +119,7 @@ describe('useSearchViewModel – busca por texto', () => {
     const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
     act(() => result.current.handleSearchChange('São Paulo'));
     // Mamma Mia + Hamlet estão em São Paulo
-    expect(result.current.sectionSubtitle).toContain('espetaculos encontrados');
+    expect(result.current.sectionSubtitle).toContain('espetáculos encontrados');
   });
 });
 

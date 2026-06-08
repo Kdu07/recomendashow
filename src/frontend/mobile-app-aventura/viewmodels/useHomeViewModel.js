@@ -78,8 +78,14 @@ export default function useHomeViewModel(navigation) {
   }
 
   async function handleFavoritePress(event) {
+    const wasSaved = savedEventIds.includes(event.id);
     const updatedWishlist = await toggleWishlistEvent(event);
     setSavedEventIds(updatedWishlist.map((savedEvent) => savedEvent.id));
+
+    return {
+      added: !wasSaved,
+      eventTitle: event.title,
+    };
   }
 
   function isEventFavorite(eventId) {
@@ -91,15 +97,15 @@ export default function useHomeViewModel(navigation) {
   }
 
   function handleEditInterests() {
-    console.log('Acao futura: navegar para edicao de interesses');
+    console.log('Ação futura: navegar para edição de interesses');
   }
 
   function handleAddLocation() {
-    console.log('Acao futura: navegar para adicionar localidade');
+    console.log('Ação futura: navegar para adicionar localidade');
   }
 
   function handleTabPress(tab) {
-    console.log('Acao futura: navegar para aba:', tab);
+    console.log('Ação futura: navegar para aba:', tab);
   }
 
   return {

@@ -32,7 +32,9 @@ namespace BackEnd.Aventura.Services
                 throw new NotFoundException($"Usuário com ID {id} não encontrado.");
             }
 
-            usuario.AtualizarPerfil(request.Nome, request.Idade);
+            usuario.AtualizarPerfil(request.Nome, request.Idade,
+                request.Cep, request.Logradouro, request.Numero,
+                request.Complemento, request.Bairro, request.Cidade);
             _repository.Update(usuario);
             return MapResponse(usuario);
         }
@@ -43,7 +45,13 @@ namespace BackEnd.Aventura.Services
             Nome = usuario.Nome,
             Email = usuario.Email,
             Idade = usuario.Idade,
-            DataCadastro = usuario.DataCadastro
+            DataCadastro = usuario.DataCadastro,
+            Cep = usuario.Cep,
+            Logradouro = usuario.Logradouro,
+            Numero = usuario.Numero,
+            Complemento = usuario.Complemento,
+            Bairro = usuario.Bairro,
+            Cidade = usuario.Cidade
         };
     }
 }

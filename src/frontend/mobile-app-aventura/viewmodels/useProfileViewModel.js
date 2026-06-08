@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useState } from 'react';
 
 import { signOut } from '../repositories/authRepository';
 import { getProfileData } from '../repositories/profileRepository';
@@ -10,16 +10,16 @@ export default function useProfileViewModel(navigation) {
   );
 
   const user = profileData.userProfile || {};
-  const menuItems =
-    profileData.profileMenuItems || [];
+  const menuItems = profileData.profileMenuItems || [];
+
+  const refreshProfile = useCallback(() => {
+    setProfileData(getProfileData());
+  }, []);
 
   function handleMenuPress(item) {
     console.log('Abrir item:', item.title);
   }
 
-  function handleEditProfile() {
-    console.log('Editar perfil');
-  }
 
   async function handleLogout() {
     await signOut();
@@ -36,10 +36,9 @@ export default function useProfileViewModel(navigation) {
   return {
     user,
     menuItems,
+    refreshProfile,
 
     handleMenuPress,
-    handleEditProfile,
-    handleLogout,
     handleTabPress,
   };
 }

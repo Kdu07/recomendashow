@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 
 import SearchBar from '../components/SearchBar';
@@ -6,6 +6,7 @@ import CategoryChip from '../components/CategoryChip';
 import SectionHeader from '../components/SectionHeader';
 import EmptyState from '../components/EmptyState';
 import SearchResultItem from '../components/SearchResultItem';
+import SystemStatus from '../components/SystemStatus';
 
 import useSearchViewModel from '../viewmodels/useSearchViewModel';
 
@@ -28,6 +29,8 @@ function getCategoryLabel(categoryId) {
 }
 
 export default function SearchScreen({ navigation }) {
+  const [systemStatus, setSystemStatus] = useState(null);
+
   const {
     searchText,
     selectedCategory,
@@ -44,6 +47,17 @@ export default function SearchScreen({ navigation }) {
     isEventFavorite,
     handleTabPress,
   } = useSearchViewModel(navigation);
+
+  async function handleFavoriteWithStatus(event) {
+    const result = await handleFavoritePress(event);
+
+    setSystemStatus({
+      type: result?.added ? 'success' : 'info',
+      message: result?.added
+        ? 'Espetáculo adicionado à wishlist.'
+        : 'Espetáculo removido da wishlist.',
+    });
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -101,7 +115,7 @@ export default function SearchScreen({ navigation }) {
                     image={event.image}
                     onPress={() => handleEventPress(event)}
                     isFavorite={isEventFavorite(event.id)}
-                    onFavoritePress={() => handleFavoritePress(event)}
+                    onFavoritePress={() => handleFavoriteWithStatus(event)}
                   />
                 ))}
               </View>
@@ -118,6 +132,11 @@ export default function SearchScreen({ navigation }) {
           </View>
         </ScrollView>
 
+        <SystemStatus
+          message={systemStatus?.message}
+          type={systemStatus?.type}
+          onDismiss={() => setSystemStatus(null)}
+        />
       </View>
     </SafeAreaView>
   );

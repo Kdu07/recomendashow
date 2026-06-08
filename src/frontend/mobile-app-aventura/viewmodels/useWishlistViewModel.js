@@ -46,8 +46,13 @@ export default function useWishlistViewModel(navigation) {
   }
 
   async function handleRemoveFromWishlist(eventId) {
+    const removedEvent = savedEvents.find((event) => event.id === eventId);
     const updatedWishlist = await removeWishlistEvent(eventId);
     setSavedEvents(updatedWishlist);
+
+    return {
+      eventTitle: removedEvent?.title,
+    };
   }
 
   function handleExplorePress() {

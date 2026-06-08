@@ -54,8 +54,14 @@ export default function useSearchViewModel(navigation) {
   }
 
   async function handleFavoritePress(event) {
+    const wasSaved = savedEventIds.includes(event.id);
     const updatedWishlist = await toggleWishlistEvent(event);
     setSavedEventIds(updatedWishlist.map((savedEvent) => savedEvent.id));
+
+    return {
+      added: !wasSaved,
+      eventTitle: event.title,
+    };
   }
 
   function isEventFavorite(eventId) {
@@ -63,7 +69,7 @@ export default function useSearchViewModel(navigation) {
   }
 
   function handleTabPress(tab) {
-    console.log('Acao futura: navegar para aba:', tab);
+    console.log('Ação futura: navegar para aba:', tab);
   }
 
   const filteredEvents = useMemo(() => {
@@ -97,13 +103,13 @@ export default function useSearchViewModel(navigation) {
 
   const sectionTitle = isSearching
     ? 'Resultados da busca'
-    : 'Recomendado para voce';
+    : 'Recomendado para você';
 
   const sectionSubtitle = isSearching
     ? hasResults
-      ? `${filteredEvents.length} espetaculos encontrados`
-      : 'Nenhum espetaculo encontrado'
-    : 'Algumas sugestoes para comecar sua busca';
+      ? `${filteredEvents.length} espetáculos encontrados`
+      : 'Nenhum espetáculo encontrado'
+    : 'Algumas sugestões para começar sua busca';
 
   return {
     searchText,

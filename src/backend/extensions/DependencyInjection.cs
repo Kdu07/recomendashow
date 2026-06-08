@@ -35,6 +35,8 @@ namespace BackEnd.Aventura.Extensions
             services.AddScoped<IRecomendacaoService, RecomendacaoService>();
             services.AddScoped<IGeneroService, GeneroService>();
 
+            services.AddHostedService<AnonimizacaoJob>();
+
             return services;
         }
     }

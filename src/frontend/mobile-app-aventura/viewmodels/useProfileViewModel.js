@@ -1,25 +1,60 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 
 import { signOut } from '../repositories/authRepository';
 import { getProfileData } from '../repositories/profileRepository';
 
 export default function useProfileViewModel(navigation) {
-  const profileData = useMemo(
-    () => getProfileData(),
-    []
-  );
+  const [user, setUser] = useState({});
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const user = profileData.userProfile || {};
-  const menuItems = profileData.profileMenuItems || [];
+  useEffect(() => {
+    let mounted = true;
 
-  const refreshProfile = useCallback(() => {
-    setProfileData(getProfileData());
+    async function load() {
+      setLoading(true);
+      try {
+        const data = await getProfileData();
+        if (!mounted) return;
+        setUser(data.userProfile || {});
+        setMenuItems(data.profileMenuItems || []);
+      } catch (err) {
+        console.warn('Erro ao carregar perfil:', err);
+        if (!mounted) return;
+        setUser({});
+        setMenuItems([]);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+
+    load();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const refreshProfile = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getProfileData();
+      setUser(data.userProfile || {});
+      setMenuItems(data.profileMenuItems || []);
+    } catch (err) {
+      console.warn('Erro ao atualizar perfil:', err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   function handleMenuPress(item) {
     console.log('Abrir item:', item.title);
   }
 
+  function handleEditProfile() {
+    console.log('Editar perfil');
+  }
 
   async function handleLogout() {
     await signOut();
@@ -27,6 +62,10 @@ export default function useProfileViewModel(navigation) {
       index: 0,
       routes: [{ name: 'Auth' }],
     });
+  }
+
+  function isLoading() {
+    return loading;
   }
 
   function handleTabPress(tab) {
@@ -37,8 +76,10 @@ export default function useProfileViewModel(navigation) {
     user,
     menuItems,
     refreshProfile,
-
+    isLoading,
     handleMenuPress,
+    handleEditProfile,
+    handleLogout,
     handleTabPress,
   };
 }

@@ -11,7 +11,6 @@ function normalizeAuthResponse(data) {
   };
 }
 
-<<<<<<< HEAD
 export async function persistAuthResponse(data) {
   const auth = normalizeAuthResponse(data);
 
@@ -55,9 +54,6 @@ export async function logout() {
   await clearAuthStorage();
 }
 
-export async function registerWithEmail({ name, email }) {
-    await waitForMockResponse();
-=======
 export async function registerWithEmail({
   name,
   email,
@@ -70,7 +66,6 @@ export async function registerWithEmail({
   city,
 }) {
   await waitForMockResponse();
->>>>>>> origin/develop
 
   return {
     user: createAuthUser({

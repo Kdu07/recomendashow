@@ -1,5 +1,6 @@
-import {userProfile} from '../data/mockProfileData';
-import {profileMenuItems} from '../constants/profileMenuItems';
+import { userProfile as mockUserProfile } from '../data/mockProfileData';
+import { profileMenuItems } from '../constants/profileMenuItems';
+import { getUserInfo } from '../services/userProfileService';
 
 export function getProfileData() {
   return {

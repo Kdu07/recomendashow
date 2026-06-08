@@ -182,6 +182,12 @@ export function useAuthViewModel(navigation) {
       return {
         ok: true,
       };
+    } catch (error) {
+      return {
+        ok: false,
+        reason: 'api',
+        message: error.message,
+      };
     } finally {
       setLoading(false);
     }
@@ -209,6 +215,12 @@ export function useAuthViewModel(navigation) {
 
     try {
       await authenticateWithGoogle();
+    } catch (error) {
+      return {
+        ok: false,
+        reason: 'api',
+        message: error.message,
+      };
     } finally {
       setLoading(false);
     }

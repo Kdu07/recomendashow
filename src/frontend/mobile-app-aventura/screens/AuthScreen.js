@@ -40,6 +40,11 @@ export default function AuthScreen({ navigation }) {
         type: 'warning',
         message: 'Revise os campos destacados para continuar.',
       });
+    } else if (result?.reason === 'api') {
+      setSystemStatus({
+        type: 'warning',
+        message: result.message,
+      });
     }
   }
 
@@ -49,7 +54,13 @@ export default function AuthScreen({ navigation }) {
       message: 'Iniciando autenticação com Google.',
     });
 
-    await handleGoogleAuth();
+    const result = await handleGoogleAuth();
+    if (result?.reason === 'api') {
+      setSystemStatus({
+        type: 'warning',
+        message: result.message,
+      });
+    }
   }
 
   return (

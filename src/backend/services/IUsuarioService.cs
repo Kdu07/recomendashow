@@ -6,5 +6,6 @@ namespace BackEnd.Aventura.Services
     {
         UsuarioResponse GetById(Guid id);
         UsuarioResponse Update(Guid id, UsuarioUpdateRequest request);
+        void SolicitarExclusao(Guid id);
     }
 }

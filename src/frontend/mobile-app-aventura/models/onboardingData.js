@@ -3,8 +3,6 @@ export const CATEGORIES = [
   { id: 'drama', label: 'Drama' },
   { id: 'ballet', label: 'Ballet' },
   { id: 'infantil', label: 'Infantil' },
-  { id: 'corporativo', label: 'Corporativo' },
-  { id: 'circo', label: 'Circo' },
   { id: 'comedia', label: 'Comédia' },
   { id: 'danca', label: 'Dança' },
 ];

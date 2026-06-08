@@ -40,14 +40,19 @@ export default function useEditInterestsViewModel() {
     );
   }
 
-  function handleSaveChanges() {
-    console.log('Salvar alterações');
-  }
-
   const selectedInterestsCount =
     interests.filter(
       (interest) => interest.selected
     ).length;
+
+  function handleSaveChanges() {
+    console.log('Salvar alterações');
+
+    return {
+      selectedInterestsCount,
+      selectedCity: cities.find((city) => city.selected)?.label,
+    };
+  }
 
   return {
     interests,

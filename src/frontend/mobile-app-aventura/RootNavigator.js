@@ -9,6 +9,7 @@ import HomeScreen from './screens/HomeScreen';
 import SearchScreen from './screens/SearchScreen';
 import WishlistScreen from './screens/WishlistScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import EditProfileScreen from './screens/EditProfileScreen';
 import EditInterestsScreen from './screens/EditInterestsScreen';
 import NotificationsScreen from './screens/NotificationsScreen';
 import InstitutionalScreen from './screens/InstitutionalScreen';
@@ -79,6 +80,7 @@ export default function RootNavigator() {
       <Stack.Screen name="Auth" component={AuthScreen} />
       <Stack.Screen name="Onboarding" component={OnboardingScreen} />
       <Stack.Screen name="Splash" component={WelcomeScreen} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name="EditInterests" component={EditInterestsScreen} />
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
       <Stack.Screen name="Institutional" component={InstitutionalScreen} />

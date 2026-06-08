@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 
 import {
+  Alert,
   View,
   Text,
   StyleSheet,
@@ -57,9 +58,33 @@ export default function ProfileScreen({ navigation }) {
     user,
     menuItems,
     refreshProfile,
+    deletingAccount,
 
     handleMenuPress,
+    handleDeleteAccount,
   } = useProfileViewModel();
+
+  function confirmDeleteAccount() {
+    Alert.alert(
+      'Excluir conta',
+      'Seus dados serão anonimizados em até 30 dias, conforme a LGPD. Essa ação não pode ser desfeita.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Excluir conta',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await handleDeleteAccount();
+              navigation.replace('Auth');
+            } catch (error) {
+              Alert.alert('Erro', error.message);
+            }
+          },
+        },
+      ],
+    );
+  }
 
   useFocusEffect(
     useCallback(() => {
@@ -140,6 +165,17 @@ export default function ProfileScreen({ navigation }) {
           >
             <Text style={styles.logoutText}>
               Sair
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={confirmDeleteAccount}
+            disabled={deletingAccount}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.deleteText}>
+              {deletingAccount ? 'Aguarde...' : 'Excluir minha conta'}
             </Text>
           </TouchableOpacity>
 
@@ -326,6 +362,19 @@ const styles = StyleSheet.create({
     lineHeight: typography.lineHeight.md,
     color: colors.peachBurnt,
     fontWeight: typography.fontWeight.semiBold,
+  },
+
+  deleteButton: {
+    alignSelf: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+  },
+
+  deleteText: {
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
+    color: colors.grayText,
+    textDecorationLine: 'underline',
   },
 
   version: {

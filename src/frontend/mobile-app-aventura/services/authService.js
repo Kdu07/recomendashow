@@ -48,6 +48,7 @@ export async function registerWithEmail({
   complement,
   neighborhood,
   city,
+  consentimentoAceito,
 }) {
   const data = await post('/api/auth/register', {
     Nome: name,
@@ -60,10 +61,22 @@ export async function registerWithEmail({
     Complemento: complement || null,
     Bairro: neighborhood,
     Cidade: city,
+    ConsentimentoAceito: consentimentoAceito,
   });
   return {
     user: { id: data.usuarioId, name: data.nome, email: data.email },
   };
+}
+
+export async function deleteUserAccount(userId) {
+  const response = await fetch(`${API_BASE_URL}/api/usuario/${userId}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    const json = await response.json().catch(() => ({}));
+    throw new Error(json.detail || json.title || `Erro ${response.status}`);
+  }
 }
 
 export async function loginWithGoogle() {

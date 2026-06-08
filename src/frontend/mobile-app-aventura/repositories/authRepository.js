@@ -2,6 +2,7 @@ import {
   loginWithEmail,
   loginWithGoogle,
   registerWithEmail,
+  deleteUserAccount,
 } from '../services/authService';
 
 export function authenticateUser(credentials) {
@@ -14,4 +15,8 @@ export function createUserAccount(accountData) {
 
 export function authenticateWithGoogle() {
   return loginWithGoogle();
+}
+
+export function removeUserAccount(userId) {
+  return deleteUserAccount(userId);
 }

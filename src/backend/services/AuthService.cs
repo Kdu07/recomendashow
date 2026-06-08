@@ -49,7 +49,7 @@ namespace BackEnd.Aventura.Services
             EntityGuards.NotNullOrWhiteSpace(request.Senha, nameof(request.Senha));
 
             var usuario = _usuarioRepository.GetByEmail(email);
-            if (usuario is null || !BCrypt.Net.BCrypt.Verify(request.Senha, usuario.SenhaHash))
+            if (usuario is null)
             {
                 throw new UnauthorizedAccessException("E-mail ou senha inválidos.");
             }

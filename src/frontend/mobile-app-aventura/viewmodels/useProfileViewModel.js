@@ -1,17 +1,31 @@
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 
 import { signOut } from '../repositories/authRepository';
 import { getProfileData } from '../repositories/profileRepository';
 
 export default function useProfileViewModel(navigation) {
-  const profileData = useMemo(
-    () => getProfileData(),
-    []
-  );
+  const [user, setUser] = useState({});
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const user = profileData.userProfile || {};
-  const menuItems =
-    profileData.profileMenuItems || [];
+  useEffect(() => {
+    let mounted = true;
+
+    async function load() {
+      setLoading(true);
+      const data = await getProfileData();
+      if (!mounted) return;
+      setUser(data.userProfile || {});
+      setMenuItems(data.profileMenuItems || []);
+      setLoading(false);
+    }
+
+    load();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   function handleMenuPress(item) {
     console.log('Abrir item:', item.title);
@@ -29,6 +43,10 @@ export default function useProfileViewModel(navigation) {
     });
   }
 
+  function isLoading() {
+    return loading;
+  }
+
   function handleTabPress(tab) {
     console.log('Navegar para:', tab);
   }
@@ -36,6 +54,8 @@ export default function useProfileViewModel(navigation) {
   return {
     user,
     menuItems,
+
+    isLoading,
 
     handleMenuPress,
     handleEditProfile,

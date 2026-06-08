@@ -9,6 +9,7 @@ import {
   Image,
   SafeAreaView,
 } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 
 import useProfileViewModel from '../viewmodels/useProfileViewModel';
 
@@ -57,6 +58,7 @@ export default function ProfileScreen({ navigation }) {
   const {
     user,
     menuItems,
+    isLoading,
 
     handleMenuPress,
     handleEditProfile,
@@ -75,29 +77,33 @@ export default function ProfileScreen({ navigation }) {
           </Text>
 
           <View style={styles.profileCard}>
-            <Image
-              source={{ uri: user.avatar }}
-              style={styles.avatar}
-            />
+            {isLoading() ? (
+              <ActivityIndicator size="large" color={colors.purplePrimary} />
+            ) : (
+              <>
+                <Image
+                  source={
+                    user.avatar
+                      ? { uri: user.avatar }
+                      : console.log("")
+                  }
+                  style={styles.avatar}
+                />
 
-            <View style={styles.profileInfo}>
-              <Text style={styles.name}>
-                {user.name}
-              </Text>
+                <View style={styles.profileInfo}>
+                  <Text style={styles.name}>{user.name || 'Usuário'}</Text>
 
-              <Text style={styles.email}>
-                {user.email}
-              </Text>
+                  <Text style={styles.email}>{user.email || ''}</Text>
 
-              <TouchableOpacity
-                onPress={handleEditProfile}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.editProfile}>
-                  Editar perfil
-                </Text>
-              </TouchableOpacity>
-            </View>
+                  <TouchableOpacity
+                    onPress={handleEditProfile}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.editProfile}>Editar perfil</Text>
+                  </TouchableOpacity>
+                </View>
+              </>
+            )}
           </View>
 
           <View style={styles.menuList}>

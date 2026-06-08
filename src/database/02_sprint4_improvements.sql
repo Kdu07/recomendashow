@@ -1,5 +1,5 @@
 -- ============================================================
--- SEÇÃO 5: Campos de endereço (suportar a integração ViaCEP)
+-- Campos de endereço (suportar a integração ViaCEP)
 -- ============================================================
 ALTER TABLE usuarios
     ADD COLUMN IF NOT EXISTS cep         VARCHAR(9),
@@ -10,7 +10,7 @@ ALTER TABLE usuarios
     ADD COLUMN IF NOT EXISTS cidade      VARCHAR(100);
 
 -- ============================================================
--- SEÇÃO 2: Índices de performance
+-- Índices de performance
 -- ============================================================
 
 -- Removidos: substituídos pelos índices compostos abaixo, que cobrem o prefixo esquerdo
@@ -36,3 +36,11 @@ CREATE INDEX IF NOT EXISTS idx_recomendacoes_usuario_score
 -- A wishlist é carregada a cada abertura da aba pelo usuário
 CREATE INDEX IF NOT EXISTS idx_wishlist_usuario
     ON wishlist_curtidas(usuario_id);
+
+-- ============================================================
+-- Integração ML: identificador inteiro para o motor de recomendação
+-- ============================================================
+
+-- Identificador sequencial para mapear usuarios UUID ↔ índice inteiro do modelo SVD
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS ml_id SERIAL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_ml_id ON usuarios(ml_id);

@@ -56,7 +56,9 @@ namespace BackEnd.Aventura.Domain
                 cep, logradouro, numero, complemento, bairro, cidade);
         }
 
-        public void AtualizarPerfil(string? nome, int? idade)
+        public void AtualizarPerfil(string? nome, int? idade,
+            string? cep = null, string? logradouro = null, string? numero = null,
+            string? complemento = null, string? bairro = null, string? cidade = null)
         {
             if (nome is not null)
             {
@@ -72,6 +74,13 @@ namespace BackEnd.Aventura.Domain
 
                 Idade = idade;
             }
+
+            if (cep is not null) Cep = cep;
+            if (logradouro is not null) Logradouro = logradouro;
+            if (numero is not null) Numero = numero;
+            if (complemento is not null) Complemento = complemento;
+            if (bairro is not null) Bairro = bairro;
+            if (cidade is not null) Cidade = cidade;
         }
     }
 }

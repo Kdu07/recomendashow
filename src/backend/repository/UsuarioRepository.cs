@@ -21,7 +21,8 @@ namespace BackEnd.Aventura.Repository
             connection.Open();
 
             const string sql = @"
-SELECT id, nome, email, senha_hash, idade, data_cadastro
+SELECT id, nome, email, senha_hash, idade, data_cadastro,
+       cep, logradouro, numero, complemento, bairro, cidade
 FROM usuarios
 WHERE id = @Id";
 
@@ -40,7 +41,8 @@ WHERE id = @Id";
             connection.Open();
 
             const string sql = @"
-SELECT id, nome, email, senha_hash, idade, data_cadastro
+SELECT id, nome, email, senha_hash, idade, data_cadastro,
+       cep, logradouro, numero, complemento, bairro, cidade
 FROM usuarios
 WHERE LOWER(email) = LOWER(@Email)";
 
@@ -73,8 +75,10 @@ WHERE LOWER(email) = LOWER(@Email)";
             connection.Open();
 
             const string sql = @"
-INSERT INTO usuarios(id, nome, email, senha_hash, idade, data_cadastro)
-VALUES (@Id, @Nome, @Email, @SenhaHash, @Idade, @DataCadastro)";
+INSERT INTO usuarios(id, nome, email, senha_hash, idade, data_cadastro,
+                     cep, logradouro, numero, complemento, bairro, cidade)
+VALUES (@Id, @Nome, @Email, @SenhaHash, @Idade, @DataCadastro,
+        @Cep, @Logradouro, @Numero, @Complemento, @Bairro, @Cidade)";
 
             using var command = new NpgsqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Id", usuario.Id);
@@ -83,6 +87,12 @@ VALUES (@Id, @Nome, @Email, @SenhaHash, @Idade, @DataCadastro)";
             command.Parameters.AddWithValue("@SenhaHash", usuario.SenhaHash);
             command.Parameters.AddWithValue("@Idade", (object?)usuario.Idade ?? DBNull.Value);
             command.Parameters.AddWithValue("@DataCadastro", usuario.DataCadastro);
+            command.Parameters.AddWithValue("@Cep", (object?)usuario.Cep ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Logradouro", (object?)usuario.Logradouro ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Numero", (object?)usuario.Numero ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Complemento", (object?)usuario.Complemento ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Bairro", (object?)usuario.Bairro ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Cidade", (object?)usuario.Cidade ?? DBNull.Value);
             command.ExecuteNonQuery();
 
             return usuario;
@@ -97,13 +107,21 @@ VALUES (@Id, @Nome, @Email, @SenhaHash, @Idade, @DataCadastro)";
 
             const string sql = @"
 UPDATE usuarios
-SET nome = @Nome, idade = @Idade
+SET nome = @Nome, idade = @Idade,
+    cep = @Cep, logradouro = @Logradouro, numero = @Numero,
+    complemento = @Complemento, bairro = @Bairro, cidade = @Cidade
 WHERE id = @Id";
 
             using var command = new NpgsqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Id", usuario.Id);
             command.Parameters.AddWithValue("@Nome", usuario.Nome);
             command.Parameters.AddWithValue("@Idade", (object?)usuario.Idade ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Cep", (object?)usuario.Cep ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Logradouro", (object?)usuario.Logradouro ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Numero", (object?)usuario.Numero ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Complemento", (object?)usuario.Complemento ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Bairro", (object?)usuario.Bairro ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Cidade", (object?)usuario.Cidade ?? DBNull.Value);
 
             return command.ExecuteNonQuery() > 0;
         }
@@ -116,7 +134,13 @@ WHERE id = @Id";
                 reader.GetString(reader.GetOrdinal("email")),
                 reader.GetString(reader.GetOrdinal("senha_hash")),
                 reader.IsDBNull(reader.GetOrdinal("idade")) ? null : reader.GetInt32(reader.GetOrdinal("idade")),
-                reader.GetDateTime(reader.GetOrdinal("data_cadastro")));
+                reader.GetDateTime(reader.GetOrdinal("data_cadastro")),
+                reader.IsDBNull(reader.GetOrdinal("cep")) ? null : reader.GetString(reader.GetOrdinal("cep")),
+                reader.IsDBNull(reader.GetOrdinal("logradouro")) ? null : reader.GetString(reader.GetOrdinal("logradouro")),
+                reader.IsDBNull(reader.GetOrdinal("numero")) ? null : reader.GetString(reader.GetOrdinal("numero")),
+                reader.IsDBNull(reader.GetOrdinal("complemento")) ? null : reader.GetString(reader.GetOrdinal("complemento")),
+                reader.IsDBNull(reader.GetOrdinal("bairro")) ? null : reader.GetString(reader.GetOrdinal("bairro")),
+                reader.IsDBNull(reader.GetOrdinal("cidade")) ? null : reader.GetString(reader.GetOrdinal("cidade")));
         }
     }
 }

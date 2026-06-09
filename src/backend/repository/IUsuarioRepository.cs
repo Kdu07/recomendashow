@@ -9,11 +9,8 @@ namespace BackEnd.Aventura.Repository
         bool EmailExists(string email);
         Usuario Create(Usuario usuario);
         bool Update(Usuario usuario);
-
-        /// <summary>
-        /// Retorna o ml_id numérico do usuário — identificador usado pelo modelo SVD.
-        /// Retorna null se o usuário não existir ou ainda não tiver ml_id atribuído.
-        /// </summary>
+        bool SolicitarExclusao(Guid id);
+        bool Anonimizar(Guid id);
         Task<int?> ObterMlIdAsync(Guid usuarioId);
     }
 }

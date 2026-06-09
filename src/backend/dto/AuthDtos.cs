@@ -12,6 +12,7 @@ namespace BackEnd.Aventura.Dto
         public string? Complemento { get; set; }
         public string? Bairro { get; set; }
         public string? Cidade { get; set; }
+        public bool ConsentimentoAceito { get; set; }
     }
 
     public class LoginRequest
@@ -25,6 +26,7 @@ namespace BackEnd.Aventura.Dto
         public Guid UsuarioId { get; set; }
         public string Nome { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+        public string Token { get; set; } = string.Empty;
     }
 
     public class UsuarioResponse

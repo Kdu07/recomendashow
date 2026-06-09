@@ -1,9 +1,11 @@
 using BackEnd.Aventura.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace BackEnd.Aventura.Controller
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class GeneroController : ControllerBase
     {

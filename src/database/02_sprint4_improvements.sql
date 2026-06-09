@@ -53,6 +53,15 @@ ALTER TABLE usuarios
     ADD COLUMN IF NOT EXISTS cidade      VARCHAR(100);
 
 -- ============================================================
+-- Conformidade com LGPD
+-- ============================================================
+ALTER TABLE usuarios
+    ADD COLUMN IF NOT EXISTS consentimento_aceito BOOLEAN NOT NULL DEFAULT FALSE,
+    ADD COLUMN IF NOT EXISTS data_consentimento   TIMESTAMP,
+    ADD COLUMN IF NOT EXISTS deleted_at           TIMESTAMP,
+    ADD COLUMN IF NOT EXISTS anonimizado          BOOLEAN NOT NULL DEFAULT FALSE;
+
+-- ============================================================
 -- Índices de performance
 -- ============================================================
 
@@ -87,3 +96,4 @@ CREATE INDEX IF NOT EXISTS idx_wishlist_usuario
 -- Identificador sequencial para mapear usuarios UUID ↔ índice inteiro do modelo SVD
 ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS ml_id SERIAL;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_ml_id ON usuarios(ml_id);
+>>>>>>> src/database/02_sprint4_improvements.sql

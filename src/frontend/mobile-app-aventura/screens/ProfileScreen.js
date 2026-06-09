@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 
 import {
+  Alert,
   View,
   Text,
   StyleSheet,
@@ -10,6 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
+import { ActivityIndicator } from 'react-native';
 
 import useProfileViewModel from '../viewmodels/useProfileViewModel';
 
@@ -57,9 +59,42 @@ export default function ProfileScreen({ navigation }) {
     user,
     menuItems,
     refreshProfile,
+<<<<<<< HEAD
+    isLoading,
 
     handleMenuPress,
+    handleEditProfile,
+    handleLogout,
+  } = useProfileViewModel(navigation);
+=======
+    deletingAccount,
+
+    handleMenuPress,
+    handleDeleteAccount,
   } = useProfileViewModel();
+>>>>>>> develop
+
+  function confirmDeleteAccount() {
+    Alert.alert(
+      'Excluir conta',
+      'Seus dados serão anonimizados em até 30 dias, conforme a LGPD. Essa ação não pode ser desfeita.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Excluir conta',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await handleDeleteAccount();
+              navigation.replace('Auth');
+            } catch (error) {
+              Alert.alert('Erro', error.message);
+            }
+          },
+        },
+      ],
+    );
+  }
 
   useFocusEffect(
     useCallback(() => {
@@ -83,10 +118,8 @@ export default function ProfileScreen({ navigation }) {
               <Ionicons name={user.avatarIcon || 'person'} size={40} color={colors.purplePrimary} />
             </View>
 
-            <View style={styles.profileInfo}>
-              <Text style={styles.name}>
-                {user.name}
-              </Text>
+                <View style={styles.profileInfo}>
+                  <Text style={styles.name}>{user.name || 'Usuário'}</Text>
 
               <Text style={styles.email}>
                 {user.email}
@@ -140,6 +173,17 @@ export default function ProfileScreen({ navigation }) {
           >
             <Text style={styles.logoutText}>
               Sair
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={confirmDeleteAccount}
+            disabled={deletingAccount}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.deleteText}>
+              {deletingAccount ? 'Aguarde...' : 'Excluir minha conta'}
             </Text>
           </TouchableOpacity>
 
@@ -326,6 +370,19 @@ const styles = StyleSheet.create({
     lineHeight: typography.lineHeight.md,
     color: colors.peachBurnt,
     fontWeight: typography.fontWeight.semiBold,
+  },
+
+  deleteButton: {
+    alignSelf: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+  },
+
+  deleteText: {
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
+    color: colors.grayText,
+    textDecorationLine: 'underline',
   },
 
   version: {

@@ -39,5 +39,43 @@ namespace BackEnd.Aventura.Tests
             var usuario = Usuario.Create("Pedro", "pedro@example.com", "hash", 20);
             Assert.Throws<ArgumentException>(() => usuario.AtualizarPerfil(null, 10));
         }
+
+        [Fact]
+        public void AceitarConsentimento_ShouldSetFlagAndTimestamp()
+        {
+            var usuario = Usuario.Create("Ana", "ana@example.com", "hash", 20);
+            Assert.False(usuario.ConsentimentoAceito);
+            Assert.Null(usuario.DataConsentimento);
+
+            usuario.AceitarConsentimento();
+
+            Assert.True(usuario.ConsentimentoAceito);
+            Assert.NotNull(usuario.DataConsentimento);
+        }
+
+        [Fact]
+        public void SolicitarExclusao_ShouldSetDeletedAt()
+        {
+            var usuario = Usuario.Create("Ana", "ana@example.com", "hash", 20);
+            Assert.Null(usuario.DeletedAt);
+
+            usuario.SolicitarExclusao();
+
+            Assert.NotNull(usuario.DeletedAt);
+        }
+
+        [Fact]
+        public void Anonimizar_ShouldOverwritePersonalDataAndSetFlag()
+        {
+            var usuario = Usuario.Create("Ana", "ana@example.com", "hash", 20);
+            usuario.SolicitarExclusao();
+
+            usuario.Anonimizar();
+
+            Assert.Equal("Usuário Removido", usuario.Nome);
+            Assert.Contains("@anonimizado.invalid", usuario.Email);
+            Assert.Equal(string.Empty, usuario.SenhaHash);
+            Assert.True(usuario.Anonimizado);
+        }
     }
 }

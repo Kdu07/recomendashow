@@ -32,6 +32,7 @@ jest.mock('../models/authModels', () => ({
     city: '',
     password: '',
     confirmPassword: '',
+    consentimentoAceito: false,
   },
 }));
 
@@ -292,6 +293,7 @@ describe('useAuthViewModel – validação (register)', () => {
       result.current.updateField('city', 'São Paulo');
       result.current.updateField('password', '123456');
       result.current.updateField('confirmPassword', '123456');
+      result.current.updateField('consentimentoAceito', true);
     });
     await act(async () => { await result.current.handleSubmit(); });
     expect(result.current.errors.confirmPassword).toBeUndefined();
@@ -318,7 +320,7 @@ describe('useAuthViewModel – handleSubmit', () => {
     expect(nav.replace).toHaveBeenCalledWith('Onboarding');
   });
 
-  test('register chama createUserAccount com name, email, birthDate, endereco e password', async () => {
+  test('register chama createUserAccount com name, email, birthDate, endereco, password e consentimento', async () => {
     const nav = makeNavigation();
     const { result } = renderHook(() => useAuthViewModel(nav));
     act(() => result.current.setMode('register'));
@@ -334,6 +336,7 @@ describe('useAuthViewModel – handleSubmit', () => {
       result.current.updateField('city', 'São Paulo');
       result.current.updateField('password', '123456');
       result.current.updateField('confirmPassword', '123456');
+      result.current.updateField('consentimentoAceito', true);
     });
     await act(async () => { await result.current.handleSubmit(); });
     expect(createUserAccount).toHaveBeenCalledWith({
@@ -347,6 +350,7 @@ describe('useAuthViewModel – handleSubmit', () => {
       neighborhood: 'Bela Vista',
       city: 'São Paulo',
       password: '123456',
+      consentimentoAceito: true,
     });
   });
 

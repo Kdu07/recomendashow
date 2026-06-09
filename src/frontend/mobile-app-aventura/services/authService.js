@@ -1,32 +1,100 @@
 import { createAuthUser } from '../models/authModels';
+import { API_BASE } from './apiClient';
+import { clearAuthStorage, saveAuthData } from './tokenStorageService';
 
-const MOCK_USER = createAuthUser({
-  id: 'user-1',
-  name: 'Usuario Aventura',
-  email: 'usuario@aventura.com',
-});
-
-function waitForMockResponse() {
-  return new Promise((resolve) => {
-    setTimeout(resolve, 400);
-  });
+function normalizeAuthResponse(data) {
+  return {
+    usuarioId: data.usuarioId ?? data.UsuarioId,
+    nome: data.nome ?? data.Nome,
+    email: data.email ?? data.Email,
+    token: data.token ?? data.Token,
+  };
 }
 
-export async function loginWithEmail({ email }) {
-  await waitForMockResponse();
+export async function persistAuthResponse(data) {
+  const auth = normalizeAuthResponse(data);
 
+  if (!auth.token) {
+    throw new Error('Resposta de autenticação sem token.');
+  }
+
+  await saveAuthData(auth);
+  return auth;
+}
+
+async function postAuth(path, payload) {
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Autenticação falhou: ${res.status} ${text}`);
+  }
+
+  return res.json();
+}
+
+export async function loginWithEmail({ email, password }) {
+  try {
+    const data = await postAuth('/api/auth/login', {
+      Email: email,
+      Senha: password,
+    });
+    return persistAuthResponse(data);
+  } catch (error) {
+    console.error('loginWithEmail error:', error);
+    throw error;
+  }
+}
+
+export async function logout() {
+  await clearAuthStorage();
+}
+
+function calculateAge(dateString) {
+  const [day, month, year] = dateString.split('/').map(Number);
+  const birth = new Date(year, month - 1, day);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const hasHadBirthday =
+    today.getMonth() > birth.getMonth() ||
+    (today.getMonth() === birth.getMonth() && today.getDate() >= birth.getDate());
+  return hasHadBirthday ? age : age - 1;
+}
+
+async function post(path, body) {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  const json = await response.json();
+
+  if (!response.ok) {
+    throw new Error(json.detail || json.title || `Erro ${response.status}`);
+  }
+
+  return json;
+}
+
+export async function loginWithEmail({ email, password }) {
+  const data = await post('/api/auth/login', {
+    Email: email,
+    Senha: password,
+  });
   return {
-    user: createAuthUser({
-      ...MOCK_USER,
-      email,
-    }),
-    token: 'mock-auth-token',
+    user: { id: data.usuarioId, name: data.nome, email: data.email },
   };
 }
 
 export async function registerWithEmail({
   name,
   email,
+  password,
   birthDate,
   cep,
   street,
@@ -34,31 +102,37 @@ export async function registerWithEmail({
   complement,
   neighborhood,
   city,
+  consentimentoAceito,
 }) {
-  await waitForMockResponse();
-
+  const data = await post('/api/auth/register', {
+    Nome: name,
+    Email: email,
+    Senha: password,
+    Idade: calculateAge(birthDate),
+    Cep: cep,
+    Logradouro: street,
+    Numero: number,
+    Complemento: complement || null,
+    Bairro: neighborhood,
+    Cidade: city,
+    ConsentimentoAceito: consentimentoAceito,
+  });
   return {
-    user: createAuthUser({
-      id: 'new-user',
-      name,
-      email,
-      birthDate,
-      cep,
-      street,
-      number,
-      complement,
-      neighborhood,
-      city,
-    }),
-    token: 'mock-register-token',
+    user: { id: data.usuarioId, name: data.nome, email: data.email },
   };
 }
 
-export async function loginWithGoogle() {
-  await waitForMockResponse();
+export async function deleteUserAccount(userId) {
+  const response = await fetch(`${API_BASE_URL}/api/usuario/${userId}`, {
+    method: 'DELETE',
+  });
 
-  return {
-    user: MOCK_USER,
-    token: 'mock-google-token',
-  };
+  if (!response.ok) {
+    const json = await response.json().catch(() => ({}));
+    throw new Error(json.detail || json.title || `Erro ${response.status}`);
+  }
+}
+
+export async function loginWithGoogle() {
+  throw new Error('Login com Google ainda não implementado.');
 }

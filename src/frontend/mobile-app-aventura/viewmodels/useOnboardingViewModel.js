@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { onboardingService } from '../services/onboardingService';
+import { CATEGORIES } from '../models/onboardingData';
 
 const TOTAL_STEPS = 3;
 
@@ -48,8 +49,13 @@ export function useOnboardingViewModel(onFinish) {
 
   async function _saveAndFinish() {
     try {
+      // Send selected category ids (GUIDs) so backend receives genre ids.
+      const selectedCategoryIds = CATEGORIES
+        .filter((c) => selectedCategories.includes(c.id))
+        .map((c) => c.id);
+
       await onboardingService.save({
-        categories: selectedCategories,
+        categories: selectedCategoryIds,
         city: selectedCity,
         frequency: selectedFrequency,
       });

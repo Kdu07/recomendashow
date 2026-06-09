@@ -1,13 +1,35 @@
 import { userProfile as mockUserProfile } from '../data/mockProfileData';
 import { profileMenuItems } from '../constants/profileMenuItems';
 import { getUserInfo } from '../services/userProfileService';
+import { getPreferences } from './preferencesRepository';
+import { getInterestData } from './interestRepository';
 
 export async function getProfileData() {
   try {
     const userProfile = await getUserInfo();
+    // try to load preferences to show selected genres in the profile menu
+    let menuItems = profileMenuItems;
+    try {
+      const prefs = await getPreferences();
+      if (prefs && prefs.generos) {
+        const generosArr = Array.isArray(prefs.generos) ? prefs.generos : prefs.Generos ?? prefs.generos ?? [];
+
+        const interestData = getInterestData();
+        const mapped = generosArr.map((g) => {
+          const found = interestData.interests.find((i) => i.id === g);
+          return found ? found.label : g;
+        });
+
+        const subtitle = mapped.length > 0 ? mapped.join(', ') : 'Nenhuma';
+        menuItems = profileMenuItems.map((it) => it.id === 'preferences' ? { ...it, subtitle } : it);
+      }
+    } catch (err) {
+      console.warn('Erro ao carregar preferências para o perfil:', err);
+    }
+
     return {
       userProfile,
-      profileMenuItems,
+      profileMenuItems: menuItems,
     };
   } catch (error) {
     // fallback to mock data on error

@@ -1,5 +1,4 @@
-import { createAuthUser } from '../models/authModels';
-import { API_BASE } from './apiClient';
+import { API_BASE, apiFetch } from './apiClient';
 import { clearAuthStorage, saveAuthData } from './tokenStorageService';
 
 function normalizeAuthResponse(data) {
@@ -38,16 +37,20 @@ async function postAuth(path, payload) {
 }
 
 export async function loginWithEmail({ email, password }) {
-  try {
-    const data = await postAuth('/api/auth/login', {
-      Email: email,
-      Senha: password,
-    });
-    return persistAuthResponse(data);
-  } catch (error) {
-    console.error('loginWithEmail error:', error);
-    throw error;
-  }
+  const data = await postAuth('/api/auth/login', {
+    Email: email,
+    Senha: password,
+  });
+  const auth = await persistAuthResponse(data);
+
+  return {
+    user: {
+      id: auth.usuarioId,
+      name: auth.nome,
+      email: auth.email,
+    },
+    token: auth.token,
+  };
 }
 
 export async function logout() {
@@ -65,32 +68,6 @@ function calculateAge(dateString) {
   return hasHadBirthday ? age : age - 1;
 }
 
-async function post(path, body) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-
-  const json = await response.json();
-
-  if (!response.ok) {
-    throw new Error(json.detail || json.title || `Erro ${response.status}`);
-  }
-
-  return json;
-}
-
-export async function loginWithEmail({ email, password }) {
-  const data = await post('/api/auth/login', {
-    Email: email,
-    Senha: password,
-  });
-  return {
-    user: { id: data.usuarioId, name: data.nome, email: data.email },
-  };
-}
-
 export async function registerWithEmail({
   name,
   email,
@@ -104,7 +81,7 @@ export async function registerWithEmail({
   city,
   consentimentoAceito,
 }) {
-  const data = await post('/api/auth/register', {
+  const data = await postAuth('/api/auth/register', {
     Nome: name,
     Email: email,
     Senha: password,
@@ -117,13 +94,20 @@ export async function registerWithEmail({
     Cidade: city,
     ConsentimentoAceito: consentimentoAceito,
   });
+
+  const auth = await persistAuthResponse(data);
   return {
-    user: { id: data.usuarioId, name: data.nome, email: data.email },
+    user: {
+      id: auth.usuarioId,
+      name: auth.nome,
+      email: auth.email,
+    },
+    token: auth.token,
   };
 }
 
 export async function deleteUserAccount(userId) {
-  const response = await fetch(`${API_BASE_URL}/api/usuario/${userId}`, {
+  const response = await apiFetch(`/api/Usuario/${userId}`, {
     method: 'DELETE',
   });
 

@@ -1,62 +1,63 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   getNotificationData,
+  updateNotificationPreference,
 } from '../repositories/notificationRepository';
 
 export default function useNotificationsViewModel() {
-  const repositoryData = useMemo(
-    () => getNotificationData(),
-    []
-  );
+  const [sections, setSections] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [sections, setSections] = useState(
-    repositoryData.sections || []
-  );
+  useEffect(() => {
+    let mounted = true;
 
-  function handleToggleOption(
-    sectionId,
-    optionId
-  ) {
+    async function load() {
+      try {
+        const data = await getNotificationData();
+        if (mounted) setSections(data.sections || []);
+      } catch (error) {
+        console.warn('Erro ao carregar notificacoes:', error);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+
+    load();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  async function handleToggleOption(sectionId, optionId) {
     const currentSection = sections.find((section) => section.id === sectionId);
     const currentOption = currentSection?.options.find((option) => option.id === optionId);
-    const changedOption = currentOption
-      ? {
-          title: currentOption.title,
-          enabled: !currentOption.enabled,
-        }
-      : null;
+    const nextEnabled = !currentOption?.enabled;
 
     setSections((previous) =>
-      previous.map((section) => {
-        if (section.id !== sectionId) {
-          return section;
-        }
-
-        return {
-          ...section,
-
-          options: section.options.map(
-            (option) => {
-              if (option.id !== optionId) {
-                return option;
-              }
-
-              return {
-                ...option,
-                enabled: !option.enabled,
-              };
-            }
-          ),
-        };
-      })
+      previous.map((section) => ({
+        ...section,
+        options: section.options.map((option) =>
+          option.id === optionId
+            ? { ...option, enabled: nextEnabled }
+            : option
+        ),
+      }))
     );
 
-    return changedOption;
+    const saved = await updateNotificationPreference(nextEnabled);
+
+    return {
+      title: currentOption?.title ?? 'Notificacao',
+      enabled: nextEnabled,
+      saved,
+    };
   }
 
   return {
     sections,
+    loading,
     handleToggleOption,
   };
 }

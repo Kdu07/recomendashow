@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { categories as defaultCategories, theaters as defaultTheaters } from '../data/mockHomeData';
 import { getHomeData } from '../repositories/homeRepository';
 import {
   getWishlistData,
@@ -14,9 +13,9 @@ export default function useHomeViewModel(navigation) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [savedEventIds, setSavedEventIds] = useState([]);
   const [homeData, setHomeData] = useState({
-    categories: defaultCategories,
+    categories: [{ id: 'all', label: 'Todos' }],
     heroBanners: [],
-    theaters: defaultTheaters,
+    theaters: [],
     trendingEvents: [],
     recommendedEvents: [],
     newEvents: [],

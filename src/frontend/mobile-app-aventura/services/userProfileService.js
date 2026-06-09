@@ -3,9 +3,18 @@ import { getAuthSession } from './tokenStorageService';
 
 function normalizeProfileResponse(data) {
   return {
-    id: data.usuarioId ?? data.UsuarioId ?? data.id,
+    id: data.id ?? data.Id ?? data.usuarioId ?? data.UsuarioId,
     name: data.nome ?? data.Nome ?? data.name,
     email: data.email ?? data.Email ?? data.emailAddress,
+    age: data.idade ?? data.Idade ?? null,
+    birthDate: '',
+    cep: data.cep ?? data.Cep ?? '',
+    street: data.logradouro ?? data.Logradouro ?? '',
+    number: data.numero ?? data.Numero ?? '',
+    complement: data.complemento ?? data.Complemento ?? '',
+    neighborhood: data.bairro ?? data.Bairro ?? '',
+    city: data.cidade ?? data.Cidade ?? '',
+    avatarIcon: 'person',
     avatar: data.avatar ?? data.avatarUrl ?? data.AvatarUrl ?? null,
   };
 }

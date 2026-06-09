@@ -1,67 +1,43 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { getInterestData } from '../repositories/interestRepository';
-import { updatePreferences, getPreferences } from '../repositories/preferencesRepository';
+import { getInterestData, saveInterestData } from '../repositories/interestRepository';
 
 export default function useEditInterestsViewModel() {
-  const data = useMemo(
-    () => getInterestData(),
-    []
-  );
+  const [interests, setInterests] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const [interests, setInterests] = useState(
-    data.interests || []
-  );
-
-  const [cities, setCities] = useState(
-    data.cities || []
-  );
-
-  // On mount, load server preferences and mark selected interests/city
   useEffect(() => {
     let mounted = true;
 
-    async function loadPrefs() {
+    async function load() {
       try {
-        const prefs = await getPreferences();
-        if (!prefs) return;
-
-        const serverGeneros = Array.isArray(prefs.generos) ? prefs.generos : prefs.Generos ?? prefs.generos ?? [];
-
-        if (mounted && serverGeneros.length > 0) {
-          setInterests((prev) =>
-            prev.map((interest) => ({
-              ...interest,
-              selected: serverGeneros.includes(interest.id) || serverGeneros.includes(interest.label),
-            }))
-          );
-        }
-
-        const serverCidade = prefs.cidade ?? prefs.Cidade ?? null;
-        if (mounted && serverCidade) {
-          setCities((prev) => prev.map((city) => ({ ...city, selected: city.label === serverCidade || city.id === serverCidade })));
-        }
-      } catch (err) {
-        console.warn('Erro ao carregar preferências do servidor:', err);
+        const data = await getInterestData();
+        if (!mounted) return;
+        setInterests(data.interests || []);
+        setCities(data.cities || []);
+      } catch (error) {
+        console.warn('Erro ao carregar interesses:', error);
+      } finally {
+        if (mounted) setLoading(false);
       }
     }
 
-    loadPrefs();
-    return () => { mounted = false; };
+    load();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   function handleToggleInterest(interestId) {
     setInterests((previous) =>
-      previous.map((interest) => {
-        if (interest.id === interestId) {
-          return {
-            ...interest,
-            selected: !interest.selected,
-          };
-        }
-
-        return interest;
-      })
+      previous.map((interest) =>
+        interest.id === interestId
+          ? { ...interest, selected: !interest.selected }
+          : interest
+      )
     );
   }
 
@@ -74,36 +50,23 @@ export default function useEditInterestsViewModel() {
     );
   }
 
-  const selectedInterestsCount =
-    interests.filter(
-      (interest) => interest.selected
-    ).length;
+  const selectedInterestsCount = interests.filter((interest) => interest.selected).length;
 
   async function handleSaveChanges() {
-    console.log('Salvar alterações');
-
-    const selectedGenres = interests.filter(i => i.selected).map(i => i.id);
-
-    const payload = {
-      Generos: selectedGenres,
-      Cidade: cities.find((city) => city.selected)?.label,
-    };
-
-    const result = await updatePreferences(payload);
-
-    return {
-      selectedInterestsCount,
-      selectedCity: payload.Cidade,
-      savedOnServer: !!result,
-    };
+    setSaving(true);
+    try {
+      return await saveInterestData({ interests, cities });
+    } finally {
+      setSaving(false);
+    }
   }
 
   return {
     interests,
     cities,
-
+    loading,
+    saving,
     selectedInterestsCount,
-
     handleToggleInterest,
     handleSelectCity,
     handleSaveChanges,

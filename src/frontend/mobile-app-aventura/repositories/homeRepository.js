@@ -1,6 +1,3 @@
-import {
-  heroBanners as defaultHeroBanners,
-} from '../data/mockHomeData';
 import { fetchShows, mapDtoToHomeEvent } from '../services/showService';
 import { fetchCategories } from '../services/categoryService';
 import { fetchTheaters, mapDtoToTheater } from '../services/theaterService';
@@ -37,7 +34,7 @@ export async function getHomeData(userId, userCity) {
     const finalNearbyEvents = nearbyEvents.length ? nearbyEvents : events.slice(0, 4);
 
     return {
-      heroBanners: heroBanners.length ? heroBanners : defaultHeroBanners,
+      heroBanners,
       categories: categoriesDto,
       trendingEvents: events, // Could be sorted by popularity if we had that metric
       recommendedEvents,
@@ -49,7 +46,7 @@ export async function getHomeData(userId, userCity) {
     console.error('getHomeData error:', error);
 
     return {
-      heroBanners: defaultHeroBanners,
+      heroBanners: [],
       categories: [{ id: 'all', label: 'Todos' }],
       trendingEvents: [],
       recommendedEvents: [],

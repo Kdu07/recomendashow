@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { getProfileData, updateProfileData } from '../repositories/profileRepository';
 
@@ -32,9 +32,7 @@ function validateProfile(values) {
     errors.email = 'Informe um e-mail válido.';
   }
 
-  if (!values.birthDate.trim()) {
-    errors.birthDate = 'Informe sua data de nascimento.';
-  } else if (!isValidBirthDate(values.birthDate)) {
+  if (values.birthDate.trim() && !isValidBirthDate(values.birthDate)) {
     errors.birthDate = 'Informe uma data válida no formato DD/MM/AAAA.';
   }
 
@@ -64,21 +62,57 @@ function validateProfile(values) {
 }
 
 export default function useEditProfileViewModel() {
-  const currentProfile = getProfileData().userProfile;
   const [values, setValues] = useState({
-    name: currentProfile.name || '',
-    email: currentProfile.email || '',
-    birthDate: currentProfile.birthDate || '',
-    cep: currentProfile.cep || '',
-    street: currentProfile.street || '',
-    number: currentProfile.number || '',
-    complement: currentProfile.complement || '',
-    neighborhood: currentProfile.neighborhood || '',
-    city: currentProfile.city || '',
-    avatarIcon: currentProfile.avatarIcon || 'person',
+    name: '',
+    email: '',
+    birthDate: '',
+    cep: '',
+    street: '',
+    number: '',
+    complement: '',
+    neighborhood: '',
+    city: '',
+    avatarIcon: 'person',
   });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadProfile() {
+      try {
+        const data = await getProfileData();
+        const currentProfile = data.userProfile || {};
+
+        if (!mounted) return;
+
+        setValues({
+          name: currentProfile.name || '',
+          email: currentProfile.email || '',
+          birthDate: currentProfile.birthDate || '',
+          cep: currentProfile.cep || '',
+          street: currentProfile.street || '',
+          number: currentProfile.number || '',
+          complement: currentProfile.complement || '',
+          neighborhood: currentProfile.neighborhood || '',
+          city: currentProfile.city || '',
+          avatarIcon: currentProfile.avatarIcon || 'person',
+        });
+      } catch (error) {
+        console.warn('Erro ao carregar perfil para edicao:', error);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+
+    loadProfile();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   function updateField(field, value) {
     setValues((currentValues) => ({
@@ -106,7 +140,7 @@ export default function useEditProfileViewModel() {
     setSaving(true);
 
     try {
-      updateProfileData(values);
+      await updateProfileData(values);
       return {
         ok: true,
       };
@@ -118,6 +152,7 @@ export default function useEditProfileViewModel() {
   return {
     values,
     errors,
+    loading,
     saving,
     updateField,
     saveProfile,

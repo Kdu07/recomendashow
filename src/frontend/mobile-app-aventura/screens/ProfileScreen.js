@@ -59,20 +59,13 @@ export default function ProfileScreen({ navigation }) {
     user,
     menuItems,
     refreshProfile,
-<<<<<<< HEAD
     isLoading,
-
+    deletingAccount,
     handleMenuPress,
     handleEditProfile,
     handleLogout,
-  } = useProfileViewModel(navigation);
-=======
-    deletingAccount,
-
-    handleMenuPress,
     handleDeleteAccount,
-  } = useProfileViewModel();
->>>>>>> develop
+  } = useProfileViewModel(navigation);
 
   function confirmDeleteAccount() {
     Alert.alert(
@@ -168,7 +161,7 @@ export default function ProfileScreen({ navigation }) {
 
           <TouchableOpacity
             style={styles.logoutButton}
-            onPress={() => navigation.replace('Auth')}
+            onPress={handleLogout}
             activeOpacity={0.7}
           >
             <Text style={styles.logoutText}>
@@ -188,7 +181,7 @@ export default function ProfileScreen({ navigation }) {
           </TouchableOpacity>
 
           <Text style={styles.version}>
-            Versão 1.0.0
+            {isLoading() ? 'Carregando perfil...' : 'Versão 1.0.0'}
           </Text>
         </ScrollView>
       </View>

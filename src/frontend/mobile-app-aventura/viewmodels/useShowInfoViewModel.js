@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Linking } from 'react-native';
-import { toggleWishlistEvent } from '../repositories/wishlistRepository';
+import { checkEventIsSaved, toggleWishlistEvent } from '../repositories/wishlistRepository';
 import { fetchShowById, mapDtoToShowInfo } from '../services/showService';
 
 export function useShowInfoViewModel(showId = '1') {
@@ -14,8 +14,12 @@ export function useShowInfoViewModel(showId = '1') {
     async function loadShow() {
       try {
         const dto = await fetchShowById(showId);
+        const isFavorited = await checkEventIsSaved(showId).catch(() => false);
         if (isMounted) {
-          setShow(mapDtoToShowInfo(dto));
+          setShow({
+            ...mapDtoToShowInfo(dto),
+            isFavorited,
+          });
         }
       } catch (loadError) {
         console.error('Failed to load show details:', loadError);

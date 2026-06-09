@@ -11,34 +11,42 @@ const THEATER_IMAGE_MAP = [
   { pattern: /youtube|eva herz/i, image: require('../assets/home/teatro-youtube.avif') },
 ];
 
+function read(dto, pascal, camel) {
+  return dto?.[pascal] ?? dto?.[camel];
+}
+
 function getTheaterImage(name) {
-  const match = THEATER_IMAGE_MAP.find((item) => item.pattern.test(name));
+  const match = THEATER_IMAGE_MAP.find((item) => item.pattern.test(name ?? ''));
   return match?.image ?? DEFAULT_IMAGE;
 }
 
 export async function fetchTheaters() {
   const response = await apiFetch('/api/Teatro');
-
-  if (!response.ok) {
-    throw new Error('Não foi possível carregar os teatros');
-  }
-
+  if (!response.ok) throw new Error('Nao foi possivel carregar os teatros');
   return response.json();
 }
 
 export function mapDtoToTheater(dto) {
+  const id = read(dto, 'Id', 'id');
+  const name = read(dto, 'Nome', 'nome');
+  const city = read(dto, 'Cidade', 'cidade');
+  const location = read(dto, 'Endereco', 'endereco');
+  const openingHours = read(dto, 'HorarioFuncionamento', 'horarioFuncionamento');
+
   return {
-    id: dto.Id,
-    name: dto.Nome,
-    city: dto.Cidade,
-    location: dto.Endereco,
-    image: getTheaterImage(dto.Nome),
-    capacity: 'Consultar lotação local', // Fallback, we don't have capacity in backend
-    description: dto.HorarioFuncionamento ? `Horário de Funcionamento: ${dto.HorarioFuncionamento}` : 'Detalhes do teatro indisponíveis no momento.',
+    id,
+    name,
+    city,
+    location,
+    image: getTheaterImage(name),
+    capacity: 'Consultar lotacao local',
+    description: openingHours
+      ? `Horario de funcionamento: ${openingHours}`
+      : 'Detalhes do teatro indisponiveis no momento.',
     highlights: [
-      `Localizado em ${dto.Cidade}`,
-      dto.Endereco,
-      dto.HorarioFuncionamento ? `Aberto: ${dto.HorarioFuncionamento}` : 'Aberto ao público'
-    ]
+      city ? `Localizado em ${city}` : 'Cidade nao informada',
+      location || 'Endereco nao informado',
+      openingHours ? `Aberto: ${openingHours}` : 'Aberto ao publico',
+    ],
   };
 }

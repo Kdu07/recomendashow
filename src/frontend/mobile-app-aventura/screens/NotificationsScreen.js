@@ -28,11 +28,11 @@ export default function NotificationsScreen({
     handleToggleOption,
   } = useNotificationsViewModel();
 
-  function handleToggleWithStatus(sectionId, optionId) {
-    const result = handleToggleOption(sectionId, optionId);
+  async function handleToggleWithStatus(sectionId, optionId) {
+    const result = await handleToggleOption(sectionId, optionId);
 
     setSystemStatus({
-      type: result?.enabled ? 'success' : 'info',
+      type: result?.saved ? (result?.enabled ? 'success' : 'info') : 'warning',
       message: result?.enabled
         ? `${result.title} ativado.`
         : `${result?.title || 'Notificação'} desativado.`,

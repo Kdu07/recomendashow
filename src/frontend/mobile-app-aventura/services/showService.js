@@ -13,37 +13,35 @@ const IMAGE_MAP = [
   { pattern: /hip hop|hip-hop|hamlet/i, image: require('../assets/home/hip-hop-hamlet.jpeg') },
 ];
 
-function getShowImage(dto) {
-  const name = `${dto?.Nome ?? ''} ${dto?.Genero ?? ''} ${dto?.TipoEvento ?? ''}`;
+function read(dto, pascal, camel) {
+  return dto?.[pascal] ?? dto?.[camel];
+}
 
+function getShowImage(dto) {
+  const name = `${read(dto, 'Nome', 'nome') ?? ''} ${read(dto, 'Genero', 'genero') ?? ''} ${read(dto, 'TipoEvento', 'tipoEvento') ?? ''}`;
   const match = IMAGE_MAP.find((item) => item.pattern.test(name));
   return match?.image ?? DEFAULT_IMAGE;
 }
 
 function getCategoryId(dto) {
-  const genre = (dto?.Genero ?? dto?.TipoEvento ?? '').toLowerCase();
+  const genre = String(read(dto, 'Genero', 'genero') ?? read(dto, 'TipoEvento', 'tipoEvento') ?? '').toLowerCase();
 
   if (genre.includes('musical')) return 'musical';
   if (genre.includes('drama')) return 'drama';
   if (genre.includes('infantil')) return 'infantil';
   if (genre.includes('ballet')) return 'ballet';
-  if (genre.includes('comédia') || genre.includes('comedia')) return 'comédia';
+  if (genre.includes('comedia') || genre.includes('comÃ©dia')) return 'comedia';
 
   return 'all';
 }
 
 function formatCurrency(value) {
-  if (value === null || value === undefined) {
-    return '';
-  }
-
+  if (value === null || value === undefined) return '';
   return `R$ ${Number(value).toFixed(2).replace('.', ',')}`;
 }
 
 function formatDateStatus(startDate, endDate, emCartaz) {
-  if (!startDate) {
-    return emCartaz ? 'Em cartaz' : 'Data indisponível';
-  }
+  if (!startDate) return emCartaz ? 'Em cartaz' : 'Data indisponivel';
 
   const start = new Date(startDate);
   const end = endDate ? new Date(endDate) : null;
@@ -57,7 +55,6 @@ function formatDateStatus(startDate, endDate, emCartaz) {
       day: '2-digit',
       month: 'long',
     });
-
     return `Em cartaz de ${formattedStart} a ${formattedEnd}`;
   }
 
@@ -66,80 +63,77 @@ function formatDateStatus(startDate, endDate, emCartaz) {
 
 export async function fetchShows() {
   const response = await apiFetch('/api/Espetaculo');
-
-  if (!response.ok) {
-    throw new Error('Não foi possível carregar os espetáculos');
-  }
-
+  if (!response.ok) throw new Error('Nao foi possivel carregar os espetaculos');
   return response.json();
 }
 
 export async function fetchShowById(showId) {
   const response = await apiFetch(`/api/Espetaculo/${showId}`);
-
-  if (!response.ok) {
-    throw new Error('Espetáculo não encontrado');
-  }
-
+  if (!response.ok) throw new Error('Espetaculo nao encontrado');
   return response.json();
 }
 
 export async function searchShows(nome, genero) {
-  let query = '';
   const params = new URLSearchParams();
   if (nome) params.append('nome', nome);
   if (genero && genero !== 'all') params.append('genero', genero);
-
-  if (params.toString()) {
-    query = `?${params.toString()}`;
-  }
-
+  const query = params.toString() ? `?${params.toString()}` : '';
   const response = await apiFetch(`/api/Espetaculo/search${query}`);
-
-  if (!response.ok) {
-    throw new Error('Erro ao buscar espetáculos');
-  }
-
+  if (!response.ok) throw new Error('Erro ao buscar espetaculos');
   return response.json();
 }
 
 export function mapDtoToHomeEvent(dto) {
+  const id = read(dto, 'Id', 'id');
+  const title = read(dto, 'Nome', 'nome');
+  const genero = read(dto, 'Genero', 'genero');
+  const tipoEvento = read(dto, 'TipoEvento', 'tipoEvento');
+
   return {
-    id: dto.Id,
-    showId: dto.Id,
-    title: dto.Nome,
+    id,
+    showId: id,
+    title,
     categoryId: getCategoryId(dto),
     city: '',
-    location: dto.Genero || dto.TipoEvento || '',
+    location: genero || tipoEvento || '',
     image: getShowImage(dto),
   };
 }
 
 export function mapDtoToShowInfo(dto) {
+  const id = read(dto, 'Id', 'id');
+  const title = read(dto, 'Nome', 'nome');
+  const genero = read(dto, 'Genero', 'genero');
+  const tipoEvento = read(dto, 'TipoEvento', 'tipoEvento');
+  const dataInicio = read(dto, 'DataInicio', 'dataInicio');
+  const dataFim = read(dto, 'DataFim', 'dataFim');
+  const emCartaz = read(dto, 'EmCartaz', 'emCartaz');
+  const descricao = read(dto, 'Descricao', 'descricao');
+  const valorIngresso = read(dto, 'ValorIngresso', 'valorIngresso');
+  const urlBilheteria = read(dto, 'UrlBilheteria', 'urlBilheteria');
+
   return {
-    id: dto.Id,
-    title: dto.Nome,
+    id,
+    title,
     heroImage: getShowImage(dto),
     isFavorited: false,
     date: {
-      label: 'DATA E HORÁRIO',
-      status: formatDateStatus(dto.DataInicio, dto.DataFim, dto.EmCartaz),
-      detail: dto.DataInicio ? `Início: ${new Date(dto.DataInicio).toLocaleDateString('pt-BR')}` : '',
+      label: 'DATA E HORARIO',
+      status: formatDateStatus(dataInicio, dataFim, emCartaz),
+      detail: dataInicio ? `Inicio: ${new Date(dataInicio).toLocaleDateString('pt-BR')}` : '',
     },
     location: {
       label: 'LOCAL',
-      venue: dto.TipoEvento || dto.Genero || 'Espetáculo',
+      venue: tipoEvento || genero || 'Espetaculo',
       address: '',
       city: '',
       mapImage: DEFAULT_IMAGE,
-      venueUrl: dto.UrlBilheteria || '',
+      venueUrl: urlBilheteria || '',
     },
     about: {
-      sectionLabel: 'SOBRE O ESPETÁCULO',
-      description: dto.Descricao || 'Descrição não disponível.',
-      duration: dto.DataInicio
-        ? `Início: ${new Date(dto.DataInicio).toLocaleDateString('pt-BR')}`
-        : '',
+      sectionLabel: 'SOBRE O ESPETACULO',
+      description: descricao || 'Descricao nao disponivel.',
+      duration: dataInicio ? `Inicio: ${new Date(dataInicio).toLocaleDateString('pt-BR')}` : '',
     },
     creativeTeam: {
       sectionLabel: 'EQUIPE CRIATIVA',
@@ -148,9 +142,9 @@ export function mapDtoToShowInfo(dto) {
     recommendations: [],
     ticket: {
       priceLabel: 'A partir de',
-      price: formatCurrency(dto.ValorIngresso),
+      price: formatCurrency(valorIngresso),
       buttonLabel: 'INGRESSOS',
-      url: dto.UrlBilheteria || '',
+      url: urlBilheteria || '',
     },
   };
 }

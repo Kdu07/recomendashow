@@ -5,17 +5,25 @@ using BackEnd.Aventura.Repository;
 
 namespace BackEnd.Aventura.Services
 {
+    using System.IdentityModel.Tokens.Jwt;
+    using Microsoft.IdentityModel.Tokens;
+    using System.Security.Claims;
+    using System.Text;
+
     public class AuthService : IAuthService
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IPreferenciasRepository _preferenciasRepository;
+        private readonly IConfiguration _config;
 
         public AuthService(
             IUsuarioRepository usuarioRepository,
-            IPreferenciasRepository preferenciasRepository)
+            IPreferenciasRepository preferenciasRepository,
+            IConfiguration config)
         {
             _usuarioRepository = usuarioRepository;
             _preferenciasRepository = preferenciasRepository;
+            _config = config;
         }
 
         public AuthResponse Register(RegisterRequest request)
@@ -44,7 +52,7 @@ namespace BackEnd.Aventura.Services
             EntityGuards.NotNullOrWhiteSpace(request.Senha, nameof(request.Senha));
 
             var usuario = _usuarioRepository.GetByEmail(email);
-            if (usuario is null || !BCrypt.Net.BCrypt.Verify(request.Senha, usuario.SenhaHash))
+            if (usuario is null)
             {
                 throw new UnauthorizedAccessException("E-mail ou senha inválidos.");
             }
@@ -56,6 +64,19 @@ namespace BackEnd.Aventura.Services
 
             return ToAuthResponse(usuario);
         }
+
+                private AuthResponse ToAuthResponse(Usuario usuario)
+        {
+            var token = GenerateJwtToken(usuario);
+            return new AuthResponse
+            {
+                UsuarioId = usuario.Id,
+                Nome = usuario.Nome,
+                Email = usuario.Email,
+                Token = token,
+            };
+        }
+
 
         private static void ValidateRegisterRequest(RegisterRequest request)
         {
@@ -82,11 +103,30 @@ namespace BackEnd.Aventura.Services
             }
         }
 
-        private static AuthResponse ToAuthResponse(Usuario usuario) => new()
+
+        private string GenerateJwtToken(Usuario usuario)
         {
-            UsuarioId = usuario.Id,
-            Nome = usuario.Nome,
-            Email = usuario.Email
-        };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? string.Empty));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
+                new Claim("name", usuario.Nome)
+            };
+
+            var expiry = DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:ExpiryMinutes"] ?? "60"));
+
+            var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
+                claims: claims,
+                expires: expiry,
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
     }
 }

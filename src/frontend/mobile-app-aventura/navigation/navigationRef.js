@@ -1,0 +1,14 @@
+import { createNavigationContainerRef } from '@react-navigation/native';
+
+export const navigationRef = createNavigationContainerRef();
+
+export function handleSessionExpired() {
+  if (!navigationRef.isReady()) {
+    return;
+  }
+
+  navigationRef.reset({
+    index: 0,
+    routes: [{ name: 'Auth' }],
+  });
+}

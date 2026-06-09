@@ -2,6 +2,7 @@ using BackEnd.Aventura.Dto;
 using BackEnd.Aventura.Exceptions;
 using BackEnd.Aventura.Services;
 using BackEnd.Aventura.Tests.Fakes;
+using Microsoft.Extensions.Configuration;
 using Xunit;
 
 namespace BackEnd.Aventura.Tests
@@ -16,7 +17,16 @@ namespace BackEnd.Aventura.Tests
         {
             _usuarioRepository = new FakeUsuarioRepository();
             _preferenciasRepository = new FakePreferenciasRepository();
-            _service = new AuthService(_usuarioRepository, _preferenciasRepository);
+            var config = new ConfigurationBuilder()
+                .AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    ["Jwt:Key"] = "test-jwt-key-with-at-least-32-chars!",
+                    ["Jwt:Issuer"] = "BackEnd.Aventura",
+                    ["Jwt:Audience"] = "BackEnd.AventuraClient",
+                    ["Jwt:ExpiryMinutes"] = "60",
+                })
+                .Build();
+            _service = new AuthService(_usuarioRepository, _preferenciasRepository, config);
         }
 
         [Fact]

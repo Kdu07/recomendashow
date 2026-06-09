@@ -26,6 +26,7 @@ namespace BackEnd.Aventura.Dto
         public Guid UsuarioId { get; set; }
         public string Nome { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
+        public string Token { get; set; } = string.Empty;
     }
 
     public class UsuarioResponse

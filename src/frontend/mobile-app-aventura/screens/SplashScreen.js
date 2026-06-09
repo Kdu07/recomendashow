@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Animated, Image, Text, StyleSheet, StatusBar, Platform } from 'react-native';
 
+import { getAuthToken } from '../services/tokenStorageService';
 import { colors } from '../constants/colors';
 import { typography } from '../constants/typography';
 import { spacing } from '../constants/spacing';
@@ -16,9 +17,10 @@ export default function SplashScreen({ navigation }) {
       Animated.timing(opacity, {
         toValue: 0,
         duration: FADE_DURATION,
-        useNativeDriver: Platform.OS !== 'web',
-      }).start(() => {
-        navigation.replace('Auth');
+        useNativeDriver: true,
+      }).start(async () => {
+        const token = await getAuthToken();
+        navigation.replace(token ? 'MainTabs' : 'Auth');
       });
     }, DISPLAY_DURATION);
 

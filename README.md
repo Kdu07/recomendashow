@@ -301,7 +301,15 @@ Diagramas e detalhes adicionais encontram-se na pasta:
 
 ```text
 assets/
-```
+``
+
+---
+
+## 🧪 Tracker — Testes de Integração (Aula 8)
+
+| Aluno       | Fluxo testado                        | MR   |
+|-------------|--------------------------------------|------|
+| Isaac Souza Santos    | GET+PUT /api/preferencias/{usuarioId}| !116  |
 
 ---
 

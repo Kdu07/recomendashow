@@ -1,5 +1,4 @@
 using BackEnd.Aventura.Extensions;
-using BackEnd.Aventura.Services;
 using DotNetEnv;
 
 
@@ -66,18 +65,10 @@ LoadEnvFile();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// HttpClient para o recommendation-service
-builder.Services.AddHttpClient("RecommendationService", client =>
-{
-    var url = builder.Configuration["RecommendationService:BaseUrl"]
-        ?? Environment.GetEnvironmentVariable("RECOMMENDATION_SERVICE_URL")
-        ?? "http://localhost:5000";
-
-    client.BaseAddress = new Uri(url);
-    client.Timeout = TimeSpan.FromSeconds(10);
-});
 
 builder.Services.AddSingleton<IPreferenceService, PreferenceService>();
+// RecommendationService carrega o modelo ML.NET na inicialização — deve ser singleton.
+builder.Services.AddSingleton<IRecommendationService, RecommendationService>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>

@@ -126,20 +126,6 @@ WHERE id = @Id";
             return command.ExecuteNonQuery() > 0;
         }
 
-        public async Task<int?> ObterMlIdAsync(Guid usuarioId)
-        {
-            using var connection = _connectionFactory.CreateConnection();
-            await connection.OpenAsync();
-        
-            const string sql = "SELECT ml_id FROM usuarios WHERE id = @Id";
-        
-            await using var command = new NpgsqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@Id", usuarioId);
-        
-            var result = await command.ExecuteScalarAsync();
-            return result is int mlId ? mlId : null;
-        }
-
         private static Usuario MapUsuario(NpgsqlDataReader reader)
         {
             return new Usuario(

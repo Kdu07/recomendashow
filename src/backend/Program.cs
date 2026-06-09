@@ -78,6 +78,9 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddScoped<IViaCepService, ViaCepService>();
+builder.Services.AddHttpClient<ViaCepService>();
+
 builder.Services
     .AddAventuraInfrastructure()
     .AddAventuraApplication();
@@ -95,3 +98,5 @@ app.UseCors();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
+
+public partial class Program { }

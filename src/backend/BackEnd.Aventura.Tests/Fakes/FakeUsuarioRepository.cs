@@ -80,5 +80,7 @@ namespace BackEnd.Aventura.Tests.Fakes
             _usuariosByEmail[usuario.Email.ToLowerInvariant()] = usuario;
             return true;
         }
+
+        public Task<int?> ObterMlIdAsync(Guid usuarioId) => Task.FromResult<int?>(null);
     }
 }

@@ -24,8 +24,8 @@ namespace BackEnd.Aventura.Controller
         [ProducesResponseType(typeof(UsuarioResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<UsuarioResponse> Update(Guid id, [FromBody] UsuarioUpdateRequest request) =>
-            Ok(_usuarioService.Update(id, request));
+        public async Task<ActionResult<UsuarioResponse>> Update(Guid id, [FromBody] UsuarioUpdateRequest request) =>
+            Ok(await _usuarioService.Update(id, request));
 
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

@@ -7,10 +7,12 @@ namespace BackEnd.Aventura.Services
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _repository;
+        private readonly IViaCepService _viaCepService;
 
-        public UsuarioService(IUsuarioRepository repository)
+        public UsuarioService(IUsuarioRepository repository, IViaCepService viaCepService)
         {
             _repository = repository;
+            _viaCepService = viaCepService;
         }
 
         public UsuarioResponse GetById(Guid id)
@@ -24,7 +26,7 @@ namespace BackEnd.Aventura.Services
             return MapResponse(usuario);
         }
 
-        public UsuarioResponse Update(Guid id, UsuarioUpdateRequest request)
+        public async Task<UsuarioResponse> Update(Guid id, UsuarioUpdateRequest request)
         {
             var usuario = _repository.GetById(id);
             if (usuario is null)
@@ -32,9 +34,24 @@ namespace BackEnd.Aventura.Services
                 throw new NotFoundException($"Usuário com ID {id} não encontrado.");
             }
 
+            var logradouro = request.Logradouro;
+            var bairro = request.Bairro;
+            var cidade = request.Cidade;
+
+            if (!string.IsNullOrWhiteSpace(request.Cep))
+            {
+                var viaCep = await _viaCepService.BuscarAsync(request.Cep);
+                if (viaCep is null)
+                    throw new ArgumentException("CEP não encontrado.");
+
+                logradouro = viaCep.Logradouro;
+                bairro = viaCep.Bairro;
+                cidade = viaCep.Localidade;
+            }
+
             usuario.AtualizarPerfil(request.Nome, request.Idade,
-                request.Cep, request.Logradouro, request.Numero,
-                request.Complemento, request.Bairro, request.Cidade);
+                request.Cep, logradouro, request.Numero,
+                request.Complemento, bairro, cidade);
             _repository.Update(usuario);
             return MapResponse(usuario);
         }

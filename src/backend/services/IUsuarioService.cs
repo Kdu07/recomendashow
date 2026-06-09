@@ -5,7 +5,7 @@ namespace BackEnd.Aventura.Services
     public interface IUsuarioService
     {
         UsuarioResponse GetById(Guid id);
-        UsuarioResponse Update(Guid id, UsuarioUpdateRequest request);
+        Task<UsuarioResponse> Update(Guid id, UsuarioUpdateRequest request);
         void SolicitarExclusao(Guid id);
     }
 }

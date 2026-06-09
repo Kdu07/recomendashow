@@ -22,33 +22,27 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public void GetById_ShouldReturnOkAndDto()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var response = new UsuarioResponse { Id = userId, Nome = "User", Email = "user@test.com" };
             _serviceMock.Setup(s => s.GetById(userId)).Returns(response);
 
-            // Act
             var result = _controller.GetById(userId);
 
-            // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnedDto = Assert.IsType<UsuarioResponse>(actionResult.Value);
             Assert.Equal(userId, returnedDto.Id);
         }
 
         [Fact]
-        public void Update_ShouldReturnOkAndUpdatedDto()
+        public async Task Update_ShouldReturnOkAndUpdatedDto()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var request = new UsuarioUpdateRequest { Nome = "User Updated", Idade = 25 };
             var response = new UsuarioResponse { Id = userId, Nome = "User Updated", Email = "user@test.com" };
-            _serviceMock.Setup(s => s.Update(userId, request)).Returns(response);
+            _serviceMock.Setup(s => s.Update(userId, request)).ReturnsAsync(response);
 
-            // Act
-            var result = _controller.Update(userId, request);
+            var result = await _controller.Update(userId, request);
 
-            // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnedDto = Assert.IsType<UsuarioResponse>(actionResult.Value);
             Assert.Equal("User Updated", returnedDto.Nome);

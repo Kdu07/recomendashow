@@ -1,24 +1,32 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { getHomeData } from '../repositories/homeRepository';
+import { getHomeData, getRecommendedEvents } from '../repositories/homeRepository';
 import {
   getWishlistData,
   toggleWishlistEvent,
 } from '../repositories/wishlistRepository';
+import { DEV_USER_ID } from '../config/api';
 
 export default function useHomeViewModel(navigation) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [savedEventIds, setSavedEventIds] = useState([]);
 
-  const [hasInterests] = useState(true);
   const [hasLocation] = useState(true);
+  const [rawRecommendedEvents, setRawRecommendedEvents] = useState([]);
+  const [recommendationsLoading, setRecommendationsLoading] = useState(true);
 
   const homeData = useMemo(() => getHomeData() || {}, []);
 
   const categories = homeData.categories || [];
   const heroBanners = homeData.heroBanners || [];
   const theaters = homeData.theaters || [];
+
+  useEffect(() => {
+    getRecommendedEvents(DEV_USER_ID)
+      .then(setRawRecommendedEvents)
+      .finally(() => setRecommendationsLoading(false));
+  }, []);
 
   async function loadSavedEvents() {
     const wishlistData = await getWishlistData();
@@ -50,9 +58,11 @@ export default function useHomeViewModel(navigation) {
     [homeData.trendingEvents, selectedCategory]
   );
 
+  const hasInterests = !recommendationsLoading && rawRecommendedEvents.length > 0;
+
   const recommendedEvents = useMemo(
-    () => filterEventsByCategory(homeData.recommendedEvents || []),
-    [homeData.recommendedEvents, selectedCategory]
+    () => filterEventsByCategory(rawRecommendedEvents),
+    [rawRecommendedEvents, selectedCategory]
   );
 
   const newEvents = useMemo(

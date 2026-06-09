@@ -66,6 +66,16 @@ LoadEnvFile();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient<IGeneroExternalCatalogClient, GeneroExternalCatalogClient>(client =>
+{
+    var baseUrl = builder.Configuration["GeneroCatalogApi:BaseUrl"];
+    if (string.IsNullOrWhiteSpace(baseUrl))
+    {
+        throw new InvalidOperationException("GeneroCatalogApi:BaseUrl não configurada.");
+    }
+
+    client.BaseAddress = new Uri(baseUrl);
+});
 // HttpClient para o recommendation-service
 builder.Services.AddHttpClient("RecommendationService", client =>
 {
@@ -105,3 +115,5 @@ app.UseCors();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
+
+public partial class Program { }

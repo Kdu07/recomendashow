@@ -34,7 +34,7 @@ export default function ShowInfoScreen({ route, navigation }) {
   const [systemStatus, setSystemStatus] = useState(null);
   const showId = route?.params?.showId ?? '1';
   const topInset = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
-  const { show, error, subtitle, toggleFavorite, onPressTickets, onPressVenue } = useShowInfoViewModel(showId);
+  const { show, loading, error, subtitle, toggleFavorite, onPressTickets, onPressVenue } = useShowInfoViewModel(showId);
 
   function handleBackPress() {
     if (navigation.canGoBack()) {
@@ -45,7 +45,25 @@ export default function ShowInfoScreen({ route, navigation }) {
     navigation.navigate('MainTabs', { screen: 'Home' });
   }
 
-  if (error) {
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <TouchableOpacity
+          style={[styles.backButton, { top: topInset + spacing.xxxl }]}
+          onPress={handleBackPress}
+          activeOpacity={0.75}
+        >
+          <Ionicons name="chevron-back" size={22} color={colors.grayDark} />
+        </TouchableOpacity>
+
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Carregando espetáculo...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (error || !show) {
     return (
       <SafeAreaView style={styles.container}>
         <TouchableOpacity
@@ -241,6 +259,17 @@ const styles = StyleSheet.create({
       height: 3,
     },
     elevation: 4,
+  },
+
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  loadingText: {
+    fontSize: 16,
+    color: colors.grayText,
   },
 
   errorContainer: {

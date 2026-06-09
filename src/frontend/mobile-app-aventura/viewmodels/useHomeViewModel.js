@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
+import { categories as defaultCategories, theaters as defaultTheaters } from '../data/mockHomeData';
 import { getHomeData } from '../repositories/homeRepository';
 import {
   getWishlistData,
@@ -10,11 +11,39 @@ import {
 export default function useHomeViewModel(navigation) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [savedEventIds, setSavedEventIds] = useState([]);
+  const [homeData, setHomeData] = useState({
+    categories: defaultCategories,
+    heroBanners: [],
+    theaters: defaultTheaters,
+    trendingEvents: [],
+    recommendedEvents: [],
+    newEvents: [],
+    nearbyEvents: [],
+  });
 
   const [hasInterests] = useState(true);
   const [hasLocation] = useState(true);
 
-  const homeData = useMemo(() => getHomeData() || {}, []);
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadHomeData() {
+      try {
+        const data = await getHomeData();
+        if (isMounted) {
+          setHomeData(data);
+        }
+      } catch (error) {
+        console.error('Failed to load home data:', error);
+      }
+    }
+
+    loadHomeData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const categories = homeData.categories || [];
   const heroBanners = homeData.heroBanners || [];

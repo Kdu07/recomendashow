@@ -14,10 +14,16 @@ namespace BackEnd.Aventura.Domain
         public string? Complemento { get; private set; }
         public string? Bairro { get; private set; }
         public string? Cidade { get; private set; }
+        public bool ConsentimentoAceito { get; private set; }
+        public DateTime? DataConsentimento { get; private set; }
+        public DateTime? DeletedAt { get; private set; }
+        public bool Anonimizado { get; private set; }
 
         public Usuario(Guid id, string nome, string email, string senhaHash, int? idade, DateTime dataCadastro,
             string? cep = null, string? logradouro = null, string? numero = null,
-            string? complemento = null, string? bairro = null, string? cidade = null)
+            string? complemento = null, string? bairro = null, string? cidade = null,
+            bool consentimentoAceito = false, DateTime? dataConsentimento = null,
+            DateTime? deletedAt = null, bool anonimizado = false)
         {
             Id = id;
             Nome = nome ?? throw new ArgumentNullException(nameof(nome));
@@ -31,6 +37,10 @@ namespace BackEnd.Aventura.Domain
             Complemento = complemento;
             Bairro = bairro;
             Cidade = cidade;
+            ConsentimentoAceito = consentimentoAceito;
+            DataConsentimento = dataConsentimento;
+            DeletedAt = deletedAt;
+            Anonimizado = anonimizado;
         }
 
         public static Usuario Create(string nome, string email, string senhaHash, int? idade = null,
@@ -54,6 +64,31 @@ namespace BackEnd.Aventura.Domain
                 idade,
                 DateTime.UtcNow,
                 cep, logradouro, numero, complemento, bairro, cidade);
+        }
+
+        public void AceitarConsentimento()
+        {
+            ConsentimentoAceito = true;
+            DataConsentimento = DateTime.UtcNow;
+        }
+
+        public void SolicitarExclusao()
+        {
+            DeletedAt = DateTime.UtcNow;
+        }
+
+        public void Anonimizar()
+        {
+            Nome = "Usuário Removido";
+            Email = $"{Id}@anonimizado.invalid";
+            SenhaHash = string.Empty;
+            Cep = null;
+            Logradouro = null;
+            Numero = null;
+            Complemento = null;
+            Bairro = null;
+            Cidade = null;
+            Anonimizado = true;
         }
 
         public void AtualizarPerfil(string? nome, int? idade,

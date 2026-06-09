@@ -56,5 +56,29 @@ namespace BackEnd.Aventura.Tests.Fakes
             _usuariosByEmail[usuario.Email.ToLowerInvariant()] = usuario;
             return true;
         }
+
+        public bool SolicitarExclusao(Guid id)
+        {
+            if (!_usuarios.TryGetValue(id, out var usuario))
+                return false;
+
+            usuario.SolicitarExclusao();
+            return true;
+        }
+
+        public bool Anonimizar(Guid id)
+        {
+            if (!_usuarios.TryGetValue(id, out var usuario))
+                return false;
+
+            if (usuario.DeletedAt is null || usuario.Anonimizado)
+                return false;
+
+            var oldEmail = usuario.Email.ToLowerInvariant();
+            usuario.Anonimizar();
+            _usuariosByEmail.Remove(oldEmail);
+            _usuariosByEmail[usuario.Email.ToLowerInvariant()] = usuario;
+            return true;
+        }
     }
 }

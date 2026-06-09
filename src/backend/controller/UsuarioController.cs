@@ -26,5 +26,14 @@ namespace BackEnd.Aventura.Controller
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<UsuarioResponse> Update(Guid id, [FromBody] UsuarioUpdateRequest request) =>
             Ok(_usuarioService.Update(id, request));
+
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public ActionResult Delete(Guid id)
+        {
+            _usuarioService.SolicitarExclusao(id);
+            return NoContent();
+        }
     }
 }

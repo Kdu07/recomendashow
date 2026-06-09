@@ -112,8 +112,6 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddSingleton<IPreferenceService, PreferenceService>();
-// RecommendationService carrega o modelo ML.NET na inicialização — deve ser singleton.
-builder.Services.AddSingleton<IRecommendationService, RecommendationService>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>

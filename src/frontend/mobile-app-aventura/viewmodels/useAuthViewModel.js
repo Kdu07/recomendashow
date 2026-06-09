@@ -6,6 +6,7 @@ import {
   createUserAccount,
 } from '../repositories/authRepository';
 import { AUTH_MODES, initialAuthValues } from '../models/authModels';
+import { setCurrentUserId } from '../services/userSession';
 
 function parseBrazilianDate(value) {
   const [day, month, year] = String(value ?? '').split('/').map(Number);
@@ -103,6 +104,10 @@ function validateAuthValues(mode, values, scope = 'all') {
     errors.confirmPassword = 'As senhas precisam ser iguais.';
   }
 
+  if (!isLogin && scope === 'all' && !values.consentimentoAceito) {
+    errors.consentimentoAceito = 'Você precisa aceitar a política de privacidade.';
+  }
+
   return errors;
 }
 
@@ -160,12 +165,13 @@ export function useAuthViewModel(navigation) {
 
     try {
       if (isLogin) {
-        await authenticateUser({
+        const result = await authenticateUser({
           email: values.email,
           password: values.password,
         });
+        setCurrentUserId(result?.user?.id ?? null);
       } else {
-        await createUserAccount({
+        const result = await createUserAccount({
           name: values.name,
           email: values.email,
           birthDate: values.birthDate,
@@ -176,11 +182,19 @@ export function useAuthViewModel(navigation) {
           neighborhood: values.neighborhood,
           city: values.city,
           password: values.password,
+          consentimentoAceito: values.consentimentoAceito,
         });
+        setCurrentUserId(result?.user?.id ?? null);
       }
       navigation.replace('Onboarding');
       return {
         ok: true,
+      };
+    } catch (error) {
+      return {
+        ok: false,
+        reason: 'api',
+        message: error.message,
       };
     } finally {
       setLoading(false);
@@ -209,6 +223,12 @@ export function useAuthViewModel(navigation) {
 
     try {
       await authenticateWithGoogle();
+    } catch (error) {
+      return {
+        ok: false,
+        reason: 'api',
+        message: error.message,
+      };
     } finally {
       setLoading(false);
     }

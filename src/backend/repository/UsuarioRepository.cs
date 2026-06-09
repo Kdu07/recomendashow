@@ -22,9 +22,11 @@ namespace BackEnd.Aventura.Repository
 
             const string sql = @"
 SELECT id, nome, email, senha_hash, idade, data_cadastro,
-       cep, logradouro, numero, complemento, bairro, cidade
+       cep, logradouro, numero, complemento, bairro, cidade,
+       consentimento_aceito, data_consentimento, deleted_at, anonimizado
 FROM usuarios
-WHERE id = @Id";
+WHERE id = @Id
+  AND deleted_at IS NULL";
 
             using var command = new NpgsqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Id", id);
@@ -41,9 +43,9 @@ WHERE id = @Id";
             connection.Open();
 
             const string sql = @"
-SELECT id, nome, email, senha_hash
-, idade, data_cadastro,
-       cep, logradouro, numero, complemento, bairro, cidade
+SELECT id, nome, email, senha_hash, idade, data_cadastro,
+       cep, logradouro, numero, complemento, bairro, cidade,
+       consentimento_aceito, data_consentimento, deleted_at, anonimizado
 FROM usuarios
 WHERE LOWER(email) = LOWER(@Email)";
 
@@ -77,9 +79,11 @@ WHERE LOWER(email) = LOWER(@Email)";
 
             const string sql = @"
 INSERT INTO usuarios(id, nome, email, senha_hash, idade, data_cadastro,
-                     cep, logradouro, numero, complemento, bairro, cidade)
+                     cep, logradouro, numero, complemento, bairro, cidade,
+                     consentimento_aceito, data_consentimento)
 VALUES (@Id, @Nome, @Email, @SenhaHash, @Idade, @DataCadastro,
-        @Cep, @Logradouro, @Numero, @Complemento, @Bairro, @Cidade)";
+        @Cep, @Logradouro, @Numero, @Complemento, @Bairro, @Cidade,
+        @ConsentimentoAceito, @DataConsentimento)";
 
             using var command = new NpgsqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Id", usuario.Id);
@@ -94,6 +98,8 @@ VALUES (@Id, @Nome, @Email, @SenhaHash, @Idade, @DataCadastro,
             command.Parameters.AddWithValue("@Complemento", (object?)usuario.Complemento ?? DBNull.Value);
             command.Parameters.AddWithValue("@Bairro", (object?)usuario.Bairro ?? DBNull.Value);
             command.Parameters.AddWithValue("@Cidade", (object?)usuario.Cidade ?? DBNull.Value);
+            command.Parameters.AddWithValue("@ConsentimentoAceito", usuario.ConsentimentoAceito);
+            command.Parameters.AddWithValue("@DataConsentimento", (object?)usuario.DataConsentimento ?? DBNull.Value);
             command.ExecuteNonQuery();
 
             return usuario;
@@ -127,6 +133,69 @@ WHERE id = @Id";
             return command.ExecuteNonQuery() > 0;
         }
 
+        public bool SolicitarExclusao(Guid id)
+        {
+            EntityGuards.NotEmpty(id, nameof(id));
+
+            using var connection = _connectionFactory.CreateConnection();
+            connection.Open();
+
+            const string sql = @"
+UPDATE usuarios
+SET deleted_at = @DeletedAt
+WHERE id = @Id
+  AND deleted_at IS NULL";
+
+            using var command = new NpgsqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@Id", id);
+            command.Parameters.AddWithValue("@DeletedAt", DateTime.UtcNow);
+
+            return command.ExecuteNonQuery() > 0;
+        }
+
+        public bool Anonimizar(Guid id)
+        {
+            EntityGuards.NotEmpty(id, nameof(id));
+
+            using var connection = _connectionFactory.CreateConnection();
+            connection.Open();
+
+            const string sql = @"
+UPDATE usuarios
+SET nome        = 'Usuário Removido',
+    email       = id::text || '@anonimizado.invalid',
+    senha_hash  = '',
+    cep         = NULL,
+    logradouro  = NULL,
+    numero      = NULL,
+    complemento = NULL,
+    bairro      = NULL,
+    cidade      = NULL,
+    anonimizado = TRUE
+WHERE id = @Id
+  AND deleted_at IS NOT NULL
+  AND anonimizado = FALSE";
+
+            using var command = new NpgsqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@Id", id);
+
+            return command.ExecuteNonQuery() > 0;
+        }
+
+        public async Task<int?> ObterMlIdAsync(Guid usuarioId)
+        {
+            using var connection = _connectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
+            const string sql = "SELECT ml_id FROM usuarios WHERE id = @Id";
+
+            await using var command = new NpgsqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@Id", usuarioId);
+
+            var result = await command.ExecuteScalarAsync();
+            return result is int mlId ? mlId : null;
+        }
+
         private static Usuario MapUsuario(NpgsqlDataReader reader)
         {
             return new Usuario(
@@ -141,7 +210,11 @@ WHERE id = @Id";
                 reader.IsDBNull(reader.GetOrdinal("numero")) ? null : reader.GetString(reader.GetOrdinal("numero")),
                 reader.IsDBNull(reader.GetOrdinal("complemento")) ? null : reader.GetString(reader.GetOrdinal("complemento")),
                 reader.IsDBNull(reader.GetOrdinal("bairro")) ? null : reader.GetString(reader.GetOrdinal("bairro")),
-                reader.IsDBNull(reader.GetOrdinal("cidade")) ? null : reader.GetString(reader.GetOrdinal("cidade")));
+                reader.IsDBNull(reader.GetOrdinal("cidade")) ? null : reader.GetString(reader.GetOrdinal("cidade")),
+                reader.GetBoolean(reader.GetOrdinal("consentimento_aceito")),
+                reader.IsDBNull(reader.GetOrdinal("data_consentimento")) ? null : reader.GetDateTime(reader.GetOrdinal("data_consentimento")),
+                reader.IsDBNull(reader.GetOrdinal("deleted_at")) ? null : reader.GetDateTime(reader.GetOrdinal("deleted_at")),
+                reader.GetBoolean(reader.GetOrdinal("anonimizado")));
         }
     }
 }

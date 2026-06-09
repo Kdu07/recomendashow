@@ -38,7 +38,8 @@ namespace BackEnd.Aventura.Tests
                 Nome = "João Silva",
                 Email = "joao@example.com",
                 Senha = "Senha@123",
-                Idade = 25
+                Idade = 25,
+                ConsentimentoAceito = true
             };
 
             // Act
@@ -59,7 +60,8 @@ namespace BackEnd.Aventura.Tests
                 Nome = "João Silva",
                 Email = "joao@example.com",
                 Senha = "Senha@123",
-                Idade = 25
+                Idade = 25,
+                ConsentimentoAceito = true
             };
 
             var request2 = new RegisterRequest
@@ -67,7 +69,8 @@ namespace BackEnd.Aventura.Tests
                 Nome = "Maria Silva",
                 Email = "joao@example.com",
                 Senha = "Senha@456",
-                Idade = 22
+                Idade = 22,
+                ConsentimentoAceito = true
             };
 
             _service.Register(request1);
@@ -86,7 +89,8 @@ namespace BackEnd.Aventura.Tests
                 Nome = "João Silva",
                 Email = "invalid-email",
                 Senha = "Senha@123",
-                Idade = 25
+                Idade = 25,
+                ConsentimentoAceito = true
             };
 
             // Act & Assert
@@ -102,7 +106,8 @@ namespace BackEnd.Aventura.Tests
                 Nome = "João Silva",
                 Email = "joao@example.com",
                 Senha = "123",
-                Idade = 25
+                Idade = 25,
+                ConsentimentoAceito = true
             };
 
             // Act & Assert
@@ -119,7 +124,8 @@ namespace BackEnd.Aventura.Tests
                 Nome = "João Silva",
                 Email = "joao@example.com",
                 Senha = "Senha@123",
-                Idade = 10
+                Idade = 10,
+                ConsentimentoAceito = true
             };
 
             // Act & Assert
@@ -135,7 +141,8 @@ namespace BackEnd.Aventura.Tests
                 Nome = "João Silva",
                 Email = "joao@example.com",
                 Senha = "Senha@123",
-                Idade = 25
+                Idade = 25,
+                ConsentimentoAceito = true
             };
 
             _service.Register(registerRequest);
@@ -177,7 +184,8 @@ namespace BackEnd.Aventura.Tests
                 Nome = "João Silva",
                 Email = "joao@example.com",
                 Senha = "Senha@123",
-                Idade = 25
+                Idade = 25,
+                ConsentimentoAceito = true
             };
 
             _service.Register(registerRequest);
@@ -201,7 +209,8 @@ namespace BackEnd.Aventura.Tests
                 Nome = "",
                 Email = "joao@example.com",
                 Senha = "Senha@123",
-                Idade = 25
+                Idade = 25,
+                ConsentimentoAceito = true
             };
 
             // Act & Assert

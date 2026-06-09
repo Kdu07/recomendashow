@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import { colors } from '../constants/colors';
 import { radius, spacing } from '../constants/spacing';
 import { typography } from '../constants/typography';
+
 import AppButton from './AppButton';
 import AppInput from './AppInput';
 import AuthDivider from './AuthDivider';
@@ -223,6 +225,25 @@ export default function AuthForm({
         ))}
       </View>
 
+      {!isLogin && registerStep === 2 && (
+        <TouchableOpacity
+          style={styles.consentRow}
+          onPress={() => onChangeField('consentimentoAceito', !values.consentimentoAceito)}
+          activeOpacity={0.7}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: values.consentimentoAceito }}
+        >
+          <Ionicons
+            name={values.consentimentoAceito ? 'checkbox' : 'square-outline'}
+            size={22}
+            color={values.consentimentoAceito ? colors.purplePrimary : colors.grayText}
+          />
+          <Text style={[styles.consentLabel, errors.consentimentoAceito && styles.consentLabelError]}>
+            Li e aceito a Política de Privacidade
+          </Text>
+        </TouchableOpacity>
+      )}
+
       {isLogin ? (
         <AppButton title={submitLabel} loading={loading} onPress={onSubmit} />
       ) : registerStep === 2 ? (
@@ -313,5 +334,22 @@ const styles = StyleSheet.create({
 
   actionButton: {
     flex: 1,
+  },
+
+  consentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+
+  consentLabel: {
+    flex: 1,
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
+    color: colors.grayText,
+  },
+
+  consentLabelError: {
+    color: colors.peachBurnt,
   },
 });

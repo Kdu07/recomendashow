@@ -7,6 +7,8 @@ import {
   getWishlistData,
   toggleWishlistEvent,
 } from '../repositories/wishlistRepository';
+import { getAuthSession } from '../services/tokenStorageService';
+import { fetchPreferences } from '../services/preferenceService';
 
 export default function useHomeViewModel(navigation) {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -21,15 +23,28 @@ export default function useHomeViewModel(navigation) {
     nearbyEvents: [],
   });
 
-  const [hasInterests] = useState(true);
-  const [hasLocation] = useState(true);
+  const [hasInterests, setHasInterests] = useState(false);
+  const [hasLocation, setHasLocation] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
 
     async function loadHomeData() {
       try {
-        const data = await getHomeData();
+        const session = await getAuthSession();
+        const userId = session?.usuarioId;
+        
+        let userCity = null;
+        if (userId) {
+          const prefs = await fetchPreferences(userId);
+          if (prefs) {
+            setHasInterests(prefs.generos?.length > 0 || prefs.tags?.length > 0);
+            setHasLocation(!!prefs.cidade);
+            userCity = prefs.cidade;
+          }
+        }
+
+        const data = await getHomeData(userId, userCity);
         if (isMounted) {
           setHomeData(data);
         }

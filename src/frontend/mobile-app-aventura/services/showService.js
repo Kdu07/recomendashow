@@ -84,6 +84,25 @@ export async function fetchShowById(showId) {
   return response.json();
 }
 
+export async function searchShows(nome, genero) {
+  let query = '';
+  const params = new URLSearchParams();
+  if (nome) params.append('nome', nome);
+  if (genero && genero !== 'all') params.append('genero', genero);
+
+  if (params.toString()) {
+    query = `?${params.toString()}`;
+  }
+
+  const response = await apiFetch(`/api/Espetaculo/search${query}`);
+
+  if (!response.ok) {
+    throw new Error('Erro ao buscar espetáculos');
+  }
+
+  return response.json();
+}
+
 export function mapDtoToHomeEvent(dto) {
   return {
     id: dto.Id,

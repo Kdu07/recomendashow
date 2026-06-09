@@ -41,7 +41,8 @@ WHERE id = @Id";
             connection.Open();
 
             const string sql = @"
-SELECT id, nome, email, senha_hash, idade, data_cadastro,
+SELECT id, nome, email, senha_hash
+, idade, data_cadastro,
        cep, logradouro, numero, complemento, bairro, cidade
 FROM usuarios
 WHERE LOWER(email) = LOWER(@Email)";

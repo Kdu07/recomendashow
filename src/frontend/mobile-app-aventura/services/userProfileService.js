@@ -16,7 +16,6 @@ export async function getUserInfo() {
 
     const userId = session?.usuarioId;
     if (!userId) throw new Error('Sessão de usuário não encontrada.');
-
     const response = await apiFetch(`/api/Usuario/${userId}`);
 
     if (!response.ok) {

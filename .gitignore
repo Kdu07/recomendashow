@@ -1,20 +1,39 @@
-# macOS
-.DS_Store
-**/.DS_Store
+# ─── Secrets & credentials ────────────────────────────────────────────────────
+.env
+*.key
+*.pem
+*.p12
+*.pfx
 
-dataset.csv
+# ─── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
 .venv/
 .venv311/
 venv/
 env/
-__pycache__/
-*.pyc
-.env
-DbRunner/bin/
-DbRunner/obj/
-.env
-.DS_Store
+.ipynb_checkpoints/
+*.joblib
+*.pkl
 
-# .NET build outputs
+# ─── .NET build outputs ───────────────────────────────────────────────────────
 **/bin/
 **/obj/
+*.user
+*.suo
+.vs/
+
+# ─── JavaScript / Node ────────────────────────────────────────────────────────
+node_modules/
+.expo/
+*.log
+npm-debug.log*
+
+# ─── Data ─────────────────────────────────────────────────────────────────────
+dataset.csv
+data/dataset/
+
+# ─── macOS ────────────────────────────────────────────────────────────────────
+.DS_Store
+**/.DS_Store

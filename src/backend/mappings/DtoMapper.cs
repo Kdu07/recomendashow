@@ -41,12 +41,5 @@ namespace BackEnd.Aventura.Mappings
             ReceberNotificacoes = preferencias.ReceberNotificacoes,
             DataAtualizacao = preferencias.DataAtualizacao
         };
-
-        public static RecomendacaoItemDto ToDto(this Recomendacao recomendacao) => new()
-        {
-            Espetaculo = recomendacao.Espetaculo.ToDto(),
-            Score = recomendacao.Score,
-            Motivo = recomendacao.Motivo
-        };
     }
 }

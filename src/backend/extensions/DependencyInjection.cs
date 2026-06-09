@@ -18,7 +18,6 @@ namespace BackEnd.Aventura.Extensions
             services.AddScoped<IPreferenciasRepository, PreferenciasRepository>();
             services.AddScoped<IWishlistRepository, WishlistRepository>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-            services.AddScoped<IRecomendacaoRepository, RecomendacaoRepository>();
             services.AddScoped<IGeneroRepository, GeneroRepository>();
 
             return services;
@@ -32,7 +31,6 @@ namespace BackEnd.Aventura.Extensions
             services.AddScoped<IWishlistService, WishlistService>();
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<IRecomendacaoService, RecomendacaoService>();
             services.AddScoped<IGeneroService, GeneroService>();
 
             return services;

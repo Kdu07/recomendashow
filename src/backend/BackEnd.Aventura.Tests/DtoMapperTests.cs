@@ -102,30 +102,5 @@ namespace BackEnd.Aventura.Tests
             Assert.False(dto.ReceberNotificacoes);
         }
 
-        [Fact]
-        public void ToDto_Recomendacao_ShouldMapCorrectly()
-        {
-            // Arrange
-            var espetaculo = new Espetaculo(
-                Guid.NewGuid(),
-                "Nome Espetaculo",
-                "Teatro",
-                "Musical",
-                "Descricao",
-                "http://bilheteria",
-                DateTime.UtcNow.AddDays(-1),
-                DateTime.UtcNow.AddDays(5),
-                100m
-            );
-            var rec = new Recomendacao(espetaculo, 0.85m, "Motivo Recomendacao");
-
-            // Act
-            var dto = rec.ToDto();
-
-            // Assert
-            Assert.Equal(espetaculo.Id, dto.Espetaculo.Id);
-            Assert.Equal(0.85m, dto.Score);
-            Assert.Equal("Motivo Recomendacao", dto.Motivo);
-        }
     }
 }

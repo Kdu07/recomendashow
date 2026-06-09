@@ -27,7 +27,6 @@ namespace BackEnd.Aventura.Tests
             Assert.Contains(services, d => d.ServiceType == typeof(IPreferenciasRepository) && d.ImplementationType == typeof(PreferenciasRepository));
             Assert.Contains(services, d => d.ServiceType == typeof(IWishlistRepository) && d.ImplementationType == typeof(WishlistRepository));
             Assert.Contains(services, d => d.ServiceType == typeof(IUsuarioRepository) && d.ImplementationType == typeof(UsuarioRepository));
-            Assert.Contains(services, d => d.ServiceType == typeof(IRecomendacaoRepository) && d.ImplementationType == typeof(RecomendacaoRepository));
             Assert.Contains(services, d => d.ServiceType == typeof(IGeneroRepository) && d.ImplementationType == typeof(GeneroRepository));
         }
 
@@ -47,7 +46,6 @@ namespace BackEnd.Aventura.Tests
             Assert.Contains(services, d => d.ServiceType == typeof(IWishlistService) && d.ImplementationType == typeof(WishlistService));
             Assert.Contains(services, d => d.ServiceType == typeof(IUsuarioService) && d.ImplementationType == typeof(UsuarioService));
             Assert.Contains(services, d => d.ServiceType == typeof(IAuthService) && d.ImplementationType == typeof(AuthService));
-            Assert.Contains(services, d => d.ServiceType == typeof(IRecomendacaoService) && d.ImplementationType == typeof(RecomendacaoService));
             Assert.Contains(services, d => d.ServiceType == typeof(IGeneroService) && d.ImplementationType == typeof(GeneroService));
         }
     }

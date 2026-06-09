@@ -19,6 +19,20 @@
 
 ---
 
+## Coordenação dos Fluxos
+
+| Nome | Fluxo |
+|------|-------|
+| Alexsander da Silva Barbosa | Wishlist |
+| Isaac Souza Santos | Preferências |
+| Carlos Eduardo Serrano Quaglia | Motor de recomendação |
+| Nicholas Anantha Krishnan Millani | Autenticação |
+| Débora Pereira Nogueira | Perfil (GET e PUT) e validação de CEP |
+| Paulo Henrique Bueno Fernandes | Gênero |
+| Catarina Sayuri Arashiro Braga Felipe | Espetáculos |
+
+---
+
 ## Corpo Docente
 
 ### Orientadora

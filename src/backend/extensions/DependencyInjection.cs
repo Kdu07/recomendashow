@@ -26,6 +26,16 @@ namespace BackEnd.Aventura.Extensions
 
         public static IServiceCollection AddAventuraApplication(this IServiceCollection services)
         {
+            services.AddHttpClient<IRecommendationClient, RecommendationHttpClient>((serviceProvider, client) =>
+            {
+                var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                var baseUrl = configuration["RecommendationService:BaseUrl"] ??
+                    configuration["RECOMMENDATION_SERVICE_BASE_URL"] ??
+                    "http://localhost:5001";
+
+                client.BaseAddress = new Uri(baseUrl.TrimEnd('/'));
+            });
+
             services.AddScoped<IEspetaculoService, EspetaculoService>();
             services.AddScoped<ITeatroService, TeatroService>();
             services.AddScoped<IPreferenciasService, PreferenciasService>();

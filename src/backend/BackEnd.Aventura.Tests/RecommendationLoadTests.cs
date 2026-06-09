@@ -91,6 +91,7 @@ public sealed class RecommendationLoadTests : IAsyncLifetime
     [InlineData(5)]
     [InlineData(20)]
     [InlineData(50)]
+    [InlineData(200)]
     public async Task Recommend_MeasureLatencyUnderConcurrency(int concurrency)
     {
         // warm-up: garante que o modelo já está carregado antes de medir
@@ -107,10 +108,16 @@ public sealed class RecommendationLoadTests : IAsyncLifetime
 
         _output.WriteLine($"concurrency={concurrency,3}  elapsed={sw.ElapsedMilliseconds}ms");
 
-        // assertion frouxa: 500 ms por requisição é o teto aceitável no pior caso
+        // RNF01: p95 ≤ 3 s com 200 usuários; threshold genérico de 500 ms/req para demais níveis
+        var limitMs = concurrency switch
+        {
+            200 => 3_000L,
+            _   => (long)concurrency * 500
+        };
+
         Assert.True(
-            sw.ElapsedMilliseconds < (long)concurrency * 500,
-            $"Latência total {sw.ElapsedMilliseconds}ms excede limite para concurrency={concurrency}");
+            sw.ElapsedMilliseconds < limitMs,
+            $"Latência total {sw.ElapsedMilliseconds}ms excede limite {limitMs}ms para concurrency={concurrency}");
     }
 
     // -------------------------------------------------------------------------

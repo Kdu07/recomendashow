@@ -10,10 +10,16 @@
 - [2. Testes de carga com Testcontainers](#2-testes-de-carga-com-testcontainers)
   - [2.1 Por que Testcontainers](#21-por-que-testcontainers)
   - [2.2 Ciclo de vida da fixture](#22-ciclo-de-vida-da-fixture)
-  - [2.3 Os três testes](#23-os-três-testes)
+  - [2.3 Os testes de carga](#23-os-testes-de-carga)
   - [2.4 Resultados de latência medidos](#24-resultados-de-latência-medidos)
   - [2.5 Como executar](#25-como-executar)
-- [3. Decisão arquitetural registrada](#3-decisão-arquitetural-registrada)
+- [3. Suites funcionais e de validação](#3-suites-funcionais-e-de-validação)
+  - [3.1 Visão geral das novas classes](#31-visão-geral-das-novas-classes)
+  - [3.2 Fixtures](#32-fixtures)
+  - [3.3 Suite A — Caminho Positivo](#33-suite-a--caminho-positivo)
+  - [3.4 Suite B — Caminho Negativo](#34-suite-b--caminho-negativo)
+- [4. Rastreabilidade RF/RNF](#4-rastreabilidade-rfrnf)
+- [5. Decisão arquitetural registrada](#5-decisão-arquitetural-registrada)
 
 ---
 
@@ -167,7 +173,7 @@ Top-level statements em .NET 9 geram a classe `Program` como `internal`. O `WebA
 
 ---
 
-### 2.3 Os três testes
+### 2.3 Os testes de carga
 
 #### Teste 1 — `Recommend_ConcurrentRequests_AllReturnValidScores`
 
@@ -226,22 +232,99 @@ O lock serializa o loop de scoring, mas cada iteração é rápida (lookup em me
 
 ### 2.5 Como executar
 
-**Pré-requisito:** Docker Desktop rodando.
+**Pré-requisito:** Docker Desktop rodando (para testes de integração). Os testes lightweight (`LightweightFixture`) não precisam de Docker.
 
 ```bash
-# Apenas os novos testes de carga (com saída de latência)
-dotnet test src/backend/BackEnd.Aventura.Tests \
-  --filter "FullyQualifiedName~RecommendationLoad" \
-  --verbosity normal \
-  --logger "console;verbosity=detailed"
-
-# Suite completa (deve resultar em 105 testes passando)
+# Todos os testes do módulo de recomendação
 dotnet test src/backend/BackEnd.Aventura.Tests --verbosity minimal
+
+# Apenas caminho positivo
+dotnet test src/backend/BackEnd.Aventura.Tests --filter "FullyQualifiedName~HappyPath"
+
+# Apenas caminho negativo
+dotnet test src/backend/BackEnd.Aventura.Tests --filter "FullyQualifiedName~Negative"
+
+# Testes leves sem Docker (validação de controller puro)
+dotnet test src/backend/BackEnd.Aventura.Tests --filter "Fixture=Lightweight"
+
+# Apenas testes de carga (RecommendationLoadTests)
+dotnet test src/backend/BackEnd.Aventura.Tests --filter "FullyQualifiedName~LoadTests"
 ```
 
 ---
 
-## 3. Decisão arquitetural registrada
+## 3. Suites funcionais e de validação
+
+### 3.1 Visão geral das novas classes
+
+Com o crescimento da cobertura, quatro novas classes foram adicionadas em
+`src/backend/BackEnd.Aventura.Tests/`. O plano completo está em
+[test-plan-recommendation.md](test-plan-recommendation.md).
+
+| Classe | Testes | Fixture | Foco |
+|---|:---:|---|---|
+| `RecommendationHappyPathTests` | 14 | IntegrationFixture (Docker) | Corretude do caminho positivo |
+| `PreferenceHappyPathTests` | 5 | IntegrationFixture (Docker) | CRUD de preferências |
+| `RecommendationValidationTests` | 6 | LightweightFixture (sem Docker) | Validação de parâmetros `n` |
+| `RecommendationServiceEdgeCaseTests` | 1 | IntegrationFixture (Docker) | Fallback de categoria inexistente |
+| `PreferenceNegativeTests` | 5 | LightweightFixture (sem Docker) | Validação de entrada |
+
+### 3.2 Fixtures
+
+Duas fixtures foram extraídas para `Fixtures/`:
+
+- **`IntegrationFixture`** — Reutiliza o padrão de `RecommendationLoadTests` com Testcontainers
+  PostgreSQL e `WebApplicationFactory<Program>` com artefatos ML reais. Registrada como
+  `ICollectionFixture` na coleção `"Integration"` para que o container suba uma vez por suite.
+
+- **`LightweightFixture`** — Substitui `IRecommendationService` e `IPreferenceService` por
+  mocks (Moq), eliminando a dependência de Docker e arquivos ML para testes de validação de
+  controller puro.
+
+### 3.3 Suite A — Caminho Positivo
+
+**`RecommendationHappyPathTests`** cobre o caminho warm user e os dois sub-caminhos de
+cold-start:
+
+- Warm user: HTTP 200, scores numéricos em [0,1], sem NaN/Inf, sem duplicatas, limite `n` exato
+- Cold-start sem preferências: retorna popular items com `Score == null`
+- Cold-start com preferências: retorna itens da categoria preferida com `Score == null`
+- HP-REC-14 (RF10): verifica que preferência de categoria altera o conjunto de shows retornado
+  em relação ao cold-start sem preferências — valida o critério "consistent with user profile"
+
+**`PreferenceHappyPathTests`** cobre o CRUD do endpoint `/api/preference/{userId}`:
+
+- POST salva preferências (204), GET retorna lista salva, segundo POST sobrescreve
+- Fluxo integrado: preferência salva → recomendação reflete a categoria (HP-PREF-05)
+
+### 3.4 Suite B — Caminho Negativo
+
+**`RecommendationNegativeTests`** (arquivo único com dois grupos de classe):
+
+- *`RecommendationValidationTests` (lightweight)*: NEG-REC-01 a NEG-REC-06 — `n` inválido retorna 400; mensagem de erro verificada
+- *`RecommendationServiceEdgeCaseTests` (integration)*: NEG-REC-07 — preferência com categoria inexistente cai em popular items sem lançar exceção
+
+**`PreferenceNegativeTests`** (lightweight): `tipos` vazio, null e body ausente retornam 400;
+categoria inexistente é aceita pelo controller (valida que a validação semântica não é feita nessa camada).
+
+---
+
+## 4. Rastreabilidade RF/RNF
+
+| Requisito | Critério de aceite | Testes que cobrem |
+|---|---|---|
+| RF01 | Preferências salvas após onboarding | HP-PREF-01, HP-PREF-03, HP-PREF-04 |
+| RF08 | Usuário edita preferências; mudança persiste | HP-PREF-01 a HP-PREF-05, NEG-PREF-01 a NEG-PREF-05 |
+| RF10 | Sugestões consistentes com perfil do usuário | HP-REC-01 a HP-REC-14 |
+| RNF01 | p95 ≤ 3 s com 200 usuários simultâneos | `Recommend_MeasureLatencyUnderConcurrency` com `InlineData(200)` |
+| RNF06 | p95 ≤ 3 s com 1.000 usuários por 15 min | Suite k6/Locust em staging — fora de escopo do xUnit |
+| RNF08 | Cobertura ≥ 70% em módulos críticos | Suite completa (38 testes) cobre todos os caminhos de `RecommendationService`, `PreferenceService` e ambos os controllers |
+
+RF02 (geolocalização) não é implementado em `RecommendationService` na versão atual — sem testes aplicáveis neste módulo.
+
+---
+
+## 5. Decisão arquitetural registrada
 
 > **Manter o `lock` atual, não migrar para `PredictionEnginePool` neste momento.**
 >

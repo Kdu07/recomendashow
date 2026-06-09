@@ -39,6 +39,7 @@ namespace BackEnd.Aventura.Services
             var usuario = Usuario.Create(request.Nome, request.Email, senhaHash, request.Idade,
                 request.Cep, request.Logradouro, request.Numero,
                 request.Complemento, request.Bairro, request.Cidade);
+            usuario.AceitarConsentimento();
             _usuarioRepository.Create(usuario);
             _preferenciasRepository.GetPreferencias(usuario.Id);
 
@@ -54,6 +55,11 @@ namespace BackEnd.Aventura.Services
             if (usuario is null)
             {
                 throw new UnauthorizedAccessException("E-mail ou senha inválidos.");
+            }
+
+            if (usuario.DeletedAt is not null)
+            {
+                throw new UnauthorizedAccessException("Esta conta foi encerrada.");
             }
 
             return ToAuthResponse(usuario);
@@ -74,6 +80,11 @@ namespace BackEnd.Aventura.Services
 
         private static void ValidateRegisterRequest(RegisterRequest request)
         {
+            if (!request.ConsentimentoAceito)
+            {
+                throw new ArgumentException("O consentimento com a política de privacidade é obrigatório.");
+            }
+
             EntityGuards.NotNullOrWhiteSpace(request.Nome, nameof(request.Nome));
             var email = EntityGuards.NotNullOrWhiteSpace(request.Email, nameof(request.Email));
             if (!email.Contains('@'))

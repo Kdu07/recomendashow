@@ -15,6 +15,7 @@ export const initialAuthValues = {
   city: '',
   password: '',
   confirmPassword: '',
+  consentimentoAceito: false,
 };
 
 export function createAuthUser({

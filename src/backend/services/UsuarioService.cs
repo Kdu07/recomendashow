@@ -39,6 +39,17 @@ namespace BackEnd.Aventura.Services
             return MapResponse(usuario);
         }
 
+        public void SolicitarExclusao(Guid id)
+        {
+            var usuario = _repository.GetById(id);
+            if (usuario is null)
+            {
+                throw new NotFoundException($"Usuário com ID {id} não encontrado.");
+            }
+
+            _repository.SolicitarExclusao(id);
+        }
+
         private static UsuarioResponse MapResponse(Domain.Usuario usuario) => new()
         {
             Id = usuario.Id,

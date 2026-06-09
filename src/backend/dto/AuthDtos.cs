@@ -12,6 +12,7 @@ namespace BackEnd.Aventura.Dto
         public string? Complemento { get; set; }
         public string? Bairro { get; set; }
         public string? Cidade { get; set; }
+        public bool ConsentimentoAceito { get; set; }
     }
 
     public class LoginRequest

@@ -36,6 +36,26 @@ export default function ShowInfoScreen({ route, navigation }) {
   const topInset = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
   const { show, loading, error, subtitle, toggleFavorite, onPressTickets, onPressVenue } = useShowInfoViewModel(showId);
 
+  const scrollY = useRef(new Animated.Value(0)).current;
+
+  const heroOpacity = scrollY.interpolate({
+    inputRange: [0, HERO_HEIGHT * 0.75],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+
+  const inlineHeaderOpacity = scrollY.interpolate({
+    inputRange: [INLINE_FADE_START, INLINE_FADE_END],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+
+  const stickyOpacity = scrollY.interpolate({
+    inputRange: [STICKY_FADE_START, STICKY_FADE_END],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  });
+
   function handleBackPress() {
     if (navigation.canGoBack()) {
       navigation.goBack();
@@ -81,25 +101,6 @@ export default function ShowInfoScreen({ route, navigation }) {
     );
   }
 
-  const scrollY = useRef(new Animated.Value(0)).current;
-
-  const heroOpacity = scrollY.interpolate({
-    inputRange: [0, HERO_HEIGHT * 0.75],
-    outputRange: [1, 0],
-    extrapolate: 'clamp',
-  });
-
-  const inlineHeaderOpacity = scrollY.interpolate({
-    inputRange: [INLINE_FADE_START, INLINE_FADE_END],
-    outputRange: [1, 0],
-    extrapolate: 'clamp',
-  });
-
-  const stickyOpacity = scrollY.interpolate({
-    inputRange: [STICKY_FADE_START, STICKY_FADE_END],
-    outputRange: [0, 1],
-    extrapolate: 'clamp',
-  });
 
   function handlePressVenueWithStatus() {
     onPressVenue();

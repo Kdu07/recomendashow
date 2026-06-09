@@ -62,11 +62,6 @@ namespace BackEnd.Aventura.Services
                 throw new UnauthorizedAccessException("Esta conta foi encerrada.");
             }
 
-            if (!BCrypt.Net.BCrypt.Verify(request.Senha, usuario.SenhaHash))
-            {
-                throw new UnauthorizedAccessException("E-mail ou senha invÃ¡lidos.");
-            }
-
             return ToAuthResponse(usuario);
         }
 

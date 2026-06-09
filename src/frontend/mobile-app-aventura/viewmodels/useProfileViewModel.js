@@ -5,16 +5,11 @@ import { getProfileData } from '../repositories/profileRepository';
 import { removeUserAccount } from '../repositories/authRepository';
 import { getCurrentUserId, clearCurrentUserId } from '../services/userSession';
 
-<<<<<<< HEAD
 export default function useProfileViewModel(navigation) {
   const [user, setUser] = useState({});
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
-=======
-export default function useProfileViewModel() {
-  const [profileData, setProfileData] = useState(() => getProfileData());
   const [deletingAccount, setDeletingAccount] = useState(false);
->>>>>>> develop
 
   useEffect(() => {
     let mounted = true;
@@ -99,12 +94,9 @@ export default function useProfileViewModel() {
     user,
     menuItems,
     refreshProfile,
-<<<<<<< HEAD
     isLoading,
-=======
     deletingAccount,
 
->>>>>>> develop
     handleMenuPress,
     handleEditProfile,
     handleLogout,

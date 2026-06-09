@@ -59,20 +59,14 @@ export default function ProfileScreen({ navigation }) {
     user,
     menuItems,
     refreshProfile,
-<<<<<<< HEAD
     isLoading,
+    deletingAccount,
 
     handleMenuPress,
     handleEditProfile,
     handleLogout,
-  } = useProfileViewModel(navigation);
-=======
-    deletingAccount,
-
-    handleMenuPress,
     handleDeleteAccount,
-  } = useProfileViewModel();
->>>>>>> develop
+  } = useProfileViewModel(navigation);
 
   function confirmDeleteAccount() {
     Alert.alert(

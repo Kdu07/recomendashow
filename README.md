@@ -19,6 +19,14 @@
 
 ---
 
+## Coordenação de Testes de Integração
+
+| Aluno | Fluxo escolhido | Link do MR |
+|---|---|---|
+| Nicholas Anantha Krishnan Millani | Autenticação - cadastro de usuário com persistência no PostgreSQL | A definir |
+
+---
+
 ## Corpo Docente
 
 ### Orientadora

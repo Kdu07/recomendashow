@@ -66,7 +66,7 @@ function calculateAge(dateString) {
 }
 
 async function post(path, body) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
+  const response = await fetch(`${API_BASE}${path}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -79,16 +79,6 @@ async function post(path, body) {
   }
 
   return json;
-}
-
-export async function loginWithEmail({ email, password }) {
-  const data = await post('/api/auth/login', {
-    Email: email,
-    Senha: password,
-  });
-  return {
-    user: { id: data.usuarioId, name: data.nome, email: data.email },
-  };
 }
 
 export async function registerWithEmail({
@@ -123,7 +113,7 @@ export async function registerWithEmail({
 }
 
 export async function deleteUserAccount(userId) {
-  const response = await fetch(`${API_BASE_URL}/api/usuario/${userId}`, {
+  const response = await fetch(`${API_BASE}/api/usuario/${userId}`, {
     method: 'DELETE',
   });
 

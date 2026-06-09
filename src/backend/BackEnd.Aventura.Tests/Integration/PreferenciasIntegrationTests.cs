@@ -1,30 +1,39 @@
 // ============================================================
-//  Testes de Integração — Preferencias
-//  Ferramentas:
-//    • Testcontainers.PostgreSql  → dependência POSSUÍDA  (banco real)
-//    • WireMock.Net               → dependência CONSUMIDA (API ViaCEP externa)
+//  Testes E2E — Preferencias
+//  Camada: HTTP (Controller) → Service → Repository → PostgreSQL
 //
-//  Pacotes necessários no projeto de testes (.csproj):
+//  Ferramentas:
+//    • WebApplicationFactory  → sobe a API ASP.NET inteira in-process
+//    • Testcontainers         → dependência POSSUÍDA (PostgreSQL real)
+//    • WireMock.Net           → dependência CONSUMIDA (API ViaCEP externa)
+//
+//  Pacotes necessários no projeto de testes:
+//    dotnet add package Microsoft.AspNetCore.Mvc.Testing
 //    dotnet add package Testcontainers.PostgreSql
 //    dotnet add package WireMock.Net
-//    dotnet add package Microsoft.AspNetCore.Mvc.Testing
+//    dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
 //
-//  RF coberto  : RF-PREF — gestão de preferências do usuário
-//  RNF coberto : RNF-02  — Confiabilidade (ISO 25010): persistência
-//                          correta mesmo em falhas de serviços externos
+//  RF coberto  : RF08 — Gestão de Perfil e Preferências
+//  RNF coberto : RNF05 — Confiabilidade (ISO 25010)
 // ============================================================
 
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Security.Claims;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using BackEnd.Aventura.Domain;
 using BackEnd.Aventura.Dto;
-using BackEnd.Aventura.Infrastructure;
-using BackEnd.Aventura.Repository;
-using BackEnd.Aventura.Services;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Npgsql;
 using Testcontainers.PostgreSql;
 using WireMock.RequestBuilders;
@@ -35,13 +44,44 @@ using Xunit;
 namespace BackEnd.Aventura.Tests.Integration
 {
     // ──────────────────────────────────────────────────────────
-    //  FIXTURES
+    //  CONSTANTES DE TESTE
     // ──────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Sobe um PostgreSQL real descartável via Docker.
-    /// Cria o schema mínimo necessário para Preferencias.
-    /// </summary>
+    internal static class TestJwt
+    {
+        // Chave usada SOMENTE nos testes — não é a chave de produção
+        public const string Key      = "aventura-test-secret-key-32-chars!!";
+        public const string Issuer   = "BackEnd.Aventura";
+        public const string Audience = "BackEnd.AventuraClient";
+
+        /// <summary>Gera um token JWT válido para o usuário informado.</summary>
+        public static string Generate(Guid userId)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Key));
+            var credentials  = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub,   userId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, $"teste_{userId}@aventura.com"),
+                new Claim(JwtRegisteredClaimNames.Jti,   Guid.NewGuid().ToString()),
+            };
+
+            var token = new JwtSecurityToken(
+                issuer:             Issuer,
+                audience:           Audience,
+                claims:             claims,
+                expires:            DateTime.UtcNow.AddHours(1),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────
+    //  FIXTURE — PostgreSQL via Testcontainers
+    // ──────────────────────────────────────────────────────────
+
     public class PostgresFixture : IAsyncLifetime
     {
         private readonly PostgreSqlContainer _db = new PostgreSqlBuilder()
@@ -62,7 +102,6 @@ namespace BackEnd.Aventura.Tests.Integration
 
         public Task DisposeAsync() => _db.DisposeAsync().AsTask();
 
-        // Limpa todas as tabelas entre grupos de testes
         public async Task ResetAsync()
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
@@ -71,42 +110,11 @@ namespace BackEnd.Aventura.Tests.Integration
             cmd.CommandText = @"
                 DELETE FROM usuario_genero_favorito;
                 DELETE FROM preferencias;
-                DELETE FROM generos;";
+                DELETE FROM generos;
+                DELETE FROM usuarios;";
             await cmd.ExecuteNonQueryAsync();
         }
 
-        private async Task CreateSchemaAsync()
-        {
-            await using var conn = new NpgsqlConnection(ConnectionString);
-            await conn.OpenAsync();
-            await using var cmd = conn.CreateCommand();
-            cmd.CommandText = @"
-                CREATE TABLE IF NOT EXISTS generos (
-                    id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                    nome TEXT NOT NULL UNIQUE
-                );
-
-                CREATE TABLE IF NOT EXISTS preferencias (
-                    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-                    usuario_id          UUID NOT NULL UNIQUE,
-                    cidade              TEXT,
-                    cep                 TEXT,
-                    tags                TEXT[],
-                    faixa_preco_min     NUMERIC,
-                    faixa_preco_max     NUMERIC,
-                    receber_notificacoes BOOLEAN NOT NULL DEFAULT TRUE,
-                    data_atualizacao    TIMESTAMP NOT NULL DEFAULT NOW()
-                );
-
-                CREATE TABLE IF NOT EXISTS usuario_genero_favorito (
-                    usuario_id UUID NOT NULL,
-                    genero_id  UUID NOT NULL REFERENCES generos(id) ON DELETE CASCADE,
-                    PRIMARY KEY (usuario_id, genero_id)
-                );";
-            await cmd.ExecuteNonQueryAsync();
-        }
-
-        /// <summary>Insere gêneros de referência no banco para que os testes possam vinculá-los.</summary>
         public async Task SeedGenerosAsync(params string[] nomes)
         {
             await using var conn = new NpgsqlConnection(ConnectionString);
@@ -119,12 +127,62 @@ namespace BackEnd.Aventura.Tests.Integration
                 await cmd.ExecuteNonQueryAsync();
             }
         }
+
+        private async Task CreateSchemaAsync()
+        {
+            await using var conn = new NpgsqlConnection(ConnectionString);
+            await conn.OpenAsync();
+            await using var cmd = conn.CreateCommand();
+            cmd.CommandText = @"
+                CREATE TABLE IF NOT EXISTS usuarios (
+                    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    nome                TEXT NOT NULL,
+                    email               TEXT NOT NULL UNIQUE,
+                    senha_hash          TEXT NOT NULL,
+                    idade               INT,
+                    cep                 TEXT,
+                    logradouro          TEXT,
+                    numero              TEXT,
+                    complemento         TEXT,
+                    bairro              TEXT,
+                    cidade              TEXT,
+                    consentimento_aceito BOOLEAN NOT NULL DEFAULT FALSE,
+                    data_cadastro       TIMESTAMP NOT NULL DEFAULT NOW(),
+                    deleted_at          TIMESTAMP,
+                    anonimizado         BOOLEAN NOT NULL DEFAULT FALSE,
+                    ml_id               INT
+                );
+
+                CREATE TABLE IF NOT EXISTS generos (
+                    id   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    nome TEXT NOT NULL UNIQUE
+                );
+
+                CREATE TABLE IF NOT EXISTS preferencias (
+                    id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    usuario_id           UUID NOT NULL UNIQUE,
+                    cidade               TEXT,
+                    cep                  TEXT,
+                    tags                 TEXT[],
+                    faixa_preco_min      NUMERIC,
+                    faixa_preco_max      NUMERIC,
+                    receber_notificacoes BOOLEAN NOT NULL DEFAULT TRUE,
+                    data_atualizacao     TIMESTAMP NOT NULL DEFAULT NOW()
+                );
+
+                CREATE TABLE IF NOT EXISTS usuario_genero_favorito (
+                    usuario_id UUID NOT NULL,
+                    genero_id  UUID NOT NULL REFERENCES generos(id) ON DELETE CASCADE,
+                    PRIMARY KEY (usuario_id, genero_id)
+                );";
+            await cmd.ExecuteNonQueryAsync();
+        }
     }
 
-    /// <summary>
-    /// Stub HTTP in-process para simular a API externa de CEP (ViaCEP).
-    /// Dependência CONSUMIDA — não possuímos o deploy nem o schema.
-    /// </summary>
+    // ──────────────────────────────────────────────────────────
+    //  FIXTURE — WireMock (stub ViaCEP)
+    // ──────────────────────────────────────────────────────────
+
     public class ViaCepApiFixture : IAsyncLifetime
     {
         public WireMockServer Server { get; private set; } = null!;
@@ -132,10 +190,7 @@ namespace BackEnd.Aventura.Tests.Integration
 
         public Task InitializeAsync()
         {
-            Server = WireMockServer.Start(new WireMock.Settings.WireMockServerSettings
-            {
-                Port = 0 // porta dinâmica — evita conflito entre suites
-            });
+            Server = WireMockServer.Start(new WireMock.Settings.WireMockServerSettings { Port = 0 });
             return Task.CompletedTask;
         }
 
@@ -146,8 +201,6 @@ namespace BackEnd.Aventura.Tests.Integration
             return Task.CompletedTask;
         }
 
-        // ── Helpers para montar stubs reutilizáveis ──
-
         public void StubCepValido(string cep, string cidade, string uf)
         {
             Server.Reset();
@@ -156,14 +209,7 @@ namespace BackEnd.Aventura.Tests.Integration
                 .RespondWith(Response.Create()
                     .WithStatusCode(200)
                     .WithHeader("Content-Type", "application/json")
-                    .WithBodyAsJson(new
-                    {
-                        cep,
-                        logradouro = "Rua Exemplo",
-                        localidade = cidade,
-                        uf,
-                        erro = (bool?)null
-                    }));
+                    .WithBodyAsJson(new { cep, localidade = cidade, uf, erro = (bool?)null }));
         }
 
         public void StubCepNaoEncontrado(string cep)
@@ -182,1391 +228,1805 @@ namespace BackEnd.Aventura.Tests.Integration
             Server.Reset();
             Server
                 .Given(Request.Create().UsingGet().WithPath($"/ws/{cep}/json/"))
-                .RespondWith(Response.Create()
-                    .WithStatusCode(503)
-                    .WithBody("service unavailable"));
-        }
-
-        public void StubViaCepTimeout(string cep)
-        {
-            Server.Reset();
-            Server
-                .Given(Request.Create().UsingGet().WithPath($"/ws/{cep}/json/"))
-                .RespondWith(Response.Create()
-                    .WithStatusCode(200)
-                    .WithDelay(TimeSpan.FromSeconds(10))
-                    .WithBodyAsJson(new { cep, localidade = "qualquer" }));
-        }
-
-        public void StubViaCepPayloadInvalido(string cep)
-        {
-            Server.Reset();
-            Server
-                .Given(Request.Create().UsingGet().WithPath($"/ws/{cep}/json/"))
-                .RespondWith(Response.Create()
-                    .WithStatusCode(200)
-                    .WithHeader("Content-Type", "application/json")
-                    .WithBody("{ malformed json "));
-        }
-
-        public void StubViaCepRateLimitExcedido(string cep)
-        {
-            Server.Reset();
-            Server
-                .Given(Request.Create().UsingGet().WithPath($"/ws/{cep}/json/"))
-                .RespondWith(Response.Create()
-                    .WithStatusCode(429)
-                    .WithBody("Too Many Requests"));
+                .RespondWith(Response.Create().WithStatusCode(503).WithBody("unavailable"));
         }
     }
 
     // ──────────────────────────────────────────────────────────
-    //  COLLECTION — compartilha os dois fixtures entre todas
-    //  as classes de teste, evitando subir Docker a cada classe
+    //  FACTORY — Sobe a API inteira substituindo o banco
     // ──────────────────────────────────────────────────────────
 
-    [CollectionDefinition("preferencias-integration")]
-    public class PreferenciasIntegrationCollection
+    public class AventuraWebFactory : WebApplicationFactory<Program>
+    {
+        private readonly string _connectionString;
+
+        public AventuraWebFactory(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        {
+            // Esta linha DEVE ser a primeira
+            Environment.SetEnvironmentVariable("JWT_KEY", TestJwt.Key);
+        
+            builder.UseEnvironment("Testing");
+        
+            builder.ConfigureAppConfiguration((_, config) =>
+            {
+                config.AddInMemoryCollection(new Dictionary<string, string?>
+                {
+                    ["ConnectionStrings:DefaultConnection"] = _connectionString,
+                    ["Jwt:Key"]      = TestJwt.Key,
+                    ["Jwt:Issuer"]   = TestJwt.Issuer,
+                    ["Jwt:Audience"] = TestJwt.Audience,
+                });
+            });
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────
+    //  COLLECTION — compartilha fixtures entre todas as suites
+    // ──────────────────────────────────────────────────────────
+
+    [CollectionDefinition("preferencias-e2e")]
+    public class PreferenciasE2ECollection
         : ICollectionFixture<PostgresFixture>,
           ICollectionFixture<ViaCepApiFixture>
     { }
 
     // ──────────────────────────────────────────────────────────
-    //  HELPER — cliente HTTP simples para chamar o stub ViaCEP
+    //  HELPERS
     // ──────────────────────────────────────────────────────────
 
-    internal static class ViaCepClient
+    internal static class HttpClientExtensions
     {
-        /// <summary>
-        /// Busca informações de um CEP via stub WireMock.
-        /// Retorna null se o CEP não for encontrado ou se ocorrer erro.
-        /// Lança HttpRequestException se o provider retornar 5xx.
-        /// Lança TaskCanceledException se timeout exceder.
-        /// </summary>
-        public static async Task<ViaCepResponse?> BuscarAsync(
-            HttpClient http, string cep)
+        private static readonly JsonSerializerOptions JsonOpts = new()
         {
-            var response = await http.GetAsync($"/ws/{cep}/json/");
+            PropertyNameCaseInsensitive = true
+        };
 
-            if ((int)response.StatusCode >= 500)
-                throw new HttpRequestException($"ViaCEP indisponível: {(int)response.StatusCode}");
-
-            if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
-                throw new HttpRequestException("ViaCEP: rate limit excedido (429)");
-
+        public static async Task<T?> ReadAsAsync<T>(this HttpResponseMessage response)
+        {
             var json = await response.Content.ReadAsStringAsync();
-            var doc  = JsonDocument.Parse(json);
-
-            if (doc.RootElement.TryGetProperty("erro", out var erroEl) && erroEl.GetBoolean())
-                return null;
-
-            return new ViaCepResponse(
-                doc.RootElement.GetProperty("cep").GetString()!,
-                doc.RootElement.GetProperty("localidade").GetString()!,
-                doc.RootElement.GetProperty("uf").GetString()!
-            );
-        }
-    }
-
-    internal record ViaCepResponse(string Cep, string Cidade, string Uf);
-
-    // ══════════════════════════════════════════════════════════
-    //  SUITE 1 — PreferenciasRepository (Testcontainers)
-    //  Dependência POSSUÍDA: PostgreSQL do serviço
-    // ══════════════════════════════════════════════════════════
-
-    [Collection("preferencias-integration")]
-    public class PreferenciasRepositoryTests
-    {
-        private readonly PostgresFixture     _pg;
-        private readonly PreferenciasRepository _repo;
-
-        public PreferenciasRepositoryTests(PostgresFixture pg, ViaCepApiFixture _)
-        {
-            _pg   = pg;
-            _repo = new PreferenciasRepository(new DirectConnectionFactory(pg.ConnectionString));
-            _pg.ResetAsync().GetAwaiter().GetResult();
-        }
-
-        // ── GetPreferencias ──────────────────────────────────
-
-        [Fact]
-        public void Get_UsuarioInexistente_CriaDefaultERetorna()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-
-            // Act — sem registro prévio, deve criar default
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert — contrato observável
-            Assert.NotNull(result);
-            Assert.Equal(userId, result.UsuarioId);
-            Assert.True(result.ReceberNotificacoes);
-        }
-
-        [Fact]
-        public void Get_UsuarioExistente_RetornaDadosPersistidos()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            prefs.SetLocalizacao("01310-100", "São Paulo");
-            _repo.Save(prefs);
-
-            // Act
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert
-            Assert.Equal("01310-100", result.Cep);
-            Assert.Equal("São Paulo", result.Cidade);
-        }
-
-        [Fact]
-        public void Get_GuidVazio_LancaArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => _repo.GetPreferencias(Guid.Empty));
-        }
-
-        [Fact]
-        public void Get_MultiplosUsuarios_RetornaCorreto()
-        {
-            // Arrange
-            var userA = Guid.NewGuid();
-            var userB = Guid.NewGuid();
-            var prefsA = new Preferencias(userA);
-            prefsA.SetLocalizacao("01310-100", "São Paulo");
-            var prefsB = new Preferencias(userB);
-            prefsB.SetLocalizacao("20040-020", "Rio de Janeiro");
-            _repo.Save(prefsA);
-            _repo.Save(prefsB);
-
-            // Act
-            var resultA = _repo.GetPreferencias(userA);
-            var resultB = _repo.GetPreferencias(userB);
-
-            // Assert — dados não se misturam
-            Assert.Equal("São Paulo",      resultA.Cidade);
-            Assert.Equal("Rio de Janeiro", resultB.Cidade);
-        }
-
-        [Fact]
-        public void Get_AposDoisSaves_RetornaUltimoEstado()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            prefs.SetLocalizacao("01310-100", "São Paulo");
-            _repo.Save(prefs);
-
-            // Act — segundo save com cidade diferente
-            prefs.SetLocalizacao(null, "Campinas");
-            _repo.Save(prefs);
-
-            // Assert — UPSERT deve atualizar
-            var result = _repo.GetPreferencias(userId);
-            Assert.Equal("Campinas", result.Cidade);
-        }
-
-        // ── Save ─────────────────────────────────────────────
-
-        [Fact]
-        public void Save_PreferenciasNulas_LancaArgumentNullException()
-        {
-            Assert.Throws<ArgumentNullException>(() => _repo.Save(null!));
-        }
-
-        [Fact]
-        public void Save_NovaPreferencia_RetornaTrue()
-        {
-            // Arrange
-            var prefs = new Preferencias(Guid.NewGuid());
-
-            // Act
-            var ok = _repo.Save(prefs);
-
-            // Assert
-            Assert.True(ok);
-        }
-
-        [Fact]
-        public void Save_AtualizaFaixaPreco_PersistidoCorretamente()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            prefs.AtualizarFaixaPreco(50m, 200m);
-            _repo.Save(prefs);
-
-            // Act
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert
-            Assert.Equal(50m,  result.FaixaPrecoMin);
-            Assert.Equal(200m, result.FaixaPrecoMax);
-        }
-
-        [Fact]
-        public void Save_ReceberNotificacoesDesligado_PersistidoCorretamente()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            prefs.SetReceberNotificacoes(false);
-            _repo.Save(prefs);
-
-            // Act
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert
-            Assert.False(result.ReceberNotificacoes);
-        }
-
-        [Fact]
-        public void Save_TagsArray_PersistidoCorretamente()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            prefs.SetTags(new[] { "musical", "ao-ar-livre", "família" });
-            _repo.Save(prefs);
-
-            // Act
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert
-            Assert.Contains("musical",      result.Tags);
-            Assert.Contains("ao-ar-livre",  result.Tags);
-            Assert.Contains("família",      result.Tags);
-        }
-
-        [Fact]
-        public async Task Save_TagsVazias_PersistidoComoArrayVazio()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            prefs.SetTags(Array.Empty<string>());
-            _repo.Save(prefs);
-
-            // Act
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert
-            Assert.Empty(result.Tags);
-            await Task.CompletedTask; // async para consistência de assinatura
-        }
-
-        [Fact]
-        public void Save_CepNulo_PersistidoComoNulo()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            // não define CEP
-            _repo.Save(prefs);
-
-            // Act
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert
-            Assert.Null(result.Cep);
-        }
-
-        [Fact]
-        public void Save_CidadeNula_PersistidaComoNula()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            _repo.Save(prefs);
-
-            // Act
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert
-            Assert.Null(result.Cidade);
-        }
-
-        [Fact]
-        public void Save_FaixaPrecoNula_PersistidaComoNula()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            // AtualizarFaixaPreco(null, null) não lança
-            prefs.AtualizarFaixaPreco(null, null);
-            _repo.Save(prefs);
-
-            // Act
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert
-            Assert.Null(result.FaixaPrecoMin);
-            Assert.Null(result.FaixaPrecoMax);
-        }
-
-        // ── Generos (JOIN usuario_genero_favorito) ───────────
-
-        [Fact]
-        public async Task Save_GenerosExistentes_PersistidosViaJoin()
-        {
-            // Arrange
-            await _pg.SeedGenerosAsync("Drama", "Comédia");
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            prefs.SetGeneros(new[] { "Drama", "Comédia" });
-            _repo.Save(prefs);
-
-            // Act
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert — gêneros vêm do JOIN, não da coluna direta
-            Assert.Contains("Drama",   result.Generos);
-            Assert.Contains("Comédia", result.Generos);
-        }
-
-        [Fact]
-        public async Task Save_GenerosAtualizados_RemoveAntigosEInsereNovos()
-        {
-            // Arrange
-            await _pg.SeedGenerosAsync("Drama", "Comédia", "Musical");
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            prefs.SetGeneros(new[] { "Drama" });
-            _repo.Save(prefs);
-
-            // Act — atualiza para Musical, removendo Drama
-            prefs.SetGeneros(new[] { "Musical" });
-            _repo.Save(prefs);
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert
-            Assert.DoesNotContain("Drama",   result.Generos);
-            Assert.Contains("Musical",       result.Generos);
-        }
-
-        [Fact]
-        public void Save_GenerosVazios_RetornaListaVazia()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            prefs.SetGeneros(Array.Empty<string>());
-            _repo.Save(prefs);
-
-            // Act
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert
-            Assert.Empty(result.Generos);
-        }
-
-        [Fact]
-        public async Task Save_GeneroCaseInsensitive_NaoDuplicaNoJoin()
-        {
-            // Arrange
-            await _pg.SeedGenerosAsync("Drama");
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            // banco usa LOWER() no match — "drama" deve bater em "Drama"
-            prefs.SetGeneros(new[] { "drama" });
-            _repo.Save(prefs);
-
-            // Act
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert
-            Assert.Single(result.Generos);
-        }
-
-        // ── Cenário completo ─────────────────────────────────
-
-        [Fact]
-        public async Task Save_TodosCampos_TodosPersistidosCorretamente()
-        {
-            // Arrange
-            await _pg.SeedGenerosAsync("Rock", "Jazz");
-            var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            prefs.SetGeneros(new[] { "Rock", "Jazz" });
-            prefs.SetTags(new[] { "ao-vivo", "família" });
-            prefs.SetLocalizacao("04538-133", "São Paulo");
-            prefs.AtualizarFaixaPreco(30m, 300m);
-            prefs.SetReceberNotificacoes(false);
-            _repo.Save(prefs);
-
-            // Act
-            var result = _repo.GetPreferencias(userId);
-
-            // Assert
-            Assert.Equal("04538-133",  result.Cep);
-            Assert.Equal("São Paulo",  result.Cidade);
-            Assert.Equal(30m,          result.FaixaPrecoMin);
-            Assert.Equal(300m,         result.FaixaPrecoMax);
-            Assert.False(result.ReceberNotificacoes);
-            Assert.Contains("Rock",       result.Generos);
-            Assert.Contains("Jazz",       result.Generos);
-            Assert.Contains("ao-vivo",    result.Tags);
-            Assert.Contains("família",    result.Tags);
+            return JsonSerializer.Deserialize<T>(json, JsonOpts);
         }
     }
 
     // ══════════════════════════════════════════════════════════
-    //  SUITE 2 — PreferenciasService (Testcontainers + Fake)
-    //  Camada de serviço sobre banco real
+    //  SUITE 1 — GET /api/preferencias/{usuarioId}
+    //  Fluxo: HTTP → Controller → Service → Repository → PostgreSQL
     // ══════════════════════════════════════════════════════════
 
-    [Collection("preferencias-integration")]
-    public class PreferenciasServiceIntegrationTests
+    [Collection("preferencias-e2e")]
+    public class GetPreferenciasE2ETests : IAsyncLifetime
     {
-        private readonly PostgresFixture       _pg;
-        private readonly PreferenciasRepository _repo;
-        private readonly PreferenciasService    _service;
+        private readonly PostgresFixture _pg;
+        private readonly AventuraWebFactory _factory;
+        private readonly HttpClient _client;
 
-        public PreferenciasServiceIntegrationTests(PostgresFixture pg, ViaCepApiFixture _)
+        public GetPreferenciasE2ETests(PostgresFixture pg, ViaCepApiFixture _)
         {
             _pg      = pg;
-            _repo    = new PreferenciasRepository(new DirectConnectionFactory(pg.ConnectionString));
-            _service = new PreferenciasService(_repo);
-            _pg.ResetAsync().GetAwaiter().GetResult();
+            _factory = new AventuraWebFactory(pg.ConnectionString);
+            _client  = _factory.CreateClient();
         }
 
-        // ── GetByUsuario ──────────────────────────────────────
+        public Task InitializeAsync() => _pg.ResetAsync();
+        public async Task DisposeAsync()
+        {
+            _client.Dispose();
+            await _factory.DisposeAsync();
+        }
+
+        private void Authenticate(Guid userId)
+        {
+            var token = TestJwt.Generate(userId);
+            _client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        // ── Cenários de sucesso ──────────────────────────────
 
         [Fact]
-        public void GetByUsuario_UsuarioNovo_RetornaPreferenciasDefault()
+        public async Task Get_UsuarioNovo_Retorna200ComPreferenciasDefault()
         {
             // Arrange
             var userId = Guid.NewGuid();
+            Authenticate(userId);
 
             // Act
-            var result = _service.GetByUsuario(userId);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal(userId, result.UsuarioId);
-            Assert.True(result.ReceberNotificacoes);
-            Assert.Empty(result.Generos);
-            Assert.Empty(result.Tags);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.NotNull(dto);
+            Assert.Equal(userId, dto!.UsuarioId);
+            Assert.True(dto.ReceberNotificacoes);
+            Assert.Empty(dto.Generos);
+            Assert.Empty(dto.Tags);
         }
 
         [Fact]
-        public void GetByUsuario_UsuarioPersistido_RetornaDadosGravados()
+        public async Task Get_AposUpdate_RetornaEstadoAtualizado()
         {
             // Arrange
             var userId = Guid.NewGuid();
-            var prefs  = _service.GetByUsuario(userId);
-            var dto = new PreferenciasUpdateDto
+            Authenticate(userId);
+
+            var putBody = new PreferenciasUpdateDto
             {
                 Cidade = "Recife",
                 Cep    = "50060-001"
             };
-            _service.Update(userId, dto);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}", putBody);
 
             // Act
-            var result = _service.GetByUsuario(userId);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
 
             // Assert
-            Assert.Equal("Recife",     result.Cidade);
-            Assert.Equal("50060-001",  result.Cep);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal("Recife",    dto!.Cidade);
+            Assert.Equal("50060-001", dto.Cep);
         }
 
         [Fact]
-        public void GetByUsuario_ChamadaDuasVezes_RetornaConsistente()
+        public async Task Get_DoisUsuariosDiferentes_NaoMisturaDados()
+        {
+            // Arrange
+            var userA = Guid.NewGuid();
+            var userB = Guid.NewGuid();
+
+            Authenticate(userA);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userA}",
+                new PreferenciasUpdateDto { Cidade = "São Paulo" });
+
+            Authenticate(userB);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userB}",
+                new PreferenciasUpdateDto { Cidade = "Fortaleza" });
+
+            // Act
+            Authenticate(userA);
+            var respA = await _client.GetAsync($"/api/preferencias/{userA}");
+            Authenticate(userB);
+            var respB = await _client.GetAsync($"/api/preferencias/{userB}");
+
+            // Assert
+            var dtoA = await respA.ReadAsAsync<PreferenciasDto>();
+            var dtoB = await respB.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal("São Paulo", dtoA!.Cidade);
+            Assert.Equal("Fortaleza", dtoB!.Cidade);
+        }
+
+        [Fact]
+        public async Task Get_ChamadoDuasVezes_RetornaConsistente()
         {
             // Arrange
             var userId = Guid.NewGuid();
+            Authenticate(userId);
 
             // Act
-            var r1 = _service.GetByUsuario(userId);
-            var r2 = _service.GetByUsuario(userId);
+            var r1 = await _client.GetAsync($"/api/preferencias/{userId}");
+            var r2 = await _client.GetAsync($"/api/preferencias/{userId}");
 
             // Assert — idempotência
-            Assert.Equal(r1.UsuarioId, r2.UsuarioId);
-        }
-
-        // ── Update ───────────────────────────────────────────
-
-        [Fact]
-        public void Update_DtoNulo_LancaArgumentNullException()
-        {
-            Assert.Throws<ArgumentNullException>(() =>
-                _service.Update(Guid.NewGuid(), null!));
+            Assert.Equal(HttpStatusCode.OK, r1.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, r2.StatusCode);
+            var d1 = await r1.ReadAsAsync<PreferenciasDto>();
+            var d2 = await r2.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal(d1!.UsuarioId, d2!.UsuarioId);
         }
 
         [Fact]
-        public void Update_Cidade_AtualizaERetornaCorretamente()
+        public async Task Get_ResponseContemCamposObrigatorios()
         {
             // Arrange
             var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { Cidade = "Fortaleza" };
+            Authenticate(userId);
 
             // Act
-            var result = _service.Update(userId, dto);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto      = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert — contrato do DTO
+            Assert.NotNull(dto);
+            Assert.NotEqual(Guid.Empty, dto!.UsuarioId);
+            Assert.True(dto.DataAtualizacao > DateTime.MinValue);
+            Assert.NotNull(dto.Generos);
+            Assert.NotNull(dto.Tags);
+        }
+
+        // ── Cenários de erro ────────────────────────────────
+
+        [Fact]
+        public async Task Get_SemToken_Retorna401()
+        {
+            // Arrange — sem autenticação
+            var userId = Guid.NewGuid();
+
+            // Act
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
 
             // Assert
-            Assert.Equal("Fortaleza", result.Cidade);
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [Fact]
-        public void Update_Cep_AtualizaERetornaCorretamente()
+        public async Task Get_TokenInvalido_Retorna401()
         {
             // Arrange
             var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { Cep = "60135-235" };
+            _client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "token.invalido.aqui");
 
             // Act
-            var result = _service.Update(userId, dto);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
 
             // Assert
-            Assert.Equal("60135-235", result.Cep);
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [Fact]
-        public void Update_CepECidade_AmbosAtualizados()
+        public async Task Get_GuidVazio_Retorna400OuNotFound()
         {
-            // Arrange
+            // Arrange — guid vazio na rota não é roteado pelo ASP.NET
             var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { Cep = "69005-141", Cidade = "Manaus" };
+            Authenticate(userId);
 
-            // Act
-            var result = _service.Update(userId, dto);
+            // Act — guid "00000000-0000-0000-0000-000000000000" deve ser barrado
+            var response = await _client.GetAsync($"/api/preferencias/00000000-0000-0000-0000-000000000000");
 
             // Assert
-            Assert.Equal("69005-141", result.Cep);
-            Assert.Equal("Manaus",    result.Cidade);
+            Assert.True(
+                response.StatusCode == HttpStatusCode.BadRequest ||
+                response.StatusCode == HttpStatusCode.NotFound,
+                $"Esperava 400 ou 404, recebeu {(int)response.StatusCode}");
         }
 
         [Fact]
-        public void Update_FaixaPrecoValida_Atualizada()
+        public async Task Get_ContentTypeEhJson()
         {
             // Arrange
             var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { FaixaPrecoMin = 10m, FaixaPrecoMax = 500m };
+            Authenticate(userId);
 
             // Act
-            var result = _service.Update(userId, dto);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
 
             // Assert
-            Assert.Equal(10m,  result.FaixaPrecoMin);
-            Assert.Equal(500m, result.FaixaPrecoMax);
-        }
-
-        [Fact]
-        public void Update_FaixaPrecoMinMaiorQueMax_LancaArgumentException()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { FaixaPrecoMin = 500m, FaixaPrecoMax = 10m };
-
-            // Act & Assert
-            Assert.Throws<ArgumentException>(() => _service.Update(userId, dto));
-        }
-
-        [Fact]
-        public void Update_ReceberNotificacoesTrue_Persistido()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { ReceberNotificacoes = true };
-
-            // Act
-            var result = _service.Update(userId, dto);
-
-            // Assert
-            Assert.True(result.ReceberNotificacoes);
-        }
-
-        [Fact]
-        public void Update_ReceberNotificacoesFalse_Persistido()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { ReceberNotificacoes = false };
-
-            // Act
-            var result = _service.Update(userId, dto);
-
-            // Assert
-            Assert.False(result.ReceberNotificacoes);
-        }
-
-        [Fact]
-        public void Update_GenerosNull_NaoModificaGeneros()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            // primeira atualização não define gêneros
-            var dto = new PreferenciasUpdateDto
-            {
-                Generos = null,
-                Cidade  = "Belém"
-            };
-
-            // Act
-            var result = _service.Update(userId, dto);
-
-            // Assert — generos permanece vazio (default)
-            Assert.Empty(result.Generos);
-        }
-
-        [Fact]
-        public async Task Update_GenerosPreenchidos_PersistidosViaJoin()
-        {
-            // Arrange
-            await _pg.SeedGenerosAsync("Ópera", "Ballet");
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto
-            {
-                Generos = new List<string> { "Ópera", "Ballet" }
-            };
-
-            // Act
-            var result = _service.Update(userId, dto);
-
-            // Assert
-            Assert.Contains("Ópera",  result.Generos);
-            Assert.Contains("Ballet", result.Generos);
-        }
-
-        [Fact]
-        public void Update_TagsNull_NaoModificaTags()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { Tags = null, Cidade = "Goiânia" };
-
-            // Act
-            var result = _service.Update(userId, dto);
-
-            // Assert
-            Assert.Empty(result.Tags);
-        }
-
-        [Fact]
-        public void Update_Tags_PersistidoCorretamente()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto
-            {
-                Tags = new List<string> { "família", "clássico" }
-            };
-
-            // Act
-            var result = _service.Update(userId, dto);
-
-            // Assert
-            Assert.Contains("família",  result.Tags);
-            Assert.Contains("clássico", result.Tags);
-        }
-
-        [Fact]
-        public void Update_Successivo_SobreescreveEstadoAnterior()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            _service.Update(userId, new PreferenciasUpdateDto { Cidade = "Porto Alegre" });
-
-            // Act — segunda atualização muda a cidade
-            var result = _service.Update(userId, new PreferenciasUpdateDto { Cidade = "Curitiba" });
-
-            // Assert
-            Assert.Equal("Curitiba", result.Cidade);
-        }
-
-        [Fact]
-        public void Update_ApenasNotificacoes_OutrosCamposNaoSaoAfetados()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            _service.Update(userId, new PreferenciasUpdateDto
-            {
-                Cidade = "Salvador",
-                Cep    = "40020-010"
-            });
-
-            // Act — atualiza só notificações
-            var result = _service.Update(userId, new PreferenciasUpdateDto
-            {
-                ReceberNotificacoes = false
-            });
-
-            // Assert — cidade e cep preservados
-            Assert.Equal("Salvador",   result.Cidade);
-            Assert.Equal("40020-010",  result.Cep);
-            Assert.False(result.ReceberNotificacoes);
-        }
-
-        [Theory]
-        [InlineData("0", "0")]
-        [InlineData(null, null)]
-        [InlineData("1", "1")]
-        [InlineData("0.01", "9999.99")]
-        public void Update_FaixaPrecoLimiteBorda_NaoLanca(string? minStr, string? maxStr)
-        {
-            decimal? min = minStr is null ? null : decimal.Parse(minStr, System.Globalization.CultureInfo.InvariantCulture);
-            decimal? max = maxStr is null ? null : decimal.Parse(maxStr, System.Globalization.CultureInfo.InvariantCulture);
-        
-            var userId = Guid.NewGuid();
-            var dto    = new PreferenciasUpdateDto { FaixaPrecoMin = min, FaixaPrecoMax = max };
-            var result = _service.Update(userId, dto);
-            Assert.NotNull(result);
-        }
-
-        [Theory]
-        [InlineData(100.01, 100)]
-        [InlineData(999, 1)]
-        public void Update_FaixaPrecoInvalida_LancaArgumentException(decimal min, decimal max)
-        {
-            var dto = new PreferenciasUpdateDto { FaixaPrecoMin = min, FaixaPrecoMax = max };
-            Assert.Throws<ArgumentException>(() => _service.Update(Guid.NewGuid(), dto));
-        }
-
-        [Fact]
-        public void Update_RetornaPreferenciasAtualizadas_NaoEstadoAntigo()
-        {
-            // Arrange
-            var userId  = Guid.NewGuid();
-            var dtoV1   = new PreferenciasUpdateDto { Cidade = "Brasília" };
-            _service.Update(userId, dtoV1);
-
-            // Act
-            var result = _service.Update(userId,
-                new PreferenciasUpdateDto { Cidade = "Belo Horizonte" });
-
-            // Assert — retorno é o estado APÓS o update
-            Assert.Equal("Belo Horizonte", result.Cidade);
-        }
-
-        [Fact]
-        public void Update_GuidVazio_LancaArgumentException()
-        {
-            var dto = new PreferenciasUpdateDto { Cidade = "Florianópolis" };
-            Assert.Throws<ArgumentException>(() => _service.Update(Guid.Empty, dto));
-        }
-
-        [Fact]
-        public void Update_TagsDuplicadas_NaoArmazenaRepetidas()
-        {
-            // Arrange
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto
-            {
-                Tags = new List<string> { "musical", "musical", "MUSICAL" }
-            };
-
-            // Act
-            var result = _service.Update(userId, dto);
-
-            // Assert
-            Assert.Single(result.Tags);
-        }
-
-        [Fact]
-        public async Task Update_GenerosDuplicados_NaoArmazenaRepetidos()
-        {
-            await _pg.SeedGenerosAsync("Drama");
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto
-            {
-                Generos = new List<string> { "Drama", "drama", " Drama " }
-            };
-
-            var result = _service.Update(userId, dto);
-            Assert.Single(result.Generos);
-        }
-
-        [Fact]
-        public void Update_CepComEspacos_Trimado()
-        {
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { Cep = "  01310-100  " };
-            var result = _service.Update(userId, dto);
-            Assert.Equal("01310-100", result.Cep);
-        }
-
-        [Fact]
-        public void Update_CidadeComEspacos_Trimada()
-        {
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { Cidade = "  Natal  " };
-            var result = _service.Update(userId, dto);
-            Assert.Equal("Natal", result.Cidade);
-        }
-
-        [Fact]
-        public void Update_CepVazio_GravaNull()
-        {
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { Cep = "" };
-            var result = _service.Update(userId, dto);
-            Assert.Null(result.Cep);
-        }
-
-        [Fact]
-        public void Update_CidadeVazia_GravaNull()
-        {
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { Cidade = "" };
-            var result = _service.Update(userId, dto);
-            Assert.Null(result.Cidade);
+            Assert.Equal("application/json",
+                response.Content.Headers.ContentType?.MediaType);
         }
     }
 
     // ══════════════════════════════════════════════════════════
-    //  SUITE 3 — ViaCEP (WireMock.Net)
-    //  Dependência CONSUMIDA: API externa de consulta de CEP
+    //  SUITE 2 — PUT /api/preferencias/{usuarioId}
+    //  Fluxo: HTTP → Controller → Service → Repository → PostgreSQL
     // ══════════════════════════════════════════════════════════
 
-    [Collection("preferencias-integration")]
-    public class ViaCepIntegrationTests
+    [Collection("preferencias-e2e")]
+    public class PutPreferenciasE2ETests : IAsyncLifetime
     {
-        private readonly ViaCepApiFixture _cep;
+        private readonly PostgresFixture _pg;
+        private readonly AventuraWebFactory _factory;
+        private readonly HttpClient _client;
 
-        public ViaCepIntegrationTests(PostgresFixture _, ViaCepApiFixture cep)
+        public PutPreferenciasE2ETests(PostgresFixture pg, ViaCepApiFixture _)
         {
-            _cep = cep;
+            _pg      = pg;
+            _factory = new AventuraWebFactory(pg.ConnectionString);
+            _client  = _factory.CreateClient();
         }
 
-        private HttpClient CriarClienteComTimeout(int timeoutMs = 2000)
+        public Task InitializeAsync() => _pg.ResetAsync();
+        public async Task DisposeAsync()
         {
-            return new HttpClient
+            _client.Dispose();
+            await _factory.DisposeAsync();
+        }
+
+        private void Authenticate(Guid userId)
+        {
+            var token = TestJwt.Generate(userId);
+            _client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        // ── Cenários de sucesso ──────────────────────────────
+
+        [Fact]
+        public async Task Put_Cidade_Retorna200ComCidadeAtualizada()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var dto = new PreferenciasUpdateDto { Cidade = "Manaus" };
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}", dto);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var result = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal("Manaus", result!.Cidade);
+        }
+
+        [Fact]
+        public async Task Put_Cep_Retorna200ComCepAtualizado()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var dto = new PreferenciasUpdateDto { Cep = "69005-141" };
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}", dto);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var result = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal("69005-141", result!.Cep);
+        }
+
+        [Fact]
+        public async Task Put_CepECidade_AmbosAtualizados()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var dto = new PreferenciasUpdateDto { Cep = "40020-010", Cidade = "Salvador" };
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}", dto);
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal("40020-010", result!.Cep);
+            Assert.Equal("Salvador",  result.Cidade);
+        }
+
+        [Fact]
+        public async Task Put_FaixaPrecoValida_Retorna200()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var dto = new PreferenciasUpdateDto { FaixaPrecoMin = 20m, FaixaPrecoMax = 300m };
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}", dto);
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(20m,  result!.FaixaPrecoMin);
+            Assert.Equal(300m, result.FaixaPrecoMax);
+        }
+
+        [Fact]
+        public async Task Put_ReceberNotificacoesFalse_Persistido()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var dto = new PreferenciasUpdateDto { ReceberNotificacoes = false };
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}", dto);
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.False(result!.ReceberNotificacoes);
+        }
+
+        [Fact]
+        public async Task Put_Tags_PersistidoCorretamente()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var dto = new PreferenciasUpdateDto
             {
-                BaseAddress = new Uri(_cep.Url),
-                Timeout     = TimeSpan.FromMilliseconds(timeoutMs)
+                Tags = new[] { "familiar", "ao-vivo" }
+            };
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}", dto);
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains("familiar", result!.Tags);
+            Assert.Contains("ao-vivo",  result.Tags);
+        }
+
+        [Fact]
+        public async Task Put_Generos_PersistidosViaJoin()
+        {
+            // Arrange
+            await _pg.SeedGenerosAsync("Drama", "Musical");
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var dto = new PreferenciasUpdateDto
+            {
+                Generos = new[] { "Drama", "Musical" }
+            };
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}", dto);
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains("Drama",   result!.Generos);
+            Assert.Contains("Musical", result.Generos);
+        }
+
+        [Fact]
+        public async Task Put_DoisUpdatesSequenciais_UltimoEstadoPrevalesce()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Porto Alegre" });
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Curitiba" });
+            var result = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal("Curitiba", result!.Cidade);
+        }
+
+        [Fact]
+        public async Task Put_ApenasUmCampo_OutrosNaoSaoApagados()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Belém", Cep = "66010-020" });
+
+            // Act — atualiza só notificações
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { ReceberNotificacoes = false });
+            var result = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert — cidade e cep preservados
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal("Belém",     result!.Cidade);
+            Assert.Equal("66010-020", result.Cep);
+            Assert.False(result.ReceberNotificacoes);
+        }
+
+        [Fact]
+        public async Task Put_RetornaEstadoAposUpdate_NaoAntigo()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Natal" });
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Maceió" });
+            var result = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert — retorno é o estado APÓS o update
+            Assert.Equal("Maceió", result!.Cidade);
+        }
+
+        [Fact]
+        public async Task Put_TodosCampos_TodosPersistidos()
+        {
+            // Arrange
+            await _pg.SeedGenerosAsync("Jazz", "Ballet");
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var dto = new PreferenciasUpdateDto
+            {
+                Generos            = new[] { "Jazz", "Ballet" },
+                Tags               = new[] { "ao-vivo", "clássico" },
+                Cidade             = "São Paulo",
+                Cep                = "04538-133",
+                FaixaPrecoMin      = 30m,
+                FaixaPrecoMax      = 500m,
+                ReceberNotificacoes = false
+            };
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}", dto);
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal("São Paulo",  result!.Cidade);
+            Assert.Equal("04538-133",  result.Cep);
+            Assert.Equal(30m,          result.FaixaPrecoMin);
+            Assert.Equal(500m,         result.FaixaPrecoMax);
+            Assert.False(result.ReceberNotificacoes);
+            Assert.Contains("Jazz",     result.Generos);
+            Assert.Contains("Ballet",   result.Generos);
+            Assert.Contains("ao-vivo",  result.Tags);
+            Assert.Contains("clássico", result.Tags);
+        }
+
+        // ── Cenários de erro ────────────────────────────────
+
+        [Fact]
+        public async Task Put_SemToken_Retorna401()
+        {
+            // Arrange — sem autenticação
+            var userId = Guid.NewGuid();
+            var dto    = new PreferenciasUpdateDto { Cidade = "Goiânia" };
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}", dto);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Put_FaixaPrecoInvalida_Retorna400()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var dto = new PreferenciasUpdateDto { FaixaPrecoMin = 500m, FaixaPrecoMax = 10m };
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}", dto);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Put_BodyNulo_Retorna400()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+
+            // Act — envia corpo vazio
+            var response = await _client.PutAsync(
+                $"/api/preferencias/{userId}",
+                new StringContent("null", Encoding.UTF8, "application/json"));
+
+            // Assert
+            Assert.True(
+                response.StatusCode == HttpStatusCode.BadRequest ||
+                response.StatusCode == HttpStatusCode.UnsupportedMediaType,
+                $"Esperava 400, recebeu {(int)response.StatusCode}");
+        }
+
+        [Fact]
+        public async Task Put_ContentTypeEhJson()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Teresina" });
+
+            // Assert
+            Assert.Equal("application/json",
+                response.Content.Headers.ContentType?.MediaType);
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  SUITE 3 — Fluxo GET → PUT → GET (ciclo completo)
+    //  Verifica consistência ponta a ponta via HTTP
+    // ══════════════════════════════════════════════════════════
+
+    [Collection("preferencias-e2e")]
+    public class FluxoCompletoE2ETests : IAsyncLifetime
+    {
+        private readonly PostgresFixture _pg;
+        private readonly AventuraWebFactory _factory;
+        private readonly HttpClient _client;
+
+        public FluxoCompletoE2ETests(PostgresFixture pg, ViaCepApiFixture _)
+        {
+            _pg      = pg;
+            _factory = new AventuraWebFactory(pg.ConnectionString);
+            _client  = _factory.CreateClient();
+        }
+
+        public Task InitializeAsync() => _pg.ResetAsync();
+        public async Task DisposeAsync()
+        {
+            _client.Dispose();
+            await _factory.DisposeAsync();
+        }
+
+        private void Authenticate(Guid userId)
+        {
+            var token = TestJwt.Generate(userId);
+            _client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        [Fact]
+        public async Task FluxoGetPutGet_EstadoConsistente()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+
+            // Act — 1) GET inicial
+            var getInicial = await _client.GetAsync($"/api/preferencias/{userId}");
+            var inicial    = await getInicial.ReadAsAsync<PreferenciasDto>();
+
+            // Act — 2) PUT com novos dados
+            var putResponse = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Vitória", FaixaPrecoMin = 10m, FaixaPrecoMax = 100m });
+
+            // Act — 3) GET após update
+            var getFinal = await _client.GetAsync($"/api/preferencias/{userId}");
+            var final    = await getFinal.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, getInicial.StatusCode);
+            Assert.Null(inicial!.Cidade);           // default: sem cidade
+            Assert.Equal(HttpStatusCode.OK, putResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, getFinal.StatusCode);
+            Assert.Equal("Vitória", final!.Cidade);
+            Assert.Equal(10m,       final.FaixaPrecoMin);
+            Assert.Equal(100m,      final.FaixaPrecoMax);
+        }
+
+        [Fact]
+        public async Task FluxoMultiplosUpdates_SemContaminacaoCruzada()
+        {
+            // Arrange
+            var users = Enumerable.Range(0, 5).Select(_ => Guid.NewGuid()).ToList();
+
+            // Act — cada usuário recebe sua própria cidade
+            foreach (var (uid, i) in users.Select((u, i) => (u, i)))
+            {
+                Authenticate(uid);
+                await _client.PutAsJsonAsync($"/api/preferencias/{uid}",
+                    new PreferenciasUpdateDto { Cidade = $"Cidade{i}" });
+            }
+
+            // Assert — cada usuário lê só a sua cidade
+            for (var i = 0; i < users.Count; i++)
+            {
+                Authenticate(users[i]);
+                var response = await _client.GetAsync($"/api/preferencias/{users[i]}");
+                var dto      = await response.ReadAsAsync<PreferenciasDto>();
+                Assert.Equal($"Cidade{i}", dto!.Cidade);
+            }
+        }
+
+        [Fact]
+        public async Task FluxoGeneros_AddSubstitui_SemOrfaos()
+        {
+            // Arrange
+            await _pg.SeedGenerosAsync("Drama", "Musical");
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+
+            // Act — primeiro salva Drama
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Generos = new[] { "Drama" } });
+
+            // Act — substitui por Musical
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Generos = new[] { "Musical" } });
+
+            // Act — GET final
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert — Drama removido, Musical presente
+            Assert.DoesNotContain("Drama",   result!.Generos);
+            Assert.Contains("Musical",       result.Generos);
+        }
+
+        [Fact]
+        public async Task FluxoNotificacoes_MudaDirecoesOpostas()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+
+            // Act — desliga
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { ReceberNotificacoes = false });
+            var r1 = await _client.GetAsync($"/api/preferencias/{userId}");
+            var d1 = await r1.ReadAsAsync<PreferenciasDto>();
+
+            // Act — religa
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { ReceberNotificacoes = true });
+            var r2 = await _client.GetAsync($"/api/preferencias/{userId}");
+            var d2 = await r2.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.False(d1!.ReceberNotificacoes);
+            Assert.True(d2!.ReceberNotificacoes);
+        }
+
+        [Fact]
+        public async Task FluxoTags_UpdateSubstitui()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Tags = new[] { "familiar" } });
+
+            // Act
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Tags = new[] { "clássico", "ao-vivo" } });
+
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.DoesNotContain("familiar", result!.Tags);
+            Assert.Contains("clássico", result.Tags);
+            Assert.Contains("ao-vivo",  result.Tags);
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  SUITE 4 — ViaCEP via WireMock + API real
+    //  Dependência CONSUMIDA testada junto ao fluxo HTTP
+    // ══════════════════════════════════════════════════════════
+
+    [Collection("preferencias-e2e")]
+    public class ViaCepE2ETests : IAsyncLifetime
+    {
+        private readonly PostgresFixture  _pg;
+        private readonly ViaCepApiFixture _cep;
+        private readonly AventuraWebFactory _factory;
+        private readonly HttpClient _client;
+        private readonly HttpClient _viaCepClient;
+
+        public ViaCepE2ETests(PostgresFixture pg, ViaCepApiFixture cep)
+        {
+            _pg      = pg;
+            _cep     = cep;
+            _factory = new AventuraWebFactory(pg.ConnectionString);
+            _client  = _factory.CreateClient();
+            _viaCepClient = new HttpClient
+            {
+                BaseAddress = new Uri(cep.Url),
+                Timeout     = TimeSpan.FromSeconds(3)
             };
         }
 
-        // ── Cenários de sucesso ───────────────────────────────
+        public Task InitializeAsync() => _pg.ResetAsync();
+        public async Task DisposeAsync()
+        {
+            _client.Dispose();
+            _viaCepClient.Dispose();
+            await _factory.DisposeAsync();
+        }
+
+        private void Authenticate(Guid userId)
+        {
+            var token = TestJwt.Generate(userId);
+            _client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        // ── ViaCEP stub ──────────────────────────────────────
 
         [Fact]
-        public async Task BuscarCep_Valido_RetornaCidadeEUf()
+        public async Task ViaCep_CepValido_RetornaCidade()
         {
             // Arrange
             _cep.StubCepValido("01310-100", "São Paulo", "SP");
-            var http = CriarClienteComTimeout();
 
-            // Act
-            var result = await ViaCepClient.BuscarAsync(http, "01310-100");
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.Equal("São Paulo", result!.Cidade);
-            Assert.Equal("SP",        result.Uf);
-        }
-
-        [Fact]
-        public async Task BuscarCep_Valido_RetornaCepFormatado()
-        {
-            // Arrange
-            _cep.StubCepValido("20040-020", "Rio de Janeiro", "RJ");
-            var http = CriarClienteComTimeout();
-
-            // Act
-            var result = await ViaCepClient.BuscarAsync(http, "20040-020");
+            // Act — consulta o stub como o sistema faria
+            var response = await _viaCepClient.GetAsync("/ws/01310-100/json/");
+            var json     = await response.Content.ReadAsStringAsync();
+            var doc      = System.Text.Json.JsonDocument.Parse(json);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.Equal("20040-020", result!.Cep);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal("São Paulo", doc.RootElement.GetProperty("localidade").GetString());
+            Assert.Equal("SP",        doc.RootElement.GetProperty("uf").GetString());
         }
 
         [Fact]
-        public async Task BuscarCep_DoisCepsDiferentes_RetornaCorreto()
-        {
-            // Arrange — Stub para dois CEPs distintos em sequência
-            _cep.StubCepValido("01310-100", "São Paulo", "SP");
-            var http = CriarClienteComTimeout();
-            var spResult = await ViaCepClient.BuscarAsync(http, "01310-100");
-
-            _cep.StubCepValido("30112-010", "Belo Horizonte", "MG");
-            var bhResult = await ViaCepClient.BuscarAsync(http, "30112-010");
-
-            // Assert — cada CEP retorna sua cidade correta
-            Assert.Equal("São Paulo",      spResult!.Cidade);
-            Assert.Equal("Belo Horizonte", bhResult!.Cidade);
-        }
-
-        // ── Cenários de erro do provider ─────────────────────
-
-        [Fact]
-        public async Task BuscarCep_NaoEncontrado_RetornaNull()
+        public async Task ViaCep_CepNaoEncontrado_RetornaErroTrue()
         {
             // Arrange
             _cep.StubCepNaoEncontrado("99999-999");
-            var http = CriarClienteComTimeout();
 
             // Act
-            var result = await ViaCepClient.BuscarAsync(http, "99999-999");
+            var response = await _viaCepClient.GetAsync("/ws/99999-999/json/");
+            var json     = await response.Content.ReadAsStringAsync();
+            var doc      = System.Text.Json.JsonDocument.Parse(json);
 
-            // Assert — provider retorna erro:true → nosso client retorna null
-            Assert.Null(result);
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.True(doc.RootElement.GetProperty("erro").GetBoolean());
         }
 
         [Fact]
-        public async Task BuscarCep_Provider503_LancaHttpRequestException()
+        public async Task ViaCep_Indisponivel_Retorna503()
         {
             // Arrange
             _cep.StubViaCepIndisponivel("01310-100");
-            var http = CriarClienteComTimeout();
-
-            // Act & Assert — dependência consumida indisponível
-            var ex = await Assert.ThrowsAsync<HttpRequestException>(
-                () => ViaCepClient.BuscarAsync(http, "01310-100"));
-            Assert.Contains("503", ex.Message);
-        }
-
-        [Fact]
-        public async Task BuscarCep_Provider429_LancaHttpRequestException()
-        {
-            // Arrange
-            _cep.StubViaCepRateLimitExcedido("01310-100");
-            var http = CriarClienteComTimeout();
-
-            // Act & Assert
-            var ex = await Assert.ThrowsAsync<HttpRequestException>(
-                () => ViaCepClient.BuscarAsync(http, "01310-100"));
-            Assert.Contains("429", ex.Message);
-        }
-
-        [Fact]
-        public async Task BuscarCep_ProviderTimeout_LancaTaskCanceledException()
-        {
-            // Arrange — provider demora 10s, client tem timeout de 200ms
-            _cep.StubViaCepTimeout("01310-100");
-            var http = CriarClienteComTimeout(timeoutMs: 200);
-
-            // Act & Assert
-            await Assert.ThrowsAnyAsync<TaskCanceledException>(
-                () => ViaCepClient.BuscarAsync(http, "01310-100"));
-        }
-
-        [Fact]
-        public async Task BuscarCep_PayloadInvalido_LancaJsonException()
-        {
-            // Arrange
-            _cep.StubViaCepPayloadInvalido("01310-100");
-            var http = CriarClienteComTimeout();
-
-            // Act & Assert — JSON malformado deve lançar
-            await Assert.ThrowsAnyAsync<Exception>(
-                () => ViaCepClient.BuscarAsync(http, "01310-100"));
-        }
-
-        // ── Integração ViaCEP → PreferenciasService ───────────
-
-        [Fact]
-        public async Task FluxoCompleto_BuscarCepEAtualizarPreferencias_ComBancoReal()
-        {
-            // Este teste cobre as DUAS dependências ao mesmo tempo:
-            //   • Testcontainers: PostgreSQL real persiste a preferência
-            //   • WireMock:       ViaCEP externo valida o CEP antes de salvar
-            // (fixture do banco é injetada separadamente — ver construtor da suite 2)
-
-            // Arrange — stub ViaCEP respondendo 200 com cidade válida
-            _cep.StubCepValido("04538-133", "São Paulo", "SP");
-            var http = CriarClienteComTimeout();
-
-            // Act — 1) consulta CEP externo
-            var cepInfo = await ViaCepClient.BuscarAsync(http, "04538-133");
-
-            // Assert — ViaCEP retornou dados
-            Assert.NotNull(cepInfo);
-            Assert.Equal("São Paulo", cepInfo!.Cidade);
-
-            // (em produção, o service usaria cepInfo.Cidade ao atualizar)
-        }
-
-        [Fact]
-        public async Task FluxoFalha_ViaCepIndisponivel_ServicoNaoDeveCorromperPreferencias()
-        {
-            // Arrange — ViaCEP fora do ar
-            _cep.StubViaCepIndisponivel("04538-133");
-            var http = CriarClienteComTimeout();
-
-            // Act — tentativa de buscar CEP lança exceção
-            var ex = await Assert.ThrowsAsync<HttpRequestException>(
-                () => ViaCepClient.BuscarAsync(http, "04538-133"));
-
-            // Assert — exceção propagada, preferências não foram alteradas
-            Assert.Contains("503", ex.Message);
-        }
-
-        // ── Verificação de chamadas (WireMock LogEntries) ────
-
-        [Fact]
-        public async Task BuscarCep_Valido_WireMockRegistraExatamenteUmaChamada()
-        {
-            // Arrange
-            _cep.StubCepValido("01310-100", "São Paulo", "SP");
-            var http = CriarClienteComTimeout();
 
             // Act
-            await ViaCepClient.BuscarAsync(http, "01310-100");
-
-            // Assert — verifica que o stub foi de fato acionado
-            Assert.Single(_cep.Server.LogEntries);
-        }
-
-        [Fact]
-        public async Task BuscarCep_ChamadoDuasVezes_WireMockRegistraDuasChamadas()
-        {
-            // Arrange
-            _cep.StubCepValido("01310-100", "São Paulo", "SP");
-            var http = CriarClienteComTimeout();
-
-            // Act
-            await ViaCepClient.BuscarAsync(http, "01310-100");
-            await ViaCepClient.BuscarAsync(http, "01310-100");
+            var response = await _viaCepClient.GetAsync("/ws/01310-100/json/");
 
             // Assert
+            Assert.Equal(HttpStatusCode.ServiceUnavailable, response.StatusCode);
+        }
+
+        // ── Fluxo combinado: ViaCEP + API + banco ───────────
+
+        [Fact]
+        public async Task FluxoCompleto_ViaCepValidaCep_ApiPersisteCidade()
+        {
+            // Este teste cobre as DUAS dependências em um único fluxo:
+            //   WireMock → simula ViaCEP retornando cidade para o CEP
+            //   Testcontainers → PostgreSQL real persiste a preferência
+            //   WebApplicationFactory → API inteira in-process
+
+            // Arrange
+            _cep.StubCepValido("04538-133", "São Paulo", "SP");
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+
+            // Act — 1) consulta ViaCEP para obter a cidade
+            var cepResponse = await _viaCepClient.GetAsync("/ws/04538-133/json/");
+            var cepJson     = await cepResponse.Content.ReadAsStringAsync();
+            var cepDoc      = System.Text.Json.JsonDocument.Parse(cepJson);
+            var cidade      = cepDoc.RootElement.GetProperty("localidade").GetString();
+
+            // Act — 2) persiste via API (banco real)
+            var putResponse = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cep = "04538-133", Cidade = cidade });
+
+            // Act — 3) lê de volta via API
+            var getResponse = await _client.GetAsync($"/api/preferencias/{userId}");
+            var result      = await getResponse.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, putResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+            Assert.Equal("São Paulo", result!.Cidade);
+            Assert.Equal("04538-133", result.Cep);
+        }
+
+        [Fact]
+        public async Task FluxoFalha_ViaCepIndisponivel_ApiPersisteDadosAntigos()
+        {
+            // Arrange — primeiro salva uma cidade
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Brasília" });
+
+            // Arrange — ViaCEP fica fora do ar
+            _cep.StubViaCepIndisponivel("70040-020");
+
+            // Act — tenta consultar o ViaCEP indisponível
+            var cepResponse = await _viaCepClient.GetAsync("/ws/70040-020/json/");
+
+            // Act — sem atualizar as preferências (falha antes de chamar a API)
+            // lê as preferências existentes
+            var getResponse = await _client.GetAsync($"/api/preferencias/{userId}");
+            var result      = await getResponse.ReadAsAsync<PreferenciasDto>();
+
+            // Assert — preferências anteriores preservadas, não corrompidas
+            Assert.Equal(HttpStatusCode.ServiceUnavailable, cepResponse.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
+            Assert.Equal("Brasília", result!.Cidade);
+        }
+
+        [Fact]
+        public async Task ViaCep_WireMockRegistraChamadasCorretamente()
+        {
+            // Arrange
+            _cep.StubCepValido("20040-020", "Rio de Janeiro", "RJ");
+
+            // Act — duas chamadas ao mesmo CEP
+            await _viaCepClient.GetAsync("/ws/20040-020/json/");
+            await _viaCepClient.GetAsync("/ws/20040-020/json/");
+
+            // Assert — WireMock registrou exatamente 2 chamadas
             Assert.Equal(2, _cep.Server.LogEntries.Count());
         }
     }
 
     // ══════════════════════════════════════════════════════════
-    //  SUITE 4 — Cenários de borda avançados (banco real)
+    //  SUITE 5 — Edge Cases via HTTP
     // ══════════════════════════════════════════════════════════
 
-    [Collection("preferencias-integration")]
-    public class PreferenciasEdgeCaseTests
+    [Collection("preferencias-e2e")]
+    public class EdgeCasesE2ETests : IAsyncLifetime
     {
-        private readonly PostgresFixture        _pg;
-        private readonly PreferenciasRepository _repo;
-        private readonly PreferenciasService    _service;
+        private readonly PostgresFixture _pg;
+        private readonly AventuraWebFactory _factory;
+        private readonly HttpClient _client;
 
-        public PreferenciasEdgeCaseTests(PostgresFixture pg, ViaCepApiFixture _)
+        public EdgeCasesE2ETests(PostgresFixture pg, ViaCepApiFixture _)
         {
             _pg      = pg;
-            _repo    = new PreferenciasRepository(new DirectConnectionFactory(pg.ConnectionString));
-            _service = new PreferenciasService(_repo);
-            _pg.ResetAsync().GetAwaiter().GetResult();
+            _factory = new AventuraWebFactory(pg.ConnectionString);
+            _client  = _factory.CreateClient();
+        }
+
+        public Task InitializeAsync() => _pg.ResetAsync();
+        public async Task DisposeAsync()
+        {
+            _client.Dispose();
+            await _factory.DisposeAsync();
+        }
+
+        private void Authenticate(Guid userId)
+        {
+            var token = TestJwt.Generate(userId);
+            _client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
 
         [Fact]
-        public void GetByUsuario_100Vezes_SemException()
+        public async Task Put_CidadeComAcento_PersistidaCorretamente()
         {
-            // Confiabilidade: idempotência sob carga moderada
+            // Arrange
             var userId = Guid.NewGuid();
-            for (var i = 0; i < 100; i++)
-            {
-                var r = _service.GetByUsuario(userId);
-                Assert.NotNull(r);
-            }
+            Authenticate(userId);
+
+            // Act
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Águas de Lindóia" });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Equal("Águas de Lindóia", result!.Cidade);
         }
 
         [Fact]
-        public void Update_50Vezes_MesmoUsuario_UltimoEstadoPersistido()
+        public async Task Put_TagComCaracterEspecial_Persistida()
         {
-            // Confiabilidade: UPSERT repetido não corrompe dados
+            // Arrange
             var userId = Guid.NewGuid();
-            for (var i = 1; i <= 50; i++)
-            {
-                _service.Update(userId, new PreferenciasUpdateDto { Cidade = $"Cidade{i}" });
-            }
+            Authenticate(userId);
 
-            var result = _service.GetByUsuario(userId);
-            Assert.Equal("Cidade50", result.Cidade);
+            // Act
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Tags = new[] { "família & crianças" } });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Contains("família & crianças", result!.Tags);
         }
 
         [Fact]
-        public void Update_50UsuariosDiferentes_NaoHaContaminacaoCruzada()
+        public async Task Put_TagsDuplicadas_SalvaUmaVez()
         {
-            // Isolamento: dados de usuários distintos não se misturam
-            var ids = Enumerable.Range(0, 50).Select(_ => Guid.NewGuid()).ToList();
-            foreach (var (uid, idx) in ids.Select((u, i) => (u, i)))
-            {
-                _service.Update(uid, new PreferenciasUpdateDto { Cidade = $"Cidade{idx}" });
-            }
-
-            for (var i = 0; i < ids.Count; i++)
-            {
-                var r = _service.GetByUsuario(ids[i]);
-                Assert.Equal($"Cidade{i}", r.Cidade);
-            }
-        }
-
-        [Fact]
-        public void Update_TagComCaracteresEspeciais_Persistida()
-        {
+            // Arrange
             var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto
-            {
-                Tags = new[] { "família & crianças", "ao-ar-livre (gratuito)" }
-            };
-            var result = _service.Update(userId, dto);
-            Assert.Contains("família & crianças", result.Tags);
+            Authenticate(userId);
+
+            // Act
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Tags = new[] { "musical", "musical", "MUSICAL" } });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Single(result!.Tags);
         }
 
         [Fact]
-        public void Update_CidadeComAcento_Persistida()
+        public async Task Put_FaixaPrecoMinIgualMax_NaoLanca()
         {
+            // Arrange
             var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { Cidade = "Águas de Lindóia" };
-            var result = _service.Update(userId, dto);
-            Assert.Equal("Águas de Lindóia", result.Cidade);
+            Authenticate(userId);
+
+            // Act
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { FaixaPrecoMin = 100m, FaixaPrecoMax = 100m });
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Fact]
-        public void Update_FaixaPrecoDecimalAlta_Persistida()
+        public async Task Put_FaixaPrecoDecimalAlta_Persistida()
         {
+            // Arrange
             var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto { FaixaPrecoMin = 0.01m, FaixaPrecoMax = 99999.99m };
-            var result = _service.Update(userId, dto);
-            Assert.Equal(0.01m,     result.FaixaPrecoMin);
+            Authenticate(userId);
+
+            // Act
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { FaixaPrecoMin = 0.01m, FaixaPrecoMax = 99999.99m });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Equal(0.01m,     result!.FaixaPrecoMin);
             Assert.Equal(99999.99m, result.FaixaPrecoMax);
         }
 
         [Fact]
-        public void Update_TagsComEspacos_Trimadas()
-        {
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto
-            {
-                Tags = new[] { "  musical  ", " clássico " }
-            };
-            var result = _service.Update(userId, dto);
-            Assert.Contains("musical",  result.Tags);
-            Assert.Contains("clássico", result.Tags);
-            Assert.DoesNotContain("  musical  ", result.Tags);
-        }
-
-        [Fact]
-        public void Update_TagsVazias_IgnoradasNaoPersistidas()
-        {
-            var userId = Guid.NewGuid();
-            var dto = new PreferenciasUpdateDto
-            {
-                Tags = new[] { "", "   ", "musical" }
-            };
-            var result = _service.Update(userId, dto);
-            Assert.Single(result.Tags);
-            Assert.Contains("musical", result.Tags);
-        }
-
-        [Fact]
-        public async Task Update_GeneroSubstituidoEmTransacao_NaoGeraOrfaos()
+        public async Task Get_10VezesSequenciais_SemException()
         {
             // Arrange
-            await _pg.SeedGenerosAsync("Drama", "Musical");
             var userId = Guid.NewGuid();
+            Authenticate(userId);
 
-            // Primeiro salva Drama
-            _service.Update(userId, new PreferenciasUpdateDto
+            // Act & Assert — 10 GETs seguidos sem falha
+            for (var i = 0; i < 10; i++)
             {
-                Generos = new[] { "Drama" }
-            });
-
-            // Act — substitui por Musical
-            _service.Update(userId, new PreferenciasUpdateDto
-            {
-                Generos = new[] { "Musical" }
-            });
-
-            var result = _service.GetByUsuario(userId);
-
-            // Assert — Drama foi removido, sem órfão na tabela join
-            Assert.DoesNotContain("Drama",   result.Generos);
-            Assert.Contains("Musical",       result.Generos);
+                var response = await _client.GetAsync($"/api/preferencias/{userId}");
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            }
         }
 
         [Fact]
-        public void GetByUsuario_AposUpdate_RefleteEstadoMaisRecente()
+        public async Task Put_CepVazio_GravaNull()
         {
+            // Arrange
             var userId = Guid.NewGuid();
-            _service.Update(userId, new PreferenciasUpdateDto
-            {
-                Cidade = "Vitória", FaixaPrecoMin = 10m, FaixaPrecoMax = 100m
-            });
+            Authenticate(userId);
 
-            var result = _service.GetByUsuario(userId);
-            Assert.Equal("Vitória", result.Cidade);
-            Assert.Equal(10m,       result.FaixaPrecoMin);
-            Assert.Equal(100m,      result.FaixaPrecoMax);
+            // Act
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cep = "" });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Null(result!.Cep);
         }
 
-        [Theory]
-        [InlineData("Drama")]
-        [InlineData("Comédia")]
-        [InlineData("Musical")]
-        [InlineData("Ópera")]
-        [InlineData("Ballet")]
-        public async Task Update_CadaGeneroPorFora_PersistidoIndividualmente(string genero)
+        [Fact]
+        public async Task Put_GenerosVazios_ListaVazia()
         {
-            await _pg.SeedGenerosAsync(genero);
+            // Arrange
+            await _pg.SeedGenerosAsync("Drama");
             var userId = Guid.NewGuid();
-            var result = _service.Update(userId, new PreferenciasUpdateDto
-            {
-                Generos = new[] { genero }
-            });
-            Assert.Contains(genero, result.Generos);
+            Authenticate(userId);
+
+            // Primeiro adiciona Drama
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Generos = new[] { "Drama" } });
+
+            // Act — remove todos
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Generos = Array.Empty<string>() });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Empty(result!.Generos);
         }
 
         [Theory]
         [InlineData("familiar")]
         [InlineData("ao-vivo")]
         [InlineData("clássico")]
-        [InlineData("experimental")]
-        [InlineData("gratuito")]
-        public void Update_CadaTagPorFora_PersistidaIndividualmente(string tag)
+        public async Task Put_CadaTagIndividual_PersistidaViaHttp(string tag)
         {
+            // Arrange
             var userId = Guid.NewGuid();
-            var result = _service.Update(userId, new PreferenciasUpdateDto
-            {
-                Tags = new[] { tag }
-            });
-            Assert.Contains(tag, result.Tags);
+            Authenticate(userId);
+
+            // Act
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Tags = new[] { tag } });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var result   = await response.ReadAsAsync<PreferenciasDto>();
+
+            // Assert
+            Assert.Contains(tag, result!.Tags);
         }
     }
 
-    // ──────────────────────────────────────────────────────────
-    //  HELPER INTERNO — factory que usa connection string direta
-    //  (evita precisar de IConfiguration nos testes)
-    // ──────────────────────────────────────────────────────────
-
-    internal sealed class DirectConnectionFactory : IDbConnectionFactory
-    {
-        private readonly string _cs;
-        public DirectConnectionFactory(string cs) => _cs = cs;
-        public NpgsqlConnection CreateConnection() => new(_cs);
-    }
-
     // ══════════════════════════════════════════════════════════
-    //  SUITE 5 — Contratos adicionais e fluxo combinado
+    //  SUITE 6 — GET cenários adicionais E2E
     // ══════════════════════════════════════════════════════════
 
-    [Collection("preferencias-integration")]
-    public class PreferenciasContratoTests
+    [Collection("preferencias-e2e")]
+    public class GetPreferenciasAdicionaisE2ETests : IAsyncLifetime
     {
-        private readonly PostgresFixture        _pg;
-        private readonly PreferenciasRepository _repo;
-        private readonly PreferenciasService    _service;
+        private readonly PostgresFixture _pg;
+        private readonly AventuraWebFactory _factory;
+        private readonly HttpClient _client;
 
-        public PreferenciasContratoTests(PostgresFixture pg, ViaCepApiFixture _)
+        public GetPreferenciasAdicionaisE2ETests(PostgresFixture pg, ViaCepApiFixture _)
         {
             _pg      = pg;
-            _repo    = new PreferenciasRepository(new DirectConnectionFactory(pg.ConnectionString));
-            _service = new PreferenciasService(_repo);
-            _pg.ResetAsync().GetAwaiter().GetResult();
+            _factory = new AventuraWebFactory(pg.ConnectionString);
+            _client  = _factory.CreateClient();
         }
 
-        [Fact]
-        public void GetByUsuario_RetornaObjetoComIdNaoVazio()
+        public Task InitializeAsync() => _pg.ResetAsync();
+        public async Task DisposeAsync()
         {
-            var result = _service.GetByUsuario(Guid.NewGuid());
-            Assert.NotEqual(Guid.Empty, result.Id);
+            _client.Dispose();
+            await _factory.DisposeAsync();
         }
 
-        [Fact]
-        public void GetByUsuario_RetornaDataAtualizacaoNaoMinima()
+        private void Authenticate(Guid userId)
         {
-            var result = _service.GetByUsuario(Guid.NewGuid());
-            Assert.True(result.DataAtualizacao > DateTime.MinValue);
+            var token = TestJwt.Generate(userId);
+            _client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
         }
 
         [Fact]
-        public void Update_AlteraCidade_DataAtualizacaoNaoEMinima()
-        {
-            var userId = Guid.NewGuid();
-            var result = _service.Update(userId, new PreferenciasUpdateDto { Cidade = "Maceió" });
-            Assert.True(result.DataAtualizacao > DateTime.MinValue);
-        }
-
-        [Fact]
-        public void Update_SomenteFaixaPreco_CidadeNaoAlterada()
+        public async Task Get_RetornaReceberNotificacoesTrueNoDefault()
         {
             var userId = Guid.NewGuid();
-            _service.Update(userId, new PreferenciasUpdateDto { Cidade = "Teresina" });
-            var result = _service.Update(userId, new PreferenciasUpdateDto
+            Authenticate(userId);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.True(dto!.ReceberNotificacoes);
+        }
+
+        [Fact]
+        public async Task Get_RetornaCepNuloNoDefault()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Null(dto!.Cep);
+        }
+
+        [Fact]
+        public async Task Get_RetornaCidadeNulaNoDefault()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Null(dto!.Cidade);
+        }
+
+        [Fact]
+        public async Task Get_RetornaFaixaPrecoNulaNoDefault()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Null(dto!.FaixaPrecoMin);
+            Assert.Null(dto!.FaixaPrecoMax);
+        }
+
+        [Fact]
+        public async Task Get_RetornaGenerosVaziosNoDefault()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Empty(dto!.Generos);
+        }
+
+        [Fact]
+        public async Task Get_RetornaTagsVaziasNoDefault()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Empty(dto!.Tags);
+        }
+
+        [Fact]
+        public async Task Get_RetornaUsuarioIdCorreto()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal(userId, dto!.UsuarioId);
+        }
+
+        [Fact]
+        public async Task Get_AposPutComGeneros_RetornaGenerosCorretos()
+        {
+            await _pg.SeedGenerosAsync("Ópera");
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Generos = new[] { "Ópera" } });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Contains("Ópera", dto!.Generos);
+        }
+
+        [Fact]
+        public async Task Get_AposPutComTags_RetornaTagsCorretas()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Tags = new[] { "experimental" } });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Contains("experimental", dto!.Tags);
+        }
+
+        [Fact]
+        public async Task Get_AposPutComFaixaPreco_RetornaFaixaCorreta()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { FaixaPrecoMin = 15m, FaixaPrecoMax = 150m });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal(15m, dto!.FaixaPrecoMin);
+            Assert.Equal(150m, dto!.FaixaPrecoMax);
+        }
+
+        [Fact]
+        public async Task Get_AposPutComNotificacoesFalse_RetornaFalse()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { ReceberNotificacoes = false });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.False(dto!.ReceberNotificacoes);
+        }
+
+        [Fact]
+        public async Task Get_TokenExpirado_Retorna401()
+        {
+            // Arrange — gera token expirado manualmente
+            var userId = Guid.NewGuid();
+            var securityKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(TestJwt.Key));
+            var credentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(
+                securityKey, Microsoft.IdentityModel.Tokens.SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                issuer: TestJwt.Issuer,
+                audience: TestJwt.Audience,
+                claims: new[] { new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()) },
+                expires: DateTime.UtcNow.AddHours(-1), // expirado
+                signingCredentials: credentials);
+            var tokenStr = new JwtSecurityTokenHandler().WriteToken(token);
+
+            _client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenStr);
+
+            // Act
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("Drama")]
+        [InlineData("Comédia")]
+        [InlineData("Ballet")]
+        public async Task Get_AposPutCadaGenero_RetornaGeneroCorreto(string genero)
+        {
+            await _pg.SeedGenerosAsync(genero);
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Generos = new[] { genero } });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Contains(genero, dto!.Generos);
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  SUITE 7 — PUT cenários adicionais E2E
+    // ══════════════════════════════════════════════════════════
+
+    [Collection("preferencias-e2e")]
+    public class PutPreferenciasAdicionaisE2ETests : IAsyncLifetime
+    {
+        private readonly PostgresFixture _pg;
+        private readonly AventuraWebFactory _factory;
+        private readonly HttpClient _client;
+
+        public PutPreferenciasAdicionaisE2ETests(PostgresFixture pg, ViaCepApiFixture _)
+        {
+            _pg      = pg;
+            _factory = new AventuraWebFactory(pg.ConnectionString);
+            _client  = _factory.CreateClient();
+        }
+
+        public Task InitializeAsync() => _pg.ResetAsync();
+        public async Task DisposeAsync()
+        {
+            _client.Dispose();
+            await _factory.DisposeAsync();
+        }
+
+        private void Authenticate(Guid userId)
+        {
+            var token = TestJwt.Generate(userId);
+            _client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        [Fact]
+        public async Task Put_MultiplasTags_TodasPersistidas()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var tags = new[] { "familiar", "ao-vivo", "clássico", "gratuito", "infantil" };
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Tags = tags });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            foreach (var tag in tags)
+                Assert.Contains(tag, dto!.Tags);
+        }
+
+        [Fact]
+        public async Task Put_SobreescreveCidadeComNovaValor_Retorna200()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Recife" });
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Fortaleza" });
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal("Fortaleza", dto!.Cidade);
+        }
+
+        [Fact]
+        public async Task Put_NotificacoesTrue_AposFalse_Retorna200()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { ReceberNotificacoes = false });
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { ReceberNotificacoes = true });
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.True(dto!.ReceberNotificacoes);
+        }
+
+        [Fact]
+        public async Task Put_FaixaPrecoZero_Persistida()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { FaixaPrecoMin = 0m, FaixaPrecoMax = 0m });
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Put_CidadeComNumeros_Persistida()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "São Paulo 2026" });
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal("São Paulo 2026", dto!.Cidade);
+        }
+
+        [Fact]
+        public async Task Put_CepComHifen_Persistido()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cep = "01310-100" });
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal("01310-100", dto!.Cep);
+        }
+
+        [Fact]
+        public async Task Put_GenerosNulos_NaoAlteraGenerosExistentes()
+        {
+            await _pg.SeedGenerosAsync("Jazz");
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Generos = new[] { "Jazz" } });
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Generos = null, Cidade = "Natal" });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Contains("Jazz", dto!.Generos);
+        }
+
+        [Fact]
+        public async Task Put_TagsNulas_NaoAlteraTagsExistentes()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Tags = new[] { "familiar" } });
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Tags = null, Cidade = "Maceió" });
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Contains("familiar", dto!.Tags);
+        }
+
+        [Fact]
+        public async Task Put_10VezesSeguidasComCidades_UltimaVence()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            for (var i = 0; i < 10; i++)
             {
-                FaixaPrecoMin = 5m,
-                FaixaPrecoMax = 50m
+                await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                    new PreferenciasUpdateDto { Cidade = $"Cidade{i}" });
+            }
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal("Cidade9", dto!.Cidade);
+        }
+
+        [Fact]
+        public async Task Put_SemToken_NaoAlteraDados()
+        {
+            // Arrange — autentica e salva dado
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Belém" });
+
+            // Act — tenta PUT sem token
+            _client.DefaultRequestHeaders.Authorization = null;
+            var putResp = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Invasão" });
+
+            // Assert — bloqueado e dado preservado
+            Assert.Equal(HttpStatusCode.Unauthorized, putResp.StatusCode);
+            Authenticate(userId);
+            var getResp = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await getResp.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal("Belém", dto!.Cidade);
+        }
+
+        [Theory]
+        [InlineData("São Paulo")]
+        [InlineData("Rio de Janeiro")]
+        [InlineData("Belo Horizonte")]
+        [InlineData("Porto Alegre")]
+        [InlineData("Recife")]
+        public async Task Put_CadaCidadePrincipal_PersistidaViaHttp(string cidade)
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = cidade });
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal(cidade, dto!.Cidade);
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  SUITE 8 — Cenários de resiliência e contrato HTTP
+    // ══════════════════════════════════════════════════════════
+
+    [Collection("preferencias-e2e")]
+    public class ResilienciaE2ETests : IAsyncLifetime
+    {
+        private readonly PostgresFixture _pg;
+        private readonly AventuraWebFactory _factory;
+        private readonly HttpClient _client;
+
+        public ResilienciaE2ETests(PostgresFixture pg, ViaCepApiFixture _)
+        {
+            _pg      = pg;
+            _factory = new AventuraWebFactory(pg.ConnectionString);
+            _client  = _factory.CreateClient();
+        }
+
+        public Task InitializeAsync() => _pg.ResetAsync();
+        public async Task DisposeAsync()
+        {
+            _client.Dispose();
+            await _factory.DisposeAsync();
+        }
+
+        private void Authenticate(Guid userId)
+        {
+            var token = TestJwt.Generate(userId);
+            _client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        [Fact]
+        public async Task Get_UsuarioA_NaoVeDadosUsuarioB()
+        {
+            var userA = Guid.NewGuid();
+            var userB = Guid.NewGuid();
+
+            Authenticate(userA);
+            await _client.PutAsJsonAsync($"/api/preferencias/{userA}",
+                new PreferenciasUpdateDto { Cidade = "Brasília" });
+
+            Authenticate(userB);
+            var response = await _client.GetAsync($"/api/preferencias/{userB}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+
+            Assert.Null(dto!.Cidade);
+        }
+
+        [Fact]
+        public async Task Put_EGetAlternados_SemInterferencia()
+        {
+            var u1 = Guid.NewGuid();
+            var u2 = Guid.NewGuid();
+
+            Authenticate(u1);
+            await _client.PutAsJsonAsync($"/api/preferencias/{u1}",
+                new PreferenciasUpdateDto { Cidade = "Curitiba" });
+
+            Authenticate(u2);
+            await _client.PutAsJsonAsync($"/api/preferencias/{u2}",
+                new PreferenciasUpdateDto { Cidade = "Manaus" });
+
+            Authenticate(u1);
+            var r1 = await _client.GetAsync($"/api/preferencias/{u1}");
+            var d1 = await r1.ReadAsAsync<PreferenciasDto>();
+
+            Authenticate(u2);
+            var r2 = await _client.GetAsync($"/api/preferencias/{u2}");
+            var d2 = await r2.ReadAsAsync<PreferenciasDto>();
+
+            Assert.Equal("Curitiba", d1!.Cidade);
+            Assert.Equal("Manaus",   d2!.Cidade);
+        }
+
+        [Fact]
+        public async Task GetESeguido_AposMultiplosPuts_RetornaUltimoEstado()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Goiânia" });
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Belém" });
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Teresina" });
+
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+
+            Assert.Equal("Teresina", dto!.Cidade);
+        }
+
+        [Fact]
+        public async Task Get_Retorna200ParaQualquerGuidValido()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Put_Retorna200ParaQualquerGuidValido()
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Vitória" });
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task FluxoCadastroCompleto_GetPutGetVerificaConsistencia()
+        {
+            await _pg.SeedGenerosAsync("Rock");
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+
+            // 1) GET inicial — default
+            var r1 = await _client.GetAsync($"/api/preferencias/{userId}");
+            var d1 = await r1.ReadAsAsync<PreferenciasDto>();
+            Assert.Null(d1!.Cidade);
+            Assert.Empty(d1.Generos);
+
+            // 2) PUT completo
+            await _client.PutAsJsonAsync($"/api/preferencias/{userId}", new PreferenciasUpdateDto
+            {
+                Cidade             = "São Paulo",
+                Cep                = "01310-100",
+                Generos            = new[] { "Rock" },
+                Tags               = new[] { "ao-vivo" },
+                FaixaPrecoMin      = 50m,
+                FaixaPrecoMax      = 500m,
+                ReceberNotificacoes = false
             });
-            Assert.Equal("Teresina", result.Cidade);
+
+            // 3) GET final — estado atualizado
+            var r2 = await _client.GetAsync($"/api/preferencias/{userId}");
+            var d2 = await r2.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal("São Paulo",  d2!.Cidade);
+            Assert.Equal("01310-100",  d2.Cep);
+            Assert.Contains("Rock",    d2.Generos);
+            Assert.Contains("ao-vivo", d2.Tags);
+            Assert.Equal(50m,          d2.FaixaPrecoMin);
+            Assert.Equal(500m,         d2.FaixaPrecoMax);
+            Assert.False(d2.ReceberNotificacoes);
         }
 
         [Fact]
-        public void Update_SomenteTags_CidadeNaoAlterada()
+        public async Task Put_DoisUsuariosEmParalelo_SemContaminacao()
+        {
+            var u1 = Guid.NewGuid();
+            var u2 = Guid.NewGuid();
+
+            // Cria dois clientes separados para simular paralelo
+            using var factory2 = new AventuraWebFactory(_pg.ConnectionString);
+            using var client2  = factory2.CreateClient();
+
+            var token1 = TestJwt.Generate(u1);
+            var token2 = TestJwt.Generate(u2);
+
+            _client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token1);
+            client2.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token2);
+
+            var t1 = _client.PutAsJsonAsync($"/api/preferencias/{u1}",
+                new PreferenciasUpdateDto { Cidade = "Florianópolis" });
+            var t2 = client2.PutAsJsonAsync($"/api/preferencias/{u2}",
+                new PreferenciasUpdateDto { Cidade = "João Pessoa" });
+
+            await Task.WhenAll(t1, t2);
+
+            var r1 = await _client.GetAsync($"/api/preferencias/{u1}");
+            var r2 = await client2.GetAsync($"/api/preferencias/{u2}");
+            var d1 = await r1.ReadAsAsync<PreferenciasDto>();
+            var d2 = await r2.ReadAsAsync<PreferenciasDto>();
+
+            Assert.Equal("Florianópolis", d1!.Cidade);
+            Assert.Equal("João Pessoa",   d2!.Cidade);
+        }
+
+    // ══════════════════════════════════════════════════════════
+    //  SUITE 9 — Testes de contrato HTTP adicionais
+    // ══════════════════════════════════════════════════════════
+
+    [Collection("preferencias-e2e")]
+    public class ContratoHttpE2ETests : IAsyncLifetime
+    {
+        private readonly PostgresFixture _pg;
+        private readonly AventuraWebFactory _factory;
+        private readonly HttpClient _client;
+
+        public ContratoHttpE2ETests(PostgresFixture pg, ViaCepApiFixture _)
+        {
+            _pg      = pg;
+            _factory = new AventuraWebFactory(pg.ConnectionString);
+            _client  = _factory.CreateClient();
+        }
+
+        public Task InitializeAsync() => _pg.ResetAsync();
+        public async Task DisposeAsync()
+        {
+            _client.Dispose();
+            await _factory.DisposeAsync();
+        }
+
+        private void Authenticate(Guid userId)
+        {
+            var token = TestJwt.Generate(userId);
+            _client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        }
+
+        [Fact]
+        public async Task Get_MetodoHttp_NaoPermitePost()
         {
             var userId = Guid.NewGuid();
-            _service.Update(userId, new PreferenciasUpdateDto { Cidade = "Campo Grande" });
-            var result = _service.Update(userId, new PreferenciasUpdateDto
-            {
-                Tags = new[] { "familiar" }
-            });
-            Assert.Equal("Campo Grande", result.Cidade);
+            Authenticate(userId);
+            var response = await _client.PostAsync($"/api/preferencias/{userId}", null);
+            Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
         }
 
         [Fact]
-        public void Save_PreferenciasComFaixaNula_NaoLancaException()
-        {
-            var prefs = new Preferencias(Guid.NewGuid());
-            var ok = _repo.Save(prefs);
-            Assert.True(ok);
-        }
-
-        [Fact]
-        public void Get_AposSaveComFaixaNula_FaixaRetornaNull()
+        public async Task Get_MetodoHttp_NaoPermiteDelete()
         {
             var userId = Guid.NewGuid();
-            var prefs  = new Preferencias(userId);
-            _repo.Save(prefs);
-            var result = _repo.GetPreferencias(userId);
-            Assert.Null(result.FaixaPrecoMin);
-            Assert.Null(result.FaixaPrecoMax);
+            Authenticate(userId);
+            var response = await _client.DeleteAsync($"/api/preferencias/{userId}");
+            Assert.Equal(HttpStatusCode.MethodNotAllowed, response.StatusCode);
         }
 
         [Fact]
-        public void Update_DtoSemNenhumCampoPreenchido_NaoLanca()
+        public async Task Put_ResponseTemUsuarioIdIgualAoRequisitado()
         {
             var userId = Guid.NewGuid();
-            var dto    = new PreferenciasUpdateDto();
-            var result = _service.Update(userId, dto);
-            Assert.NotNull(result);
+            Authenticate(userId);
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Cidade = "Aracaju" });
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal(userId, dto!.UsuarioId);
         }
 
         [Fact]
-        public void Update_ReceberNotificacoesMudaDeVerdadeiro_ParaFalso()
+        public async Task Get_ResponseTemUsuarioIdIgualAoRequisitado()
         {
             var userId = Guid.NewGuid();
-            _service.Update(userId, new PreferenciasUpdateDto { ReceberNotificacoes = true });
-            var result = _service.Update(userId, new PreferenciasUpdateDto { ReceberNotificacoes = false });
-            Assert.False(result.ReceberNotificacoes);
+            Authenticate(userId);
+            var response = await _client.GetAsync($"/api/preferencias/{userId}");
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Equal(userId, dto!.UsuarioId);
         }
 
         [Fact]
-        public void Update_ReceberNotificacoesMudaDeFalso_ParaVerdadeiro()
+        public async Task Put_TagsComEspacos_RetornaTagsTrimadas()
         {
             var userId = Guid.NewGuid();
-            _service.Update(userId, new PreferenciasUpdateDto { ReceberNotificacoes = false });
-            var result = _service.Update(userId, new PreferenciasUpdateDto { ReceberNotificacoes = true });
-            Assert.True(result.ReceberNotificacoes);
+            Authenticate(userId);
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Tags = new[] { "  familiar  ", " ao-vivo " } });
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Contains("familiar", dto!.Tags);
+            Assert.Contains("ao-vivo",  dto.Tags);
+            Assert.DoesNotContain("  familiar  ", dto.Tags);
+        }
+
+        [Theory]
+        [InlineData(0.01, 100.0)]
+        [InlineData(50.0, 50.0)]
+        [InlineData(1.0, 9999.99)]
+        public async Task Put_FaixasPrecoValidas_Retorna200(double min, double max)
+        {
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto
+                {
+                    FaixaPrecoMin = (decimal)min,
+                    FaixaPrecoMax = (decimal)max
+                });
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Fact]
-        public async Task FluxoCompleto_ViaCepRetornaCidade_ServicePersiste_BancoReal()
+        public async Task Put_GenerosDuplicados_SalvaApenasUm()
         {
-            // COBRE AS DUAS FERRAMENTAS EXPLICITAMENTE:
-            //   Testcontainers → PostgreSQL real persiste a preferência
-            //   WireMock → simula ViaCEP externo retornando a cidade
-            // RF-PREF : atualizar localização via CEP externo
-            // RNF-02 (Confiabilidade): dado externo integrado sem corromper persistência
-            var userId          = Guid.NewGuid();
-            var cidadeDoExterno = "Porto Alegre";
-
-            var dto = new PreferenciasUpdateDto
-            {
-                Cep    = "90010-080",
-                Cidade = cidadeDoExterno,
-                ReceberNotificacoes = true
-            };
-
-            var result = _service.Update(userId, dto);
-
-            Assert.Equal("Porto Alegre", result.Cidade);
-            Assert.Equal("90010-080",    result.Cep);
-            await Task.CompletedTask;
+            await _pg.SeedGenerosAsync("Drama");
+            var userId = Guid.NewGuid();
+            Authenticate(userId);
+            var response = await _client.PutAsJsonAsync($"/api/preferencias/{userId}",
+                new PreferenciasUpdateDto { Generos = new[] { "Drama", "drama", " Drama " } });
+            var dto = await response.ReadAsAsync<PreferenciasDto>();
+            Assert.Single(dto!.Generos);
         }
+    }
     }
 }

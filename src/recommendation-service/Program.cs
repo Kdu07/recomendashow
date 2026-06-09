@@ -23,10 +23,11 @@ builder.Services.Configure<ModelPathsOptions>(builder.Configuration.GetSection("
 builder.Services.Configure<RecommendationOptions>(builder.Configuration.GetSection("Recommendation"));
 
 builder.Services.AddSingleton<IDatasetRepository, DatasetRepository>();
-builder.Services.AddScoped<IRecommendationWriteRepository, RecommendationWriteRepository>();
+builder.Services.AddTransient<IRecommendationWriteRepository, RecommendationWriteRepository>();
 builder.Services.AddSingleton<IModelLoaderService, ModelLoaderService>();
 builder.Services.AddHostedService(p => (ModelLoaderService)p.GetRequiredService<IModelLoaderService>());
 
+builder.Services.AddHostedService<RecommendationBatchJob>();
 builder.Services.AddSingleton<SvdRecommendationService>();
 builder.Services.AddSingleton<MetricsService>();
 builder.Services.AddSingleton<IChartService, ScottPlotChartService>();

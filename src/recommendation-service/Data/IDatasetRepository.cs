@@ -25,4 +25,7 @@ public interface IDatasetRepository
 
     /// <summary>All interactions (for evaluation / metrics).</summary>
     IReadOnlyList<InteractionRecord> AllInteractions { get; }
+
+    /// <summary>All user IDs present in dataset.csv.</summary>
+    IReadOnlyList<int> GetAllUserIds();
 }

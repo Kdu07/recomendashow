@@ -66,6 +66,8 @@ public sealed class DatasetRepository : IDatasetRepository
 
     public bool UserExists(int userId) => _byUser.ContainsKey(userId);
 
+    public IReadOnlyList<int> GetAllUserIds() => _byUser.Keys.ToList();
+
     // ---------------------------------------------------------------------------
 
     private static List<InteractionRecord> LoadCsv(string path)

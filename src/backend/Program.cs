@@ -66,16 +66,6 @@ LoadEnvFile();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-// HttpClient para o recommendation-service
-builder.Services.AddHttpClient("RecommendationService", client =>
-{
-    var url = builder.Configuration["RecommendationService:BaseUrl"]
-        ?? Environment.GetEnvironmentVariable("RECOMMENDATION_SERVICE_URL")
-        ?? "http://localhost:5000";
-
-    client.BaseAddress = new Uri(url);
-    client.Timeout = TimeSpan.FromSeconds(10);
-});
 
 builder.Services.AddSingleton<IPreferenceService, PreferenceService>();
 builder.Services.AddCors(options =>

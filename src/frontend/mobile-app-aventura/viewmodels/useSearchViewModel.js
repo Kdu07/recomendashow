@@ -4,6 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { getSearchData } from '../repositories/searchRepository';
 import {
   getWishlistData,
+  getWishlistEventKey,
   toggleWishlistEvent,
 } from '../repositories/wishlistRepository';
 
@@ -23,7 +24,7 @@ export default function useSearchViewModel(navigation) {
 
   async function loadSavedEvents() {
     const wishlistData = await getWishlistData();
-    const nextSavedEventIds = (wishlistData.events || []).map((event) => event.id);
+    const nextSavedEventIds = (wishlistData.events || []).map(getWishlistEventKey);
 
     setSavedEventIds(nextSavedEventIds);
   }
@@ -54,9 +55,10 @@ export default function useSearchViewModel(navigation) {
   }
 
   async function handleFavoritePress(event) {
-    const wasSaved = savedEventIds.includes(event.id);
+    const eventKey = getWishlistEventKey(event);
+    const wasSaved = savedEventIds.includes(eventKey);
     const updatedWishlist = await toggleWishlistEvent(event);
-    setSavedEventIds(updatedWishlist.map((savedEvent) => savedEvent.id));
+    setSavedEventIds(updatedWishlist.map(getWishlistEventKey));
 
     return {
       added: !wasSaved,
@@ -64,8 +66,8 @@ export default function useSearchViewModel(navigation) {
     };
   }
 
-  function isEventFavorite(eventId) {
-    return savedEventIds.includes(eventId);
+  function isEventFavorite(event) {
+    return savedEventIds.includes(getWishlistEventKey(event));
   }
 
   function handleTabPress(tab) {

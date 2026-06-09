@@ -46,7 +46,7 @@ function PosterSection({
             subtitle={event.location}
             image={event.image}
             onPress={() => onEventPress(event)}
-            isFavorite={isEventFavorite(event.id)}
+            isFavorite={isEventFavorite(event)}
             onFavoritePress={() => onFavoritePress(event)}
           />
         ))}
@@ -169,14 +169,21 @@ export default function HomeScreen({ navigation }) {
   }, []);
 
   async function handleFavoriteWithStatus(event) {
-    const result = await handleFavoritePress(event);
+    try {
+      const result = await handleFavoritePress(event);
 
-    setSystemStatus({
-      type: result?.added ? "success" : "info",
-      message: result?.added
-        ? "Espetáculo adicionado à wishlist."
-        : "Espetáculo removido da wishlist.",
-    });
+      setSystemStatus({
+        type: result?.added ? "success" : "info",
+        message: result?.added
+          ? "Espetáculo adicionado à wishlist."
+          : "Espetáculo removido da wishlist.",
+      });
+    } catch (error) {
+      setSystemStatus({
+        type: "error",
+        message: error.message,
+      });
+    }
   }
 
   function handleTheaterOpen(theater) {

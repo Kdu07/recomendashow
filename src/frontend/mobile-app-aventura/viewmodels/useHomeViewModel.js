@@ -4,6 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { getHomeData } from '../repositories/homeRepository';
 import {
   getWishlistData,
+  getWishlistEventKey,
   toggleWishlistEvent,
 } from '../repositories/wishlistRepository';
 
@@ -22,7 +23,7 @@ export default function useHomeViewModel(navigation) {
 
   async function loadSavedEvents() {
     const wishlistData = await getWishlistData();
-    const nextSavedEventIds = (wishlistData.events || []).map((event) => event.id);
+    const nextSavedEventIds = (wishlistData.events || []).map(getWishlistEventKey);
 
     setSavedEventIds(nextSavedEventIds);
   }
@@ -78,9 +79,10 @@ export default function useHomeViewModel(navigation) {
   }
 
   async function handleFavoritePress(event) {
-    const wasSaved = savedEventIds.includes(event.id);
+    const eventKey = getWishlistEventKey(event);
+    const wasSaved = savedEventIds.includes(eventKey);
     const updatedWishlist = await toggleWishlistEvent(event);
-    setSavedEventIds(updatedWishlist.map((savedEvent) => savedEvent.id));
+    setSavedEventIds(updatedWishlist.map(getWishlistEventKey));
 
     return {
       added: !wasSaved,
@@ -88,8 +90,8 @@ export default function useHomeViewModel(navigation) {
     };
   }
 
-  function isEventFavorite(eventId) {
-    return savedEventIds.includes(eventId);
+  function isEventFavorite(event) {
+    return savedEventIds.includes(getWishlistEventKey(event));
   }
 
   function handleTheaterPress(theater) {

@@ -37,6 +37,7 @@ jest.mock('../repositories/searchRepository', () => ({
 
 jest.mock('../repositories/wishlistRepository', () => ({
   getWishlistData: jest.fn().mockResolvedValue({ events: [] }),
+  getWishlistEventKey: jest.fn((event) => event?.backendId || event?.id),
   toggleWishlistEvent: jest.fn(),
 }));
 

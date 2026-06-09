@@ -49,14 +49,21 @@ export default function SearchScreen({ navigation }) {
   } = useSearchViewModel(navigation);
 
   async function handleFavoriteWithStatus(event) {
-    const result = await handleFavoritePress(event);
+    try {
+      const result = await handleFavoritePress(event);
 
-    setSystemStatus({
-      type: result?.added ? 'success' : 'info',
-      message: result?.added
-        ? 'Espetáculo adicionado à wishlist.'
-        : 'Espetáculo removido da wishlist.',
-    });
+      setSystemStatus({
+        type: result?.added ? 'success' : 'info',
+        message: result?.added
+          ? 'Espetáculo adicionado à wishlist.'
+          : 'Espetáculo removido da wishlist.',
+      });
+    } catch (error) {
+      setSystemStatus({
+        type: 'error',
+        message: error.message,
+      });
+    }
   }
 
   return (
@@ -114,7 +121,7 @@ export default function SearchScreen({ navigation }) {
                     category={getCategoryLabel(event.categoryId)}
                     image={event.image}
                     onPress={() => handleEventPress(event)}
-                    isFavorite={isEventFavorite(event.id)}
+                    isFavorite={isEventFavorite(event)}
                     onFavoritePress={() => handleFavoriteWithStatus(event)}
                   />
                 ))}

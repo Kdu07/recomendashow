@@ -1,9 +1,11 @@
 using BackEnd.Aventura.Dto;
 using BackEnd.Aventura.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BackEnd.Aventura.Controller
 {
+    [AllowAnonymous]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {

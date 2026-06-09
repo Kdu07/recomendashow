@@ -1,6 +1,8 @@
+using BackEnd.Aventura.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
 using Testcontainers.PostgreSql;
 using WireMock.Server;
@@ -43,6 +45,14 @@ public class IntegrationTestFixture : WebApplicationFactory<Program>, IAsyncLife
                 ["POSTGRES_PASSWORD"] = "postgres",
                 ["ViaCep:BaseUrl"] = ViaCepServer.Urls[0],
             });
+        });
+
+        // Timeout curto no HttpClient do ViaCepService para que timeouts reais sejam
+        // capturados pelo catch de BuscarAsync e devolvidos como 400 dentro do prazo do teste
+        builder.ConfigureServices(services =>
+        {
+            services.AddHttpClient<ViaCepService>()
+                .ConfigureHttpClient(client => client.Timeout = TimeSpan.FromSeconds(3));
         });
     }
 

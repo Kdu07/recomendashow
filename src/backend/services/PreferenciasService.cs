@@ -41,7 +41,7 @@ namespace BackEnd.Aventura.Services
             preferencias.SetReceberNotificacoes(dto.ReceberNotificacoes);
 
             _repository.Save(preferencias);
-            return _repository.GetPreferencias(usuarioId);
+            return preferencias;
         }
     }
 }

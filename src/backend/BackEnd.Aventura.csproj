@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
-    <DefaultItemExcludes>$(DefaultItemExcludes);BackEnd.Aventura.Tests/**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);BackEnd.Aventura.Tests/**;BackEnd.Aventura.E2ETests/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

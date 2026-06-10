@@ -43,7 +43,7 @@ namespace BackEnd.Aventura.Services
                 {
                     Espetaculo = espetaculo.ToDto(),
                     Score = Math.Max(0.5m, 1.0m - index * 0.05m),
-                    Motivo = "Baseado nos seus gêneros favoritos"
+                    Motivo = "Baseado nos seus generos favoritos"
                 })
                 .ToList();
         }

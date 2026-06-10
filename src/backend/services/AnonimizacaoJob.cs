@@ -86,20 +86,7 @@ WHERE deleted_at IS NOT NULL
             Guid id,
             CancellationToken cancellationToken)
         {
-            const string sql = @"
-UPDATE usuarios
-SET nome        = 'Usuário Removido',
-    email       = id::text || '@anonimizado.invalid',
-    senha_hash  = '',
-    cep         = NULL,
-    logradouro  = NULL,
-    numero      = NULL,
-    complemento = NULL,
-    bairro      = NULL,
-    cidade      = NULL,
-    anonimizado = TRUE
-WHERE id = @Id
-  AND anonimizado = FALSE";
+            const string sql = @"CALL sp_anonimizar_usuario(@Id)";
 
             using var command = new NpgsqlCommand(sql, (NpgsqlConnection)connection);
             command.Parameters.AddWithValue("@Id", id);

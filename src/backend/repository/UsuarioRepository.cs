@@ -160,21 +160,7 @@ WHERE id = @Id
             using var connection = _connectionFactory.CreateConnection();
             connection.Open();
 
-            const string sql = @"
-UPDATE usuarios
-SET nome        = 'Usuário Removido',
-    email       = id::text || '@anonimizado.invalid',
-    senha_hash  = '',
-    cep         = NULL,
-    logradouro  = NULL,
-    numero      = NULL,
-    complemento = NULL,
-    bairro      = NULL,
-    cidade      = NULL,
-    anonimizado = TRUE
-WHERE id = @Id
-  AND deleted_at IS NOT NULL
-  AND anonimizado = FALSE";
+            const string sql = @"CALL sp_anonimizar_usuario(@Id)";
 
             using var command = new NpgsqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Id", id);

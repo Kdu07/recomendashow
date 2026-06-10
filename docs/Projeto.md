@@ -1469,7 +1469,7 @@ O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visual
 
 ## 16. Diagrama de Implantação
 
-O diagrama de implantação abaixo apresenta a arquitetura física do Portal Aventura, destacando os ambientes de execução, os componentes implantados e suas comunicações. A solução é composta pelo aplicativo móvel, API Gateway, Backend ASP.NET Core, Training Job, Sistema de Recomendação, banco de dados PostgreSQL, armazenamento S3 e serviços externos. As conexões entre os componentes utilizam protocolos como HTTPS e TCP, garantindo a comunicação entre os serviços da plataforma.
+O diagrama de implantação abaixo apresenta a arquitetura física do Portal Aventura, destacando os ambientes de execução, os componentes implantados e suas comunicações. A solução é composta pelo aplicativo móvel, API Gateway, Backend ASP.NET Core, Training Job, Sistema de Recomendação, banco de dados PostgreSQL, banco de dados MongoDB e serviços externos. As conexões entre os componentes utilizam protocolos como HTTPS e TCP, garantindo a comunicação entre os serviços da plataforma.
 
 <div align="center">
   <sub>Imagem 10 - Diagrama de Componentes UML</sub><br>

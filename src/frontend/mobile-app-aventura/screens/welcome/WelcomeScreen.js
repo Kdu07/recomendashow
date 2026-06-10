@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, SafeAreaView, Animated } from 'react-native';
+import { View, Text, Image, StyleSheet, SafeAreaView, Animated, Platform } from 'react-native';
 
 import { useWelcomeViewModel } from '../../viewmodels/useWelcomeViewModel';
 import { colors } from '../../constants/colors';
@@ -28,7 +28,7 @@ export default function WelcomeScreen({ navigation, route }) {
           toValue: 1,
           friction: 5,
           tension: 80,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }).start();
       }, delay)
     );
@@ -37,7 +37,7 @@ export default function WelcomeScreen({ navigation, route }) {
       Animated.timing(opacity, {
         toValue: 0,
         duration: FADE_OUT_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }).start();
     }, FADE_OUT_START);
 

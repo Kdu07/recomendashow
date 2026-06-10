@@ -1,14 +1,17 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import {
+  Alert,
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
   SafeAreaView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
+import { ActivityIndicator } from 'react-native';
 
 import useProfileViewModel from '../viewmodels/useProfileViewModel';
 
@@ -30,9 +33,7 @@ function MenuItem({
     >
       <View style={styles.menuLeft}>
         <View style={styles.iconContainer}>
-          <Text style={styles.icon}>
-            {icon}
-          </Text>
+          <Ionicons name={icon} size={22} color={colors.purplePrimary} />
         </View>
 
         <View style={styles.menuCopy}>
@@ -46,9 +47,9 @@ function MenuItem({
         </View>
       </View>
 
-      <Text style={styles.chevron}>
-        &gt;
-      </Text>
+      <View style={styles.chevronContainer}>
+        <Ionicons name="chevron-forward" size={20} color={colors.grayText} />
+      </View>
     </TouchableOpacity>
   );
 }
@@ -57,11 +58,49 @@ export default function ProfileScreen({ navigation }) {
   const {
     user,
     menuItems,
+    refreshProfile,
+<<<<<<< HEAD
+    isLoading,
 
     handleMenuPress,
     handleEditProfile,
     handleLogout,
+  } = useProfileViewModel(navigation);
+=======
+    deletingAccount,
+
+    handleMenuPress,
+    handleDeleteAccount,
   } = useProfileViewModel();
+>>>>>>> develop
+
+  function confirmDeleteAccount() {
+    Alert.alert(
+      'Excluir conta',
+      'Seus dados serão anonimizados em até 30 dias, conforme a LGPD. Essa ação não pode ser desfeita.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Excluir conta',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await handleDeleteAccount();
+              navigation.replace('Auth');
+            } catch (error) {
+              Alert.alert('Erro', error.message);
+            }
+          },
+        },
+      ],
+    );
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshProfile();
+    }, [refreshProfile])
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -75,29 +114,27 @@ export default function ProfileScreen({ navigation }) {
           </Text>
 
           <View style={styles.profileCard}>
-            <Image
-              source={{ uri: user.avatar }}
-              style={styles.avatar}
-            />
+            <View style={styles.avatar}>
+              <Ionicons name={user.avatarIcon || 'person'} size={40} color={colors.purplePrimary} />
+            </View>
 
-            <View style={styles.profileInfo}>
-              <Text style={styles.name}>
-                {user.name}
-              </Text>
+                <View style={styles.profileInfo}>
+                  <Text style={styles.name}>{user.name || 'Usuário'}</Text>
 
               <Text style={styles.email}>
                 {user.email}
               </Text>
-
-              <TouchableOpacity
-                onPress={handleEditProfile}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.editProfile}>
-                  Editar perfil
-                </Text>
-              </TouchableOpacity>
             </View>
+
+            <TouchableOpacity
+              style={styles.editProfileButton}
+              onPress={() => navigation.navigate('EditProfile')}
+              activeOpacity={0.8}
+              accessibilityRole="button"
+              accessibilityLabel="Editar perfil"
+            >
+              <Ionicons name="create-outline" size={20} color={colors.purplePrimary} />
+            </TouchableOpacity>
           </View>
 
           <View style={styles.menuList}>
@@ -131,11 +168,22 @@ export default function ProfileScreen({ navigation }) {
 
           <TouchableOpacity
             style={styles.logoutButton}
-            onPress={handleLogout}
+            onPress={() => navigation.replace('Auth')}
             activeOpacity={0.7}
           >
             <Text style={styles.logoutText}>
               Sair
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={confirmDeleteAccount}
+            disabled={deletingAccount}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.deleteText}>
+              {deletingAccount ? 'Aguarde...' : 'Excluir minha conta'}
             </Text>
           </TouchableOpacity>
 
@@ -199,11 +247,27 @@ const styles = StyleSheet.create({
     width: 84,
     height: 84,
     borderRadius: 42,
+    backgroundColor: colors.purpleSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: colors.purpleLight,
   },
 
   profileInfo: {
     flex: 1,
     gap: spacing.xs,
+  },
+
+  editProfileButton: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.pill,
+    backgroundColor: colors.whiteSoft,
+    borderWidth: 1,
+    borderColor: colors.grayLight,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   name: {
@@ -217,14 +281,6 @@ const styles = StyleSheet.create({
     fontSize: typography.size.sm,
     lineHeight: typography.lineHeight.sm,
     color: colors.grayText,
-  },
-
-  editProfile: {
-    marginTop: spacing.xs,
-    fontSize: typography.size.sm,
-    lineHeight: typography.lineHeight.sm,
-    color: colors.purplePrimary,
-    fontWeight: typography.fontWeight.semiBold,
   },
 
   menuList: {
@@ -278,11 +334,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  icon: {
-    fontSize: 22,
-    color: colors.purplePrimary,
-  },
-
   menuTitle: {
     fontSize: typography.size.md,
     lineHeight: typography.lineHeight.md,
@@ -298,9 +349,13 @@ const styles = StyleSheet.create({
     color: colors.grayText,
   },
 
-  chevron: {
-    fontSize: 28,
-    color: colors.grayText,
+  chevronContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: radius.pill,
+    backgroundColor: colors.whiteSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   logoutButton: {
@@ -315,6 +370,19 @@ const styles = StyleSheet.create({
     lineHeight: typography.lineHeight.md,
     color: colors.peachBurnt,
     fontWeight: typography.fontWeight.semiBold,
+  },
+
+  deleteButton: {
+    alignSelf: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+  },
+
+  deleteText: {
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
+    color: colors.grayText,
+    textDecorationLine: 'underline',
   },
 
   version: {

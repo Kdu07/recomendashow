@@ -44,11 +44,11 @@ export default function OnboardingCategoriesView({
         ))}
       </View>
 
-      {selectedCategories.length > 0 && (
-        <Text style={styles.counter}>
+      <View style={styles.counterSlot}>
+        <Text style={[styles.counter, selectedCategories.length === 0 && styles.counterHidden]}>
           {selectedCategories.length} de {CATEGORIES.length} categorias selecionadas
         </Text>
-      )}
+      </View>
     </OnboardingLayout>
   );
 }
@@ -79,10 +79,19 @@ const styles = StyleSheet.create({
     width: '48%',
   },
 
-  counter: {
+  counterSlot: {
     marginTop: spacing.lg,
+    minHeight: typography.lineHeight.sm,
+    justifyContent: 'center',
+  },
+
+  counter: {
     fontSize: typography.size.sm,
     color: colors.grayText,
     textAlign: 'center',
+  },
+
+  counterHidden: {
+    opacity: 0,
   },
 });

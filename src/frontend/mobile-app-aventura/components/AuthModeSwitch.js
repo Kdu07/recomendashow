@@ -7,7 +7,7 @@ import { typography } from '../constants/typography';
 
 export default function AuthModeSwitch({ mode, onChange }) {
   const isLogin = mode === 'login';
-  const label = isLogin ? 'Criar conta' : 'Ja tenho uma conta';
+  const label = isLogin ? 'Criar conta' : 'Já tenho uma conta';
   const nextMode = isLogin ? 'register' : 'login';
 
   return (

@@ -32,18 +32,6 @@ export const interests = [
 
   {
     ...InterestModel,
-    id: 'corporativo',
-    label: 'Corporativo',
-  },
-
-  {
-    ...InterestModel,
-    id: 'circo',
-    label: 'Circo',
-  },
-
-  {
-    ...InterestModel,
     id: 'comedia',
     label: 'Comédia',
   },

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Linking } from 'react-native';
 import { MOCK_SHOWS } from '../models/showInfoData';
+import { toggleWishlistEvent } from '../repositories/wishlistRepository';
 
 export function useShowInfoViewModel(showId = '1') {
   if (!MOCK_SHOWS[showId]) {
@@ -11,8 +12,29 @@ export function useShowInfoViewModel(showId = '1') {
 
   const subtitle = show.date.status;
 
-  function toggleFavorite() {
-    setShow((prev) => ({ ...prev, isFavorited: !prev.isFavorited }));
+  async function toggleFavorite() {
+    const wasFavorited = show.isFavorited;
+    const updatedShow = {
+      ...show,
+      isFavorited: !wasFavorited,
+    };
+
+    setShow(updatedShow);
+
+    await toggleWishlistEvent({
+      id: show.id,
+      showId: show.id,
+      title: show.title,
+      location: show.location?.venue,
+      city: show.location?.city,
+      categoryId: 'musical',
+      image: show.heroImage,
+    });
+
+    return {
+      added: !wasFavorited,
+      eventTitle: show.title,
+    };
   }
 
   function onPressTickets() {

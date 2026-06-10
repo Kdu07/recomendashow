@@ -74,7 +74,7 @@ public sealed class SvdRecommendationService : IRecommendationService
     /// Espelha inference.py linhas 78–83:
     ///   all_scores = (global_mean + bu[inner_uid] + bi + qi @ pu[inner_uid]).clip(low, high)
     /// </summary>
-    internal double[] ComputeAllScores(int innerUserId)
+    public double[] ComputeAllScores(int innerUserId)
     {
         double globalMean = _w.GlobalMean;
         double userBias = _w.Bu[innerUserId];
@@ -98,7 +98,7 @@ public sealed class SvdRecommendationService : IRecommendationService
         return scores;
     }
 
-    internal bool TryGetInnerUserId(int userId, out int innerUserId)
+    public bool TryGetInnerUserId(int userId, out int innerUserId)
     {
         return _w.UserIdToInner.TryGetValue(userId.ToString(), out innerUserId);
     }

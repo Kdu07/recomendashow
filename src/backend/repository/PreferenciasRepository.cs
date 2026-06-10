@@ -33,7 +33,6 @@ namespace BackEnd.Aventura.Repository
             }
 
             preferencias.SetGeneros(ReadGeneros(connection, usuarioId));
-            preferencias.SetTags(ReadTags(connection, usuarioId));
             return preferencias;
         }
 
@@ -131,20 +130,6 @@ WHERE ugf.usuario_id = @UsuarioId";
             }
 
             return generos;
-        }
-
-        private static string[] ReadTags(NpgsqlConnection connection, Guid usuarioId)
-        {
-            const string sql = @"SELECT tags FROM preferencias WHERE usuario_id = @UsuarioId";
-            using var command = new NpgsqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@UsuarioId", usuarioId);
-            using var reader = command.ExecuteReader();
-            if (!reader.Read() || reader.IsDBNull(0))
-            {
-                return Array.Empty<string>();
-            }
-
-            return reader.GetFieldValue<string[]>(0);
         }
 
         private static void DeleteGeneros(NpgsqlConnection connection, Guid usuarioId, NpgsqlTransaction transaction)

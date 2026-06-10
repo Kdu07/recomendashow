@@ -96,4 +96,22 @@ CREATE INDEX IF NOT EXISTS idx_wishlist_usuario
 -- Identificador sequencial para mapear usuarios UUID ↔ índice inteiro do modelo SVD
 ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS ml_id SERIAL;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_ml_id ON usuarios(ml_id);
->>>>>>> src/database/02_sprint4_improvements.sql
+
+-- ============================================================
+-- SEÇÃO 4: Triggers e procedure de auditoria
+-- ============================================================
+
+CREATE OR REPLACE FUNCTION fn_atualizar_data_preferencias()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.data_atualizacao = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_preferencias_update ON preferencias;
+
+CREATE TRIGGER trg_preferencias_update
+    BEFORE UPDATE ON preferencias
+    FOR EACH ROW
+    EXECUTE FUNCTION fn_atualizar_data_preferencias();

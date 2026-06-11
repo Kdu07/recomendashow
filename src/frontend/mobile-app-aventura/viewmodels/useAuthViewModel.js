@@ -268,6 +268,7 @@ export function useAuthViewModel(navigation) {
           password: values.password,
         });
         setCurrentUserId(result?.user?.id ?? null);
+        navigation.replace('MainTabs');
       } else {
         const result = await createUserAccount({
           name: values.name,
@@ -283,8 +284,8 @@ export function useAuthViewModel(navigation) {
           consentimentoAceito: values.consentimentoAceito,
         });
         setCurrentUserId(result?.user?.id ?? null);
+        navigation.replace('Onboarding');
       }
-      navigation.replace('Onboarding');
       return {
         ok: true,
       };

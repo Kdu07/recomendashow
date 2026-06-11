@@ -332,7 +332,7 @@ describe('useAuthViewModel – handleSubmit', () => {
     createUserAccount.mockResolvedValue({ user: {}, token: 'tok' });
   });
 
-  test('login bem-sucedido chama navigation.replace("Onboarding")', async () => {
+  test('login bem-sucedido chama navigation.replace("MainTabs")', async () => {
     const nav = makeNavigation();
     const { result } = renderHook(() => useAuthViewModel(nav));
     act(() => {
@@ -341,7 +341,7 @@ describe('useAuthViewModel – handleSubmit', () => {
     });
     await act(async () => { await result.current.handleSubmit(); });
     expect(authenticateUser).toHaveBeenCalledWith({ email: 'a@b.com', password: '123' });
-    expect(nav.replace).toHaveBeenCalledWith('Onboarding');
+    expect(nav.replace).toHaveBeenCalledWith('MainTabs');
   });
 
   test('register chama createUserAccount com name, email, birthDate, endereco, password e consentimento', async () => {
@@ -376,6 +376,7 @@ describe('useAuthViewModel – handleSubmit', () => {
       password: '123456',
       consentimentoAceito: true,
     });
+    expect(nav.replace).toHaveBeenCalledWith('Onboarding');
   });
 
   test('loading é true durante a chamada e false ao final', async () => {

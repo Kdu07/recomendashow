@@ -23,7 +23,6 @@ namespace BackEnd.Aventura.Repository
 
             var preferencias = ReadPreferencias(connection, usuarioId) ?? new Preferencias(usuarioId);
             preferencias.SetGeneros(ReadGeneros(connection, usuarioId));
-
             return preferencias;
         }
 

@@ -287,47 +287,52 @@ Para a Sprint 4, o foco principal será melhorar a organização e divisão das 
 
 ### 4.1 Objetivo da Sprint 4
 
-A Sprint 4 teve como foco avançar na consolidação das entregas do projeto, melhorar a qualidade das revisões, alinhar a equipe em relação aos próximos ajustes e preparar o projeto para uma etapa final de refinamento. O acompanhamento considerou a comunicação nas dailies, o andamento das tasks no Kanban, as revisões realizadas pela equipe e os impactos do calendário da sprint.
+A Sprint 4 teve como foco consolidar entregas, revisar artefatos já produzidos, melhorar a organização documental e preparar o projeto para a etapa final de refinamento. A análise da sprint considera observações feitas em plannings, dailies, acompanhamento do Kanban e revisão dos documentos versionados no repositório.
 
 ### 4.2 Pontos Fortes
 
 | Ponto forte | Evidência concreta | Impacto no projeto |
 |---|---|---|
-| Comunicação mais constante entre integrantes | As dailies e alinhamentos foram usados para discutir impedimentos, revisar prioridades e acompanhar o andamento das tasks. | Reduziu dúvidas durante a sprint e ajudou a equipe a manter visibilidade sobre o trabalho em andamento. |
-| Trabalho mais revisado antes da entrega | A equipe passou a revisar com mais atenção documentação, organização dos arquivos e consistência entre artefatos. | Melhorou a qualidade final dos documentos e reduziu riscos de inconsistência entre entregas. |
-| Maior colaboração entre frentes | Integrantes apoiaram atividades de documentação, revisão técnica, frontend, backend e organização do repositório conforme necessidade. | Evitou concentração excessiva de conhecimento em uma única pessoa e ajudou na continuidade das entregas. |
-| Uso do Kanban para acompanhamento | O andamento da sprint foi observado pelo acompanhamento das tasks no Kanban. | Facilitou a visualização de tarefas em andamento, pendências e itens que precisavam de atenção. |
-| Evolução na padronização documental | Documentos principais passaram por revisão de estrutura, cabeçalho, sumário e links. | A documentação ficou mais clara, navegável e alinhada aos critérios de avaliação. |
+| Comunicação mais constante entre integrantes | Observado nas dailies e alinhamentos da sprint; pendência: anexar registro do board ou ata de acompanhamento. | Melhorou a visibilidade sobre impedimentos, prioridades e andamento das tasks. |
+| Revisão documental mais cuidadosa | Arquivos como `docs/GestaoProjeto.md`, `docs/Projeto.md`, `docs/Index.md`, `docs/Gestao_Projeto_Configuracao.md` e `docs/projeto_visual.md` passaram por revisão de estrutura, cabeçalho, sumário e padronização. | Reduziu inconsistências entre documentos e deixou a entrega mais alinhada aos critérios de avaliação. |
+| Colaboração entre frentes de trabalho | A sprint envolveu ajustes em gestão do projeto, documentação técnica, documentação visual e organização de referências internas. | Diminuiu a dependência de uma única frente e ajudou na continuidade das entregas mesmo com ajustes acumulados. |
+| Uso do Kanban para acompanhamento | O andamento das tasks foi acompanhado no Kanban; pendência: registrar evidência exportada ou link público do board. | Facilitou a identificação de pendências, tarefas em andamento e itens que precisavam de revisão. |
+| Preparação para o refinamento final | A seção de planejamento da Sprint 5 foi estruturada com métrica t-shirt e campos para priorização, dependências e critérios de aceite. | Criou uma base objetiva para transformar os problemas da Sprint 4 em ações planejadas na Sprint 5. |
 
 ### 4.3 Pontos Fracos
 
 | Ponto fraco | Evidência concreta | Consequência |
 |---|---|---|
-| Revisões acumuladas de sprints anteriores | Parte dos ajustes da Sprint 4 envolveu revisar e corrigir artefatos já entregues em ciclos anteriores. | Reduziu o tempo disponível para avançar exclusivamente em novas entregas. |
-| Demora para concluir algumas tasks | Algumas atividades permaneceram em andamento por mais tempo que o planejado no acompanhamento do Kanban. | Impactou a previsibilidade da sprint e aumentou a pressão no fechamento das entregas. |
-| Granularidade ainda irregular | Algumas tasks ainda concentraram mais de uma responsabilidade ou exigiram ajustes adicionais durante a execução. | Dificultou medir progresso real e identificar bloqueios rapidamente. |
-| Impacto de feriado durante a sprint | O calendário da sprint teve redução de dias úteis por conta de feriado. | Diminuiu o tempo efetivo de desenvolvimento, revisão e validação. |
-| Validação final concentrada | Parte das revisões ficou próxima ao final da sprint. | Aumentou o risco de retrabalho e de correções em prazo curto. |
+| Revisões acumuladas de sprints anteriores | A Sprint 4 precisou corrigir e padronizar documentos já existentes, incluindo sumários, cabeçalhos e organização de conteúdo. | Reduziu o tempo disponível para novas entregas e aumentou o volume de retrabalho documental. |
+| Demora para concluir tasks | Observado no acompanhamento do Kanban e nas dailies; pendência: registrar quais cards permaneceram mais tempo em andamento. | Reduziu a previsibilidade da sprint e concentrou ajustes perto do fechamento. |
+| Granularidade irregular das tasks | A necessidade de refinamento na Sprint 4 indica que parte das atividades anteriores ainda estava ampla ou pouco detalhada. | Dificultou medir progresso real, estimar esforço e identificar bloqueios rapidamente. |
+| Redução de tempo útil por feriado | O calendário da sprint teve menos dias úteis; pendência: registrar no planejamento a data do feriado considerado. | Diminuiu a janela disponível para desenvolvimento, revisão e validação das entregas. |
+| Validação final concentrada | Correções finais de documentação e links foram feitas próximas ao fechamento da sprint. | Aumentou o risco de retrabalho e reduziu o tempo para revisão cruzada pela equipe. |
 
 ### 4.4 Ações de Melhoria para a Sprint 5
 
-| Problema identificado | Ação de melhoria | Indicador de sucesso numérico |
-|---|---|---|
-| Revisões acumuladas de sprints anteriores | Reservar a Sprint 5 para refinamento final e validação dos artefatos principais. | 100% dos documentos principais revisados antes da entrega final. |
-| Demora para concluir tasks | Reduzir escopo de cada task e acompanhar andamento diariamente no Kanban. | Pelo menos 80% das tasks concluídas no prazo definido para a sprint. |
-| Granularidade irregular | Quebrar tasks grandes em itens menores antes do início da execução. | Pelo menos 70% das tasks classificadas como P ou M. |
-| Feriado reduziu tempo útil da sprint | Considerar capacidade reduzida no planejamento e priorizar tarefas críticas. | 100% das tarefas críticas priorizadas antes das tarefas complementares. |
-| Validação final concentrada | Antecipar revisão de documentação, build e testes ao longo da sprint. | Build, testes e revisão documental executados antes do fechamento da sprint, quando aplicável. |
+| Problema identificado | Ação de melhoria | Indicador de sucesso | Issue relacionada | Status esperado |
+|---|---|---|---|---|
+| Revisões acumuladas de sprints anteriores | Priorizar a Sprint 5 como refinamento final dos artefatos principais. | 100% dos documentos principais revisados antes da entrega final. | A definir no board da Sprint 5. | Planejada |
+| Demora para concluir tasks | Reduzir o escopo de cada task e acompanhar o avanço diariamente no Kanban. | Pelo menos 80% das tasks concluídas no prazo definido para a sprint. | A definir no board da Sprint 5. | Planejada |
+| Granularidade irregular das tasks | Quebrar atividades grandes em tasks menores antes do início da execução. | Pelo menos 70% das tasks classificadas como P ou M pela métrica t-shirt. | A definir no board da Sprint 5. | Planejada |
+| Redução de tempo útil por feriado | Considerar a capacidade reduzida no planejamento e priorizar primeiro as tarefas críticas. | 100% das tarefas críticas priorizadas antes das tarefas complementares. | A definir no board da Sprint 5. | Planejada |
+| Validação final concentrada | Antecipar revisão documental, build e testes ao longo da sprint. | 100% dos merges para a branch principal com build/testes executados antes do merge, quando aplicável. | A definir no board da Sprint 5. | Planejada |
+| Evidências incompletas de acompanhamento | Registrar evidências objetivas do board, dailies e fechamento da sprint. | 100% dos pontos fortes e fracos da Sprint 5 acompanhados por evidência, justificativa ou pendência explícita. | A definir no board da Sprint 5. | Planejada |
 
 ### 4.5 Status das Ações da Sprint Anterior
 
-| Ação definida anteriormente | Resultado obtido na Sprint 4 | Status | Evidência ou justificativa |
+| Ação planejada na sprint anterior | Resultado na Sprint 4 | Status | Evidência ou justificativa |
 |---|---|---|---|
-| Melhor divisão das tasks | Houve maior atenção à granularidade, mas algumas tarefas ainda ficaram amplas. | Parcialmente concluída | O acompanhamento do Kanban indicou demora em algumas conclusões. |
-| Revisão das estimativas de esforço | A equipe reconheceu a necessidade de considerar capacidade reduzida e feriado no planejamento. | Parcialmente concluída | A estimativa ainda precisa ser refinada no planejamento detalhado da Sprint 5. |
-| Checkpoints frequentes | Dailies e alinhamentos ajudaram na comunicação e no acompanhamento das pendências. | Concluída | A prática foi usada para acompanhar progresso e impedimentos da sprint. |
-| Refinamento técnico prévio | Parte das revisões técnicas e documentais ainda ocorreu perto do fechamento da sprint. | Parcialmente concluída | A Sprint 5 deve antecipar validações e revisão final. |
-| Mapeamento de dependências | Dependências foram discutidas, mas ainda houve impacto de tarefas que demoraram mais do que o previsto. | Parcialmente concluída | O refinamento final deve priorizar itens críticos e dependentes. |
+| Melhor divisão das tasks | Houve maior atenção à granularidade, mas ainda foram identificadas atividades amplas que precisam ser quebradas na Sprint 5. | Parcialmente concluída | Evidência observada no Kanban; pendência: registrar cards específicos. |
+| Revisão das estimativas de esforço | A equipe identificou a necessidade de considerar capacidade reduzida e impacto de calendário no planejamento. | Parcialmente concluída | A Sprint 5 já prevê uso da métrica t-shirt P, M e G para estimativa. |
+| Checkpoints frequentes | Dailies e alinhamentos apoiaram a comunicação e o acompanhamento de pendências. | Concluída | Evidência observada nas rotinas de acompanhamento; pendência: anexar registro formal. |
+| Refinamento técnico prévio | Parte das revisões técnicas e documentais ainda ocorreu perto do fechamento. | Parcialmente concluída | A Sprint 5 deve antecipar revisão documental, build e testes antes do fechamento. |
+| Mapeamento de dependências | As dependências foram discutidas, mas ainda houve impacto de tasks demoradas e ajustes acumulados. | Parcialmente concluída | A Sprint 5 deve registrar dependências diretamente nas tasks planejadas. |
+
+### 4.6 Síntese da Evolução da Sprint
+
+Em relação à Sprint 3, a Sprint 4 evoluiu na comunicação da equipe, na revisão dos documentos e na preparação do refinamento final. Porém, ainda persistiram problemas de granularidade, demora na conclusão de tasks, concentração de validações no fim da sprint e falta de evidências formais para alguns acompanhamentos. O planejamento da Sprint 5 responde a esses pontos ao priorizar refinamento final, uso da métrica t-shirt, registro de dependências, indicadores numéricos e validações antes do fechamento da entrega.
 
 ---
 
@@ -411,15 +416,19 @@ A Sprint 5 será voltada ao refinamento final do projeto. As tasks abaixo foram 
 
 ## 7. Uso das Políticas de Gestão de Configuração
 
-| Política | Como foi aplicada | Evidência | Status |
+As regras de gestão de configuração utilizadas pelo grupo foram descritas no documento [Gestao_Projeto_Configuracao.md](Gestao_Projeto_Configuracao.md). A tabela abaixo resume como essas políticas orientam o fluxo de versionamento, branches, commits, Pull Requests, issues e releases do projeto.
+
+| Política | Como foi aplicada | Evidência no projeto | Status |
 |---|---|---|---|
-| Padrão de branches | A preencher | A preencher | A preencher |
-| Conventional Commits | A preencher | A preencher | A preencher |
-| Uso de merge requests / pull requests | A preencher | A preencher | A preencher |
-| Relação com issues | A preencher | A preencher | A preencher |
-| Versionamento SemVer | A preencher | A preencher | A preencher |
-| Revisão antes do merge | A preencher | A preencher | A preencher |
-| Atualização de documentação junto com a entrega | A preencher | A preencher | A preencher |
+| Gitflow | O projeto utiliza `develop` como branch de integração e `main` como branch estável, conforme regra descrita em [Gestao_Projeto_Configuracao.md](Gestao_Projeto_Configuracao.md). | O histórico Git registra merges de branches como `fix/reorganizacao-modelo`, `feat/docker-mongodb`, `feat/front-back-login-integration` e `feat/db-lgpd-fields` para `develop`. | Aplicada |
+| Padrão de branches | As branches seguem prefixos por tipo de atividade, como `feature/`, `fix/` e `docs/`, conforme convenção definida no documento de gestão de configuração. | Branch atual `docs/standardize-project-management` e histórico com branches `fix/reorganizacao-modelo`, `feat/docker-mongodb`, `feat/front-back-login-integration` e `feat/recommendation-unit-tests`. | Aplicada |
+| Fluxo de criação e atualização de branches | Alterações de documentação e desenvolvimento são realizadas em branches específicas antes da integração. | A branch atual concentra ajustes de documentação de gestão; o histórico mostra merges de branches de feature e fix para `develop`. | Aplicada |
+| Conventional Commits | Os commits seguem a estrutura `tipo: descrição`, com tipos como `docs`, `feat` e `fix`. | Histórico Git contém commits como `docs: add sprint 4 management and sprint 5 planning #248`, `docs: consolidate project management documentation #248`, `feat: mongodb docker #239` e `fix: trim aplicado no ItemId e TipoEvento #238`. | Aplicada |
+| Pull Requests e revisão | As alterações devem ser integradas por Pull Request e revisão antes do merge, conforme política definida no documento de gestão de configuração. | O histórico local registra merges de branches para `develop`; pendência: registrar links ou IDs dos Pull Requests para evidência direta da revisão. | Aplicada |
+| Relação com issues | Commits, branches e Pull Requests devem estar relacionados ao escopo das issues sempre que possível. | Histórico Git registra commits vinculados a issues, como `#248`, `#238`, `#239`, `#223` e `#234`. | Aplicada |
+| Exclusão de branches finalizadas | Branches finalizadas devem ser removidas após merge para manter o repositório organizado. | A política está definida em [Gestao_Projeto_Configuracao.md](Gestao_Projeto_Configuracao.md); pendência: validar no repositório remoto se branches já mergeadas foram excluídas. | Aplicada |
+| Versionamento SemVer | O projeto adota versionamento semântico no formato `MAJOR.MINOR.PATCH`. | O `README.md` possui histórico de versões `0.1.0`, `0.2.0` e `0.3.0-dev`, com descrição das entregas. | Aplicada |
+| Aplicação prática no projeto | O fluxo recomendado inclui criação de branch, commits, envio ao remoto, abertura de Pull Request, revisão, merge e exclusão da branch. | O histórico Git apresenta commits e merges compatíveis com o fluxo definido. | Aplicada  |
 
 ---
 

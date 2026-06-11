@@ -48,9 +48,22 @@ export default function useNotificationsViewModel() {
 
     const saved = await updateNotificationPreference(nextEnabled);
 
+    if (!saved) {
+      setSections((previous) =>
+        previous.map((section) => ({
+          ...section,
+          options: section.options.map((option) =>
+            option.id === optionId
+              ? { ...option, enabled: currentOption?.enabled ?? false }
+              : option
+          ),
+        }))
+      );
+    }
+
     return {
       title: currentOption?.title ?? 'Notificacao',
-      enabled: nextEnabled,
+      enabled: saved ? nextEnabled : currentOption?.enabled ?? false,
       saved,
     };
   }

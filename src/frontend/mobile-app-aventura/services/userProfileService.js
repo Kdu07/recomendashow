@@ -29,8 +29,6 @@ function normalizeProfileResponse(data) {
     complement: data.complemento ?? data.Complemento ?? '',
     neighborhood: data.bairro ?? data.Bairro ?? '',
     city: data.cidade ?? data.Cidade ?? '',
-    avatarIcon: 'person',
-    avatar: data.avatar ?? data.avatarUrl ?? data.AvatarUrl ?? null,
   };
 }
 

@@ -33,9 +33,11 @@ export default function NotificationsScreen({
 
     setSystemStatus({
       type: result?.saved ? (result?.enabled ? 'success' : 'info') : 'warning',
-      message: result?.enabled
-        ? `${result.title} ativado.`
-        : `${result?.title || 'Notificação'} desativado.`,
+      message: !result?.saved
+        ? 'Nao foi possivel salvar sua preferencia de notificacao.'
+        : result?.enabled
+          ? `${result.title} ativado.`
+          : `${result?.title || 'Notificação'} desativado.`,
     });
   }
 

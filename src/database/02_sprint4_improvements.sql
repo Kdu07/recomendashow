@@ -1,6 +1,5 @@
 
--- Correções de qualidade
--- ============================================================
+-- Quality enhancement
 
 DO $$
 BEGIN
@@ -41,8 +40,7 @@ BEGIN
     END IF;
 END $$;
 
--- Migração de tipos: TIMESTAMP → TIMESTAMPTZ (espetaculos)
--- ============================================================
+-- Type migration: TIMESTAMP → TIMESTAMPTZ 
 
 DO $$
 BEGIN
@@ -60,8 +58,8 @@ BEGIN
     END IF;
 END $$;
 
--- Campos de endereço (suportar a integração ViaCEP)
--- ============================================================
+-- Adress fields (suport ViaCEP integration)
+
 ALTER TABLE usuarios
     ADD COLUMN IF NOT EXISTS cep         VARCHAR(9),
     ADD COLUMN IF NOT EXISTS logradouro  VARCHAR(255),
@@ -70,8 +68,8 @@ ALTER TABLE usuarios
     ADD COLUMN IF NOT EXISTS bairro      VARCHAR(100),
     ADD COLUMN IF NOT EXISTS cidade      VARCHAR(100);
 
--- Conformidade com LGPD
--- ============================================================
+-- LGPD
+
 ALTER TABLE usuarios
     ADD COLUMN IF NOT EXISTS consentimento_aceito BOOLEAN NOT NULL DEFAULT FALSE,
     ADD COLUMN IF NOT EXISTS data_consentimento   TIMESTAMPTZ,
@@ -80,8 +78,7 @@ ALTER TABLE usuarios
 
 ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS anonimizado_em TIMESTAMPTZ;
 
--- Índices de performance
--- ============================================================
+-- Performance indexes
 
 DROP INDEX IF EXISTS idx_interacoes_usuario;
 DROP INDEX IF EXISTS idx_recomendacao_usuario;
@@ -101,19 +98,16 @@ CREATE INDEX IF NOT EXISTS idx_recomendacoes_usuario_score
 CREATE INDEX IF NOT EXISTS idx_wishlist_usuario
     ON wishlist_curtidas(usuario_id);
 
--- Integração ML: identificador inteiro para o motor de recomendação
--- ============================================================
+-- ML integration: integer identification of recomender
 
 ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS ml_id SERIAL;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_ml_id ON usuarios(ml_id);
 
--- Nova coluna — rastreabilidade de visualização de recomendações
--- ============================================================
+-- New Collumn 
 
 ALTER TABLE recomendacoes ADD COLUMN IF NOT EXISTS visualizada_em TIMESTAMPTZ;
 
 -- Triggers e procedure
--- ============================================================
 
 CREATE OR REPLACE FUNCTION fn_atualizar_data_preferencias()
 RETURNS TRIGGER AS $$
@@ -130,12 +124,23 @@ CREATE TRIGGER trg_preferencias_update
     FOR EACH ROW
     EXECUTE FUNCTION fn_atualizar_data_preferencias();
 
--- Objetos de conformidade LGPD
--- ============================================================
+-- Objects for LGPD
 
 CREATE OR REPLACE PROCEDURE sp_anonimizar_usuario(p_id UUID)
 LANGUAGE plpgsql AS $$
+DECLARE
+    v_deleted_at TIMESTAMPTZ;
 BEGIN
+    SELECT deleted_at INTO v_deleted_at
+    FROM usuarios
+    WHERE id = p_id;
+
+    IF v_deleted_at IS NULL THEN
+        RAISE EXCEPTION
+            'Usuário % não possui deleted_at definido. Execute soft-delete antes de anonimizar.',
+            p_id;
+    END IF;
+
     UPDATE usuarios SET
         nome        = 'Usuário Removido',
         email       = id::text || '@anonimizado.invalid',

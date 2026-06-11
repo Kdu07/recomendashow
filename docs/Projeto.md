@@ -1,4 +1,23 @@
 # Projeto - Sistema de Recomendação - Aventura
+----
+
+## Grupo 2 - Aventureiros
+
+## Projeto - RecomendaShow
+
+## Integrantes
+
+- [Alexsander da Silva Barbosa](https://www.linkedin.com/in/alexsander-dsbarbosa/)
+- [Carlos Eduardo Serrano Quaglia](https://www.linkedin.com/in/carlos-quaglia-309088357/)
+- [Catarina Sayuri Arashiro Braga Felipe](https://www.linkedin.com/in/catarina-sayuri/)
+- [Débora Pereira Nogueira](https://www.linkedin.com/in/debora-pereira-nogueira/)
+- [Isaac Souza Santos](https://www.linkedin.com/in/isaac-souza-santos/)
+- [Nicholas Anantha Krishnan Millani](https://www.linkedin.com/in/nicholas-millani-83a950357/)
+- [Paulo Henrique Bueno Fernandes](https://www.linkedin.com/in/paulo-henrique0601/)
+
+## Objetivo do Documento
+
+Este documento apresenta a documentação principal do projeto, reunindo contexto do parceiro, problema, requisitos, arquitetura, diagramas, planejamento e execução de testes, desenvolvimento das sprints e evolução técnica da solução.
 
 ## Sumário
 
@@ -103,10 +122,10 @@
 
 - [RNF01 — Tempo de resposta das recomendações](#rnf01--tempo-de-resposta-das-recomendações)
 - [RNF02 — Segurança das credenciais de usuário](#rnf02--segurança-das-credenciais-de-usuário)
-- [RNF03 — Conformidade com a LGPD](#rnf03--conformidade-com-a-lgpd)
-- [RNF04 — Usabilidade da interface em dispositivos móveis](#rnf04--usabilidade-da-interface-em-dispositivos-móveis)
+- [RNF03 — Privacidade e direitos do titular (LGPD)](#rnf03--privacidade-e-direitos-do-titular-lgpd)
+- [RNF04 — Usabilidade e responsividade em dispositivos móveis](#rnf04--usabilidade-e-responsividade-em-dispositivos-móveis)
 - [RNF05 — Disponibilidade da plataforma](#rnf05--disponibilidade-da-plataforma)
-- [RNF06 — Escalabilidade do sistema de recomendação](#rnf06--escalabilidade-do-sistema-de-recomendação)
+- [RNF06 — Capacidade sob carga em pico de campanha](#rnf06--capacidade-sob-carga-em-pico-de-campanha)
 - [RNF07 — Precisão da geolocalização](#rnf07--precisão-da-geolocalização)
 
 </details>
@@ -192,9 +211,9 @@
 </details>
 
 <details>
-<summary><a href="#18-desenvolvimento-do-projeto--sprint-3">18. Desenvolvimento Do Projeto — Sprint 3</a></summary>
+<summary><a href="#18-desenvolvimento-do-projeto---sprint-3">18. Desenvolvimento Do Projeto — Sprint 3</a></summary>
 
-- [18.1 Objetivo do artefato](#181-objetivo-do-artefato)
+- [18.1 Objetivo da sessão](#181-objetivo-da-sessão)
 - [18.2 Arquitetura de codificação e estrutura de diretórios](#182-arquitetura-de-codificação-e-estrutura-de-diretórios)
 - [18.3 Desenvolvimento do Backend](#183-desenvolvimento-do-backend)
   - [18.3.1 Arquitetura do backend](#1831-arquitetura-do-backend)
@@ -205,7 +224,7 @@
 - [18.5 Padrões de codificação e padrões de projeto](#185-padrões-de-codificação-e-padrões-de-projeto)
   - [Padrões de codificação](#padrões-de-codificação)
   - [Padrões de projeto](#padrões-de-projeto)
-- [18.6 Testes unitários e metodologia TDD](#186-testes-unitários-e-metodologia-tdd)
+- [18.6 Testes unitários do Backend e metodologia TDD](#186-testes-unitários-do-backend-e-metodologia-tdd)
   - [Estratégia de testes](#estratégia-de-testes)
   - [Testes implementados](#testes-implementados)
   - [Execução dos testes](#execução-dos-testes)

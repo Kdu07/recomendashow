@@ -559,6 +559,12 @@ Novos índices sem predecessor no Sprint 3:
 - **Por que implementado no banco e não na aplicação:** a substituição de múltiplos campos sensíveis (nome, email, senha_hash, seis colunas de endereço) ocorre em uma única transação, eliminando janelas de inconsistência que existiriam se a aplicação fizesse os `UPDATE`s em passos separados.
 - **Princípio LGPD:** art. 5, XI (tratamento) e art. 18, IV (direito à eliminação/anonimização). A procedure exige `deleted_at IS NOT NULL AND anonimizado = FALSE` como guarda dupla, prevenindo dupla anonimização e garantindo que o soft-delete preceda a anonimização.
 
+#### fn_sincronizar_data_consentimento / trg_sincronizar_data_consentimento
+
+- **Problema que resolve:** `data_consentimento` poderia ficar `NULL` mesmo com `consentimento_aceito = TRUE` caso a aplicação omitisse o campo no `UPDATE` — quebra silenciosa de rastreabilidade LGPD sem nenhum erro visível.
+- **Por que implementado no banco e não na aplicação:** o banco atua como rede de segurança: se a aplicação enviar o aceite sem o timestamp, o trigger preenche `data_consentimento = CURRENT_TIMESTAMP` automaticamente antes de persistir. Se a aplicação enviar um valor explícito, o trigger respeita e não sobrescreve.
+- **Princípio LGPD:** art. 8, §5 — o consentimento deve ser registrado de forma que permita demonstrar que foi obtido. Garantir que `data_consentimento` nunca fique nulo quando `consentimento_aceito = TRUE` assegura essa demonstrabilidade independentemente da camada que executou o `UPDATE`.
+
 ---
 
 ### 8.7 Estado Sprint 3 → Sprint 4

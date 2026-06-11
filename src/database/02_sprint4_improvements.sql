@@ -174,3 +174,20 @@ CREATE TRIGGER trg_bloquear_update_anonimizado
     BEFORE UPDATE ON usuarios
     FOR EACH ROW
     EXECUTE FUNCTION fn_bloquear_update_anonimizado();
+
+CREATE OR REPLACE FUNCTION fn_sincronizar_data_consentimento()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.consentimento_aceito = TRUE
+       AND OLD.consentimento_aceito = FALSE
+       AND NEW.data_consentimento IS NULL THEN
+        NEW.data_consentimento = CURRENT_TIMESTAMP;
+    END IF;
+    RETURN NEW;
+END; $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_sincronizar_data_consentimento ON usuarios;
+CREATE TRIGGER trg_sincronizar_data_consentimento
+    BEFORE UPDATE ON usuarios
+    FOR EACH ROW
+    EXECUTE FUNCTION fn_sincronizar_data_consentimento();

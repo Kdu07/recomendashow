@@ -9,8 +9,6 @@ export const UserProfileModel = {
   complement: '',
   neighborhood: '',
   city: '',
-  avatarIcon: 'person',
-  avatar: null,
 };
 
 export const ProfileMenuItemModel = {

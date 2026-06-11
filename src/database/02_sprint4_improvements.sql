@@ -61,6 +61,7 @@ END $$;
 -- Adress fields (suport ViaCEP integration)
 
 ALTER TABLE usuarios
+    ADD COLUMN IF NOT EXISTS data_nascimento DATE,
     ADD COLUMN IF NOT EXISTS cep         VARCHAR(9),
     ADD COLUMN IF NOT EXISTS logradouro  VARCHAR(255),
     ADD COLUMN IF NOT EXISTS numero      VARCHAR(10),
@@ -145,6 +146,7 @@ BEGIN
         nome        = 'Usuário Removido',
         email       = id::text || '@anonimizado.invalid',
         senha_hash  = '',
+        data_nascimento = NULL,
         cep         = NULL,
         logradouro  = NULL,
         numero      = NULL,

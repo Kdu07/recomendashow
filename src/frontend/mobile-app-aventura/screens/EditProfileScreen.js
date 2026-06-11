@@ -6,10 +6,8 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 import AppButton from '../components/AppButton';
 import AppInput from '../components/AppInput';
@@ -17,17 +15,8 @@ import ScreenHeader from '../components/ScreenHeader';
 import SystemStatus from '../components/SystemStatus';
 import useEditProfileViewModel from '../viewmodels/useEditProfileViewModel';
 import { colors } from '../constants/colors';
-import { radius, spacing } from '../constants/spacing';
+import { spacing } from '../constants/spacing';
 import { typography } from '../constants/typography';
-
-const avatarOptions = [
-  'person',
-  'happy-outline',
-  'star-outline',
-  'musical-notes-outline',
-  'heart-outline',
-  'color-palette-outline',
-];
 
 export default function EditProfileScreen({ navigation }) {
   const [systemStatus, setSystemStatus] = useState(null);
@@ -79,38 +68,6 @@ export default function EditProfileScreen({ navigation }) {
           />
 
           <View style={styles.form}>
-            <View style={styles.avatarSection}>
-              <Text style={styles.h2}>
-                Avatar
-              </Text>
-
-              <View style={styles.avatarGrid}>
-                {avatarOptions.map((icon) => {
-                  const selected = values.avatarIcon === icon;
-
-                  return (
-                    <TouchableOpacity
-                      key={icon}
-                      style={[
-                        styles.avatarOption,
-                        selected && styles.avatarOptionSelected,
-                      ]}
-                      onPress={() => updateField('avatarIcon', icon)}
-                      activeOpacity={0.8}
-                      accessibilityRole="button"
-                      accessibilityLabel="Selecionar avatar"
-                    >
-                      <Ionicons
-                        name={icon}
-                        size={28}
-                        color={selected ? colors.white : colors.purplePrimary}
-                      />
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </View>
-
             <View style={styles.section}>
               <Text style={styles.h2}>
                 Dados pessoais
@@ -307,10 +264,6 @@ const styles = StyleSheet.create({
     gap: spacing.lg,
   },
 
-  avatarSection: {
-    gap: spacing.sm,
-  },
-
   section: {
     gap: spacing.md,
   },
@@ -320,28 +273,6 @@ const styles = StyleSheet.create({
     lineHeight: typography.lineHeight.md,
     fontWeight: typography.fontWeight.bold,
     color: colors.grayDark,
-  },
-
-  avatarGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.sm,
-  },
-
-  avatarOption: {
-    width: 52,
-    height: 52,
-    borderRadius: radius.pill,
-    backgroundColor: colors.white,
-    borderWidth: 1,
-    borderColor: colors.grayLight,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  avatarOptionSelected: {
-    backgroundColor: colors.purplePrimary,
-    borderColor: colors.purplePrimary,
   },
 
   inputRow: {

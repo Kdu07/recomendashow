@@ -1,47 +1,15 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { signOut } from '../repositories/authRepository';
+import { removeUserAccount, signOut } from '../repositories/authRepository';
 import { getProfileData } from '../repositories/profileRepository';
-import { removeUserAccount } from '../repositories/authRepository';
-import { getCurrentUserId, clearCurrentUserId } from '../services/userSession';
+import { clearCurrentUserId } from '../services/userSession';
+import { getAuthSession } from '../services/tokenStorageService';
 
-<<<<<<< HEAD
 export default function useProfileViewModel(navigation) {
   const [user, setUser] = useState({});
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
-=======
-export default function useProfileViewModel() {
-  const [profileData, setProfileData] = useState(() => getProfileData());
   const [deletingAccount, setDeletingAccount] = useState(false);
->>>>>>> develop
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function load() {
-      setLoading(true);
-      try {
-        const data = await getProfileData();
-        if (!mounted) return;
-        setUser(data.userProfile || {});
-        setMenuItems(data.profileMenuItems || []);
-      } catch (err) {
-        console.warn('Erro ao carregar perfil:', err);
-        if (!mounted) return;
-        setUser({});
-        setMenuItems([]);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    }
-
-    load();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
 
   const refreshProfile = useCallback(async () => {
     setLoading(true);
@@ -50,45 +18,46 @@ export default function useProfileViewModel() {
       setUser(data.userProfile || {});
       setMenuItems(data.profileMenuItems || []);
     } catch (err) {
-      console.warn('Erro ao atualizar perfil:', err);
+      console.warn('Erro ao carregar perfil:', err);
+      setUser({});
+      setMenuItems([]);
     } finally {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    refreshProfile();
+  }, [refreshProfile]);
 
   function handleMenuPress(item) {
     console.log('Abrir item:', item.title);
   }
 
   function handleEditProfile() {
-    console.log('Editar perfil');
+    navigation.navigate('EditProfile');
   }
 
   async function handleLogout() {
     await signOut();
+    clearCurrentUserId();
     navigation.reset({
       index: 0,
       routes: [{ name: 'Auth' }],
     });
   }
 
-  function isLoading() {
-    return loading;
-  }
-
-  function handleTabPress(tab) {
-    console.log('Navegar para:', tab);
-  }
-
   async function handleDeleteAccount() {
-    const userId = getCurrentUserId();
+    const session = await getAuthSession();
+    const userId = session?.usuarioId;
     if (!userId) {
-      throw new Error('Sessão inválida. Faça login novamente.');
+      throw new Error('Sessao invalida. Faca login novamente.');
     }
 
     setDeletingAccount(true);
     try {
       await removeUserAccount(userId);
+      await signOut();
       clearCurrentUserId();
     } finally {
       setDeletingAccount(false);
@@ -98,17 +67,12 @@ export default function useProfileViewModel() {
   return {
     user,
     menuItems,
-    refreshProfile,
-<<<<<<< HEAD
-    isLoading,
-=======
     deletingAccount,
-
->>>>>>> develop
+    isLoading: () => loading,
+    refreshProfile,
     handleMenuPress,
     handleEditProfile,
     handleLogout,
-    handleTabPress,
     handleDeleteAccount,
   };
 }

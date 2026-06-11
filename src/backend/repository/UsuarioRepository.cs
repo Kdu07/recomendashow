@@ -19,9 +19,10 @@ namespace BackEnd.Aventura.Repository
 
             using var connection = _connectionFactory.CreateConnection();
             connection.Open();
+            EnsureDataNascimentoColumn(connection);
 
             const string sql = @"
-SELECT id, nome, email, senha_hash, idade, data_cadastro,
+SELECT id, nome, email, senha_hash, idade, data_nascimento, data_cadastro,
        cep, logradouro, numero, complemento, bairro, cidade,
        consentimento_aceito, data_consentimento, deleted_at, anonimizado
 FROM usuarios
@@ -41,9 +42,10 @@ WHERE id = @Id
 
             using var connection = _connectionFactory.CreateConnection();
             connection.Open();
+            EnsureDataNascimentoColumn(connection);
 
             const string sql = @"
-SELECT id, nome, email, senha_hash, idade, data_cadastro,
+SELECT id, nome, email, senha_hash, idade, data_nascimento, data_cadastro,
        cep, logradouro, numero, complemento, bairro, cidade,
        consentimento_aceito, data_consentimento, deleted_at, anonimizado
 FROM usuarios
@@ -76,12 +78,13 @@ WHERE LOWER(email) = LOWER(@Email)";
 
             using var connection = _connectionFactory.CreateConnection();
             connection.Open();
+            EnsureDataNascimentoColumn(connection);
 
             const string sql = @"
-INSERT INTO usuarios(id, nome, email, senha_hash, idade, data_cadastro,
+INSERT INTO usuarios(id, nome, email, senha_hash, idade, data_nascimento, data_cadastro,
                      cep, logradouro, numero, complemento, bairro, cidade,
                      consentimento_aceito, data_consentimento)
-VALUES (@Id, @Nome, @Email, @SenhaHash, @Idade, @DataCadastro,
+VALUES (@Id, @Nome, @Email, @SenhaHash, @Idade, @DataNascimento, @DataCadastro,
         @Cep, @Logradouro, @Numero, @Complemento, @Bairro, @Cidade,
         @ConsentimentoAceito, @DataConsentimento)";
 
@@ -91,6 +94,7 @@ VALUES (@Id, @Nome, @Email, @SenhaHash, @Idade, @DataCadastro,
             command.Parameters.AddWithValue("@Email", usuario.Email);
             command.Parameters.AddWithValue("@SenhaHash", usuario.SenhaHash);
             command.Parameters.AddWithValue("@Idade", (object?)usuario.Idade ?? DBNull.Value);
+            command.Parameters.AddWithValue("@DataNascimento", (object?)usuario.DataNascimento?.Date ?? DBNull.Value);
             command.Parameters.AddWithValue("@DataCadastro", usuario.DataCadastro);
             command.Parameters.AddWithValue("@Cep", (object?)usuario.Cep ?? DBNull.Value);
             command.Parameters.AddWithValue("@Logradouro", (object?)usuario.Logradouro ?? DBNull.Value);
@@ -111,10 +115,11 @@ VALUES (@Id, @Nome, @Email, @SenhaHash, @Idade, @DataCadastro,
 
             using var connection = _connectionFactory.CreateConnection();
             connection.Open();
+            EnsureDataNascimentoColumn(connection);
 
             const string sql = @"
 UPDATE usuarios
-SET nome = @Nome, idade = @Idade,
+SET nome = @Nome, email = @Email, idade = @Idade, data_nascimento = @DataNascimento,
     cep = @Cep, logradouro = @Logradouro, numero = @Numero,
     complemento = @Complemento, bairro = @Bairro, cidade = @Cidade
 WHERE id = @Id";
@@ -122,7 +127,9 @@ WHERE id = @Id";
             using var command = new NpgsqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Id", usuario.Id);
             command.Parameters.AddWithValue("@Nome", usuario.Nome);
+            command.Parameters.AddWithValue("@Email", usuario.Email);
             command.Parameters.AddWithValue("@Idade", (object?)usuario.Idade ?? DBNull.Value);
+            command.Parameters.AddWithValue("@DataNascimento", (object?)usuario.DataNascimento?.Date ?? DBNull.Value);
             command.Parameters.AddWithValue("@Cep", (object?)usuario.Cep ?? DBNull.Value);
             command.Parameters.AddWithValue("@Logradouro", (object?)usuario.Logradouro ?? DBNull.Value);
             command.Parameters.AddWithValue("@Numero", (object?)usuario.Numero ?? DBNull.Value);
@@ -139,6 +146,7 @@ WHERE id = @Id";
 
             using var connection = _connectionFactory.CreateConnection();
             connection.Open();
+            EnsureDataNascimentoColumn(connection);
 
             const string sql = @"
 UPDATE usuarios
@@ -160,7 +168,22 @@ WHERE id = @Id
             using var connection = _connectionFactory.CreateConnection();
             connection.Open();
 
-            const string sql = @"CALL sp_anonimizar_usuario(@Id)";
+            const string sql = @"
+UPDATE usuarios
+SET nome        = 'Usuário Removido',
+    email       = id::text || '@anonimizado.invalid',
+    senha_hash  = '',
+    data_nascimento = NULL,
+    cep         = NULL,
+    logradouro  = NULL,
+    numero      = NULL,
+    complemento = NULL,
+    bairro      = NULL,
+    cidade      = NULL,
+    anonimizado = TRUE
+WHERE id = @Id
+  AND deleted_at IS NOT NULL
+  AND anonimizado = FALSE";
 
             using var command = new NpgsqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Id", id);
@@ -182,6 +205,13 @@ WHERE id = @Id
             return result is int mlId ? mlId : null;
         }
 
+        private static void EnsureDataNascimentoColumn(NpgsqlConnection connection)
+        {
+            const string sql = "ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS data_nascimento DATE";
+            using var command = new NpgsqlCommand(sql, connection);
+            command.ExecuteNonQuery();
+        }
+
         private static Usuario MapUsuario(NpgsqlDataReader reader)
         {
             return new Usuario(
@@ -200,7 +230,8 @@ WHERE id = @Id
                 reader.GetBoolean(reader.GetOrdinal("consentimento_aceito")),
                 reader.IsDBNull(reader.GetOrdinal("data_consentimento")) ? null : reader.GetDateTime(reader.GetOrdinal("data_consentimento")),
                 reader.IsDBNull(reader.GetOrdinal("deleted_at")) ? null : reader.GetDateTime(reader.GetOrdinal("deleted_at")),
-                reader.GetBoolean(reader.GetOrdinal("anonimizado")));
+                reader.GetBoolean(reader.GetOrdinal("anonimizado")),
+                reader.IsDBNull(reader.GetOrdinal("data_nascimento")) ? null : reader.GetDateTime(reader.GetOrdinal("data_nascimento")));
         }
     }
 }

@@ -50,5 +50,24 @@ namespace BackEnd.Aventura.Tests
             var actionResult = Assert.IsType<OkObjectResult>(result.Result);
             Assert.Equal(response, actionResult.Value);
         }
+
+        [Fact]
+        public void Login_ShouldReturnUnauthorized_WhenCredentialsAreInvalid()
+        {
+            // Arrange
+            var request = new LoginRequest { Email = "user@test.com", Senha = "senha-errada" };
+            _authServiceMock
+                .Setup(s => s.Login(request))
+                .Throws(new UnauthorizedAccessException("E-mail ou senha inválidos."));
+
+            // Act
+            var result = _controller.Login(request);
+
+            // Assert
+            var actionResult = Assert.IsType<UnauthorizedObjectResult>(result.Result);
+            var problem = Assert.IsType<ProblemDetails>(actionResult.Value);
+            Assert.Equal(401, problem.Status);
+            Assert.Equal("E-mail ou senha inválidos.", problem.Detail);
+        }
     }
 }

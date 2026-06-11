@@ -36,11 +36,11 @@ export default function EditInterestsScreen({
     handleSaveChanges,
   } = useEditInterestsViewModel();
 
-  function handleSaveWithStatus() {
-    const result = handleSaveChanges();
+  async function handleSaveWithStatus() {
+    const result = await handleSaveChanges();
 
     setSystemStatus({
-      type: 'success',
+      type: result.savedOnServer ? 'success' : 'warning',
       message: `${result.selectedInterestsCount} interesse(s) salvos para ${result.selectedCity || 'sua cidade'}.`,
     });
   }

@@ -47,12 +47,19 @@ __pycache__/
 # ============================================================
 **/bin/
 **/obj/
+**/.build-check/
+**/TestResults/
 *.user
 *.suo
 .vs/
 
+# Local certificates and runtime logs
+**/*.pfx
+**/*.log
+**/*.err.log
+
 # ============================================================
-#  Data  (large/generated datasets — models are tracked on purpose)
+#  Data  (large/generated datasets - models are tracked on purpose)
 # ============================================================
 dataset.csv
 

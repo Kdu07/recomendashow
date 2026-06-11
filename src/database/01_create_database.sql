@@ -48,6 +48,8 @@ CREATE TABLE IF NOT EXISTS usuarios(
     idade INT
     CHECK(idade >=13),
 
+    data_nascimento DATE,
+
     data_cadastro TIMESTAMP
     DEFAULT CURRENT_TIMESTAMP
 );

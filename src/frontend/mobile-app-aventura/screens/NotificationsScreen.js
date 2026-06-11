@@ -28,14 +28,16 @@ export default function NotificationsScreen({
     handleToggleOption,
   } = useNotificationsViewModel();
 
-  function handleToggleWithStatus(sectionId, optionId) {
-    const result = handleToggleOption(sectionId, optionId);
+  async function handleToggleWithStatus(sectionId, optionId) {
+    const result = await handleToggleOption(sectionId, optionId);
 
     setSystemStatus({
-      type: result?.enabled ? 'success' : 'info',
-      message: result?.enabled
-        ? `${result.title} ativado.`
-        : `${result?.title || 'Notificação'} desativado.`,
+      type: result?.saved ? (result?.enabled ? 'success' : 'info') : 'warning',
+      message: !result?.saved
+        ? 'Nao foi possivel salvar sua preferencia de notificacao.'
+        : result?.enabled
+          ? `${result.title} ativado.`
+          : `${result?.title || 'Notificação'} desativado.`,
     });
   }
 

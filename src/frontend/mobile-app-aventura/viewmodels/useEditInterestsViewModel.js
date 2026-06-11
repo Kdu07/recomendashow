@@ -1,33 +1,43 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { getInterestData } from '../repositories/interestRepository';
+import { getInterestData, saveInterestData } from '../repositories/interestRepository';
 
 export default function useEditInterestsViewModel() {
-  const data = useMemo(
-    () => getInterestData(),
-    []
-  );
+  const [interests, setInterests] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const [interests, setInterests] = useState(
-    data.interests || []
-  );
+  useEffect(() => {
+    let mounted = true;
 
-  const [cities, setCities] = useState(
-    data.cities || []
-  );
+    async function load() {
+      try {
+        const data = await getInterestData();
+        if (!mounted) return;
+        setInterests(data.interests || []);
+        setCities(data.cities || []);
+      } catch (error) {
+        console.warn('Erro ao carregar interesses:', error);
+      } finally {
+        if (mounted) setLoading(false);
+      }
+    }
+
+    load();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   function handleToggleInterest(interestId) {
     setInterests((previous) =>
-      previous.map((interest) => {
-        if (interest.id === interestId) {
-          return {
-            ...interest,
-            selected: !interest.selected,
-          };
-        }
-
-        return interest;
-      })
+      previous.map((interest) =>
+        interest.id === interestId
+          ? { ...interest, selected: !interest.selected }
+          : interest
+      )
     );
   }
 
@@ -40,26 +50,23 @@ export default function useEditInterestsViewModel() {
     );
   }
 
-  const selectedInterestsCount =
-    interests.filter(
-      (interest) => interest.selected
-    ).length;
+  const selectedInterestsCount = interests.filter((interest) => interest.selected).length;
 
-  function handleSaveChanges() {
-    console.log('Salvar alterações');
-
-    return {
-      selectedInterestsCount,
-      selectedCity: cities.find((city) => city.selected)?.label,
-    };
+  async function handleSaveChanges() {
+    setSaving(true);
+    try {
+      return await saveInterestData({ interests, cities });
+    } finally {
+      setSaving(false);
+    }
   }
 
   return {
     interests,
     cities,
-
+    loading,
+    saving,
     selectedInterestsCount,
-
     handleToggleInterest,
     handleSelectCity,
     handleSaveChanges,

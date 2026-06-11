@@ -32,7 +32,16 @@ namespace BackEnd.Aventura.Services
                 throw new NotFoundException($"Usuário com ID {id} não encontrado.");
             }
 
-            usuario.AtualizarPerfil(request.Nome, request.Idade,
+            if (!string.IsNullOrWhiteSpace(request.Email))
+            {
+                var usuarioComMesmoEmail = _repository.GetByEmail(request.Email);
+                if (usuarioComMesmoEmail is not null && usuarioComMesmoEmail.Id != id)
+                {
+                    throw new ConflictException("E-mail já cadastrado.");
+                }
+            }
+
+            usuario.AtualizarPerfil(request.Nome, request.Email, request.Idade, request.DataNascimento,
                 request.Cep, request.Logradouro, request.Numero,
                 request.Complemento, request.Bairro, request.Cidade);
             _repository.Update(usuario);
@@ -56,6 +65,7 @@ namespace BackEnd.Aventura.Services
             Nome = usuario.Nome,
             Email = usuario.Email,
             Idade = usuario.Idade,
+            DataNascimento = usuario.DataNascimento,
             DataCadastro = usuario.DataCadastro,
             Cep = usuario.Cep,
             Logradouro = usuario.Logradouro,

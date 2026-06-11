@@ -1,4 +1,34 @@
-# Projeto Visual (Mobile First)
+# Projeto Visual
+----
+
+## Grupo 2 - Aventureiros
+
+## Projeto - RecomendaShow
+
+## Integrantes
+
+- [Alexsander da Silva Barbosa](https://www.linkedin.com/in/alexsander-dsbarbosa/)
+- [Carlos Eduardo Serrano Quaglia](https://www.linkedin.com/in/carlos-quaglia-309088357/)
+- [Catarina Sayuri Arashiro Braga Felipe](https://www.linkedin.com/in/catarina-sayuri/)
+- [Débora Pereira Nogueira](https://www.linkedin.com/in/debora-pereira-nogueira/)
+- [Isaac Souza Santos](https://www.linkedin.com/in/isaac-souza-santos/)
+- [Nicholas Anantha Krishnan Millani](https://www.linkedin.com/in/nicholas-millani-83a950357/)
+- [Paulo Henrique Bueno Fernandes](https://www.linkedin.com/in/paulo-henrique0601/)
+
+## Objetivo do Documento
+
+Este documento registra as decisões visuais e de experiência do usuário do protótipo mobile first, reunindo abordagem de navegação, wireframes, mockups, guia de estilos, componentes visuais, interações e comportamentos responsivos. Seu objetivo é servir como referência para validação, comunicação com stakeholders e apoio à implementação da interface do projeto.
+
+## Sumário
+
+1. [Introdução](#1-introdução)
+2. [Abordagem Mobile First](#2-abordagem-mobile-first)
+3. [Estrutura de Navegação](#3-estrutura-de-navegação)
+4. [Wireframes](#4-wireframes)
+5. [Mockups Navegáveis](#5-mockups-navegáveis)
+6. [Guia de Estilos](#6-guia-de-estilos-componentes-visuais)
+7. [Interações e Comportamentos Mobile](#7-interações-e-comportamentos-mobile)
+8. [Considerações Finais](#8-considerações-finais)
 
 ---
 
@@ -149,9 +179,9 @@ Acima da *tab bar*, cada tela usa um header próprio com regras descritas em 3.4
 
 ---
 
-# 4. Wireframes
+## 4. Wireframes
 
-## Introdução
+### Introdução
 
 Esta seção documenta os wireframes de média fidelidade do aplicativo móvel do **Portal Aventura**, a camada de interface da plataforma de recomendação cultural desenvolvida para a Aventura Teatros. O escopo dos wireframes traduz para a UI o pilar estratégico do produto: adicionar um *hub* de descoberta personalizada para o espectador, concentrando-se em três jornadas críticas: **onboarding de interesses** (que alimenta o motor de recomendação), **descoberta** (Explorar, Buscar, Wishlist) e **conversão** (página de informações do espetáculo com *hand-off* para a bilheteria parceira).
 

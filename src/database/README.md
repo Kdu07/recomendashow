@@ -444,3 +444,164 @@ Objetos criados em `02_sprint4_improvements.sql`.
 | Nome | Parâmetros | Tabela afetada | Finalidade |
 |---|---|---|---|
 | sp_anonimizar_usuario | p_id UUID | usuarios | Substitui dados pessoais (nome, e-mail, senha, endereço) por valores neutros e marca `anonimizado = TRUE`; executa somente em usuários com `deleted_at IS NOT NULL` ainda não anonimizados (LGPD) |
+
+---
+
+## 8. Evoluções — Sprint 4
+
+### 8.1 Contexto
+
+O schema definido na Sprint 3 (`01_create_database.sql`) foi auditado na Sprint 4 e identificou-se a necessidade de novos campos, correções de qualidade e objetos de banco para suportar integração com ViaCEP, conformidade com a LGPD e o motor de recomendação por ML. Todas as evoluções foram concentradas em `02_sprint4_improvements.sql` — um script idempotente e re-executável —, mantendo o script original sem modificações estruturais adicionais.
+
+---
+
+### 8.2 Novas colunas em tabelas existentes
+
+#### usuarios
+
+| Coluna | Tipo | Por que foi necessária |
+|---|---|---|
+| cep | VARCHAR(9) | Suportar integração com a API ViaCEP para preenchimento automático de endereço |
+| logradouro | VARCHAR(255) | Complementar os dados de endereço retornados pelo ViaCEP |
+| numero | VARCHAR(10) | Campo de endereço não fornecido pelo ViaCEP; preenchido manualmente pelo usuário |
+| complemento | VARCHAR(255) | Campo de endereço opcional, não fornecido pelo ViaCEP |
+| bairro | VARCHAR(100) | Complementar os dados de endereço retornados pelo ViaCEP |
+| cidade | VARCHAR(100) | Cidade do usuário, usada na lógica de recomendação "Perto de você" |
+| consentimento_aceito | BOOLEAN NOT NULL DEFAULT FALSE | Registrar se o usuário aceitou os termos de uso e privacidade (LGPD art. 7, I) |
+| data_consentimento | TIMESTAMPTZ | Registrar o momento exato em que o consentimento foi concedido (LGPD art. 8, §5) |
+| deleted_at | TIMESTAMPTZ | Implementar soft-delete: marca o usuário como excluído sem remover o registro, permitindo posterior anonimização (LGPD art. 18, IV) |
+| anonimizado | BOOLEAN NOT NULL DEFAULT FALSE | Sinalizar que os dados pessoais já foram substituídos por valores neutros pela `sp_anonimizar_usuario` |
+| ml_id | SERIAL UNIQUE | Prover um identificador inteiro sequencial para mapear o UUID do usuário ao índice do modelo de fatoração de matriz (SVD), que requer inteiros contíguos |
+
+#### interacoes
+
+A coluna `data_expiracao` já existia em `01_create_database.sql`, mas sem nenhuma restrição de integridade. A Sprint 4 adicionou a constraint `chk_data_expiracao CHECK(data_expiracao > data_registro)`, formalizando no banco a regra de negócio de que a data de expiração deve ser sempre posterior ao momento do registro da interação.
+
+---
+
+### 8.3 Mudança de tipo de dado
+
+Como parte da Sprint 4, colunas de data/hora que usavam `TIMESTAMP` (sem fuso) foram corrigidas para `TIMESTAMPTZ` no script base (`01_create_database.sql`). O banco roda na Oracle Cloud Infrastructure (UTC); colunas `TIMESTAMP` armazenam instantes sem informação de fuso, gerando ambiguidade na interpretação de horários entre clientes em timezones distintos. `TIMESTAMPTZ` armazena o instante em UTC e permite conversão correta no momento da leitura.
+
+| Coluna | Tabela | Situação após Sprint 4 |
+|---|---|---|
+| data_cadastro | usuarios | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
+| data_registro | interacoes | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
+| data_expiracao | interacoes | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
+| data_atualizacao | preferencias | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
+| data_geracao | recomendacoes | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
+| data_consentimento | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
+| deleted_at | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
+| data_inicio | espetaculos | `TIMESTAMP` — **não migrado** |
+| data_fim | espetaculos | `TIMESTAMP` — **não migrado** |
+
+> `espetaculos.data_inicio` e `data_fim` permanecem como `TIMESTAMP` em `01_create_database.sql` e não possuem instrução de migração em `02_sprint4_improvements.sql`. Estas colunas representam um item pendente de uniformização.
+
+---
+
+### 8.4 Nova constraint
+
+A Sprint 4 adicionou três constraints ausentes no script original:
+
+| Constraint | Tabela | Definição | Motivação |
+|---|---|---|---|
+| `uq_recomendacao_usuario_espetaculo` | recomendacoes | `UNIQUE(usuario_id, espetaculo_id)` | Impede que o motor de recomendação insira registros duplicados para o mesmo par usuário/espetáculo, o que inflaria artificialmente o ranking; a constraint habilita o padrão `INSERT ... ON CONFLICT DO UPDATE` para atualização atômica de score |
+| `chk_pontuacao` | interacoes | `CHECK(pontuacao >= 0 AND pontuacao <= 10)` | A coluna `pontuacao` existia sem limite superior definido no banco; a constraint formaliza a escala 0–10 das regras de negócio, impedindo valores inválidos de qualquer origem |
+| `chk_data_expiracao` | interacoes | `CHECK(data_expiracao > data_registro)` | Garante que a data de expiração seja sempre posterior ao momento do registro, evitando interações que expirem instantaneamente ou no passado |
+
+---
+
+### 8.5 Índices substituídos
+
+Dois índices simples do Sprint 3 foram removidos e substituídos por índices compostos que cobrem os padrões de busca reais usados pelos módulos de recomendação.
+
+| Índice removido | Índice criado | Ganho |
+|---|---|---|
+| `idx_interacoes_usuario` — `ON interacoes(usuario_id)` | `idx_interacoes_usuario_expiracao` — `ON interacoes(usuario_id, data_expiracao)` | O motor de recomendação filtra sempre por `usuario_id` **e** `data_expiracao`; o índice composto elimina a varredura extra na coluna de expiração e satisfaz ambos os predicados em um único Index Scan |
+| `idx_recomendacao_usuario` — `ON recomendacoes(usuario_id)` | `idx_recomendacoes_usuario_score` — `ON recomendacoes(usuario_id, score DESC)` | Recuperar as top-N recomendações de um usuário ordenadas por relevância passa a ser um Index Scan sem Sort Step adicional, pois o índice já entrega as linhas na ordem decrescente de `score` |
+
+Novos índices sem predecessor no Sprint 3:
+
+| Índice | Tabela | Colunas | Finalidade |
+|---|---|---|---|
+| `idx_teatros_cidade` | teatros | (cidade) | Filtragem do carrossel "Perto de você" pela cidade do teatro |
+| `idx_espetaculos_datas` | espetaculos | (data_inicio, data_fim) | Filtragem de espetáculos em cartaz por intervalo de datas |
+| `idx_wishlist_usuario` | wishlist_curtidas | (usuario_id) | Carregamento da aba de wishlist/curtidas por usuário |
+| `idx_usuarios_ml_id` | usuarios | (ml_id) UNIQUE | Lookup bidirecional UUID ↔ índice inteiro para o modelo ML; unicidade garante a bijeção necessária |
+
+---
+
+### 8.6 Objetos de banco — motivação
+
+#### fn_atualizar_data_preferencias / trg_preferencias_update
+
+- **Problema que resolve:** a coluna `preferencias.data_atualizacao` precisaria ser atualizada manualmente por cada camada da aplicação que executasse um `UPDATE` nessa tabela, tornando a manutenção do timestamp sujeita a esquecimento ou inconsistência.
+- **Por que implementado no banco e não na aplicação:** o trigger `BEFORE UPDATE` garante que qualquer cliente — API, script administrativo ou acesso direto via psql — atualize `data_atualizacao` automaticamente, sem depender de lógica de aplicação.
+
+#### fn_bloquear_update_anonimizado / trg_bloquear_update_anonimizado
+
+- **Problema que resolve:** após a anonimização de um usuário, qualquer `UPDATE` posterior poderia inadvertidamente reintroduzir dados pessoais ou reverter o estado `anonimizado = TRUE`.
+- **Por que implementado no banco e não na aplicação:** uma restrição implementada apenas na camada de aplicação pode ser contornada por acesso direto ao banco, scripts de migração ou ferramentas de administração. O trigger ao nível do banco bloqueia qualquer `UPDATE` independentemente da origem.
+- **Princípio LGPD:** art. 18, IV — direito à eliminação. Uma vez que o titular exerceu o direito de exclusão e os dados foram anonimizados, eles não podem ser recuperados ou reconstituídos. O trigger torna essa garantia estrutural, não apenas procedimental.
+
+#### sp_anonimizar_usuario
+
+- **Problema que resolve:** ao receber uma solicitação de exclusão (LGPD art. 18, IV), os dados pessoais precisam ser substituídos por valores neutros de forma atômica, preservando o UUID e o histórico de interações para análise estatística agregada (art. 7, IV — tratamento para pesquisa).
+- **Por que implementado no banco e não na aplicação:** a substituição de múltiplos campos sensíveis (nome, email, senha_hash, seis colunas de endereço) ocorre em uma única transação, eliminando janelas de inconsistência que existiriam se a aplicação fizesse os `UPDATE`s em passos separados.
+- **Princípio LGPD:** art. 5, XI (tratamento) e art. 18, IV (direito à eliminação/anonimização). A procedure exige `deleted_at IS NOT NULL AND anonimizado = FALSE` como guarda dupla, prevenindo dupla anonimização e garantindo que o soft-delete preceda a anonimização.
+
+---
+
+### 8.7 Decisões descartadas
+
+#### DELETE físico em recomendacoes vs. constraint UNIQUE
+
+Uma alternativa para evitar duplicatas no motor de recomendação seria deletar a linha existente antes de inserir uma nova recomendação para o mesmo par `(usuario_id, espetaculo_id)`. Optou-se pela constraint `UNIQUE(usuario_id, espetaculo_id)` porque ela viabiliza o padrão `INSERT ... ON CONFLICT DO UPDATE` na aplicação, que atualiza `score` e `motivo` atomicamente em um único round-trip, sem a janela de inconsistência entre DELETE e INSERT. A constraint também garante a unicidade independentemente de qualquer lógica de aplicação.
+
+#### Procedure de limpeza periódica de interações expiradas vs. manutenção do histórico
+
+Uma alternativa seria criar uma stored procedure de limpeza que deletasse registros de `interacoes` onde `data_expiracao < CURRENT_TIMESTAMP`. Optou-se por não criar essa procedure e manter o histórico completo de interações. O campo `data_expiracao` é usado exclusivamente como **filtro** nas queries do motor de recomendação (via `idx_interacoes_usuario_expiracao`), não como critério de remoção. Isso preserva o histórico para auditoria, análises retroativas e eventual re-treinamento do modelo ML com dados históricos.
+
+---
+
+### 8.8 Estado Sprint 3 → Sprint 4
+
+| Tabela | Sprint 3 (`01_create_database.sql`) | Sprint 4 (adições via `02_sprint4_improvements.sql`) |
+|---|---|---|
+| usuarios | id, nome, email, senha_hash, idade, data_cadastro | + cep, logradouro, numero, complemento, bairro, cidade; + consentimento_aceito, data_consentimento, deleted_at, anonimizado; + ml_id; + trigger `trg_bloquear_update_anonimizado` |
+| teatros | id, nome, endereco, cidade, horario_funcionamento | + índice `idx_teatros_cidade` |
+| espetaculos | id, nome, tipo_evento, descricao, url_bilheteria, data_inicio, data_fim, valor_ingresso | + índice `idx_espetaculos_datas` |
+| interacoes | id, usuario_id, espetaculo_id, tipo, pontuacao, data_registro, data_expiracao; índice `idx_interacoes_usuario` | + constraints `chk_pontuacao`, `chk_data_expiracao`; `idx_interacoes_usuario` → `idx_interacoes_usuario_expiracao` |
+| preferencias | id, usuario_id, cidade, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes, data_atualizacao | + trigger `trg_preferencias_update` |
+| recomendacoes | id, usuario_id, espetaculo_id, score, motivo, data_geracao; índice `idx_recomendacao_usuario` | + `UNIQUE(usuario_id, espetaculo_id)`; `idx_recomendacao_usuario` → `idx_recomendacoes_usuario_score` |
+| wishlist_curtidas | usuario_id, espetaculo_id, tipo | + índice `idx_wishlist_usuario` |
+| usuario_genero_favorito | usuario_id, genero_id | sem alterações |
+| espetaculo_genero | espetaculo_id, genero_id | sem alterações |
+| teatro_espetaculo | teatro_id, espetaculo_id | sem alterações |
+
+---
+
+### 8.9 Rastreabilidade das transações
+
+#### Mecanismos existentes no schema
+
+| Mecanismo | Onde | O que registra |
+|---|---|---|
+| `DEFAULT CURRENT_TIMESTAMP` | `usuarios.data_cadastro` | Momento da criação da conta; gravado no INSERT, nunca atualizado |
+| `DEFAULT CURRENT_TIMESTAMP` | `interacoes.data_registro` | Momento do registro da interação; gravado no INSERT, nunca atualizado |
+| `DEFAULT CURRENT_TIMESTAMP` | `preferencias.data_atualizacao` | Valor inicial na criação do registro de preferências |
+| `trg_preferencias_update` → `fn_atualizar_data_preferencias()` | `preferencias.data_atualizacao` | Reescrito com `CURRENT_TIMESTAMP` a cada `UPDATE` na tabela `preferencias`, independentemente da origem da alteração |
+| `DEFAULT CURRENT_TIMESTAMP` | `recomendacoes.data_geracao` | Momento em que o motor de recomendação gerou a linha; gravado no INSERT, nunca atualizado |
+| Aplicação (explícito) | `interacoes.data_expiracao` | Janela temporal definida pela camada de aplicação; determina até quando a interação é considerada pelo motor de recomendação |
+| Aplicação (explícito) | `usuarios.data_consentimento` | Momento em que o usuário concedeu consentimento LGPD; a aplicação é responsável por gravar o valor |
+| Aplicação (explícito) | `usuarios.deleted_at` | Momento do soft-delete; gravado pela aplicação; pré-requisito obrigatório para execução de `sp_anonimizar_usuario` |
+
+> `sp_anonimizar_usuario` lê `deleted_at IS NOT NULL` como condição de guarda, mas **não grava** nenhum timestamp do momento da anonimização — lacuna identificada abaixo.
+
+#### Itens pendentes identificados durante a sprint
+
+- **`usuarios.anonimizado_em` (TIMESTAMPTZ)** — a coluna `anonimizado` registra o *estado* (`TRUE`/`FALSE`) mas não o *momento* em que `sp_anonimizar_usuario` foi executada. Para fins de auditoria LGPD, seria necessária uma coluna `anonimizado_em TIMESTAMPTZ` gravada pela procedure no mesmo `UPDATE`.
+
+- **`lgpd_audit` (tabela de auditoria)** — não há tabela ou trigger que registre um log das chamadas a `sp_anonimizar_usuario` (quem solicitou, quando, qual `p_id`). Uma tabela de auditoria permitiria comprovar o cumprimento do pedido de exclusão pelo titular (LGPD art. 18, IV) e seria gravada pela procedure ou por um trigger `AFTER UPDATE` na coluna `anonimizado`.
+
+- **`recomendacoes.visualizada_em` (TIMESTAMPTZ)** — não há registro de quando o usuário visualizou ou descartou uma recomendação; esse dado depende de instrumentação no backend e de uma coluna correspondente na tabela `recomendacoes`.

@@ -18,3 +18,7 @@ DbRunner/obj/
 # .NET build outputs
 **/bin/
 **/obj/
+
+src/mongodb/node_modules/
+src/mongodb/package-lock.json
+src/mongodb/images/

@@ -1,12 +1,13 @@
 using AventuraML;
 
-// Caminhos relativos ao diretório de trabalho (use `dotnet run` a partir de src/ml/)
-var datasetPath           = ResolveRelative(args, "--dataset",                "../dataset/dataset.csv");
-var modelPath             = ResolveRelative(args, "--model",                  "../models/model.zip");
-var coldStart             = ResolveRelative(args, "--cold-start",             "../models/cold_start.json");
-var itemCategories        = ResolveRelative(args, "--item-categories",        "../models/item_categories.json");
-var categoryAffinity      = ResolveRelative(args, "--category-affinity",      "../models/category_affinity.json");
-var coldStartByCategory   = ResolveRelative(args, "--cold-start-by-category", "../models/cold_start_by_category.json");
+// Caminhos relativos ao diretório de trabalho (use `dotnet run` a partir de src/ml/).
+// Diretório canônico de artefatos: data/models/ na raiz do repositório.
+var datasetPath           = ResolveRelative(args, "--dataset",                "../../data/dataset/dataset.csv");
+var modelPath             = ResolveRelative(args, "--model",                  "../../data/models/model.zip");
+var coldStart             = ResolveRelative(args, "--cold-start",             "../../data/models/cold_start.json");
+var itemCategories        = ResolveRelative(args, "--item-categories",        "../../data/models/item_categories.json");
+var categoryAffinity      = ResolveRelative(args, "--category-affinity",      "../../data/models/category_affinity.json");
+var coldStartByCategory   = ResolveRelative(args, "--cold-start-by-category", "../../data/models/cold_start_by_category.json");
 
 var command = args.FirstOrDefault(a => !a.StartsWith("--")) ?? "train";
 

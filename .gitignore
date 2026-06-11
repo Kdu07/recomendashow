@@ -18,3 +18,5 @@ DbRunner/obj/
 # .NET build outputs
 **/bin/
 **/obj/
+
+chave.key

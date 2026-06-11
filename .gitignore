@@ -22,3 +22,6 @@ DbRunner/obj/
 src/mongodb/node_modules/
 src/mongodb/package-lock.json
 src/mongodb/images/
+
+chave.key
+chave-back.key

@@ -15,6 +15,7 @@
    - 5.2 [Especificações da Máquina Virtual](#especificações-da-máquina-virtual)
    - 5.3 [Benefícios da Arquitetura Utilizada](#benefícios-da-arquitetura-utilizada)
 6. [Explain Analyze](#explain-analyze)
+7. [Teste de Carga (pgbench)](#teste-de-carga-pgbench)
 
 ---
 
@@ -196,7 +197,7 @@ A infraestrutura possibilita futuras expansões, como hospedagem de APIs auxilia
 
 Os testes de plano de execução foram realizados no banco real do projeto, utilizando dados existentes no ambiente PostgreSQL. O objetivo foi avaliar o comportamento do otimizador diante das consultas mais relevantes para o uso da aplicação.
 
-## Volume encontrado
+### Volume encontrado
 
 | Tabela | Registros |
 |---|---:|
@@ -207,7 +208,7 @@ Os testes de plano de execução foram realizados no banco real do projeto, util
 | recomendacoes | 1 |
 | wishlist_curtidas | 6 |
 
-## Índices relevantes existentes
+### Índices relevantes existentes
 
 - `idx_wishlist_usuario`
 - `idx_teatros_cidade`
@@ -215,7 +216,7 @@ Os testes de plano de execução foram realizados no banco real do projeto, util
 - `idx_interacoes_usuario_expiracao`
 - `idx_recomendacoes_usuario_score`
 
-## Consulta 1 - Wishlist por usuário
+### Consulta 1 - Wishlist por usuário
 
 ```sql
 SELECT *
@@ -232,7 +233,7 @@ Resultado do `EXPLAIN ANALYZE`:
 
 Apesar da existência do índice `idx_wishlist_usuario`, o PostgreSQL optou por `Seq Scan` devido ao pequeno volume da tabela, composta por 6 registros.
 
-## Consulta 2 - Espetáculos por cidade
+### Consulta 2 - Espetáculos por cidade
 
 ```sql
 SELECT e.*
@@ -252,7 +253,7 @@ Resultado do `EXPLAIN ANALYZE`:
 
 O PostgreSQL utilizou o índice da tabela associativa, por meio de `Index Only Scan` sobre `teatro_espetaculo_pkey`. Entretanto, optou por `Seq Scan` nas tabelas `teatros` e `espetaculos` devido ao baixo número de registros.
 
-## Consulta 3 - Espetáculos por intervalo de datas
+### Consulta 3 - Espetáculos por intervalo de datas
 
 ```sql
 SELECT *
@@ -270,6 +271,80 @@ Resultado do `EXPLAIN ANALYZE`:
 
 Apesar da existência do índice `idx_espetaculos_datas`, o PostgreSQL escolheu `Seq Scan` devido ao pequeno tamanho da tabela `espetaculos`.
 
-## Conclusão
+### Conclusão
 
 Os índices avaliados estão corretamente criados e disponíveis no banco de dados. Contudo, nos testes realizados, o otimizador do PostgreSQL escolheu leituras sequenciais em parte das consultas porque as tabelas possuem poucos registros. Em ambientes com maior volume de dados, espera-se maior utilização dos índices, especialmente nas consultas filtradas por usuário, cidade e intervalo de datas.
+
+## 7. Teste de Carga (pgbench)
+
+### Metodologia
+
+Os testes de carga foram realizados utilizando a ferramenta `pgbench` sobre o banco PostgreSQL real do projeto. Foi utilizado um workload customizado contendo exclusivamente consultas de leitura (`SELECT`), evitando qualquer alteração nos dados da aplicação durante a execução dos testes.
+
+As consultas simuladas representam operações reais do sistema, incluindo:
+
+- Consulta de wishlist/curtidas por usuário;
+- Busca de espetáculos por cidade;
+- Busca de espetáculos por intervalo de datas;
+- Consulta de recomendações por usuário.
+
+Todos os testes foram executados durante 60 segundos e utilizaram apenas operações de leitura.
+
+### Configuração do Ambiente
+
+- PostgreSQL 16.14
+- pgbench 16.14
+- Banco de dados: `aventura_db`
+- Tipo de workload: somente leitura (`read-only`)
+- Duração dos testes: 60 segundos
+
+Exemplo de execução:
+
+```bash
+pgbench -n -h <host> -p 5432 -U postgres -c <clientes> -j <threads> -T 60 -f pgbench_readonly_workload.sql aventura_db
+```
+
+### Resultados
+
+| Clientes | Threads | TPS | Latência Média | Falhas |
+|---:|---:|---:|---:|---:|
+| 5 | 2 | 50,36 | 99,28 ms | 0 |
+| 20 | 4 | 96,26 | 207,77 ms | 0 |
+| 50 | 4 | 345,99 | 144,52 ms | 0 |
+| 75 | 8 | 389,95 | 192,33 ms | 0 |
+
+### Análise dos Resultados
+
+Os resultados demonstram que o banco de dados permaneceu estável durante todos os cenários executados, sem ocorrência de falhas de transação.
+
+Observou-se aumento progressivo da taxa de transações por segundo (TPS) conforme o número de clientes simultâneos foi ampliado. O throughput evoluiu de aproximadamente 50 TPS no cenário de 5 clientes para cerca de 390 TPS no cenário de 75 clientes simultâneos.
+
+Apesar do aumento da concorrência, a latência média permaneceu em níveis aceitáveis para o tipo de workload executado. Como o banco possui baixo volume de dados e as consultas utilizadas são predominantemente simples, grande parte dos acessos permaneceu em memória, contribuindo para a estabilidade observada.
+
+### Limitação Observada
+
+Foi realizado um teste adicional com 100 clientes simultâneos.
+
+Durante a execução, o PostgreSQL retornou o erro:
+
+```text
+FATAL: sorry, too many clients already
+```
+
+A configuração do banco indicou:
+
+```sql
+SHOW max_connections;
+```
+
+Resultado:
+
+```text
+max_connections = 100
+```
+
+Esse comportamento indica que o ambiente não possuía conexões disponíveis suficientes para atender 100 novos clientes simultâneos, pois parte das conexões já estava sendo utilizada por outras sessões ativas. Portanto, o limite prático observado para o ambiente de testes ficou abaixo de 100 conexões concorrentes.
+
+### Conclusão
+
+Os testes de carga realizados com `pgbench` forneceram evidências quantitativas do comportamento do banco de dados sob diferentes níveis de concorrência. Os resultados demonstraram estabilidade operacional, ausência de falhas e crescimento do throughput conforme o aumento do número de clientes simultâneos. Além disso, foi possível identificar uma limitação real da infraestrutura relacionada ao limite de conexões configurado no PostgreSQL, contribuindo para a compreensão da capacidade operacional do ambiente.

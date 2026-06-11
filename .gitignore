@@ -5,6 +5,7 @@
 .env.*
 !.env.example
 chave.key
+chave-back.key
 *.key
 *.pem
 *.pfx
@@ -61,6 +62,7 @@ dataset.csv
 # macOS
 .DS_Store
 **/.DS_Store
+
 # Windows
 Thumbs.db
 ehthumbs.db

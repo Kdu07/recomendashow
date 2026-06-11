@@ -1,6 +1,7 @@
 using System.Text.Json;
 using AventuraML.Models;
 using Microsoft.ML;
+using Microsoft.ML.Trainers.Recommender;
 
 namespace AventuraML;
 
@@ -8,6 +9,7 @@ public sealed class Recommender
 {
     private readonly MLContext _mlContext;
     private readonly PredictionEngine<RatingData, RatingPrediction> _engine;
+    private readonly object _engineLock = new();
     private readonly Dictionary<uint, HashSet<string>> _userHistory;
     private readonly List<string> _popularItems;
     private readonly List<string> _allItems;
@@ -28,6 +30,7 @@ public sealed class Recommender
 
         var model = _mlContext.Model.Load(modelPath, out _);
         _engine = _mlContext.Model.CreatePredictionEngine<RatingData, RatingPrediction>(model);
+        LatentFactors = TryGetApproximationRank(model);
 
         var rows = DataPipeline.Load(datasetPath);
 
@@ -49,6 +52,24 @@ public sealed class Recommender
             ?? throw new InvalidOperationException("Falha ao carregar category_affinity.json.");
     }
 
+    /// <summary>Peso do SVD no score híbrido.</summary>
+    public float Alpha => _alpha;
+
+    /// <summary>Usuários com histórico no dataset de treino.</summary>
+    public int KnownUserCount => _userHistory.Count;
+
+    /// <summary>Itens conhecidos pelo modelo (catálogo do cold_start.json).</summary>
+    public int CatalogSize => _allItems.Count;
+
+    /// <summary>Rank da fatoração de matrizes (nº de fatores latentes), se disponível no model.zip.</summary>
+    public int? LatentFactors { get; }
+
+    /// <summary>item_id → tipo_evento (artefato item_categories.json).</summary>
+    public IReadOnlyDictionary<string, string> ItemCategories => _itemCategories;
+
+    /// <summary>userId → { tipo_evento → afinidade normalizada } (artefato category_affinity.json).</summary>
+    public IReadOnlyDictionary<string, Dictionary<string, float>> CategoryAffinity => _categoryAffinity;
+
     public List<(string Show, float? Score)> Recommend(int userId, int n = 10)
     {
         if (n <= 0) throw new ArgumentOutOfRangeException(nameof(n), "n deve ser maior que zero.");
@@ -63,22 +84,11 @@ public sealed class Recommender
 
         foreach (var item in _allItems.Where(i => !consumed.Contains(i)))
         {
-            try
+            if (PredictRating(userId, item) is float svdScore)
             {
-                var pred = _engine.Predict(new RatingData
-                {
-                    UserId = uid,
-                    ItemId = item,
-                    Rating = 0f,
-                });
-
-                if (!float.IsNaN(pred.Score) && !float.IsInfinity(pred.Score))
-                {
-                    var cat = _itemCategories.GetValueOrDefault(item, "");
-                    rawScores.Add((item, pred.Score, cat));
-                }
+                var cat = _itemCategories.GetValueOrDefault(item, "");
+                rawScores.Add((item, svdScore, cat));
             }
-            catch { /* item fora do vocabulário do modelo, ignora */ }
         }
 
         if (rawScores.Count == 0)
@@ -101,11 +111,52 @@ public sealed class Recommender
             .ToList();
     }
 
+    /// <summary>
+    /// Score SVD bruto do model.zip para o par (usuário, item), na escala de rating do treino.
+    /// Retorna null para pares fora do vocabulário do modelo ou predições inválidas.
+    /// O acesso ao PredictionEngine (não thread-safe) é serializado por lock.
+    /// </summary>
+    public float? PredictRating(int userId, string itemId)
+    {
+        try
+        {
+            RatingPrediction pred;
+            lock (_engineLock)
+            {
+                pred = _engine.Predict(new RatingData
+                {
+                    UserId = (uint)userId,
+                    ItemId = itemId,
+                    Rating = 0f,
+                });
+            }
+
+            return float.IsNaN(pred.Score) || float.IsInfinity(pred.Score) ? null : pred.Score;
+        }
+        catch
+        {
+            return null; // item fora do vocabulário do modelo
+        }
+    }
+
     private float GetCategoryAffinity(uint userId, string category)
     {
         if (string.IsNullOrEmpty(category)) return 0f;
         if (_categoryAffinity.TryGetValue(userId.ToString(), out var userAffinities))
             return userAffinities.GetValueOrDefault(category, 0f);
         return 0f;
+    }
+
+    private static int? TryGetApproximationRank(ITransformer model)
+    {
+        if (model is not IEnumerable<ITransformer> chain) return null;
+
+        foreach (var transformer in chain)
+        {
+            if (transformer is MatrixFactorizationPredictionTransformer mf)
+                return mf.Model.ApproximationRank;
+        }
+
+        return null;
     }
 }

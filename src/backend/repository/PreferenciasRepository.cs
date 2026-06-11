@@ -33,7 +33,6 @@ namespace BackEnd.Aventura.Repository
             }
 
             preferencias.SetGeneros(ReadGeneros(connection, usuarioId));
-            preferencias.SetTags(ReadTags(connection, usuarioId));
             return preferencias;
         }
 
@@ -47,16 +46,15 @@ namespace BackEnd.Aventura.Repository
             using var transaction = connection.BeginTransaction();
 
             const string sql = @"
-INSERT INTO preferencias(usuario_id, cidade, cep, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes, data_atualizacao)
-VALUES (@UsuarioId, @Cidade, @Cep, @Tags, @FaixaPrecoMin, @FaixaPrecoMax, @ReceberNotificacoes, NOW())
+INSERT INTO preferencias(usuario_id, cidade, cep, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes)
+VALUES (@UsuarioId, @Cidade, @Cep, @Tags, @FaixaPrecoMin, @FaixaPrecoMax, @ReceberNotificacoes)
 ON CONFLICT(usuario_id) DO UPDATE SET
     cidade = EXCLUDED.cidade,
     cep = EXCLUDED.cep,
     tags = EXCLUDED.tags,
     faixa_preco_min = EXCLUDED.faixa_preco_min,
     faixa_preco_max = EXCLUDED.faixa_preco_max,
-    receber_notificacoes = EXCLUDED.receber_notificacoes,
-    data_atualizacao = NOW();";
+    receber_notificacoes = EXCLUDED.receber_notificacoes;";
 
             using var command = new NpgsqlCommand(sql, connection, transaction);
             command.Parameters.AddWithValue("@UsuarioId", preferencias.UsuarioId);
@@ -105,8 +103,8 @@ WHERE usuario_id = @UsuarioId";
         private static void CreateDefaultPreferencias(NpgsqlConnection connection, Guid usuarioId)
         {
             const string sql = @"
-INSERT INTO preferencias(usuario_id, receber_notificacoes, data_atualizacao)
-VALUES (@UsuarioId, TRUE, NOW())
+INSERT INTO preferencias(usuario_id, receber_notificacoes)
+VALUES (@UsuarioId, TRUE)
 ON CONFLICT(usuario_id) DO NOTHING";
 
             using var command = new NpgsqlCommand(sql, connection);
@@ -132,20 +130,6 @@ WHERE ugf.usuario_id = @UsuarioId";
             }
 
             return generos;
-        }
-
-        private static string[] ReadTags(NpgsqlConnection connection, Guid usuarioId)
-        {
-            const string sql = @"SELECT tags FROM preferencias WHERE usuario_id = @UsuarioId";
-            using var command = new NpgsqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@UsuarioId", usuarioId);
-            using var reader = command.ExecuteReader();
-            if (!reader.Read() || reader.IsDBNull(0))
-            {
-                return Array.Empty<string>();
-            }
-
-            return reader.GetFieldValue<string[]>(0);
         }
 
         private static void DeleteGeneros(NpgsqlConnection connection, Guid usuarioId, NpgsqlTransaction transaction)

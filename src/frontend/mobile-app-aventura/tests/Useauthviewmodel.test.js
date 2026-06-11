@@ -36,17 +36,31 @@ jest.mock('../models/authModels', () => ({
   },
 }));
 
+jest.mock('../services/viaCepService', () => {
+  const actual = jest.requireActual('../services/viaCepService');
+
+  return {
+    ...actual,
+    lookupAddressByCep: jest.fn(),
+  };
+});
+
 import {
   authenticateUser,
   createUserAccount,
   authenticateWithGoogle,
 } from '../repositories/authRepository';
+import { lookupAddressByCep } from '../services/viaCepService';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function makeNavigation() {
   return { replace: jest.fn(), navigate: jest.fn() };
 }
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
 
 // ── Testes: modo e conteúdo ───────────────────────────────────────────────────
 
@@ -222,24 +236,6 @@ describe('useAuthViewModel – validação (register)', () => {
     expect(result.current.errors.street).toBe('Informe sua rua.');
   });
 
-  test('número vazio gera erro', async () => {
-    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
-    act(() => result.current.setMode('register'));
-    act(() => {
-      result.current.updateField('name', 'Ana');
-      result.current.updateField('email', 'ana@email.com');
-      result.current.updateField('birthDate', '01/01/2000');
-      result.current.updateField('cep', '01310-100');
-      result.current.updateField('street', 'Avenida Paulista');
-      result.current.updateField('neighborhood', 'Bela Vista');
-      result.current.updateField('city', 'São Paulo');
-      result.current.updateField('password', '123456');
-      result.current.updateField('confirmPassword', '123456');
-    });
-    await act(async () => { await result.current.handleSubmit(); });
-    expect(result.current.errors.number).toBe('Informe o número.');
-  });
-
   test('bairro vazio gera erro', async () => {
     const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
     act(() => result.current.setMode('register'));
@@ -298,6 +294,34 @@ describe('useAuthViewModel – validação (register)', () => {
     await act(async () => { await result.current.handleSubmit(); });
     expect(result.current.errors.confirmPassword).toBeUndefined();
   });
+
+  test('ao completar CEP busca ViaCEP e preenche endereço automaticamente', async () => {
+    jest.useFakeTimers();
+    lookupAddressByCep.mockResolvedValue({
+      street: 'Avenida Paulista',
+      neighborhood: 'Bela Vista',
+      city: 'São Paulo',
+    });
+
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+
+    act(() => result.current.setMode('register'));
+    act(() => result.current.updateField('cep', '01310100'));
+
+    expect(result.current.values.cep).toBe('01310-100');
+
+    await act(async () => {
+      jest.advanceTimersByTime(350);
+      await Promise.resolve();
+    });
+
+    expect(lookupAddressByCep).toHaveBeenCalledWith('01310100');
+    expect(result.current.values.street).toBe('Avenida Paulista');
+    expect(result.current.values.neighborhood).toBe('Bela Vista');
+    expect(result.current.values.city).toBe('São Paulo');
+
+    jest.useRealTimers();
+  });
 });
 
 // ── Testes: handleSubmit (fluxos de sucesso) ─────────────────────────────────
@@ -345,7 +369,7 @@ describe('useAuthViewModel – handleSubmit', () => {
       birthDate: '01/01/2000',
       cep: '01310100',
       street: 'Avenida Paulista',
-      number: '1000',
+      number: undefined,
       complement: 'Apto 12',
       neighborhood: 'Bela Vista',
       city: 'São Paulo',

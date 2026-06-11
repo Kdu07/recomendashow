@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   authenticateUser,
@@ -7,6 +7,7 @@ import {
 } from '../repositories/authRepository';
 import { AUTH_MODES, initialAuthValues } from '../models/authModels';
 import { setCurrentUserId } from '../services/userSession';
+import { formatCep, lookupAddressByCep, onlyCepDigits } from '../services/viaCepService';
 
 function parseBrazilianDate(value) {
   const [day, month, year] = String(value ?? '').split('/').map(Number);
@@ -75,10 +76,6 @@ function validateAuthValues(mode, values, scope = 'all') {
       errors.street = 'Informe sua rua.';
     }
 
-    if (!String(values.number ?? '').trim()) {
-      errors.number = 'Informe o número.';
-    }
-
     if (!String(values.neighborhood ?? '').trim()) {
       errors.neighborhood = 'Informe seu bairro.';
     }
@@ -116,8 +113,107 @@ export function useAuthViewModel(navigation) {
   const [values, setValues] = useState(initialAuthValues);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [cepLookupLoading, setCepLookupLoading] = useState(false);
+  const lastCepLookupRef = useRef('');
 
   const isLogin = mode === AUTH_MODES.login;
+
+  useEffect(() => {
+    if (isLogin) {
+      return undefined;
+    }
+
+    const cepDigits = onlyCepDigits(values.cep);
+
+    if (cepDigits.length !== 8) {
+      lastCepLookupRef.current = '';
+      setCepLookupLoading(false);
+      setValues((currentValues) => {
+        if (!currentValues.street && !currentValues.neighborhood && !currentValues.city) {
+          return currentValues;
+        }
+
+        return {
+          ...currentValues,
+          street: '',
+          neighborhood: '',
+          city: '',
+        };
+      });
+      return undefined;
+    }
+
+    if (lastCepLookupRef.current === cepDigits) {
+      return undefined;
+    }
+
+    let cancelled = false;
+
+    const timeoutId = setTimeout(async () => {
+      lastCepLookupRef.current = cepDigits;
+      setCepLookupLoading(true);
+
+      try {
+        const address = await lookupAddressByCep(cepDigits);
+
+        if (cancelled) {
+          return;
+        }
+
+        setValues((currentValues) => {
+          if (onlyCepDigits(currentValues.cep) !== cepDigits) {
+            return currentValues;
+          }
+
+          return {
+            ...currentValues,
+            street: address.street,
+            neighborhood: address.neighborhood,
+            city: address.city,
+          };
+        });
+
+        setErrors((currentErrors) => ({
+          ...currentErrors,
+          cep: undefined,
+          street: undefined,
+          neighborhood: undefined,
+          city: undefined,
+        }));
+      } catch (error) {
+        if (cancelled) {
+          return;
+        }
+
+        setValues((currentValues) => {
+          if (onlyCepDigits(currentValues.cep) !== cepDigits) {
+            return currentValues;
+          }
+
+          return {
+            ...currentValues,
+            street: '',
+            neighborhood: '',
+            city: '',
+          };
+        });
+
+        setErrors((currentErrors) => ({
+          ...currentErrors,
+          cep: error.message || 'Não foi possível consultar o CEP.',
+        }));
+      } finally {
+        if (!cancelled) {
+          setCepLookupLoading(false);
+        }
+      }
+    }, 350);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [isLogin, values.cep]);
 
   const content = useMemo(() => {
     if (isLogin) {
@@ -139,9 +235,11 @@ export function useAuthViewModel(navigation) {
   }
 
   function updateField(field, value) {
+    const nextValue = field === 'cep' ? formatCep(value) : value;
+
     setValues((currentValues) => ({
       ...currentValues,
-      [field]: value,
+      [field]: nextValue,
     }));
 
     setErrors((currentErrors) => ({
@@ -177,7 +275,7 @@ export function useAuthViewModel(navigation) {
           birthDate: values.birthDate,
           cep: values.cep.replace(/\D/g, ''),
           street: values.street,
-          number: values.number,
+          number: undefined,
           complement: values.complement,
           neighborhood: values.neighborhood,
           city: values.city,
@@ -241,6 +339,7 @@ export function useAuthViewModel(navigation) {
     content,
     isLogin,
     loading,
+    cepLookupLoading,
     setMode: handleModeChange,
     updateField,
     validateRegisterStep,

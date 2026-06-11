@@ -16,6 +16,7 @@ export default function AuthForm({
   errors = {},
   submitLabel,
   loading = false,
+  cepLookupLoading = false,
   onChangeField,
   onValidateStep,
   onSubmit,
@@ -95,27 +96,18 @@ export default function AuthForm({
       autoCapitalize: 'none',
       autoCorrect: false,
       returnKeyType: 'next',
+      helperText: cepLookupLoading ? 'Buscando endereço pelo CEP...' : undefined,
     },
     {
       name: 'street',
       label: 'Rua',
-      placeholder: 'Digite sua rua',
+      placeholder: 'Preenchida pelo CEP',
       textContentType: 'streetAddressLine1',
       autoComplete: 'street-address',
       autoCapitalize: 'words',
       autoCorrect: false,
       returnKeyType: 'next',
-    },
-    {
-      name: 'number',
-      label: 'Número',
-      placeholder: 'Digite o número',
-      keyboardType: 'number-pad',
-      textContentType: 'none',
-      autoComplete: 'off',
-      autoCapitalize: 'none',
-      autoCorrect: false,
-      returnKeyType: 'next',
+      editable: false,
     },
     {
       name: 'complement',
@@ -130,24 +122,26 @@ export default function AuthForm({
     {
       name: 'neighborhood',
       label: 'Bairro',
-      placeholder: 'Digite seu bairro',
+      placeholder: 'Preenchido pelo CEP',
       textContentType: 'addressCity',
       autoComplete: 'off',
       autoCapitalize: 'words',
       autoCorrect: false,
       returnKeyType: 'next',
+      editable: false,
     },
     {
       name: 'city',
       label: 'Cidade',
-      placeholder: 'Digite sua cidade',
+      placeholder: 'Preenchida pelo CEP',
       textContentType: 'addressCity',
       autoComplete: 'address-line2',
       autoCapitalize: 'words',
       autoCorrect: false,
       returnKeyType: 'done',
+      editable: false,
     },
-  ]), []);
+  ]), [cepLookupLoading]);
 
   const loginFields = useMemo(() => ([
     {
@@ -221,6 +215,8 @@ export default function AuthForm({
             autoCorrect={field.autoCorrect}
             textContentType={field.textContentType}
             returnKeyType={field.returnKeyType}
+            editable={field.editable !== false}
+            helperText={field.helperText}
           />
         ))}
       </View>

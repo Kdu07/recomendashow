@@ -8,46 +8,61 @@ Guia de referência do banco de dados utilizado pelo sistema de recomendação: 
 
 ```
 src/mongodb/
-  Dockerfile            # imagem customizada do MongoDB com inicialização automática
-  mongo-init.js         # cria coleções e índices ao subir o container pela primeira vez
-  upload_images.js     # script para enviar imagens ao GridFS
-  images/              # imagens dos espetáculos (não commitadas)
-  package.json          # dependências do script Node.js
-  node_modules/         # não commitado
+  Dockerfile              # imagem customizada do MongoDB com inicialização automática
+  mongo-init.js           # cria coleções e índices ao subir o container pela primeira vez
+  upload-images.js       # envia imagens dos espetáculos ao GridFS
+  deploy-artifacts.js     # envia model.zip/dataset.csv ao servidor ML e JSONs ao MongoDB
+  images/                # imagens dos espetáculos (não commitadas)
+  package.json
+  node_modules/           # não commitado
 ```
 
 ---
 
 ## Ambiente
 
-O MongoDB roda em um container Docker hospedado em uma máquina Oracle Cloud. As credenciais ficam no `.env` da raiz do projeto — **nunca commite esse arquivo**.
+Cada serviço roda em um servidor separado na Oracle Cloud:
 
 ```
 Sua máquina local
        │
-       │  IP público Oracle
-       ▼
-Oracle Cloud VM
-  └── Docker
-        └── container MongoDB (porta 27017)
-              └── banco: aventura_ml
-                    ├── artifact_metadata
-                    ├── espetaculo_images
-                    └── GridFS (fs.files + fs.chunks)
+       ├──scp──────────────────→ Oracle VM: servidor ML
+       │                              └── volume Docker
+       │                                    ├── /app/storage/models/model.zip
+       │                                    └── /app/storage/dataset/dataset.csv
+       │
+       └──MongoDB driver────────→ Oracle VM: servidor MongoDB
+                                        └── banco: aventura_ml
+                                              ├── artifact_metadata (JSONs)
+                                              ├── espetaculo_images (metadados)
+                                              └── GridFS (binários das imagens)
 ```
 
 ---
 
 ## Credenciais
 
-O `.env` fica na raiz do projeto (`../../.env` relativo a esta pasta) com o seguinte formato:
+O `.env` fica na raiz do projeto. Copie o `.env.example` e preencha:
+
+```bash
+cp .env.example .env
+```
 
 ```env
+# MongoDB
 MONGO_USER=
 MONGO_PASSWORD=
 MONGO_HOST=
 MONGO_PORT=
 MONGO_DB=aventura_ml
+
+# Servidor ML
+ML_SSH_USER=opc
+ML_SSH_HOST=
+ML_STORAGE_PATH=/app/storage
+
+# Imagens
+IMAGENS_DIR=./images
 ```
 
 Certifique-se que `.env` está no `.gitignore` da raiz.
@@ -62,9 +77,7 @@ FROM mongo:7
 COPY mongo-init.js /docker-entrypoint-initdb.d/
 ```
 
-O `mongo-init.js` é copiado para `/docker-entrypoint-initdb.d/`, diretório especial do container oficial do MongoDB. **Tudo que estiver nessa pasta é executado automaticamente na primeira vez que o container sobe** — ou seja, as coleções e índices são criados sem nenhuma intervenção manual.
-
-> Nas execuções seguintes (container reiniciado com dados já existentes) o script é ignorado.
+O `mongo-init.js` é copiado para `/docker-entrypoint-initdb.d/`, diretório especial do container oficial do MongoDB. **Tudo que estiver nessa pasta é executado automaticamente na primeira vez que o container sobe** — as coleções e índices são criados sem nenhuma intervenção manual. Nas execuções seguintes o script é ignorado.
 
 ---
 
@@ -92,7 +105,7 @@ Tipos de `artifact_type`: `cold_start`, `item_categories`, `category_affinity`, 
 - `{ is_active: 1, artifact_type: 1 }` — filtra apenas artefatos ativos
 
 ### Coleção `espetaculo_images`
-Armazena os metadados das imagens. O binário da imagem fica no GridFS.
+Metadados das imagens. O binário fica no GridFS.
 
 ```json
 {
@@ -107,7 +120,7 @@ Armazena os metadados das imagens. O binário da imagem fica no GridFS.
 Índice: `{ espetaculo_nome: 1 }` único — cada espetáculo tem no máximo uma entrada.
 
 ### GridFS (`fs.files` + `fs.chunks`)
-Criado automaticamente pelo driver MongoDB ao fazer o primeiro upload. Armazena os binários das imagens fragmentados em chunks de 255KB.
+Criado automaticamente pelo driver ao primeiro upload. Armazena binários fragmentados em chunks de 255KB.
 
 ---
 
@@ -115,81 +128,91 @@ Criado automaticamente pelo driver MongoDB ao fazer o primeiro upload. Armazena 
 
 | O que | Onde | Por quê |
 |---|---|---|
-| `model.zip` | Volume Docker (`/app/storage/models/`) | Comprimido já tem ~12MB — ultrapassa o limite de documento do Mongo (16MB) descomprimido. Lido direto do disco na inicialização |
-| `dataset.csv` | Volume Docker (`/app/storage/dataset/`) | Pode crescer muito; leitura sequencial é mais eficiente em disco |
+| `model.zip` | Volume Docker do servidor ML | Comprimido já tem ~12MB — ultrapassa o limite de documento do Mongo (16MB) descomprimido. Lido direto do disco na inicialização |
+| `dataset.csv` | Volume Docker do servidor ML | Pode crescer muito; leitura sequencial é mais eficiente em disco |
 | JSONs de artefatos | MongoDB (`artifact_metadata`) | Pequenos, consultados pela API, beneficiam de índice e query |
 | Imagens | MongoDB GridFS | Tamanho moderado, acesso por nome, sem necessidade de filesystem extra |
 
-### Como enviar o `model.zip` e o `dataset.csv`
+---
 
-Como esses arquivos ficam em volume Docker, o envio é via `scp` para o servidor Oracle:
+## Scripts
+
+### `deploy-artifacts.js`
+Script **manual** — você roda da sua máquina após cada retreino. Envia cada artefato para o destino correto:
+
+| Artefato | Destino |
+|---|---|
+| `data/models/model.zip` | Servidor ML via `scp` |
+| `data/dataset/dataset.csv` | Servidor ML via `scp` |
+| `data/models/cold_start.json` | MongoDB (`artifact_metadata`) |
+| `data/models/item_categories.json` | MongoDB (`artifact_metadata`) |
+| `data/models/category_affinity.json` | MongoDB (`artifact_metadata`) |
+| `data/models/cold_start_by_category.json` | MongoDB (`artifact_metadata`) |
+
+> **Pré-requisito:** o servidor ML precisa estar no ar e acessível via SSH para o `scp` funcionar. Preencha `ML_SSH_USER`, `ML_SSH_HOST` e `ML_STORAGE_PATH` no `.env` antes de rodar.
+
+O script detecta automaticamente se está rodando no próprio servidor Oracle — nesse caso copia os arquivos localmente sem precisar de `scp`.
+
+O retreino não é automatizado — o `RecommendationBatchJob` do inference-service roda a cada 24h, mas apenas gera recomendações com o modelo já carregado em memória. O retreino com dados novos é sempre iniciado manualmente.
+
+**Como rodar (a partir da raiz do projeto):**
 
 ```bash
-scp data/models/model.zip opc@<IP_ORACLE>:/app/storage/models/model.zip
-scp data/dataset/dataset.csv opc@<IP_ORACLE>:/app/storage/dataset/dataset.csv
-```
+# 1. Treina o modelo
+cd src/ml
+dotnet run preprocess
+dotnet run train
 
-Ou copiando direto para dentro do container:
-
-```bash
-docker cp data/models/model.zip <container_ml>:/app/storage/models/model.zip
-docker cp data/dataset/dataset.csv <container_ml>:/app/storage/dataset/dataset.csv
+# 2. Faz o deploy
+cd ../mongodb
+node deploy-artifacts.js
 ```
 
 ---
 
-## Script de upload de imagens — `upload_images.js`
-
-Envia imagens para o GridFS e registra os metadados em `espetaculo_images`. Lê as credenciais do `.env` da raiz automaticamente. Suporta `.jpg`, `.jpeg`, `.png`, `.webp` e `.gif`.
-
-O nome do arquivo vira o `espetaculo_nome` — nomeie como `nome-do-espetaculo.jpg`.
-
-**Pré-requisitos:**
-
-```bash
-# Dentro de src/mongodb
-npm install
-```
+### `upload-images.js`
+Envia imagens para o GridFS e registra metadados em `espetaculo_images`. O nome do arquivo vira o `espetaculo_nome` — nomeie como `nome-do-espetaculo.jpg`. Suporta `.jpg`, `.jpeg`, `.png`, `.webp` e `.gif`. Pula imagens já existentes.
 
 **Como rodar:**
 
 ```bash
 # 1. Coloque as imagens na pasta
-mkdir images
-cp circo-das-maravilhas.jpg festival-de-jazz.png images/
+mkdir src/mongodb/images
+cp circo-das-maravilhas.jpg festival-de-jazz.png src/mongodb/images/
 
 # 2. Execute
-node upload_images.js
+cd src/mongodb && node upload-images.js
 ```
 
-O script pula imagens que já existem no GridFS — pode rodar várias vezes sem duplicar.
+---
+
+### Instalação das dependências
+
+```bash
+cd src/mongodb
+npm install
+```
 
 ---
 
 ## Verificando o que foi salvo
 
-Conecte via `mongosh` no servidor Oracle:
-
 ```bash
-mongosh "mongodb://<MONGO_USER>:<MONGO_PASSWORD>@<IP_ORACLE>:27017/aventura_ml"
-```
+mongosh "mongodb://<MONGO_USER>:<MONGO_PASSWORD>@<IP_ORACLE>:<MONGO_PORT>/aventura_ml"
 
-```js
-// Metadados das imagens
+# Artefatos ativos do modelo
+db.artifact_metadata.find({ is_active: true }, { artifact_type: 1, filename: 1, uploaded_at: 1 }).pretty()
+
+# Metadados das imagens
 db.espetaculo_images.find().pretty()
 
-// Arquivos no GridFS
+# Arquivos no GridFS
 db["fs.files"].find({}, { filename: 1, length: 1, uploadDate: 1 }).pretty()
-
-// Artefatos ativos do modelo
-db.artifact_metadata.find({ is_active: true }, { artifact_type: 1, filename: 1, uploaded_at: 1 }).pretty()
 ```
 
 ---
 
 ## Dicas de segurança
 
-- Nunca exponha a porta 27017 publicamente sem autenticação.
-- Use um túnel SSH para operações administrativas pontuais: `ssh -L 27017:localhost:27017 opc@<IP_ORACLE> -N`
 - Use um usuário MongoDB com permissões mínimas (`readWrite` apenas no `aventura_ml`).
-- O `.env` nunca entra no repositório.
+- O `.env` nunca entra no repositório — use `.env.example` como template.

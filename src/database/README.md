@@ -14,6 +14,7 @@
    - 5.1 [Migração da Infraestrutura](#migração-da-infraestrutura)
    - 5.2 [Especificações da Máquina Virtual](#especificações-da-máquina-virtual)
    - 5.3 [Benefícios da Arquitetura Utilizada](#benefícios-da-arquitetura-utilizada)
+6. [Explain Analyze](#explain-analyze)
 
 ---
 
@@ -188,3 +189,87 @@ Com o banco hospedado em uma máquina persistente, o time não precisa reconfigu
 
 **Escalabilidade**
 A infraestrutura possibilita futuras expansões, como hospedagem de APIs auxiliares, execução de containers Docker, utilização de serviços de monitoramento, backups automatizados e replicação do banco de dados.
+
+---
+
+## 6. Explain Analyze
+
+Os testes de plano de execução foram realizados no banco real do projeto, utilizando dados existentes no ambiente PostgreSQL. O objetivo foi avaliar o comportamento do otimizador diante das consultas mais relevantes para o uso da aplicação.
+
+## Volume encontrado
+
+| Tabela | Registros |
+|---|---:|
+| usuarios | 17 |
+| teatros | 7 |
+| espetaculos | 7 |
+| interacoes | 2 |
+| recomendacoes | 1 |
+| wishlist_curtidas | 6 |
+
+## Índices relevantes existentes
+
+- `idx_wishlist_usuario`
+- `idx_teatros_cidade`
+- `idx_espetaculos_datas`
+- `idx_interacoes_usuario_expiracao`
+- `idx_recomendacoes_usuario_score`
+
+## Consulta 1 - Wishlist por usuário
+
+```sql
+SELECT *
+FROM wishlist_curtidas
+WHERE usuario_id = '606f6cae-1d85-46b0-aa6f-dc5fabad9037';
+```
+
+Resultado do `EXPLAIN ANALYZE`:
+
+- `Seq Scan`
+- `Rows Removed by Filter: 4`
+- `Buffers: shared hit=1`
+- `Execution Time: 0.021 ms`
+
+Apesar da existência do índice `idx_wishlist_usuario`, o PostgreSQL optou por `Seq Scan` devido ao pequeno volume da tabela, composta por 6 registros.
+
+## Consulta 2 - Espetáculos por cidade
+
+```sql
+SELECT e.*
+FROM teatros t
+JOIN teatro_espetaculo te ON te.teatro_id = t.id
+JOIN espetaculos e ON e.id = te.espetaculo_id
+WHERE t.cidade = 'São Paulo';
+```
+
+Resultado do `EXPLAIN ANALYZE`:
+
+- `Nested Loop`
+- `Seq Scan` em `teatros`
+- `Seq Scan` em `espetaculos`
+- `Index Only Scan` usando `teatro_espetaculo_pkey`
+- `Execution Time: 0.115 ms`
+
+O PostgreSQL utilizou o índice da tabela associativa, por meio de `Index Only Scan` sobre `teatro_espetaculo_pkey`. Entretanto, optou por `Seq Scan` nas tabelas `teatros` e `espetaculos` devido ao baixo número de registros.
+
+## Consulta 3 - Espetáculos por intervalo de datas
+
+```sql
+SELECT *
+FROM espetaculos
+WHERE data_inicio >= CURRENT_DATE
+  AND data_fim <= CURRENT_DATE + INTERVAL '90 days';
+```
+
+Resultado do `EXPLAIN ANALYZE`:
+
+- `Seq Scan`
+- `Rows Removed by Filter: 5`
+- `Buffers: shared hit=1`
+- `Execution Time: 0.020 ms`
+
+Apesar da existência do índice `idx_espetaculos_datas`, o PostgreSQL escolheu `Seq Scan` devido ao pequeno tamanho da tabela `espetaculos`.
+
+## Conclusão
+
+Os índices avaliados estão corretamente criados e disponíveis no banco de dados. Contudo, nos testes realizados, o otimizador do PostgreSQL escolheu leituras sequenciais em parte das consultas porque as tabelas possuem poucos registros. Em ambientes com maior volume de dados, espera-se maior utilização dos índices, especialmente nas consultas filtradas por usuário, cidade e intervalo de datas.

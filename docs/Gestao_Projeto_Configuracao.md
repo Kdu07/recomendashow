@@ -1,31 +1,37 @@
-# Gestão e configuração
+# Gestão de Configuração
+----
 
-| Informação | Detalhe |
-|---|---|
-| Projeto | Nome do Projeto |
-| Grupo | G02 |
-| Sprint Atual | Sprint 3 |
-| Data da Última Atualização | 27/05/2026 |
+## Grupo 2 - Aventureiros
 
-Este documento descreve as práticas de gerenciamento de configuração adotadas pela equipe para controle de versões, organização de branches e manutenção da integridade do repositório. Também define diretrizes para criação, uso e integração de branches, garantindo consistência e colaboração no desenvolvimento.
+## Projeto - RecomendaShow
+
+## Integrantes
+
+- [Alexsander da Silva Barbosa](https://www.linkedin.com/in/alexsander-dsbarbosa/)
+- [Carlos Eduardo Serrano Quaglia](https://www.linkedin.com/in/carlos-quaglia-309088357/)
+- [Catarina Sayuri Arashiro Braga Felipe](https://www.linkedin.com/in/catarina-sayuri/)
+- [Débora Pereira Nogueira](https://www.linkedin.com/in/debora-pereira-nogueira/)
+- [Isaac Souza Santos](https://www.linkedin.com/in/isaac-souza-santos/)
+- [Nicholas Anantha Krishnan Millani](https://www.linkedin.com/in/nicholas-millani-83a950357/)
+- [Paulo Henrique Bueno Fernandes](https://www.linkedin.com/in/paulo-henrique0601/)
+
+## Objetivo do Documento
+
+Este documento registra as práticas de gestão de configuração adotadas pela equipe para controle de versões, organização de branches, padronização de commits, abertura de Pull Requests e manutenção da integridade do repositório. Seu objetivo é garantir consistência, rastreabilidade e colaboração durante o desenvolvimento do projeto.
 
 ---
 
-# Sumário
+## Sumário
 
-1. Gitflow  
-2. Convenções para nomeação  
-3. Fluxo de branch  
-4. Estratégias de merge e pull request  
-5. Ciclo de Vida das Branches  
-6. Relação com issues  
-7. Políticas operacionais de Git  
-8. Versionamento Semântico (SemVer)  
-9. Política de Commits  
-10. Exemplos práticos de aplicação no projeto  
-11. Retrospectiva da Sprint 1  
-12. Planejamento da Sprint 2  
-13. Evolução entre Sprints  
+1. [Gitflow](#1---gitflow)
+2. [Convenções para nomeação](#2---convenções-para-nomeação)
+3. [Fluxo de branch](#3---fluxo-de-branch)
+4. [Estratégias de merge e pull request](#4---estratégias-de-merge-e-pull-request)
+5. [Ciclo de Vida das Branches](#5---ciclo-de-vida-das-branches)
+6. [Relação com issues](#6---relação-com-issues)
+7. [Políticas operacionais de Git](#7---políticas-operacionais-de-git)
+8. [Versionamento Semântico (SemVer)](#8---versionamento-semântico-semver)
+9. [Exemplos práticos de aplicação no projeto](#9---exemplos-práticos-de-aplicação-no-projeto)
 
 ---
 
@@ -354,8 +360,7 @@ git checkout -b docs/configuration-management-sprint-planning
 ```bash
 git add docs/Gestao_Projeto_Configuracao.md
 git commit -m "docs: formalize git procedures and examples"
-git commit -m "docs: add sprint 1 retrospective"
-git commit -m "docs: add sprint 2 planning"
+git commit -m "docs: update configuration management guidelines"
 ```
 
 4. Enviar a branch para o repositório remoto
@@ -409,53 +414,3 @@ A equipe aplica as políticas de gestão de configuração por meio das seguinte
 - Separação dos commits por escopo de alteração
 
 Essas práticas reduzem conflitos, aumentam a rastreabilidade das entregas e tornam o histórico do projeto mais organizado.
-
-# 10 - Retrospectiva da Sprint 1
-
-A retrospectiva da Sprint 1 tem como objetivo analisar o desempenho da equipe, identificando pontos positivos, dificuldades encontradas e ações de melhoria para a próxima sprint.
-
-## 10.1 - Pontos fortes
-
-- Boa priorização de tarefas, garantindo fluxo contínuo de trabalho sem ociosidade da equipe  
-- Quebra adequada das tarefas, evitando commits muito grandes e facilitando revisão  
-- Colaboração entre áreas, com membros atuando tanto em dados quanto em documentação  
-- Uso consistente de issues e commits seguindo o padrão Conventional Commits  
-- Estruturação inicial organizada do repositório, facilitando o entendimento do projeto  
-
-## 10.2 - Pontos fracos
-
-- Parte dos artefatos foi validada apenas próximo da entrega final, gerando retrabalho em diagramas e ajustes estruturais após feedback recebido  
-- Algumas Merge Requests permaneceram abertas por longos períodos, impactando o fluxo de integração e atrasando tarefas dependentes  
-
-## 10.3 - Ações de melhoria
-
-| Problema | Ação | Indicador de Sucesso |
-|---|---|---|
-| Falta de validação contínua | Planejar checkpoints com professores antes das entregas | Redução de retrabalho |
-| Demora na aprovação de PRs | Estabelecer prazo máximo de revisão de 24h | Redução do tempo de merge |
-| Feedback tardio | Abrir PRs parciais para revisão antecipada | Revisões mais rápidas |
-| Tasks muito amplas | Quebrar tarefas grandes em subtarefas menores | Aumento da granularidade |
-
-# 11 - Planejamento da Sprint 2
-
-O planejamento da Sprint 2 organiza as entregas com base nos artefatos definidos, estruturando as tarefas de forma detalhada, priorizada e com estimativas realistas.
-
-## 11.1 - Critério de estimativa
-
-| Tamanho | Tempo estimado |
-|------|------|
-| PP | Até 15 minutos |
-| P | Até 30 minutos |
-| M | Até 1 hora |
-| G | Até 2 horas |
-| GG | Acima de 2 horas  |
-
-# 12 - Evolução entre Sprints
-
-| Aspecto | Sprint 1 | Sprint 2 | Evolução |
-|---|---|---|---|
-| Planejamento | Tasks muito amplas | Maior granularidade | Melhorando |
-| Pull Requests | Revisões lentas | Revisões mais frequentes | Parcial |
-| Organização Git | Estrutura inicial | Fluxo consolidado | Melhorou |
-| Conventional Commits | Uso parcial | Uso padronizado | Melhorou |
-| Validação contínua | Próxima da entrega | Checkpoints definidos | Melhorando |

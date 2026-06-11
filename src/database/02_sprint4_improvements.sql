@@ -98,7 +98,7 @@ ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS ml_id SERIAL;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_ml_id ON usuarios(ml_id);
 
 -- ============================================================
--- SEÇÃO 4: Triggers e procedure de auditoria
+-- Triggers e procedure
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION fn_atualizar_data_preferencias()
@@ -117,7 +117,7 @@ CREATE TRIGGER trg_preferencias_update
     EXECUTE FUNCTION fn_atualizar_data_preferencias();
 
 -- ============================================================
--- SEÇÃO 6: Objetos de conformidade LGPD
+-- Objetos de conformidade LGPD
 -- ============================================================
 
 CREATE OR REPLACE PROCEDURE sp_anonimizar_usuario(p_id UUID)

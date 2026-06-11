@@ -18,3 +18,6 @@ DbRunner/obj/
 # .NET build outputs
 **/bin/
 **/obj/
+
+chave.key
+chave-back.key

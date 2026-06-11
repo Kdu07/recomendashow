@@ -2,83 +2,130 @@
 
 ## Sumário
 
-- [1. Visão Geral](#1-visão-geral)
+- [1. Visão Geral e Arquitetura](#1-visão-geral-e-arquitetura)
 - [2. Funk SVD — o que é e por que não KNN](#2-funk-svd--o-que-é-e-por-que-não-knn)
-- [3. Pipeline C# — Treino e Inferência](#3-pipeline-c--treino-e-inferência)
+- [3. Pipeline C# — Treino, Inferência e Persistência](#3-pipeline-c--treino-inferência-e-persistência)
 - [4. Hiperparâmetros do Modelo](#4-hiperparâmetros-do-modelo)
 - [5. Scoring Híbrido (SVD + Afinidade de Categoria)](#5-scoring-híbrido-svd--afinidade-de-categoria)
 - [6. Estratégia de Cold-start](#6-estratégia-de-cold-start)
-- [7. Métricas de Avaliação e Comparação SVD vs Híbrido](#7-métricas-de-avaliação-e-comparação-svd-vs-híbrido)
-- [8. Riscos e Limitações Técnicas](#8-riscos-e-limitações-técnicas)
+- [7. Métricas de Avaliação](#7-métricas-de-avaliação)
+- [8. Riscos, Limitações e Pendências](#8-riscos-limitações-e-pendências)
 
 ---
 
-## 1. Visão Geral
+## 1. Visão Geral e Arquitetura
 
 O sistema de recomendação do Portal Aventura é construído sobre dados de compra do Sympla. Não há avaliações explícitas — ninguém deu nota para *A Noviça Rebelde*. O sinal de interesse é o número de dias distintos em que um comprador adquiriu ingressos para o mesmo espetáculo, armazenado na coluna `ranking` (escala 1–5).
 
 | Dado | Valor |
 |---|---|
-| Interações no dataset | 109.916 |
-| Usuários únicos | 68.499 |
-| Espetáculos únicos | 449 |
+| Interações no dataset | 109.536 |
+| Usuários únicos | 68.313 |
+| Espetáculos únicos | 447 |
 | Esparsidade da matriz usuário-item | 99,64% |
-| Distribuição do ranking | rank=1: 94,2% · rank=2: 5,1% · rank≥3: 0,7% |
+| Distribuição do ranking | rank=1: ~94% · rank=2: ~5% · rank≥3: <1% |
 
-O modelo em produção é o **Funk SVD** (implementado via `Microsoft.ML.Recommender` / `MatrixFactorizationTrainer`), combinado com **afinidade de categoria** para gerar um score híbrido. Os artefatos são carregados pelo `RecommendationService` da API C# na inicialização. Para usuários sem histórico, o sistema recorre a listas pré-computadas por categoria ou, como fallback final, aos 449 espetáculos ordenados por popularidade global.
+O motor é **único e híbrido**: **Funk SVD** (via `Microsoft.ML.Recommender` / `MatrixFactorizationTrainer`) combinado com **afinidade de categoria**. Há um projeto de **treino** e um **host de inferência**; o contrato com o backend é a **tabela `recomendacoes`** — o backend não carrega modelo.
+
+### Fluxo ponta a ponta
+
+```
+data/raw/database_sympla.csv
+   └─[src/ml: dotnet run preprocess]──► data/dataset/dataset.csv
+        └─[src/ml: dotnet run train]──► data/models/model.zip
+                                   + data/models/{cold_start,item_categories,
+                                                  category_affinity,cold_start_by_category}.json
+                                        └─[src/inference-service (host ASP.NET)]
+                                             ├─ HybridModelLoader: valida/carrega artefatos no startup
+                                             ├─ RecommendationBatchJob (24h): para cada usuário do dataset
+                                             │    → HybridRecommendationService.RecommendAsync
+                                             │       (delega a AventuraML.Recommender — fórmula híbrida)
+                                             │    → RecommendationWriteRepository.SaveAsync
+                                             │         └─► tabela `recomendacoes` (DELETE+INSERT por usuário)
+                                             └─ Endpoints HTTP: /api/metrics e /api/diagnostics
+                                                  └─[src/backend] lê a tabela `recomendacoes`
+                                                       (GET /api/recomendacao/{usuarioId}; fallback por
+                                                        gêneros favoritos quando não há linhas)
+```
+
+### Pré-processamento (raw → dataset.csv)
+
+O comando `dotnet run preprocess` (`src/ml/Preprocessor.cs`) transforma as transações brutas do Sympla no dataset de interações. As regras são as do pipeline original (nascido nos notebooks de AED e portado para C# na migração):
+
+1. **Leitura**: colunas usadas do raw — `ID COMPRADOR.1.ID USUÁRIO`, `NOME ESPETÁCULO`, `DATA DA APRESENTAÇÃO`, `DATA DA COMPRA`, `VALOR DO INGRESSO`, `TIPO`.
+2. **Limpeza**: linhas com data inválida são descartadas; **lead time** (apresentação − compra) deve estar entre 0 e 180 dias; preço aceita vírgula decimal (`"19,5"` → 19.5; não numérico → 0).
+3. **Dedupe**: compras do mesmo usuário, mesmo espetáculo e mesmo dia contam como **uma** interação (mantém a primeira linha).
+4. **Outliers**: usuários com volume de interações acima do **percentil 99,9** são removidos (compradores institucionais/revendedores distorceriam o sinal de afinidade).
+5. **Agregação** por (usuário, espetáculo): `ranking` = nº de dias distintos de compra, limitado a 5; `valor_medio_ingresso` = média dos preços (2 casas); `tipo_evento` = primeiro `TIPO` observado.
+
+Os nomes de espetáculo são mantidos como estão no raw (sem trim) — `DataPipeline` e `DatasetRepository` normalizam com `Trim()` na leitura.
+
+### Estrutura dos projetos
+
+```
+data/
+├── dataset/dataset.csv                  ← dados do Sympla (mesmo arquivo p/ treino e serving)
+└── models/                              ← diretório canônico de artefatos
+    ├── model.zip
+    ├── cold_start.json
+    ├── item_categories.json
+    ├── category_affinity.json
+    └── cold_start_by_category.json
+src/
+├── ml/                                  ← treino e avaliação (console, .NET 9) — AventuraML
+│   ├── Preprocessor.cs                  ← pré-processamento raw → dataset.csv
+│   ├── DataPipeline.cs                  ← leitura e transformação do CSV
+│   ├── Trainer.cs                       ← treino + export dos 5 artefatos
+│   ├── Recommender.cs                   ← fórmula híbrida + PredictRating (fonte única)
+│   ├── Evaluator.cs                     ← avaliação 80/20 (usada pelo console e pelo host)
+│   └── Benchmarker.cs                   ← benchmark de latência
+├── inference-service/                   ← host de inferência/persistência (ASP.NET, .NET 9)
+│   ├── Services/HybridModelLoader.cs    ← fail-fast: carrega artefatos no startup
+│   ├── Services/HybridRecommendationService.cs ← adaptador fino sobre o Recommender
+│   ├── Services/RecommendationBatchJob.cs      ← batch 24h → tabela recomendacoes
+│   ├── Services/MetricsService.cs       ← métricas via Evaluator de src/ml
+│   ├── Data/RecommendationWriteRepository.cs   ← writer Npgsql (score normalizado [0,1])
+│   └── InferenceService.Tests/          ← suíte xunit (modelo real pequeno via fixture)
+└── backend/                             ← API do produto: apenas LÊ a tabela recomendacoes
+```
 
 ### Artefatos de modelo
 
 | Arquivo | Gerado por | Conteúdo |
 |---|---|---|
-| `src/models/model.zip` | `Trainer.cs` | Pesos do Funk SVD (ML.NET) |
-| `src/models/cold_start.json` | `Trainer.cs` | Lista de `item_id` ordenada por número de compradores distintos |
-| `src/models/item_categories.json` | `Trainer.cs` | Dicionário `item_id → tipo_evento` |
-| `src/models/category_affinity.json` | `Trainer.cs` | Dicionário `userId → { tipo_evento → score normalizado }` |
-| `src/models/cold_start_by_category.json` | `Trainer.cs` | Dicionário `tipo_evento → [items por popularidade]` |
-
-### Estrutura do Pipeline
-
-```
-src/
-├── dataset/
-│   └── dataset.csv                      ← dados do Sympla
-├── ml/                                  ← projeto de treino (console, .NET 9)
-│   ├── DataPipeline.cs                  ← leitura e transformação do CSV
-│   ├── Trainer.cs                       ← treino + export dos 5 artefatos
-│   ├── Recommender.cs                   ← inferência standalone (CLI)
-│   ├── Evaluator.cs                     ← avaliação 80/20 SVD puro vs. híbrido
-│   └── AventuraML.csproj
-├── models/
-│   ├── model.zip
-│   ├── cold_start.json
-│   ├── item_categories.json
-│   ├── category_affinity.json
-│   └── cold_start_by_category.json
-└── backend/                             ← API ASP.NET Core
-    └── services/
-        ├── RecommendationService.cs     ← carrega artefatos na inicialização
-        └── PreferenceService.cs         ← preferências de categoria do usuário
-```
+| `data/models/model.zip` | `Trainer.cs` | Pesos do Funk SVD (ML.NET) |
+| `data/models/cold_start.json` | `Trainer.cs` | Lista de `item_id` ordenada por número de compradores distintos |
+| `data/models/item_categories.json` | `Trainer.cs` | Dicionário `item_id → tipo_evento` |
+| `data/models/category_affinity.json` | `Trainer.cs` | Dicionário `userId → { tipo_evento → score normalizado }` |
+| `data/models/cold_start_by_category.json` | `Trainer.cs` | Dicionário `tipo_evento → [items por popularidade]` |
 
 ### Como executar o pipeline
 
 ```bash
-# 1. Treinar e gerar todos os artefatos (a partir de src/ml/)
+# 1. Gerar data/dataset/dataset.csv a partir do raw do Sympla
 cd src/ml
+dotnet run preprocess
+
+# 2. Treinar e gerar todos os artefatos em data/models/
 dotnet run train
 
-# 2. Testar inferência pelo CLI
+# 3. Testar inferência pelo CLI
 dotnet run recommend 1 --n 10
 
-# 3. Avaliar SVD puro vs. híbrido (split 80/20 por usuário)
+# 4. Avaliar SVD puro vs. híbrido (split 80/20 por usuário)
 dotnet run evaluate --k 10 --alpha 0.7
 
-# 4. Subir a API
-cd ../backend
+# 5. Subir o host de inferência (batch 24h + métricas/diagnóstico)
+cd ../inference-service
 dotnet run
-# → GET http://localhost:5000/api/recommendation/{userId}?n=10
+# → GET http://localhost:5000/api/diagnostics/health
+# → GET http://localhost:5000/api/diagnostics/model-info
+# → GET http://localhost:5000/api/metrics?k=10&rankingUsers=200
+# → GET http://localhost:5000/api/metrics/charts/{error-histogram|real-vs-predicted|svd-vs-hybrid}
 ```
+
+> **Não há endpoint HTTP de recomendação.** A recomendação chega ao produto exclusivamente
+> via batch → tabela `recomendacoes` → `GET /api/recomendacao/{usuarioId}` do backend.
 
 ---
 
@@ -86,11 +133,11 @@ dotnet run
 
 ### O problema de base: 99,64% de células vazias
 
-Imagine uma planilha com 68.499 linhas (usuários) e 449 colunas (espetáculos). A maioria das células está vazia — quem comprou *Elis, a Musical* provavelmente nunca comprou *Thiago Ventura - Modo Efetivo*, e vice-versa. A tarefa do recomendador é estimar o interesse do usuário em espetáculos que ele ainda não viu.
+Imagine uma planilha com 68.313 linhas (usuários) e 447 colunas (espetáculos). A maioria das células está vazia — quem comprou *Elis, a Musical* provavelmente nunca comprou *Thiago Ventura - Modo Efetivo*, e vice-versa. A tarefa do recomendador é estimar o interesse do usuário em espetáculos que ele ainda não viu.
 
 ### SVD clássico vs Funk SVD
 
-A Decomposição em Valores Singulares da álgebra linear decompõe uma matriz $R$ em $U \Sigma V^T$. Ela exige que todos os valores sejam conhecidos. Com 99,64% de entradas ausentes numa matriz de 68.499 × 449, aplicar a SVD diretamente é inviável — não existe como decompor o que não foi observado.
+A Decomposição em Valores Singulares da álgebra linear decompõe uma matriz $R$ em $U \Sigma V^T$. Ela exige que todos os valores sejam conhecidos. Com 99,64% de entradas ausentes, aplicar a SVD diretamente é inviável — não existe como decompor o que não foi observado.
 
 Simon Funk resolveu isso em 2006, durante o Netflix Prize: em vez de decompor a matriz cheia, o **Funk SVD aprende representações compactas de usuários e espetáculos a partir apenas das interações existentes**, via gradiente descendente estocástico (SGD). Nenhuma imputação, nenhuma matriz densa.
 
@@ -100,9 +147,9 @@ $$\hat{r}_{ui} = \mu + b_u + b_i + p_u \cdot q_i^T$$
 
 | Componente | O que representa neste dataset |
 |---|---|
-| $\mu$ | Média global de ranking — aproximadamente 1,08, reflexo de que 94% das interações têm rank=1 |
+| $\mu$ | Média global de ranking — aproximadamente 1,08, reflexo de que ~94% das interações têm rank=1 |
 | $b_u$ | Viés do usuário — captura quem tende a comprar o mesmo show em mais dias distintos |
-| $b_i$ | Viés do espetáculo — *A Noviça Rebelde* tem 8.636 compradores distintos, o que eleva seu $b_i$ |
+| $b_i$ | Viés do espetáculo — *A Noviça Rebelde* tem milhares de compradores distintos, o que eleva seu $b_i$ |
 | $p_u \cdot q_i^T$ | Afinidade personalizada — produto interno entre o perfil latente do usuário e as características latentes do espetáculo |
 
 O modelo minimiza o erro quadrático com regularização L2:
@@ -123,13 +170,13 @@ O `KNNWithMeans` item-based não aprende parâmetros globais. Para recomendar al
 | Cauda longa | Generaliza via fatores latentes | Espetáculos raros têm vizinhos instáveis |
 | Explicabilidade | Baixa (fatores sem rótulo) | Alta ("porque você viu X, veja Y") |
 
-Com 449 espetáculos e 99,64% de esparsidade, a maioria dos pares compartilha zero ou um comprador em comum. O cosseno fica ruidoso nesses casos. O SVD generaliza porque aprende padrões de nível global — um usuário que foi a shows de Afonso Padilha e Thiago Ventura tem $p_u$ orientado para o "fator stand-up", mesmo que nunca tenha comprado *Bruna Louise - Ela Tá Correndo Atrás*.
+Com ~450 espetáculos e 99,64% de esparsidade, a maioria dos pares compartilha zero ou um comprador em comum. O cosseno fica ruidoso nesses casos. O SVD generaliza porque aprende padrões de nível global — um usuário que foi a shows de Afonso Padilha e Thiago Ventura tem $p_u$ orientado para o "fator stand-up", mesmo que nunca tenha comprado *Bruna Louise - Ela Tá Correndo Atrás*.
 
-O KNN ainda ganha em um ponto: interpretabilidade. Se o parceiro precisar justificar uma recomendação ("por que esse espetáculo foi sugerido?"), o KNN responde com uma lista de vizinhos similares. O SVD responde com vetores sem rótulo.
+O KNN ainda ganha em um ponto: interpretabilidade. Se o parceiro precisar justificar uma recomendação ("por que esse espetáculo foi sugerido?"), o KNN responde com uma lista de vizinhos similares. O SVD responde com vetores sem rótulo. O KNN foi avaliado na fase de pesquisa (Python) e descartado; não é entregue no pipeline.
 
 ---
 
-## 3. Pipeline C# — Treino e Inferência
+## 3. Pipeline C# — Treino, Inferência e Persistência
 
 ### Tecnologias
 
@@ -139,9 +186,11 @@ O KNN ainda ganha em um ponto: interpretabilidade. Se o parceiro precisar justif
 | Treino | `Microsoft.ML.Recommender` — `MatrixFactorizationTrainer` | Fatoração de matrizes (equivalente ao Funk SVD) com SGD |
 | Serialização do modelo | `Microsoft.ML` — `mlContext.Model.Save` | Salva pesos treinados em `model.zip` |
 | Inferência | `Microsoft.ML` — `PredictionEngine<T>` | Pontuação de pares (usuário, espetáculo) via modelo treinado |
+| Persistência | `Npgsql` | Escrita das recomendações na tabela `recomendacoes` (PostgreSQL) |
+| Gráficos | `ScottPlot 5.x` | PNGs de métricas no host de inferência |
 | Artefatos auxiliares | `System.Text.Json` | `cold_start.json`, `item_categories.json`, `category_affinity.json`, `cold_start_by_category.json` |
 
-### Fluxo de treino (`Trainer.cs`)
+### Fluxo de treino (`src/ml/Trainer.cs`)
 
 Além de treinar o modelo, o `Trainer` pré-computa todos os artefatos auxiliares necessários para inferência e cold-start:
 
@@ -153,29 +202,10 @@ var rawRows = DataPipeline.LoadRaw(datasetPath);  // List<CsvRatingRow>
 var popularItems = rows.GroupBy(r => r.ItemId)
     .OrderByDescending(g => g.Count())
     .Select(g => g.Key).ToList();
-File.WriteAllText(coldStartOutputPath, JsonSerializer.Serialize(popularItems));
 
-// 3. Mapeamento item → categoria
-var itemCategories = rawRows.GroupBy(r => r.ItemId)
-    .ToDictionary(g => g.Key, g => g.First().TipoEvento);
-File.WriteAllText(itemCategoriesOutputPath, JsonSerializer.Serialize(itemCategories));
-
-// 4. Afinidade de categoria por usuário (score normalizado pela soma de rankings)
-var categoryAffinity = rawRows.GroupBy(r => r.UserId).ToDictionary(
-    g => g.Key.ToString(),
-    g => { var byCategory = g.GroupBy(r => r.TipoEvento)
-                             .ToDictionary(cat => cat.Key, cat => cat.Sum(r => r.Ranking));
-           var total = byCategory.Values.Sum();
-           return byCategory.ToDictionary(kvp => kvp.Key,
-               kvp => total > 0f ? kvp.Value / total : 0f); });
-File.WriteAllText(categoryAffinityOutputPath, JsonSerializer.Serialize(categoryAffinity));
-
-// 5. Cold-start por categoria: tipo_evento → [itens por popularidade]
-var coldStartByCategory = rawRows.GroupBy(r => r.TipoEvento).ToDictionary(
-    g => g.Key,
-    g => g.GroupBy(r => r.ItemId).OrderByDescending(item => item.Count())
-          .Select(item => item.Key).ToList());
-File.WriteAllText(coldStartByCategoryOutputPath, JsonSerializer.Serialize(coldStartByCategory));
+// 3. Mapeamento item → categoria (item_categories.json)
+// 4. Afinidade de categoria por usuário (category_affinity.json)
+// 5. Cold-start por categoria (cold_start_by_category.json)
 
 // 6. Treinar Funk SVD
 var pipeline = mlContext.Transforms.Conversion
@@ -186,29 +216,33 @@ var model = pipeline.Fit(data);
 mlContext.Model.Save(model, data.Schema, modelOutputPath);
 ```
 
-### Fluxo de inferência (`RecommendationService.cs`)
+### Fonte única da fórmula (`src/ml/Recommender.cs`)
 
-Para usuários com histórico, o score final de cada espetáculo candidato é um **score híbrido** que combina o score SVD normalizado com a afinidade de categoria do usuário:
+A fórmula híbrida vive **apenas** no `Recommender` de `src/ml`. O host de inferência referencia o projeto `AventuraML` e delega — proibido reimplementar a fórmula em outro lugar:
 
 ```csharp
-// 1. Score SVD bruto para cada item não consumido
-var pred = _engine.Predict(new RatingInput { UserId = uid, ItemId = item });
-
+// 1. Score SVD bruto para cada item não consumido (PredictRating — sob lock)
 // 2. Normalizar SVD para [0, 1] no batch de candidatos
 var normSvd = svdRange > 1e-6f ? (svdScore - minSvd) / svdRange : 0.5f;
-
 // 3. Afinidade de categoria: fração do histórico do usuário na categoria do item
 var affinity = _categoryAffinity[userId][itemCategory];
-
 // 4. Score híbrido (α padrão = 0.7)
 var finalScore = _alpha * normSvd + (1f - _alpha) * affinity;
-
 // 5. Ordenar por score híbrido e retornar top-N
-return scored.OrderByDescending(x => x.FinalScore).Take(n)
-    .Select(x => new RecommendationResult(x.Item, x.FinalScore)).ToList();
 ```
 
-O `PredictionEngine` não é thread-safe; o acesso ao `_engine.Predict` é protegido por `lock` no `RecommendationService`, que é registrado como **singleton** no DI do ASP.NET Core. O restante da lógica (normalização, combinação híbrida) ocorre fora do lock.
+O `PredictionEngine` não é thread-safe; o acesso a `_engine.Predict` é serializado por `lock` **dentro do próprio `Recommender`**, protegendo tanto o batch quanto o endpoint de métricas do host.
+
+### Host de inferência (`src/inference-service`)
+
+- **`HybridModelLoader`** (`IHostedService`): valida e carrega `model.zip` + JSONs + `dataset.csv` no startup. Se faltar artefato, a aplicação **não sobe** (fail-fast antes da primeira requisição).
+- **`HybridRecommendationService : IRecommendationService`**: adaptador fino, `ModelType = "hibrido"`; delega a `Recommender.Recommend(userId, n)`.
+- **`RecommendationBatchJob`** (`BackgroundService`): a cada 24h percorre todos os `user_id` do dataset, gera o top-10 híbrido e grava via `RecommendationWriteRepository` (DELETE+INSERT por usuário, match por `espetaculos.nome`, score em `[0,1]`, `motivo` descritivo). Falhas por usuário são logadas e não interrompem o batch.
+- **Métricas e diagnóstico** (HTTP): ver seção 7.
+
+### Contrato com o backend
+
+O `src/backend` **não** conhece o modelo. `RecomendacaoRepository` lê `recomendacoes (usuario_id, espetaculo_id, score, motivo, data_geracao)` ordenando por `score DESC`. Se o usuário não tem linhas, o backend aplica fallback próprio por gêneros favoritos. Trocar o motor de recomendação não exige mudar o backend.
 
 ---
 
@@ -222,25 +256,24 @@ Os hiperparâmetros da versão Python foram determinados por `GridSearchCV` com 
 | `ApproximationRank` | 50 | `n_factors=10` | Dimensão dos vetores latentes; aumentado para explorar mais padrões com a API ML.NET |
 | `LearningRate` | 0.01 | `lr_all=0.001` | Taxa de atualização dos pesos no SGD |
 | `Lambda` | 0.01 | `reg_all=0.2` | Regularização L2 — controla o crescimento dos vetores latentes |
-| `Alpha` (`ML:Alpha`) | 0.7 | — | Peso do SVD no score híbrido; configurável em `appsettings.json` |
+| `Alpha` (`Recommendation:Alpha`) | 0.7 | — | Peso do SVD no score híbrido; configurável no `appsettings.json` do `inference-service` |
 
-**Métricas de referência da versão Python** (mantidas como baseline):
+**Métricas de referência da versão Python** (mantidas como baseline histórico):
 
 | Métrica | SVD (Python) | KNN (Python) |
 |---|---|---|
 | RMSE ↓ | **0.2953** | 0.3402 |
 | MAE ↓ | **0.1210** | 0.1366 |
-| Precision@1 ↑ | **0.8926** | 0.8846 |
-| Recall@1 ↑ | **0.8766** | 0.8694 |
-| F1@1 ↑ | **0.8845** | 0.8770 |
 
-> Executar `dotnet run evaluate` após o retreinamento produz as métricas atualizadas do pipeline C# (SVD puro e híbrido), permitindo comparação direta com este baseline Python.
+> Para comparação: o modelo híbrido atual (`model.zip`), avaliado pelo host sobre o split 80/20
+> do mesmo dataset, apresenta RMSE ≈ 0.29 / MAE ≈ 0.15 na predição de rating (score SVD bruto).
+> Executar `dotnet run evaluate` em `src/ml` reproduz a avaliação offline completa.
 
 ---
 
 ## 5. Scoring Híbrido (SVD + Afinidade de Categoria)
 
-O campo `tipo_evento` existe no dataset com oito categorias — *Show Musical*, *Stand-Up*, *Espetáculo Teatral*, *Espetáculo Musical*, entre outras. No pipeline atual, ele é utilizado ativamente no scoring de recomendações, não apenas preservado no CSV.
+O campo `tipo_evento` existe no dataset com oito categorias — *Show Musical*, *Stand-Up*, *Espetáculo Teatral*, *Espetáculo Musical*, entre outras. Ele é utilizado ativamente no scoring de recomendações.
 
 ### Como a afinidade de categoria é calculada
 
@@ -256,66 +289,40 @@ Por exemplo, um usuário que somou `ranking=5` em Stand-Up e `ranking=5` em Teat
 
 $$\text{score}_{ui} = \alpha \cdot \text{SVD}_{ui}^{\text{norm}} + (1 - \alpha) \cdot \text{affinity}(u, \text{tipo}(i))$$
 
-onde $\text{SVD}_{ui}^{\text{norm}}$ é o score SVD bruto normalizado para $[0, 1]$ dentro do batch de candidatos e $\alpha = 0.7$ por padrão (configurável via `ML:Alpha` em `appsettings.json`).
+onde $\text{SVD}_{ui}^{\text{norm}}$ é o score SVD bruto normalizado para $[0, 1]$ dentro do batch de candidatos e $\alpha = 0.7$ por padrão (configurável via `Recommendation:Alpha` no `appsettings.json` do `inference-service`).
+
+O score híbrido resultante já está em $[0,1]$ e é gravado assim na tabela `recomendacoes` (com clamp defensivo e arredondamento a 2 casas no writer).
 
 ### Efeito prático
 
 Com $\alpha = 0.7$, o SVD ainda domina o ordenamento, mas a afinidade de categoria funciona como desempate e boost para espetáculos alinhados às preferências de gênero do usuário. Dois espetáculos com score SVD similar terão o da categoria preferida do usuário na frente.
 
-A métrica **Category Precision@K** no `Evaluator` quantifica isso: a fração dos top-K recomendados que pertence às duas categorias mais frequentes no histórico do usuário.
+A métrica **Category Precision@K** quantifica isso (seção 7): na avaliação amostrada do host, o híbrido elevou a Category Precision@10 de ~0.25 (SVD puro) para ~0.61, com Hit Rate@10 também superior.
 
 ---
 
 ## 6. Estratégia de Cold-start
 
-Uma usuária nova — como Ana Luiza, que acabou de criar conta sem nenhuma compra registrada no Sympla — não tem `UserId` no conjunto de treino do modelo. O `RecommendationService` detecta esse caso verificando o histórico carregado do `dataset.csv` e aplica o fallback em dois níveis:
+Uma usuária nova — sem nenhuma compra registrada no Sympla — não tem `UserId` no conjunto de treino do modelo. O `Recommender` detecta esse caso pelo histórico carregado do `dataset.csv` e aplica fallback por **popularidade global**: os `n` espetáculos com maior número de compradores distintos (`cold_start.json`), com `Score = null` sinalizando recomendação não personalizada.
 
-### Nível 1 — Cold-start por categoria (usuários com preferências declaradas)
+No produto, há ainda um segundo nível independente: se a tabela `recomendacoes` não tem linhas para o usuário, o **backend** aplica fallback próprio por gêneros favoritos declarados no onboarding.
 
-Se o usuário declarou preferências de `tipo_evento` via `PreferenceService` (por exemplo, selecionou *Stand-Up* e *Espetáculo Musical* no onboarding), o sistema usa `cold_start_by_category.json` para retornar os espetáculos mais populares nessas categorias:
+O artefato `cold_start_by_category.json` (espetáculos mais populares por `tipo_evento`) é gerado no treino e fica disponível para evoluir o cold-start do recomendador para "popularidade dentro das categorias preferidas" — hoje ele não é consumido pelo host.
 
-```csharp
-var prefs = _preferenceService.GetPreferences(userId);  // List<string> de tipo_evento
-if (prefs.Count > 0)
-{
-    var categoryItems = prefs
-        .Where(_coldStartByCategory.ContainsKey)
-        .SelectMany(tipo => _coldStartByCategory[tipo])
-        .Distinct()
-        .Take(n)
-        .Select(item => new RecommendationResult(item, null))
-        .ToList();
-    if (categoryItems.Count > 0) return categoryItems;
-}
-```
-
-### Nível 2 — Popularidade global (fallback final)
-
-Se o usuário não tem histórico nem preferências declaradas, o sistema retorna os `n` espetáculos com maior número de compradores distintos, carregados de `cold_start.json`:
-
-```csharp
-return _popularItems.Take(n)
-    .Select(item => new RecommendationResult(item, null))
-    .ToList();
-```
-
-Em ambos os casos, o `Score` retornado é `null`, sinalizando ao consumidor da API que a recomendação é por popularidade, não personalizada. *A Noviça Rebelde* encabeça a lista global — 8.636 compradores distintos.
-
-**Transição para personalização.** Marcos Abrantes, que já tem histórico de compras, recebe predições via SVD híbrido imediatamente. Ana Luiza só sai do cold-start após um ciclo completo: coleta de novos dados do Sympla → atualização do `dataset.csv` → retreinamento (`dotnet run train` em `src/ml/`) → reinício do backend.
+**Transição para personalização.** Um usuário com histórico recebe predições do híbrido no próximo ciclo de batch. Um usuário novo só sai do cold-start após um ciclo completo: coleta de novos dados do Sympla → atualização do `dataset.csv` → retreinamento (`dotnet run train` em `src/ml/`) → reinício do `inference-service`.
 
 ---
 
-## 7. Métricas de Avaliação e Comparação SVD vs Híbrido
+## 7. Métricas de Avaliação
 
-### Avaliação C# (`Evaluator.cs`)
+### Avaliação offline (`src/ml/Evaluator.cs`)
 
-O `Evaluator` implementa uma divisão 80/20 **por usuário** diretamente em C#, sem dependências externas. Apenas usuários com pelo menos 2 interações entram no conjunto de teste.
+O `Evaluator` implementa uma divisão 80/20 **por usuário** (mínimo 2 interações para entrar no teste, seed fixa). O comando de console treina um SVD apenas no conjunto de treino e compara **SVD puro** × **híbrido**:
 
 ```bash
+cd src/ml
 dotnet run evaluate --k 10 --alpha 0.7
 ```
-
-O resultado compara **SVD puro** (ranking pelo score bruto do modelo) com o **híbrido** (SVD normalizado + afinidade de categoria):
 
 ```
 ══════════════════════════════════════════════════════
@@ -334,10 +341,25 @@ O resultado compara **SVD puro** (ranking pelo score bruto do modelo) com o **h�
   Precision@10                   ...         ...       +...
   Recall@10                      ...         ...       +...
   Category Precision@10          ...         ...       +...
-
-  α = 0.7  (SVD weight)
-══════════════════════════════════════════════════════
 ```
+
+### Métricas no host (`GET /api/metrics`)
+
+O `inference-service` expõe as **mesmas métricas, calculadas pelo mesmo código** (`Evaluator.EvaluateWithPredictor`, de `src/ml`) — porém sobre o **`model.zip` em produção**, sem retreinar:
+
+- **RMSE/MAE** usam o **score SVD bruto** do `model.zip` (`Recommender.PredictRating`, escala 1–5) contra o `ranking` real de todos os pares de teste.
+- **Hit Rate@K, Precision@K, Recall@K, Category Precision@K** comparam o ranking SVD puro × híbrido sobre uma **amostra** de usuários de teste (`?rankingUsers=200` por padrão) — a avaliação de ranking custa ~1 predição por item candidato por usuário.
+- Resultados são cacheados por parâmetro (o modelo é estático no processo).
+
+Como o `model.zip` foi treinado no dataset completo, os pares de "teste" foram vistos no treino — as métricas do host são de **acompanhamento/sanidade**, otimistas por construção. A avaliação honesta de generalização é a do console (`dotnet run evaluate`), que retreina só no split de treino.
+
+Gráficos PNG (ScottPlot):
+
+| Endpoint | Conteúdo |
+|---|---|
+| `/api/metrics/charts/error-histogram` | Histograma dos erros (real − predito) |
+| `/api/metrics/charts/real-vs-predicted` | Scatter ranking real × predito |
+| `/api/metrics/charts/svd-vs-hybrid` | Barras comparando as métricas de ranking SVD puro × híbrido |
 
 ### Definição das métricas
 
@@ -353,33 +375,37 @@ O resultado compara **SVD puro** (ranking pelo score bruto do modelo) com o **h�
 
 **Category Precision@K**: fração dos top-K que pertence às duas categorias com maior soma de `ranking` no histórico de treino do usuário. Mede se o recomendador respeita as preferências de gênero do usuário.
 
-### Baseline da versão Python
-
-A comparação original Python (SVD vs. KNN) está registrada na seção 4. O delta do modelo híbrido C# em relação ao SVD puro C# é o indicador que deve ser monitorado após ajustes em `alpha` ou nos hiperparâmetros do treino.
-
 ### Por que as métricas de classificação binária enganam aqui
 
-O modelo também pode ser avaliado com acurácia/precisão binária usando limiar `ranking >= 2`. O SVD tende a obter precisão e F1 baixos nessa métrica — consequência do dataset desbalanceado. A média global de ranking é 1,08 e 94% dos rankings reais são 1. O modelo otimiza o erro numérico e converge para predições conservadoras, todas abaixo do limiar arbitrário de 2. RMSE e as métricas Top-K são os indicadores mais honestos para feedback implícito deste tipo.
+O modelo também poderia ser avaliado com acurácia/precisão binária usando limiar `ranking >= 2`. O SVD tende a obter precisão e F1 baixos nessa métrica — consequência do dataset desbalanceado. A média global de ranking é ~1,08 e ~94% dos rankings reais são 1. O modelo otimiza o erro numérico e converge para predições conservadoras, todas abaixo do limiar arbitrário de 2. RMSE e as métricas Top-K são os indicadores mais honestos para feedback implícito deste tipo.
 
 ---
 
-## 8. Riscos e Limitações Técnicas
+## 8. Riscos, Limitações e Pendências
+
+### Mapeamento usuário do dataset ↔ usuário do banco (pendência D4 — bloqueia persistência real)
+
+O writer resolve `usuarios WHERE ml_id = @userId`, mas `ml_id SERIAL` é um auto-incremento por ordem de inserção **sem relação** com o `user_id` do Sympla no `dataset.csv`. Enquanto esse mapeamento não for definido (decisão de produto adiada — ver `docs/Plano_Migracao_Pipeline_Hibrido.md`, §5.2), o batch roda mas **não grava linhas para os usuários corretos**. O writer já suporta colunas alternativas (`dataset_user_id`, `external_user_id`, ...) para quando a decisão for tomada.
 
 ### Thread-safety do PredictionEngine
 
-O `PredictionEngine<T>` do ML.NET **não é thread-safe**. O `RecommendationService` usa um `Lock` para serializar o acesso ao `_engine.Predict` em ambiente multi-thread. A normalização e a combinação híbrida ocorrem fora do lock. Para escalar, a alternativa é usar `Microsoft.Extensions.ML` e seu `PredictionEnginePool<T>`, que mantém um pool de engines e elimina o lock global.
+O `PredictionEngine<T>` do ML.NET **não é thread-safe**. O acesso é serializado por `lock` dentro do `Recommender` (src/ml), cobrindo o batch e o endpoint de métricas. Para escalar, a alternativa é `Microsoft.Extensions.ML` com `PredictionEnginePool<T>`.
+
+### Performance do scoring do batch
+
+O batch pontua ~68 mil usuários × ~446 itens com 1 predição por par (sequencial). É aceitável para a janela de 24h, mas é dívida técnica conhecida — a otimização natural é scoring em lote (matriz) em vez de `Predict` unitário.
 
 ### Modelo estático
 
-O modelo não aprende com novas compras em tempo real. Toda nova interação do Sympla só impacta as recomendações após um ciclo completo de atualização:
+O modelo não aprende com novas compras em tempo real. Toda nova interação do Sympla só impacta as recomendações após um ciclo completo:
 
 ```
-coleta de dados → atualização de dataset.csv
-→ dotnet run train (src/ml/)      ← gera os 5 artefatos
-→ reinício do backend (src/backend/)
+coleta de dados → atualização de data/dataset/dataset.csv
+→ dotnet run train (src/ml/)            ← gera os 5 artefatos em data/models/
+→ reinício do inference-service         ← batch 24h repersiste a tabela recomendacoes
 ```
 
-A ausência de um pipeline automatizado para esse ciclo é um ponto de atenção operacional. O fluxo BPMN em `docs/Projeto.md` menciona atualização a cada 24 horas — verificar se e onde este pipeline está implementado.
+A atualização periódica citada no fluxo BPMN (`docs/Projeto.md`) é implementada pelo `RecommendationBatchJob` (24h) para a **persistência**; o **retreinamento** continua manual.
 
 ### Feedback implícito como proxy de interesse
 
@@ -387,8 +413,8 @@ O `ranking` mede dias distintos de compra, não satisfação com o espetáculo. 
 
 ### Cold-start de espetáculos novos
 
-O cold-start atual cobre **usuários novos** e usa preferências declaradas quando disponíveis. **Espetáculos novos** não são cobertos: um show adicionado ao catálogo após o treino não tem vetor $q_i$ e não aparece nas predições do modelo. O fallback de popularidade (incluindo `cold_start_by_category.json`) também não inclui espetáculos sem histórico de compra. Peças em pré-estreia são invisíveis para o recomendador até o próximo retreinamento.
+O cold-start atual cobre **usuários novos**. **Espetáculos novos** não são cobertos: um show adicionado ao catálogo após o treino não tem vetor $q_i$ e não aparece nas predições do modelo. O fallback de popularidade também não inclui espetáculos sem histórico de compra. Peças em pré-estreia são invisíveis para o recomendador até o próximo retreinamento.
 
 ### Hiperparâmetros não otimizados (pipeline C#)
 
-Os hiperparâmetros do `MatrixFactorizationTrainer` e o valor de `alpha` foram definidos com base nos valores obtidos pelo `GridSearchCV` da versão Python e em testes manuais. Ainda não foi realizada uma busca formal de hiperparâmetros no pipeline C#. Recomenda-se usar `dotnet run evaluate` com variações de `--alpha` e dos parâmetros do trainer para confirmar ou ajustar os valores de `ApproximationRank`, `LearningRate`, `Lambda` e `Alpha`.
+Os hiperparâmetros do `MatrixFactorizationTrainer` e o valor de `alpha` foram definidos com base nos valores obtidos pelo `GridSearchCV` da versão Python e em testes manuais. Ainda não foi realizada uma busca formal de hiperparâmetros no pipeline C#. Recomenda-se usar `dotnet run evaluate` com variações de `--alpha` e dos parâmetros do trainer para confirmar ou ajustar `ApproximationRank`, `LearningRate`, `Lambda` e `Alpha`.

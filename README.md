@@ -263,25 +263,29 @@ dotnet run
 
 ---
 
-### Executar serviço de recomendação
+### Treinar o modelo de recomendação
+
+Primeiro, gera `data/dataset/dataset.csv` a partir das transações brutas do Sympla (`data/raw/database_sympla.csv`); depois, treina o modelo gerando `data/models/model.zip` e os artefatos auxiliares (cold-start, categorias, afinidade):
 
 ```bash
-cd src/recommendation-service
-dotnet restore
-dotnet run
+cd src/ml
+dotnet run preprocess
+dotnet run train
 ```
 
 ---
 
-### Executar serviço de treinamento
+### Executar host de inferência
+
+Carrega o modelo híbrido treinado e roda o batch (24h) que persiste as recomendações na tabela `recomendacoes`; expõe também endpoints de métricas e diagnóstico:
 
 ```bash
-cd src/training-service
+cd src/inference-service
 dotnet restore
 dotnet run
 ```
 
-Alguns serviços dependem de arquivos de dados, modelos treinados e variáveis de ambiente configuradas corretamente.
+Alguns serviços dependem de arquivos de dados, modelos treinados e variáveis de ambiente configuradas corretamente. Detalhes do pipeline de recomendação em `docs/Modelo_Recomendacao.md`.
 
 ---
 

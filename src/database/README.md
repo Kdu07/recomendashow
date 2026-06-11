@@ -188,3 +188,63 @@ Com o banco hospedado em uma máquina persistente, o time não precisa reconfigu
 
 **Escalabilidade**
 A infraestrutura possibilita futuras expansões, como hospedagem de APIs auxiliares, execução de containers Docker, utilização de serviços de monitoramento, backups automatizados e replicação do banco de dados.
+
+---
+
+## 6. Subindo o banco localmente com Docker
+
+### 6.1 Pré-requisito
+
+- [Docker](https://docs.docker.com/get-docker/) instalado (inclui Docker Compose)
+
+### 6.2 Variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+```env
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=aventura
+POSTGRES_PORT=5432
+MONGO_USER=mongo
+MONGO_PASSWORD=mongo
+MONGO_PORT=27017
+```
+
+### 6.3 Subir o banco
+
+```bash
+docker compose -f docker-compose-db.yml up -d
+```
+
+Isso inicia dois containers: `postgres_db` (PostgreSQL 16) e `aventura_mongodb` (MongoDB). Os scripts SQL são executados automaticamente na primeira inicialização, na ordem:
+
+1. `01_create_database.sql` — estrutura do banco
+2. `02_sprint4_improvements.sql` — melhorias da Sprint 4
+3. `02_initial_data.sql` — dados de seed
+
+### 6.4 Verificar que o banco subiu
+
+```bash
+docker ps
+```
+
+O container `postgres_db` deve aparecer com status `Up`. Para conectar:
+
+```bash
+psql -h localhost -p 5432 -U postgres -d aventura
+```
+
+Ou via qualquer cliente (DBeaver, TablePlus etc.) com `host=localhost`, `port=5432`, `database=aventura`.
+
+### 6.5 Derrubar o banco
+
+```bash
+docker compose -f docker-compose-db.yml down
+```
+
+Para remover também os volumes (apaga todos os dados):
+
+```bash
+docker compose -f docker-compose-db.yml down -v
+```

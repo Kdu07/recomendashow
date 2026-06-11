@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS usuarios(
     idade INT
     CHECK(idade >=13),
 
-    data_cadastro TIMESTAMP
+    data_cadastro TIMESTAMPTZ
     DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -116,10 +116,10 @@ CREATE TABLE IF NOT EXISTS interacoes(
 
     pontuacao DECIMAL(4,2),
 
-    data_registro TIMESTAMP
+    data_registro TIMESTAMPTZ
     DEFAULT CURRENT_TIMESTAMP,
 
-    data_expiracao TIMESTAMP,
+    data_expiracao TIMESTAMPTZ,
 
     CONSTRAINT fk_usuario_interacao
     FOREIGN KEY(usuario_id)
@@ -150,7 +150,7 @@ CREATE TABLE IF NOT EXISTS preferencias(
     faixa_preco_max DECIMAL(10,2),
     receber_notificacoes BOOLEAN DEFAULT TRUE,
 
-    data_atualizacao TIMESTAMP
+    data_atualizacao TIMESTAMPTZ
     DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_preferencia_usuario
@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS recomendacoes(
 
     motivo TEXT,
 
-    data_geracao TIMESTAMP
+    data_geracao TIMESTAMPTZ
     DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY(usuario_id)

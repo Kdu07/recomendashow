@@ -65,8 +65,8 @@ ALTER TABLE usuarios
 -- ============================================================
 ALTER TABLE usuarios
     ADD COLUMN IF NOT EXISTS consentimento_aceito BOOLEAN NOT NULL DEFAULT FALSE,
-    ADD COLUMN IF NOT EXISTS data_consentimento   TIMESTAMP,
-    ADD COLUMN IF NOT EXISTS deleted_at           TIMESTAMP,
+    ADD COLUMN IF NOT EXISTS data_consentimento   TIMESTAMPTZ,
+    ADD COLUMN IF NOT EXISTS deleted_at           TIMESTAMPTZ,
     ADD COLUMN IF NOT EXISTS anonimizado          BOOLEAN NOT NULL DEFAULT FALSE;
 
 -- ============================================================

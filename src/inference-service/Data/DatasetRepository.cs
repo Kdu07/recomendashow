@@ -33,10 +33,11 @@ public sealed class DatasetRepository : IDatasetRepository
             .GroupBy(r => r.UserId)
             .ToDictionary(g => g.Key, g => g.ToList());
 
-        _ratings = records.ToDictionary(
-            r => (r.UserId, r.ItemId),
-            r => r.Ranking,
-            EqualityComparer<(int, string)>.Default);
+        // GroupBy em vez de ToDictionary: o Trim pode unificar nomes que diferiam
+        // apenas por espaços ("ShowA" e "ShowA ") em uma mesma chave (user, item).
+        _ratings = records
+            .GroupBy(r => (r.UserId, r.ItemId))
+            .ToDictionary(g => g.Key, g => g.Max(r => r.Ranking));
 
         AllItems = records.Select(r => r.ItemId).ToHashSet();
 
@@ -79,7 +80,19 @@ public sealed class DatasetRepository : IDatasetRepository
         };
         using var reader = new StreamReader(path);
         using var csv = new CsvReader(reader, config);
-        return csv.GetRecords<InteractionRecord>().ToList();
+        // Trim igual ao DataPipeline de src/ml: o model.zip e os artefatos JSON
+        // usam nomes normalizados; sem isso, itens com espaços nas pontas viram
+        // out-of-vocabulary na avaliação e perdem o lookup de categoria.
+        return csv.GetRecords<InteractionRecord>()
+            .Select(r => new InteractionRecord
+            {
+                UserId = r.UserId,
+                ItemId = r.ItemId.Trim(),
+                Ranking = r.Ranking,
+                ValorMedioIngresso = r.ValorMedioIngresso,
+                TipoEvento = r.TipoEvento.Trim(),
+            })
+            .ToList();
     }
 
     private static string ResolveDatasetPath(string configured)

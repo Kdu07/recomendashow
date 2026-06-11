@@ -96,3 +96,62 @@ CREATE INDEX IF NOT EXISTS idx_wishlist_usuario
 -- Identificador sequencial para mapear usuarios UUID ↔ índice inteiro do modelo SVD
 ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS ml_id SERIAL;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_ml_id ON usuarios(ml_id);
+
+-- ============================================================
+-- Triggers e procedure
+-- ============================================================
+
+CREATE OR REPLACE FUNCTION fn_atualizar_data_preferencias()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.data_atualizacao = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_preferencias_update ON preferencias;
+
+CREATE TRIGGER trg_preferencias_update
+    BEFORE UPDATE ON preferencias
+    FOR EACH ROW
+    EXECUTE FUNCTION fn_atualizar_data_preferencias();
+
+-- ============================================================
+-- Objetos de conformidade LGPD
+-- ============================================================
+
+CREATE OR REPLACE PROCEDURE sp_anonimizar_usuario(p_id UUID)
+LANGUAGE plpgsql AS $$
+BEGIN
+    UPDATE usuarios SET
+        nome        = 'Usuário Removido',
+        email       = id::text || '@anonimizado.invalid',
+        senha_hash  = '',
+        cep         = NULL,
+        logradouro  = NULL,
+        numero      = NULL,
+        complemento = NULL,
+        bairro      = NULL,
+        cidade      = NULL,
+        anonimizado = TRUE
+    WHERE id = p_id
+      AND deleted_at IS NOT NULL
+      AND anonimizado = FALSE;
+END; $$;
+
+CREATE OR REPLACE FUNCTION fn_bloquear_update_anonimizado()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF OLD.anonimizado = TRUE THEN
+        RAISE EXCEPTION
+            'Usuário % já foi anonimizado (LGPD). Nenhuma alteração é permitida.',
+            OLD.id;
+    END IF;
+    RETURN NEW;
+END; $$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_bloquear_update_anonimizado ON usuarios;
+CREATE TRIGGER trg_bloquear_update_anonimizado
+    BEFORE UPDATE ON usuarios
+    FOR EACH ROW
+    EXECUTE FUNCTION fn_bloquear_update_anonimizado();

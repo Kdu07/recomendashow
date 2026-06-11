@@ -2,6 +2,7 @@ using AventuraML;
 
 // Caminhos relativos ao diretório de trabalho (use `dotnet run` a partir de src/ml/).
 // Diretório canônico de artefatos: data/models/ na raiz do repositório.
+var rawPath               = ResolveRelative(args, "--raw",                    "../../data/raw/database_sympla.csv");
 var datasetPath           = ResolveRelative(args, "--dataset",                "../../data/dataset/dataset.csv");
 var modelPath             = ResolveRelative(args, "--model",                  "../../data/models/model.zip");
 var coldStart             = ResolveRelative(args, "--cold-start",             "../../data/models/cold_start.json");
@@ -13,6 +14,11 @@ var command = args.FirstOrDefault(a => !a.StartsWith("--")) ?? "train";
 
 switch (command)
 {
+    case "preprocess":
+        Preprocessor.Preprocess(rawPath, datasetPath);
+        Console.WriteLine("\nPré-processamento concluído. Execute 'dotnet run train' para treinar o modelo.");
+        break;
+
     case "train":
         Trainer.Train(datasetPath, modelPath, coldStart, itemCategories, categoryAffinity, coldStartByCategory);
         Console.WriteLine("\nPipeline concluído. Execute 'dotnet run recommend <userId>' para testar.");
@@ -54,7 +60,7 @@ switch (command)
         break;
 
     default:
-        Console.Error.WriteLine($"Comando desconhecido: '{command}'. Use: train | recommend <userId> | evaluate");
+        Console.Error.WriteLine($"Comando desconhecido: '{command}'. Use: preprocess | train | recommend <userId> | evaluate");
         return 1;
 }
 

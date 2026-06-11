@@ -249,9 +249,24 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 </details>
 
 <details>
-<summary><a href="#20-termos-e-abreviações">20. Termos e Abreviações</a></summary>
+<summary><a href="#20-execução-dos-testes">20. Execução dos Testes</a></summary>
 
-- [Termos e Abreviações](#20-termos-e-abreviações)
+- [20.1 Objetivo da execução dos testes](#201-objetivo-da-execução-dos-testes)
+- [20.2 Visão geral da execução](#202-visão-geral-da-execução)
+- [20.3 Testes de funcionalidade](#203-testes-de-funcionalidade)
+- [20.4 Testes automatizados de integração](#204-testes-automatizados-de-integração)
+- [20.5 Testes automatizados de regras de negócio](#205-testes-automatizados-de-regras-de-negócio)
+- [20.6 Testes de requisitos não funcionais](#206-testes-de-requisitos-não-funcionais)
+- [20.7 Testes de usabilidade](#207-testes-de-usabilidade)
+- [20.8 Testes de APIs externas](#208-testes-de-apis-externas)
+- [20.9 Análise consolidada dos resultados](#209-análise-consolidada-dos-resultados)
+
+</details>
+
+<details>
+<summary><a href="#21-termos-e-abreviações">21. Termos e Abreviações</a></summary>
+
+- [Termos e Abreviações](#21-termos-e-abreviações)
 
 </details>
 
@@ -3143,7 +3158,130 @@ Como evidência complementar da Sprint 4, será adicionado aqui o link para um v
 
 ---
 
-## 20. Termos e Abreviações
+## 20. Execução dos Testes
+
+### 20.1 Objetivo da execução dos testes
+
+Este artefato tem como objetivo documentar a execução dos testes planejados na seção [17. Planejamento de Testes](#17-planejamento-de-testes), validando o comportamento do sistema de forma abrangente e verificando se os requisitos de negócio foram atendidos. A seção deve demonstrar a capacidade do grupo de executar, documentar e analisar os resultados de diferentes tipos de teste, registrando evidências, falhas encontradas, melhorias propostas e encaminhamentos para evoluções futuras.
+
+A execução deve manter rastreabilidade com os casos planejados na seção 17, mas sem repetir integralmente o planejamento. O foco desta seção é registrar o que foi efetivamente executado, quais resultados foram observados, quais evidências comprovam a execução e quais melhorias foram identificadas.
+
+### 20.2 Visão geral da execução
+
+Nesta seção, são documentados os testes executados a partir do planejamento definido na seção 17. O registro apresenta, em texto, o período de execução, os responsáveis, o ambiente utilizado, as ferramentas adotadas e as principais evidências coletadas.
+
+Os **testes de funcionalidade** validaram os fluxos centrais do aplicativo, como cadastro, login, onboarding, catálogo, busca, wishlist, perfil, redirecionamento para compra e recomendações. A documentação indica quais requisitos funcionais foram cobertos e se o comportamento observado atendeu ao esperado.
+
+Os **testes automatizados de integração** verificaram a comunicação entre os componentes da solução, como frontend, backend, banco de dados, serviço de recomendação e integrações externas simuladas ou reais. A documentação registra comandos executados, ferramentas utilizadas, resultados das suítes e evidências de execução.
+
+Os **testes automatizados de regras de negócio** validaram regras críticas do sistema, contemplando cenários positivos e negativos. A documentação explica quais regras foram verificadas, quais comportamentos foram confirmados e quais inconsistências foram encontradas.
+
+Os **testes de requisitos não funcionais** avaliaram atributos de qualidade como desempenho, segurança, privacidade, disponibilidade, usabilidade, carga, geolocalização e modularidade. A documentação apresenta as métricas coletadas e compara os resultados com os critérios planejados.
+
+Os **testes de usabilidade** observaram a interação de usuários com os principais fluxos do aplicativo. A documentação descreve o perfil dos participantes, as tarefas propostas, as dificuldades percebidas, os resultados do questionário SUS e as melhorias identificadas.
+
+Os **testes de APIs externas** validaram integrações como ViaCEP e eventuais serviços de ticketera, considerando cenários de sucesso, erro, timeout, indisponibilidade e fallback. A documentação registra as respostas obtidas, os tempos observados, o tratamento de falhas e as evidências coletadas.
+
+### 20.3 Testes de funcionalidade
+
+Os testes de funcionalidade foram executados para validar os principais fluxos do aplicativo conforme os requisitos funcionais definidos na seção 9 e os casos planejados na seção 17.3. A execução considerou tanto cenários positivos quanto cenários negativos, verificando se o comportamento apresentado pelo sistema estava aderente ao esperado para a jornada do usuário.
+
+**Testes executados:** Foram executados os casos [informar IDs, como TF-01 a TF-10], cobrindo os fluxos de [informar fluxos validados].
+
+**Resultados observados:** Os testes apresentaram [informar resultado geral: aprovação total, aprovação parcial, falhas ou bloqueios]. Os principais comportamentos observados foram [descrever resultados].
+
+**Evidências:** As evidências da execução estão disponíveis em [inserir links para prints, vídeos, logs, issues ou relatórios].
+
+**Análise:** A partir dos resultados, conclui-se que [registrar conclusão sobre aderência aos requisitos, impacto das falhas e ajustes necessários].
+
+### 20.4 Testes automatizados de integração
+
+Os testes automatizados de integração foram executados para verificar a comunicação entre os componentes da solução, incluindo frontend, backend, banco de dados, serviço de recomendação e integrações externas simuladas ou reais. A execução buscou confirmar se os contratos entre os módulos estavam estáveis e se os fluxos integrados respondiam corretamente em cenários de sucesso e falha.
+
+**Integrações executadas:** Foram avaliadas as integrações [informar integrações testadas], com foco em [informar objetivo da validação].
+
+**Comandos e ferramentas:** A execução utilizou [informar ferramentas] e os principais comandos executados foram [informar comandos].
+
+**Resultados observados:** As suítes retornaram [informar status geral], com [informar quantidade de testes aprovados, reprovados ou bloqueados]. As principais respostas e comportamentos observados foram [descrever resultados].
+
+**Evidências:** As evidências da execução estão disponíveis em [inserir links para logs, prints do terminal, relatórios, artefatos ou pipeline].
+
+**Análise:** A execução indica que [registrar análise sobre estabilidade das integrações, confiabilidade dos contratos, limitações do ambiente e melhorias necessárias].
+
+### 20.5 Testes automatizados de regras de negócio
+
+Os testes automatizados de regras de negócio foram executados para validar comportamentos críticos da aplicação, contemplando cenários positivos e negativos. A execução verificou se as regras implementadas estavam coerentes com os requisitos funcionais, critérios de sucesso e fluxos definidos no planejamento de testes.
+
+**Regras validadas:** Foram validadas as regras de [informar regras testadas, como autenticação, preferências, perfil, wishlist, busca, recomendação, geolocalização ou redirecionamento de compra].
+
+**Cenários positivos e negativos:** Os cenários executados cobriram [descrever cenários], esperando como comportamento [descrever comportamento esperado].
+
+**Resultados observados:** As regras apresentaram [informar resultado geral]. Foram aprovadas [informar regras aprovadas], apresentaram falha [informar regras com falha] e ficaram bloqueadas [informar regras bloqueadas].
+
+**Evidências:** As evidências da execução estão disponíveis em [inserir links para relatórios, logs, prints, arquivos de teste ou pipelines].
+
+**Análise:** Com base na execução, as regras de negócio demonstraram [registrar aderência, inconsistências encontradas e ajustes necessários].
+
+### 20.6 Testes de requisitos não funcionais
+
+Os testes de requisitos não funcionais foram executados para avaliar atributos de qualidade da solução, considerando desempenho, segurança, privacidade, usabilidade, disponibilidade, capacidade sob carga, precisão da geolocalização e modularidade do serviço de recomendação. A execução comparou as métricas observadas com os critérios definidos no planejamento.
+
+**RNFs avaliados:** Foram avaliados os requisitos [informar RNFs testados]. Permaneceram pendentes [informar RNFs não executados, se houver].
+
+**Métricas coletadas:** Foram coletadas métricas de [informar métricas, como tempo médio, p95, taxa de erro, disponibilidade, cobertura, SUS, CPU/memória ou auditoria].
+
+**Resultados observados:** Os critérios planejados foram [informar se atendidos, parcialmente atendidos ou não atendidos], com destaque para [descrever resultados principais].
+
+**Evidências:** As evidências da execução estão disponíveis em [inserir links para relatórios, logs, prints, resultados de carga, evidências de segurança ou registros de monitoramento].
+
+**Análise:** Os resultados indicam [registrar riscos, limitações, gargalos, impacto para o usuário e recomendações de melhoria].
+
+### 20.7 Testes de usabilidade
+
+Os testes de usabilidade foram realizados para observar como usuários interagem com os principais fluxos do aplicativo, identificando dificuldades de navegação, compreensão da interface, clareza dos feedbacks e percepção de valor das recomendações. A execução considerou as tarefas planejadas na seção 17.5 e a aplicação do questionário SUS ao final da avaliação.
+
+**Participantes e formato:** Participaram [informar quantidade e perfil dos participantes], em formato [informar presencial/remoto, moderado/não moderado e dispositivo utilizado].
+
+**Tarefas executadas:** As tarefas avaliadas foram [listar tarefas executadas, com referência aos fluxos TU-01 a TU-08 quando aplicável].
+
+**Resultados observados:** Os participantes demonstraram [descrever resultado geral]. As principais dificuldades foram [registrar dificuldades] e os fluxos concluídos com maior facilidade foram [registrar fluxos].
+
+**Questionário SUS:** A pontuação média obtida foi [informar pontuação], indicando [registrar interpretação do resultado].
+
+**Evidências:** As evidências da execução estão disponíveis em [inserir links para roteiros preenchidos, gravações autorizadas, prints, anotações ou respostas do questionário].
+
+**Melhorias identificadas:** A partir da observação, foram identificadas as seguintes melhorias: [listar melhorias para próximas iterações].
+
+### 20.8 Testes de APIs externas
+
+Os testes de APIs externas foram executados para validar integrações previstas no sistema, especialmente a comunicação com o ViaCEP e eventuais serviços de ticketera. A execução considerou cenários de sucesso, erro, timeout, indisponibilidade e fallback, verificando se o sistema manteve uma experiência controlada mesmo diante de falhas externas.
+
+**APIs avaliadas:** Foram avaliadas as APIs [informar APIs testadas].
+
+**Cenários executados:** Os cenários executados incluíram [descrever cenários de sucesso, erro, timeout, indisponibilidade, dados inválidos e fallback].
+
+**Resultados observados:** As respostas apresentaram [registrar códigos HTTP, estrutura das respostas, tempos observados, comportamento do sistema e tratamento de erros].
+
+**Evidências:** As evidências da execução estão disponíveis em [inserir links para prints de Postman/Insomnia/cURL, logs, mocks/stubs, respostas JSON ou relatórios].
+
+**Análise:** A integração demonstrou [registrar confiabilidade, dependências externas, limitações e melhorias necessárias].
+
+### 20.9 Análise consolidada dos resultados
+
+| Indicador | Resultado |
+|---|---|
+| Total de testes executados | [Quantidade total] |
+| Testes aprovados | [Quantidade e percentual] |
+| Testes reprovados | [Quantidade e percentual] |
+| Testes bloqueados | [Quantidade e percentual] |
+| Principais falhas encontradas | [Resumo das falhas mais relevantes] |
+| Riscos remanescentes | [Riscos ainda existentes após a execução] |
+| Ações corretivas planejadas | [Correções e melhorias previstas] |
+| Conclusão geral | [Avaliação final sobre qualidade, aderência aos requisitos e prontidão do sistema] |
+
+---
+
+## 21. Termos e Abreviações
 
 | Termo / Abreviação | Definição |
 |---|---|

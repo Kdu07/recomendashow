@@ -82,9 +82,9 @@ CREATE TABLE IF NOT EXISTS espetaculos(
 
     url_bilheteria TEXT,
 
-    data_inicio TIMESTAMP NOT NULL,
+    data_inicio TIMESTAMPTZ NOT NULL,
 
-    data_fim TIMESTAMP NOT NULL,
+    data_fim TIMESTAMPTZ NOT NULL,
 
     valor_ingresso DECIMAL(10,2)
     CHECK(valor_ingresso >=0),

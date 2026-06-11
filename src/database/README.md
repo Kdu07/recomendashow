@@ -270,7 +270,7 @@ Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventu
 | email | VARCHAR(255) | NOT NULL, UNIQUE | — | Endereço de e-mail, usado como login |
 | senha_hash | TEXT | NOT NULL | — | Hash BCrypt da senha do usuário |
 | idade | INT | CHECK(idade >= 13) | — | Idade do usuário; mínimo 13 anos |
-| data_cadastro | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | — | Data e hora do registro do usuário |
+| data_cadastro | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | — | Data e hora do registro do usuário |
 | cep | VARCHAR(9) | — | — | CEP do endereço (integração ViaCEP) |
 | logradouro | VARCHAR(255) | — | — | Rua/avenida do endereço |
 | numero | VARCHAR(10) | — | — | Número do imóvel |
@@ -278,9 +278,10 @@ Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventu
 | bairro | VARCHAR(100) | — | — | Bairro do endereço |
 | cidade | VARCHAR(100) | — | — | Cidade do endereço |
 | consentimento_aceito | BOOLEAN | NOT NULL, DEFAULT FALSE | — | Indica se o usuário aceitou os termos de consentimento (LGPD) |
-| data_consentimento | TIMESTAMP | — | — | Data e hora em que o consentimento foi registrado |
-| deleted_at | TIMESTAMP | — | — | Marca lógica de exclusão do usuário (soft delete, LGPD) |
+| data_consentimento | TIMESTAMPTZ | — | — | Data e hora em que o consentimento foi registrado |
+| deleted_at | TIMESTAMPTZ | — | — | Marca lógica de exclusão do usuário (soft delete, LGPD) |
 | anonimizado | BOOLEAN | NOT NULL, DEFAULT FALSE | — | Indica se os dados pessoais do usuário foram anonimizados (LGPD) |
+| anonimizado_em | TIMESTAMPTZ | — | — | Data e hora em que a anonimização foi executada pela `sp_anonimizar_usuario` (LGPD) |
 | ml_id | SERIAL | UNIQUE (idx_usuarios_ml_id) | — | Identificador inteiro sequencial para mapeamento UUID ↔ índice do modelo de recomendação ML |
 
 ---
@@ -306,8 +307,8 @@ Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventu
 | tipo_evento | VARCHAR(80) | — | — | Categoria do evento (ex.: peça, musical, dança) |
 | descricao | TEXT | — | — | Descrição detalhada do espetáculo |
 | url_bilheteria | TEXT | — | — | URL para compra de ingressos |
-| data_inicio | TIMESTAMP | NOT NULL | — | Data e hora de início do espetáculo |
-| data_fim | TIMESTAMP | NOT NULL, CHECK(data_fim > data_inicio) | — | Data e hora de encerramento; deve ser posterior a `data_inicio` |
+| data_inicio | TIMESTAMPTZ | NOT NULL | — | Data e hora de início do espetáculo |
+| data_fim | TIMESTAMPTZ | NOT NULL, CHECK(data_fim > data_inicio) | — | Data e hora de encerramento; deve ser posterior a `data_inicio` |
 | valor_ingresso | DECIMAL(10,2) | CHECK(valor_ingresso >= 0) | — | Preço do ingresso; não pode ser negativo |
 
 ---
@@ -330,8 +331,8 @@ Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventu
 | espetaculo_id | UUID | NOT NULL, FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo com o qual o usuário interagiu |
 | tipo | tipo_interacao | NOT NULL | — | Tipo da interação: `Clique`, `Acesso` ou `TempoDeTela` |
 | pontuacao | DECIMAL(4,2) | CHECK(pontuacao >= 0 AND pontuacao <= 10) | — | Pontuação atribuída à interação; escala de 0 a 10 |
-| data_registro | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | — | Data e hora em que a interação foi registrada |
-| data_expiracao | TIMESTAMP | CHECK(data_expiracao > data_registro) | — | Data a partir da qual a interação deixa de ser considerada pelo motor de recomendação |
+| data_registro | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | — | Data e hora em que a interação foi registrada |
+| data_expiracao | TIMESTAMPTZ | CHECK(data_expiracao > data_registro) | — | Data a partir da qual a interação deixa de ser considerada pelo motor de recomendação |
 
 ---
 
@@ -346,7 +347,7 @@ Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventu
 | faixa_preco_min | DECIMAL(10,2) | — | — | Valor mínimo da faixa de preço desejada |
 | faixa_preco_max | DECIMAL(10,2) | — | — | Valor máximo da faixa de preço desejada |
 | receber_notificacoes | BOOLEAN | DEFAULT TRUE | — | Indica se o usuário deseja receber notificações |
-| data_atualizacao | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | — | Data e hora da última atualização; mantida automaticamente pelo trigger `trg_preferencias_update` |
+| data_atualizacao | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | — | Data e hora da última atualização; mantida automaticamente pelo trigger `trg_preferencias_update` |
 
 ---
 
@@ -359,7 +360,8 @@ Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventu
 | espetaculo_id | UUID | NOT NULL, FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo recomendado |
 | score | DECIMAL(4,2) | CHECK(score >= 0 AND score <= 1) | — | Relevância da recomendação; escala de 0 a 1 |
 | motivo | TEXT | — | — | Explicação textual gerada pelo motor de recomendação |
-| data_geracao | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | — | Data e hora em que a recomendação foi gerada |
+| data_geracao | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | — | Data e hora em que a recomendação foi gerada |
+| visualizada_em | TIMESTAMPTZ | — | — | Data e hora em que o usuário visualizou a recomendação; preenchido pelo backend; `NULL` indica não visualizada |
 
 > **Constraint Sprint 4:** `UNIQUE(usuario_id, espetaculo_id)` — impede recomendações duplicadas para o mesmo par usuário/espetáculo.
 
@@ -471,7 +473,14 @@ O schema definido na Sprint 3 (`01_create_database.sql`) foi auditado na Sprint 
 | data_consentimento | TIMESTAMPTZ | Registrar o momento exato em que o consentimento foi concedido (LGPD art. 8, §5) |
 | deleted_at | TIMESTAMPTZ | Implementar soft-delete: marca o usuário como excluído sem remover o registro, permitindo posterior anonimização (LGPD art. 18, IV) |
 | anonimizado | BOOLEAN NOT NULL DEFAULT FALSE | Sinalizar que os dados pessoais já foram substituídos por valores neutros pela `sp_anonimizar_usuario` |
+| anonimizado_em | TIMESTAMPTZ | Registrar o momento exato em que `sp_anonimizar_usuario` executou a substituição dos dados pessoais; gravado pela procedure no mesmo `UPDATE` (LGPD) |
 | ml_id | SERIAL UNIQUE | Prover um identificador inteiro sequencial para mapear o UUID do usuário ao índice do modelo de fatoração de matriz (SVD), que requer inteiros contíguos |
+
+#### recomendacoes
+
+| Coluna | Tipo | Por que foi necessária |
+|---|---|---|
+| visualizada_em | TIMESTAMPTZ | Registrar quando o usuário visualizou a recomendação, permitindo ao motor desconsiderar recomendações já exibidas e medir o tempo entre geração e exibição; preenchido pelo backend |
 
 #### interacoes
 
@@ -492,10 +501,10 @@ Como parte da Sprint 4, colunas de data/hora que usavam `TIMESTAMP` (sem fuso) f
 | data_geracao | recomendacoes | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
 | data_consentimento | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
 | deleted_at | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
-| data_inicio | espetaculos | `TIMESTAMP` — **não migrado** |
-| data_fim | espetaculos | `TIMESTAMP` — **não migrado** |
-
-> `espetaculos.data_inicio` e `data_fim` permanecem como `TIMESTAMP` em `01_create_database.sql` e não possuem instrução de migração em `02_sprint4_improvements.sql`. Estas colunas representam um item pendente de uniformização.
+| data_inicio | espetaculos | TIMESTAMPTZ (corrigido em `01_create_database.sql` e migrado em `02_sprint4_improvements.sql`) |
+| data_fim | espetaculos | TIMESTAMPTZ (corrigido em `01_create_database.sql` e migrado em `02_sprint4_improvements.sql`) |
+| anonimizado_em | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
+| visualizada_em | recomendacoes | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
 
 ---
 
@@ -552,28 +561,16 @@ Novos índices sem predecessor no Sprint 3:
 
 ---
 
-### 8.7 Decisões descartadas
-
-#### DELETE físico em recomendacoes vs. constraint UNIQUE
-
-Uma alternativa para evitar duplicatas no motor de recomendação seria deletar a linha existente antes de inserir uma nova recomendação para o mesmo par `(usuario_id, espetaculo_id)`. Optou-se pela constraint `UNIQUE(usuario_id, espetaculo_id)` porque ela viabiliza o padrão `INSERT ... ON CONFLICT DO UPDATE` na aplicação, que atualiza `score` e `motivo` atomicamente em um único round-trip, sem a janela de inconsistência entre DELETE e INSERT. A constraint também garante a unicidade independentemente de qualquer lógica de aplicação.
-
-#### Procedure de limpeza periódica de interações expiradas vs. manutenção do histórico
-
-Uma alternativa seria criar uma stored procedure de limpeza que deletasse registros de `interacoes` onde `data_expiracao < CURRENT_TIMESTAMP`. Optou-se por não criar essa procedure e manter o histórico completo de interações. O campo `data_expiracao` é usado exclusivamente como **filtro** nas queries do motor de recomendação (via `idx_interacoes_usuario_expiracao`), não como critério de remoção. Isso preserva o histórico para auditoria, análises retroativas e eventual re-treinamento do modelo ML com dados históricos.
-
----
-
-### 8.8 Estado Sprint 3 → Sprint 4
+### 8.7 Estado Sprint 3 → Sprint 4
 
 | Tabela | Sprint 3 (`01_create_database.sql`) | Sprint 4 (adições via `02_sprint4_improvements.sql`) |
 |---|---|---|
-| usuarios | id, nome, email, senha_hash, idade, data_cadastro | + cep, logradouro, numero, complemento, bairro, cidade; + consentimento_aceito, data_consentimento, deleted_at, anonimizado; + ml_id; + trigger `trg_bloquear_update_anonimizado` |
+| usuarios | id, nome, email, senha_hash, idade, data_cadastro | + cep, logradouro, numero, complemento, bairro, cidade; + consentimento_aceito, data_consentimento, deleted_at, anonimizado, anonimizado_em; + ml_id; + trigger `trg_bloquear_update_anonimizado` |
 | teatros | id, nome, endereco, cidade, horario_funcionamento | + índice `idx_teatros_cidade` |
-| espetaculos | id, nome, tipo_evento, descricao, url_bilheteria, data_inicio, data_fim, valor_ingresso | + índice `idx_espetaculos_datas` |
+| espetaculos | id, nome, tipo_evento, descricao, url_bilheteria, data_inicio, data_fim, valor_ingresso | + TIMESTAMPTZ em data_inicio e data_fim; + índice `idx_espetaculos_datas` |
 | interacoes | id, usuario_id, espetaculo_id, tipo, pontuacao, data_registro, data_expiracao; índice `idx_interacoes_usuario` | + constraints `chk_pontuacao`, `chk_data_expiracao`; `idx_interacoes_usuario` → `idx_interacoes_usuario_expiracao` |
 | preferencias | id, usuario_id, cidade, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes, data_atualizacao | + trigger `trg_preferencias_update` |
-| recomendacoes | id, usuario_id, espetaculo_id, score, motivo, data_geracao; índice `idx_recomendacao_usuario` | + `UNIQUE(usuario_id, espetaculo_id)`; `idx_recomendacao_usuario` → `idx_recomendacoes_usuario_score` |
+| recomendacoes | id, usuario_id, espetaculo_id, score, motivo, data_geracao; índice `idx_recomendacao_usuario` | + `UNIQUE(usuario_id, espetaculo_id)`; + visualizada_em; `idx_recomendacao_usuario` → `idx_recomendacoes_usuario_score` |
 | wishlist_curtidas | usuario_id, espetaculo_id, tipo | + índice `idx_wishlist_usuario` |
 | usuario_genero_favorito | usuario_id, genero_id | sem alterações |
 | espetaculo_genero | espetaculo_id, genero_id | sem alterações |
@@ -595,13 +592,9 @@ Uma alternativa seria criar uma stored procedure de limpeza que deletasse regist
 | Aplicação (explícito) | `interacoes.data_expiracao` | Janela temporal definida pela camada de aplicação; determina até quando a interação é considerada pelo motor de recomendação |
 | Aplicação (explícito) | `usuarios.data_consentimento` | Momento em que o usuário concedeu consentimento LGPD; a aplicação é responsável por gravar o valor |
 | Aplicação (explícito) | `usuarios.deleted_at` | Momento do soft-delete; gravado pela aplicação; pré-requisito obrigatório para execução de `sp_anonimizar_usuario` |
+| `sp_anonimizar_usuario` | `usuarios.anonimizado_em` | Gravado pela procedure no mesmo `UPDATE` que substitui os dados pessoais; confirma o momento exato da anonimização (LGPD) |
+| Aplicação (explícito) | `recomendacoes.visualizada_em` | Gravado pelo backend quando a recomendação é exibida ao usuário; `NULL` enquanto não visualizada |
 
-> `sp_anonimizar_usuario` lê `deleted_at IS NOT NULL` como condição de guarda, mas **não grava** nenhum timestamp do momento da anonimização — lacuna identificada abaixo.
+#### Consideração futura
 
-#### Itens pendentes identificados durante a sprint
-
-- **`usuarios.anonimizado_em` (TIMESTAMPTZ)** — a coluna `anonimizado` registra o *estado* (`TRUE`/`FALSE`) mas não o *momento* em que `sp_anonimizar_usuario` foi executada. Para fins de auditoria LGPD, seria necessária uma coluna `anonimizado_em TIMESTAMPTZ` gravada pela procedure no mesmo `UPDATE`.
-
-- **`lgpd_audit` (tabela de auditoria)** — não há tabela ou trigger que registre um log das chamadas a `sp_anonimizar_usuario` (quem solicitou, quando, qual `p_id`). Uma tabela de auditoria permitiria comprovar o cumprimento do pedido de exclusão pelo titular (LGPD art. 18, IV) e seria gravada pela procedure ou por um trigger `AFTER UPDATE` na coluna `anonimizado`.
-
-- **`recomendacoes.visualizada_em` (TIMESTAMPTZ)** — não há registro de quando o usuário visualizou ou descartou uma recomendação; esse dado depende de instrumentação no backend e de uma coluna correspondente na tabela `recomendacoes`.
+- **`lgpd_audit` (tabela de auditoria)** — não implementada. Seria útil caso o sistema ganhe um painel de administração com operadores humanos disparando a anonimização manualmente. Enquanto `sp_anonimizar_usuario` for chamada exclusivamente pelo backend de forma automatizada, o log da aplicação já cobre a rastreabilidade de quem solicitou e quando.

@@ -1,12 +1,4 @@
--- ============================================================
--- Migration: Sprint 4 — melhorias de qualidade, endereço, LGPD,
---            índices de performance, integração ML e triggers
--- Projeto   : Aventura Teatros
--- Depende de: 01_create_database.sql
--- Idempotente: sim — seguro para re-execução
--- ============================================================
 
--- ============================================================
 -- Correções de qualidade
 -- ============================================================
 
@@ -49,7 +41,25 @@ BEGIN
     END IF;
 END $$;
 
+-- Migração de tipos: TIMESTAMP → TIMESTAMPTZ (espetaculos)
 -- ============================================================
+
+DO $$
+BEGIN
+    IF (SELECT data_type FROM information_schema.columns
+        WHERE table_name = 'espetaculos' AND column_name = 'data_inicio') = 'timestamp without time zone' THEN
+        ALTER TABLE espetaculos ALTER COLUMN data_inicio TYPE TIMESTAMPTZ USING data_inicio AT TIME ZONE 'UTC';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
+    IF (SELECT data_type FROM information_schema.columns
+        WHERE table_name = 'espetaculos' AND column_name = 'data_fim') = 'timestamp without time zone' THEN
+        ALTER TABLE espetaculos ALTER COLUMN data_fim TYPE TIMESTAMPTZ USING data_fim AT TIME ZONE 'UTC';
+    END IF;
+END $$;
+
 -- Campos de endereço (suportar a integração ViaCEP)
 -- ============================================================
 ALTER TABLE usuarios
@@ -60,7 +70,6 @@ ALTER TABLE usuarios
     ADD COLUMN IF NOT EXISTS bairro      VARCHAR(100),
     ADD COLUMN IF NOT EXISTS cidade      VARCHAR(100);
 
--- ============================================================
 -- Conformidade com LGPD
 -- ============================================================
 ALTER TABLE usuarios
@@ -69,43 +78,40 @@ ALTER TABLE usuarios
     ADD COLUMN IF NOT EXISTS deleted_at           TIMESTAMPTZ,
     ADD COLUMN IF NOT EXISTS anonimizado          BOOLEAN NOT NULL DEFAULT FALSE;
 
--- ============================================================
+ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS anonimizado_em TIMESTAMPTZ;
+
 -- Índices de performance
 -- ============================================================
 
--- Removidos: substituídos pelos índices compostos abaixo, que cobrem o prefixo esquerdo
 DROP INDEX IF EXISTS idx_interacoes_usuario;
 DROP INDEX IF EXISTS idx_recomendacao_usuario;
 
--- Motor de recomendação filtra interações por usuário e janela temporal constantemente
 CREATE INDEX IF NOT EXISTS idx_interacoes_usuario_expiracao
     ON interacoes(usuario_id, data_expiracao);
 
--- Carrossel "Perto de você" filtra espetáculos pela cidade do teatro
 CREATE INDEX IF NOT EXISTS idx_teatros_cidade
     ON teatros(cidade);
 
--- Filtragem de espetáculos em cartaz usa esse intervalo de datas
 CREATE INDEX IF NOT EXISTS idx_espetaculos_datas
     ON espetaculos(data_inicio, data_fim);
 
--- Busca as top recomendações de um usuário ordenadas por relevância
 CREATE INDEX IF NOT EXISTS idx_recomendacoes_usuario_score
     ON recomendacoes(usuario_id, score DESC);
 
--- A wishlist é carregada a cada abertura da aba pelo usuário
 CREATE INDEX IF NOT EXISTS idx_wishlist_usuario
     ON wishlist_curtidas(usuario_id);
 
--- ============================================================
 -- Integração ML: identificador inteiro para o motor de recomendação
 -- ============================================================
 
--- Identificador sequencial para mapear usuarios UUID ↔ índice inteiro do modelo SVD
 ALTER TABLE usuarios ADD COLUMN IF NOT EXISTS ml_id SERIAL;
 CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_ml_id ON usuarios(ml_id);
 
+-- Nova coluna — rastreabilidade de visualização de recomendações
 -- ============================================================
+
+ALTER TABLE recomendacoes ADD COLUMN IF NOT EXISTS visualizada_em TIMESTAMPTZ;
+
 -- Triggers e procedure
 -- ============================================================
 
@@ -124,7 +130,6 @@ CREATE TRIGGER trg_preferencias_update
     FOR EACH ROW
     EXECUTE FUNCTION fn_atualizar_data_preferencias();
 
--- ============================================================
 -- Objetos de conformidade LGPD
 -- ============================================================
 
@@ -141,7 +146,8 @@ BEGIN
         complemento = NULL,
         bairro      = NULL,
         cidade      = NULL,
-        anonimizado = TRUE
+        anonimizado    = TRUE,
+        anonimizado_em = CURRENT_TIMESTAMP
     WHERE id = p_id
       AND deleted_at IS NOT NULL
       AND anonimizado = FALSE;

@@ -3,6 +3,11 @@
 # dependencies
 node_modules/
 
+# build/cache output
+.build/
+.cache/
+coverage/
+
 # Expo
 .expo/
 dist/
@@ -20,11 +25,13 @@ expo-env.d.ts
 
 # Metro
 .metro-health-check*
+.metro/
 
 # debug
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+pnpm-debug.*
 
 # macOS
 .DS_Store

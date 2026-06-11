@@ -8,6 +8,7 @@ import {
 } from '../repositories/wishlistRepository';
 import { getAuthSession } from '../services/tokenStorageService';
 import { fetchPreferences } from '../services/preferenceService';
+import { getUserInfo } from '../services/userProfileService';
 
 export default function useHomeViewModel(navigation) {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -24,6 +25,7 @@ export default function useHomeViewModel(navigation) {
 
   const [hasInterests, setHasInterests] = useState(false);
   const [hasLocation, setHasLocation] = useState(false);
+  const [nearbyCity, setNearbyCity] = useState('');
 
   useEffect(() => {
     let isMounted = true;
@@ -35,12 +37,19 @@ export default function useHomeViewModel(navigation) {
         
         let userCity = null;
         if (userId) {
-          const prefs = await fetchPreferences(userId);
+          const [prefs, profile] = await Promise.all([
+            fetchPreferences(userId),
+            getUserInfo().catch(() => null),
+          ]);
+
           if (prefs) {
             setHasInterests(prefs.generos?.length > 0 || prefs.tags?.length > 0);
-            setHasLocation(!!prefs.cidade);
-            userCity = prefs.cidade;
+            userCity = prefs.cidade ?? prefs.Cidade ?? null;
           }
+
+          userCity = userCity || profile?.city || null;
+          setHasLocation(!!userCity);
+          setNearbyCity(userCity || '');
         }
 
         const data = await getHomeData(userId, userCity);
@@ -144,7 +153,7 @@ export default function useHomeViewModel(navigation) {
   }
 
   function handleAddLocation() {
-    console.log('Ação futura: navegar para adicionar localidade');
+    navigation.navigate('EditProfile');
   }
 
   function handleTabPress(tab) {
@@ -155,6 +164,7 @@ export default function useHomeViewModel(navigation) {
     selectedCategory,
     hasInterests,
     hasLocation,
+    nearbyCity,
 
     heroBanners,
     categories,

@@ -34,6 +34,16 @@ function calculateAgeFromBirthDate(value) {
   return hadBirthday ? age : age - 1;
 }
 
+function toIsoDate(value) {
+  const [day, month, year] = String(value ?? '').split('/').map(Number);
+
+  if (!day || !month || !year) {
+    return null;
+  }
+
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
 export async function getProfileData() {
   const [userProfile, preferences] = await Promise.all([
     getUserInfo(),
@@ -49,7 +59,9 @@ export async function getProfileData() {
 export async function updateProfileData(profileUpdates) {
   const payload = {
     Nome: profileUpdates.name?.trim(),
+    Email: profileUpdates.email?.trim(),
     Idade: calculateAgeFromBirthDate(profileUpdates.birthDate),
+    DataNascimento: toIsoDate(profileUpdates.birthDate),
     Cep: profileUpdates.cep?.trim() || null,
     Logradouro: profileUpdates.street?.trim() || null,
     Numero: profileUpdates.number?.trim() || null,

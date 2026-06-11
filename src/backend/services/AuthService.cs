@@ -37,6 +37,7 @@ namespace BackEnd.Aventura.Services
 
             var senhaHash = BCrypt.Net.BCrypt.HashPassword(request.Senha);
             var usuario = Usuario.Create(request.Nome, request.Email, senhaHash, request.Idade,
+                request.DataNascimento,
                 request.Cep, request.Logradouro, request.Numero,
                 request.Complemento, request.Bairro, request.Cidade);
             usuario.AceitarConsentimento();

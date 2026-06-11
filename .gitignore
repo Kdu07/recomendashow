@@ -18,3 +18,10 @@ DbRunner/obj/
 # .NET build outputs
 **/bin/
 **/obj/
+**/.build-check/
+**/TestResults/
+
+# Local certificates and runtime logs
+**/*.pfx
+**/*.log
+**/*.err.log

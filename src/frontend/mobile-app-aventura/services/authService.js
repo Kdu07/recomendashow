@@ -68,6 +68,16 @@ function calculateAge(dateString) {
   return hasHadBirthday ? age : age - 1;
 }
 
+function toIsoDate(dateString) {
+  const [day, month, year] = String(dateString ?? '').split('/').map(Number);
+
+  if (!day || !month || !year) {
+    return null;
+  }
+
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
 export async function registerWithEmail({
   name,
   email,
@@ -86,6 +96,7 @@ export async function registerWithEmail({
     Email: email,
     Senha: password,
     Idade: calculateAge(birthDate),
+    DataNascimento: toIsoDate(birthDate),
     Cep: cep,
     Logradouro: street,
     Numero: number,

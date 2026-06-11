@@ -52,6 +52,16 @@ namespace BackEnd.Aventura.Tests.Fakes
             if (!_usuarios.ContainsKey(usuario.Id))
                 return false;
 
+            var emailAntigo = _usuariosByEmail
+                .FirstOrDefault(entry => entry.Value.Id == usuario.Id)
+                .Key;
+
+            if (!string.IsNullOrWhiteSpace(emailAntigo) &&
+                !string.Equals(emailAntigo, usuario.Email, StringComparison.OrdinalIgnoreCase))
+            {
+                _usuariosByEmail.Remove(emailAntigo);
+            }
+
             _usuarios[usuario.Id] = usuario;
             _usuariosByEmail[usuario.Email.ToLowerInvariant()] = usuario;
             return true;

@@ -83,7 +83,7 @@ export async function searchShows(nome, genero) {
   return response.json();
 }
 
-export function mapDtoToHomeEvent(dto) {
+export function mapDtoToHomeEvent(dto, locationInfo = null) {
   const id = read(dto, 'Id', 'id');
   const title = read(dto, 'Nome', 'nome');
   const genero = read(dto, 'Genero', 'genero');
@@ -94,8 +94,9 @@ export function mapDtoToHomeEvent(dto) {
     showId: id,
     title,
     categoryId: getCategoryId(dto),
-    city: '',
-    location: genero || tipoEvento || '',
+    city: locationInfo?.city || '',
+    location: locationInfo?.venueName || genero || tipoEvento || '',
+    address: locationInfo?.address || '',
     image: getShowImage(dto),
   };
 }

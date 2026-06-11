@@ -117,6 +117,12 @@ export default function ProfileScreen({ navigation }) {
               <Text style={styles.email}>
                 {user.email}
               </Text>
+
+              {!!user.birthDate && (
+                <Text style={styles.birthDate}>
+                  Nascimento: {user.birthDate}
+                </Text>
+              )}
             </View>
 
             <TouchableOpacity
@@ -271,6 +277,12 @@ const styles = StyleSheet.create({
   },
 
   email: {
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
+    color: colors.grayText,
+  },
+
+  birthDate: {
     fontSize: typography.size.sm,
     lineHeight: typography.lineHeight.sm,
     color: colors.grayText,

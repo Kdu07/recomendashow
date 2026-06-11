@@ -1,19 +1,21 @@
 import { fetchShows, mapDtoToHomeEvent } from '../services/showService';
 import { fetchCategories } from '../services/categoryService';
-import { fetchTheaters, mapDtoToTheater } from '../services/theaterService';
 import { fetchRecommendations } from '../services/recommendationService';
+import { fetchEventLocationContext, matchesLocation } from '../services/eventLocationService';
 
 export async function getHomeData(userId, userCity) {
   try {
-    const [showsDto, categoriesDto, theatersDto, recsDto] = await Promise.all([
+    const [showsDto, categoriesDto, locationContext, recsDto] = await Promise.all([
       fetchShows().catch(() => []),
       fetchCategories().catch(() => [{ id: 'all', label: 'Todos' }]),
-      fetchTheaters().catch(() => []),
+      fetchEventLocationContext().catch(() => ({ theaters: [], eventLocations: {}, locations: [] })),
       userId ? fetchRecommendations(userId).catch(() => []) : Promise.resolve([])
     ]);
 
-    const events = (Array.isArray(showsDto) ? showsDto : []).map(mapDtoToHomeEvent);
-    const theaters = (Array.isArray(theatersDto) ? theatersDto : []).map(mapDtoToTheater);
+    const events = (Array.isArray(showsDto) ? showsDto : []).map((show) =>
+      mapDtoToHomeEvent(show, locationContext.eventLocations[show.Id ?? show.id])
+    );
+    const theaters = locationContext.theaters || [];
 
     const heroBanners = events.slice(0, 3).map((event) => ({
       id: `banner-${event.id}`,
@@ -23,11 +25,17 @@ export async function getHomeData(userId, userCity) {
     }));
 
     // If API didn't return recommendations, fallback to taking some events
-    const recommendedEvents = recsDto.length ? recsDto : events.slice(0, 4);
+    const recommendedEvents = recsDto.length
+      ? recsDto.map((event) => ({
+          ...event,
+          ...(locationContext.eventLocations[event.showId] || {}),
+          location: locationContext.eventLocations[event.showId]?.venueName || event.location,
+        }))
+      : events.slice(0, 4);
 
-    // Nearby events based on userCity or just fallback
-    const nearbyEvents = userCity 
-      ? events.filter(e => e.city?.toLowerCase() === userCity.toLowerCase() || e.location?.toLowerCase().includes(userCity.toLowerCase())).slice(0, 4)
+    // Nearby events based on the city saved during registration/onboarding/profile.
+    const nearbyEvents = userCity
+      ? events.filter((event) => matchesLocation(event, userCity)).slice(0, 4)
       : events.slice(0, 4);
 
     // Filter nearbyEvents if we couldn't find any for userCity

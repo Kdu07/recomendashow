@@ -37,6 +37,7 @@ namespace BackEnd.Aventura.Services
 
             var senhaHash = BCrypt.Net.BCrypt.HashPassword(request.Senha);
             var usuario = Usuario.Create(request.Nome, request.Email, senhaHash, request.Idade,
+                request.DataNascimento,
                 request.Cep, request.Logradouro, request.Numero,
                 request.Complemento, request.Bairro, request.Cidade);
             usuario.AceitarConsentimento();
@@ -52,7 +53,7 @@ namespace BackEnd.Aventura.Services
             EntityGuards.NotNullOrWhiteSpace(request.Senha, nameof(request.Senha));
 
             var usuario = _usuarioRepository.GetByEmail(email);
-            if (usuario is null)
+            if (usuario is null || !BCrypt.Net.BCrypt.Verify(request.Senha, usuario.SenhaHash))
             {
                 throw new UnauthorizedAccessException("E-mail ou senha inválidos.");
             }
@@ -65,7 +66,7 @@ namespace BackEnd.Aventura.Services
             return ToAuthResponse(usuario);
         }
 
-                private AuthResponse ToAuthResponse(Usuario usuario)
+        private AuthResponse ToAuthResponse(Usuario usuario)
         {
             var token = GenerateJwtToken(usuario);
             return new AuthResponse
@@ -80,6 +81,11 @@ namespace BackEnd.Aventura.Services
 
         private static void ValidateRegisterRequest(RegisterRequest request)
         {
+            if (request is null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             if (!request.ConsentimentoAceito)
             {
                 throw new ArgumentException("O consentimento com a política de privacidade é obrigatório.");
@@ -106,7 +112,12 @@ namespace BackEnd.Aventura.Services
 
         private string GenerateJwtToken(Usuario usuario)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? string.Empty));
+            var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY")
+                ?? _config["JWT_KEY"]
+                ?? _config["Jwt:Key"]
+                ?? throw new InvalidOperationException("JWT key is not configured.");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>

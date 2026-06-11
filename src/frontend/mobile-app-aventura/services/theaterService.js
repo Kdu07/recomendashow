@@ -26,6 +26,12 @@ export async function fetchTheaters() {
   return response.json();
 }
 
+export async function fetchTheaterShows(theaterId) {
+  const response = await apiFetch(`/api/Teatro/${theaterId}/espetaculos`);
+  if (!response.ok) throw new Error('Nao foi possivel carregar os espetaculos do teatro');
+  return response.json();
+}
+
 export function mapDtoToTheater(dto) {
   const id = read(dto, 'Id', 'id');
   const name = read(dto, 'Nome', 'nome');

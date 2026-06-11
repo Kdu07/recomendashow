@@ -72,7 +72,6 @@ export default function useEditProfileViewModel() {
     complement: '',
     neighborhood: '',
     city: '',
-    avatarIcon: 'person',
   });
   const [errors, setErrors] = useState({});
   const [saving, setSaving] = useState(false);
@@ -98,7 +97,6 @@ export default function useEditProfileViewModel() {
           complement: currentProfile.complement || '',
           neighborhood: currentProfile.neighborhood || '',
           city: currentProfile.city || '',
-          avatarIcon: currentProfile.avatarIcon || 'person',
         });
       } catch (error) {
         console.warn('Erro ao carregar perfil para edicao:', error);

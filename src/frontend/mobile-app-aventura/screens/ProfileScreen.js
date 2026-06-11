@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-import { ActivityIndicator } from 'react-native';
 
 import useProfileViewModel from '../viewmodels/useProfileViewModel';
 
@@ -107,16 +106,18 @@ export default function ProfileScreen({ navigation }) {
           </Text>
 
           <View style={styles.profileCard}>
-            <View style={styles.avatar}>
-              <Ionicons name={user.avatarIcon || 'person'} size={40} color={colors.purplePrimary} />
-            </View>
-
-                <View style={styles.profileInfo}>
-                  <Text style={styles.name}>{user.name || 'Usuário'}</Text>
+            <View style={styles.profileInfo}>
+              <Text style={styles.name}>{user.name || 'Usuário'}</Text>
 
               <Text style={styles.email}>
                 {user.email}
               </Text>
+
+              {!!user.birthDate && (
+                <Text style={styles.birthDate}>
+                  Nascimento: {user.birthDate}
+                </Text>
+              )}
             </View>
 
             <TouchableOpacity
@@ -236,17 +237,6 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
 
-  avatar: {
-    width: 84,
-    height: 84,
-    borderRadius: 42,
-    backgroundColor: colors.purpleSoft,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: colors.purpleLight,
-  },
-
   profileInfo: {
     flex: 1,
     gap: spacing.xs,
@@ -271,6 +261,12 @@ const styles = StyleSheet.create({
   },
 
   email: {
+    fontSize: typography.size.sm,
+    lineHeight: typography.lineHeight.sm,
+    color: colors.grayText,
+  },
+
+  birthDate: {
     fontSize: typography.size.sm,
     lineHeight: typography.lineHeight.sm,
     color: colors.grayText,

@@ -148,6 +148,7 @@ export default function HomeScreen({ navigation }) {
     selectedCategory = "all",
     hasInterests = false,
     hasLocation = false,
+    nearbyCity = "",
     handleCategoryPress = () => {},
     handleEventPress = () => {},
     handleBannerPress = () => {},
@@ -255,7 +256,7 @@ export default function HomeScreen({ navigation }) {
           {hasLocation ? (
             <PosterSection
               title="Perto de você"
-              subtitle="Espetáculos na sua cidade"
+              subtitle={nearbyCity ? `Espetáculos em ${nearbyCity}` : 'Espetáculos na sua cidade'}
               data={nearbyEvents}
               onEventPress={handleEventPress}
               onFavoritePress={handleFavoriteWithStatus}

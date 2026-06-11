@@ -19,12 +19,10 @@ namespace BackEnd.Aventura.Repository
 
             using var connection = _connectionFactory.CreateConnection();
             connection.Open();
-            // There is no `preferencias` table in this schema. Build a default
-            // Preferencias object and populate only the favorite genres from
-            // the genre-favorite relation table.
-            var preferencias = new Preferencias(usuarioId);
+            EnsurePreferenciasTable(connection);
+
+            var preferencias = ReadPreferencias(connection, usuarioId) ?? new Preferencias(usuarioId);
             preferencias.SetGeneros(ReadGeneros(connection, usuarioId));
-            preferencias.SetTags(ReadTags(connection, usuarioId));
             return preferencias;
         }
 
@@ -35,14 +33,108 @@ namespace BackEnd.Aventura.Repository
 
             using var connection = _connectionFactory.CreateConnection();
             connection.Open();
+            EnsurePreferenciasTable(connection);
+
             using var transaction = connection.BeginTransaction();
-            // Persist only the user's favorite genres. The legacy `preferencias`
-            // table does not exist in this schema, so avoid touching it.
+            UpsertPreferencias(connection, preferencias, transaction);
             DeleteGeneros(connection, preferencias.UsuarioId, transaction);
             InsertGeneros(connection, preferencias.UsuarioId, preferencias.Generos, transaction);
             transaction.Commit();
 
             return true;
+        }
+
+        private static void EnsurePreferenciasTable(NpgsqlConnection connection)
+        {
+            const string sql = @"
+CREATE EXTENSION IF NOT EXISTS ""pgcrypto"";
+
+CREATE TABLE IF NOT EXISTS preferencias(
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    usuario_id UUID UNIQUE,
+    cidade VARCHAR(100),
+    tags TEXT[],
+    faixa_preco_min DECIMAL(10,2),
+    faixa_preco_max DECIMAL(10,2),
+    receber_notificacoes BOOLEAN DEFAULT TRUE,
+    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    cep VARCHAR(9)
+);
+
+ALTER TABLE preferencias
+    ADD COLUMN IF NOT EXISTS tags TEXT[],
+    ADD COLUMN IF NOT EXISTS faixa_preco_min DECIMAL(10,2),
+    ADD COLUMN IF NOT EXISTS faixa_preco_max DECIMAL(10,2),
+    ADD COLUMN IF NOT EXISTS receber_notificacoes BOOLEAN DEFAULT TRUE,
+    ADD COLUMN IF NOT EXISTS cep VARCHAR(9);";
+
+            using var command = new NpgsqlCommand(sql, connection);
+            command.ExecuteNonQuery();
+        }
+
+        private static Preferencias? ReadPreferencias(NpgsqlConnection connection, Guid usuarioId)
+        {
+            const string sql = @"
+SELECT id, usuario_id, cep, cidade, tags, faixa_preco_min, faixa_preco_max,
+       receber_notificacoes, data_atualizacao
+FROM preferencias
+WHERE usuario_id = @UsuarioId";
+
+            using var command = new NpgsqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@UsuarioId", usuarioId);
+
+            using var reader = command.ExecuteReader();
+            if (!reader.Read())
+            {
+                return null;
+            }
+
+            var tags = reader.IsDBNull(reader.GetOrdinal("tags"))
+                ? Array.Empty<string>()
+                : reader.GetFieldValue<string[]>(reader.GetOrdinal("tags"));
+
+            return Preferencias.FromData(
+                reader.GetGuid(reader.GetOrdinal("id")),
+                reader.GetGuid(reader.GetOrdinal("usuario_id")),
+                reader.IsDBNull(reader.GetOrdinal("cep")) ? null : reader.GetString(reader.GetOrdinal("cep")),
+                reader.IsDBNull(reader.GetOrdinal("cidade")) ? null : reader.GetString(reader.GetOrdinal("cidade")),
+                Array.Empty<string>(),
+                tags,
+                reader.IsDBNull(reader.GetOrdinal("faixa_preco_min")) ? null : reader.GetDecimal(reader.GetOrdinal("faixa_preco_min")),
+                reader.IsDBNull(reader.GetOrdinal("faixa_preco_max")) ? null : reader.GetDecimal(reader.GetOrdinal("faixa_preco_max")),
+                reader.IsDBNull(reader.GetOrdinal("receber_notificacoes")) || reader.GetBoolean(reader.GetOrdinal("receber_notificacoes")),
+                reader.GetDateTime(reader.GetOrdinal("data_atualizacao")));
+        }
+
+        private static void UpsertPreferencias(NpgsqlConnection connection, Preferencias preferencias, NpgsqlTransaction transaction)
+        {
+            const string sql = @"
+INSERT INTO preferencias(
+    id, usuario_id, cep, cidade, tags, faixa_preco_min, faixa_preco_max,
+    receber_notificacoes, data_atualizacao)
+VALUES (
+    @Id, @UsuarioId, @Cep, @Cidade, @Tags, @FaixaPrecoMin, @FaixaPrecoMax,
+    @ReceberNotificacoes, @DataAtualizacao)
+ON CONFLICT (usuario_id) DO UPDATE
+SET cep = @Cep,
+    cidade = @Cidade,
+    tags = @Tags,
+    faixa_preco_min = @FaixaPrecoMin,
+    faixa_preco_max = @FaixaPrecoMax,
+    receber_notificacoes = @ReceberNotificacoes,
+    data_atualizacao = @DataAtualizacao";
+
+            using var command = new NpgsqlCommand(sql, connection, transaction);
+            command.Parameters.AddWithValue("@Id", preferencias.Id);
+            command.Parameters.AddWithValue("@UsuarioId", preferencias.UsuarioId);
+            command.Parameters.AddWithValue("@Cep", (object?)preferencias.Cep ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Cidade", (object?)preferencias.Cidade ?? DBNull.Value);
+            command.Parameters.AddWithValue("@Tags", preferencias.Tags.ToArray());
+            command.Parameters.AddWithValue("@FaixaPrecoMin", (object?)preferencias.FaixaPrecoMin ?? DBNull.Value);
+            command.Parameters.AddWithValue("@FaixaPrecoMax", (object?)preferencias.FaixaPrecoMax ?? DBNull.Value);
+            command.Parameters.AddWithValue("@ReceberNotificacoes", preferencias.ReceberNotificacoes);
+            command.Parameters.AddWithValue("@DataAtualizacao", preferencias.DataAtualizacao);
+            command.ExecuteNonQuery();
         }
 
         private static IEnumerable<string> ReadGeneros(NpgsqlConnection connection, Guid usuarioId)
@@ -63,13 +155,6 @@ WHERE ugf.usuario_id = @UsuarioId";
             }
 
             return generos;
-        }
-
-        private static string[] ReadTags(NpgsqlConnection connection, Guid usuarioId)
-        {
-            // The schema does not include a `preferencias` table for tags.
-            // Return an empty tag set to keep behavior compatible.
-            return Array.Empty<string>();
         }
 
         private static void DeleteGeneros(NpgsqlConnection connection, Guid usuarioId, NpgsqlTransaction transaction)

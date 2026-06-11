@@ -38,7 +38,11 @@ namespace BackEnd.Aventura.Services
             }
 
             preferencias.AtualizarFaixaPreco(dto.FaixaPrecoMin, dto.FaixaPrecoMax);
-            preferencias.SetReceberNotificacoes(dto.ReceberNotificacoes);
+
+            if (dto.ReceberNotificacoes.HasValue)
+            {
+                preferencias.SetReceberNotificacoes(dto.ReceberNotificacoes.Value);
+            }
 
             _repository.Save(preferencias);
             return _repository.GetPreferencias(usuarioId);

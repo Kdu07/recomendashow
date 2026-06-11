@@ -3212,15 +3212,44 @@ Os testes automatizados de integração foram executados para verificar a comuni
 
 Os testes automatizados de regras de negócio foram executados para validar comportamentos críticos da aplicação, contemplando cenários positivos e negativos. A execução verificou se as regras implementadas estavam coerentes com os requisitos funcionais, critérios de sucesso e fluxos definidos no planejamento de testes.
 
-**Regras validadas:** Foram validadas as regras de [informar regras testadas, como autenticação, preferências, perfil, wishlist, busca, recomendação, geolocalização ou redirecionamento de compra].
+#### Síntese das regras validadas
 
-**Cenários positivos e negativos:** Os cenários executados cobriram [descrever cenários], esperando como comportamento [descrever comportamento esperado].
+| Grupo de regra | Regras cobertas | Cenários positivos | Cenários negativos | Evidência | Status |
+|---|---|---|---|---|---|
+| Autenticação e cadastro | Cadastro de usuários, validação de e-mail, senha, consentimento LGPD e rejeição de e-mail duplicado | Cadastro válido e login válido | E-mail inválido, senha inválida, duplicidade, ausência de consentimento e credenciais inválidas | `business-rules-tests.trx` | Aprovado |
+| Perfil e LGPD | Idade mínima, atualização de perfil, encerramento de conta e anonimização | Atualização válida e anonimização após solicitação | Menor de idade e login em conta encerrada | `business-rules-tests.trx` | Aprovado |
+| Preferências | Persistência de preferências, faixa de preço, gêneros e localização | Preferências válidas são salvas e atualizadas | Faixa de preço inválida e dados inconsistentes são rejeitados | `business-rules-tests.trx` | Aprovado |
+| Wishlist | Adição, remoção e prevenção de duplicidade | Item é salvo e removido corretamente | Duplicidade e identificadores inválidos são rejeitados | `business-rules-tests.trx` | Aprovado |
+| Catálogo e espetáculos | Busca, consulta de detalhes, associação com teatros e URL externa de compra | Espetáculos são consultados e associados corretamente | Recursos inexistentes e duplicidades são rejeitados | `business-rules-tests.trx` | Aprovado |
+| Recomendação | Limites válidos, recomendações persistidas e fallback | Recomendações são retornadas dentro do limite esperado | Limites inválidos ou ausência de dados acionam tratamento controlado | `business-rules-new-tests.trx` | Aprovado |
 
-**Resultados observados:** As regras apresentaram [informar resultado geral]. Foram aprovadas [informar regras aprovadas], apresentaram falha [informar regras com falha] e ficaram bloqueadas [informar regras bloqueadas].
+#### Resultados da execução
 
-**Evidências:** As evidências da execução estão disponíveis em [inserir links para relatórios, logs, prints, arquivos de teste ou pipelines].
+A suíte unitária do backend foi executada com sucesso em 11/06/2026.
 
-**Análise:** Com base na execução, as regras de negócio demonstraram [registrar aderência, inconsistências encontradas e ajustes necessários].
+- Total de testes executados: 123
+- Testes aprovados: 123
+- Testes reprovados: 0
+- Testes ignorados: 0
+- Testes diretamente ligados a regras de negócio: 87
+- Novos testes criados para esta validação: 10, na classe `BusinessRulesIntegratedTests`
+
+**Evidências:** As evidências da execução foram registradas nos arquivos:
+
+- `src/backend/BackEnd.Aventura.Tests/TestResults/business-rules-tests.trx`
+- `src/backend/BackEnd.Aventura.Tests/TestResults/business-rules-new-tests.trx`
+
+Comandos executados:
+
+```bash
+dotnet test src\backend\BackEnd.Aventura.Tests\BackEnd.Aventura.Tests.csproj --logger "trx;LogFileName=business-rules-tests.trx" --logger "console;verbosity=minimal"
+```
+
+```bash
+dotnet test src\backend\BackEnd.Aventura.Tests\BackEnd.Aventura.Tests.csproj --filter Category=BusinessRules --logger "trx;LogFileName=business-rules-new-tests.trx" --logger "console;verbosity=minimal"
+```
+
+**Análise:** Com base na execução, as regras de negócio implementadas demonstraram aderência ao comportamento esperado nos cenários automatizados. Não foram identificadas falhas na suíte executada, e os testes criados ampliaram a cobertura sobre regras críticas relacionadas a autenticação, consentimento, perfil, preferências, wishlist, recomendações, catálogo e LGPD.
 
 ### 20.6 Testes de requisitos não funcionais
 

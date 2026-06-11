@@ -44,21 +44,21 @@ VALUES
 (
 'Alexsander Barbosa',
 'alex@email.com',
-'123hash',
+'$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
 21
 ),
 
 (
 'Maria Silva',
 'maria@email.com',
-'123hash',
+'$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
 25
 ),
 
 (
 'João Santos',
 'joao@email.com',
-'123hash',
+'$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
 30
 )
 ON CONFLICT(email)

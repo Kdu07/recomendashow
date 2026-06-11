@@ -248,3 +248,199 @@ Para remover também os volumes (apaga todos os dados):
 ```bash
 docker compose -f docker-compose-db.yml down -v
 ```
+
+---
+
+## 7. Dicionário de Dados
+
+Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventura Teatros, com base nos arquivos `01_create_database.sql` e `02_sprint4_improvements.sql`.
+
+**Tipos personalizados (ENUMs):**
+- `tipo_interacao`: `'Clique'`, `'Acesso'`, `'TempoDeTela'`
+- `tipo_lista`: `'curtida'`, `'wishlist'`
+
+---
+
+### 7.1 usuarios
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único do usuário |
+| nome | VARCHAR(100) | NOT NULL | — | Nome completo do usuário |
+| email | VARCHAR(255) | NOT NULL, UNIQUE | — | Endereço de e-mail, usado como login |
+| senha_hash | TEXT | NOT NULL | — | Hash BCrypt da senha do usuário |
+| idade | INT | CHECK(idade >= 13) | — | Idade do usuário; mínimo 13 anos |
+| data_cadastro | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | — | Data e hora do registro do usuário |
+| cep | VARCHAR(9) | — | — | CEP do endereço (integração ViaCEP) |
+| logradouro | VARCHAR(255) | — | — | Rua/avenida do endereço |
+| numero | VARCHAR(10) | — | — | Número do imóvel |
+| complemento | VARCHAR(255) | — | — | Complemento do endereço |
+| bairro | VARCHAR(100) | — | — | Bairro do endereço |
+| cidade | VARCHAR(100) | — | — | Cidade do endereço |
+| consentimento_aceito | BOOLEAN | NOT NULL, DEFAULT FALSE | — | Indica se o usuário aceitou os termos de consentimento (LGPD) |
+| data_consentimento | TIMESTAMP | — | — | Data e hora em que o consentimento foi registrado |
+| deleted_at | TIMESTAMP | — | — | Marca lógica de exclusão do usuário (soft delete, LGPD) |
+| anonimizado | BOOLEAN | NOT NULL, DEFAULT FALSE | — | Indica se os dados pessoais do usuário foram anonimizados (LGPD) |
+| ml_id | SERIAL | UNIQUE (idx_usuarios_ml_id) | — | Identificador inteiro sequencial para mapeamento UUID ↔ índice do modelo de recomendação ML |
+
+---
+
+### 7.2 teatros
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único do teatro |
+| nome | VARCHAR(150) | NOT NULL, UNIQUE | — | Nome do teatro |
+| endereco | VARCHAR(255) | — | — | Endereço completo do teatro |
+| cidade | VARCHAR(100) | — | — | Cidade onde o teatro está localizado |
+| horario_funcionamento | VARCHAR(100) | — | — | Descrição dos horários de funcionamento |
+
+---
+
+### 7.3 espetaculos
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único do espetáculo |
+| nome | VARCHAR(150) | NOT NULL, UNIQUE | — | Nome do espetáculo |
+| tipo_evento | VARCHAR(80) | — | — | Categoria do evento (ex.: peça, musical, dança) |
+| descricao | TEXT | — | — | Descrição detalhada do espetáculo |
+| url_bilheteria | TEXT | — | — | URL para compra de ingressos |
+| data_inicio | TIMESTAMP | NOT NULL | — | Data e hora de início do espetáculo |
+| data_fim | TIMESTAMP | NOT NULL, CHECK(data_fim > data_inicio) | — | Data e hora de encerramento; deve ser posterior a `data_inicio` |
+| valor_ingresso | DECIMAL(10,2) | CHECK(valor_ingresso >= 0) | — | Preço do ingresso; não pode ser negativo |
+
+---
+
+### 7.4 generos
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único do gênero |
+| nome | VARCHAR(50) | NOT NULL, UNIQUE | — | Nome do gênero artístico (ex.: drama, comédia) |
+
+---
+
+### 7.5 interacoes
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único da interação |
+| usuario_id | UUID | NOT NULL, FK | → usuarios(id) ON DELETE CASCADE | Usuário que realizou a interação |
+| espetaculo_id | UUID | NOT NULL, FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo com o qual o usuário interagiu |
+| tipo | tipo_interacao | NOT NULL | — | Tipo da interação: `Clique`, `Acesso` ou `TempoDeTela` |
+| pontuacao | DECIMAL(4,2) | CHECK(pontuacao >= 0 AND pontuacao <= 10) | — | Pontuação atribuída à interação; escala de 0 a 10 |
+| data_registro | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | — | Data e hora em que a interação foi registrada |
+| data_expiracao | TIMESTAMP | CHECK(data_expiracao > data_registro) | — | Data a partir da qual a interação deixa de ser considerada pelo motor de recomendação |
+
+---
+
+### 7.6 preferencias
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único do registro de preferências |
+| usuario_id | UUID | UNIQUE, FK | → usuarios(id) ON DELETE CASCADE | Usuário ao qual as preferências pertencem (relação 1:1) |
+| cidade | VARCHAR(100) | — | — | Cidade preferida para busca de espetáculos |
+| tags | TEXT[] | — | — | Array de tags de interesse do usuário |
+| faixa_preco_min | DECIMAL(10,2) | — | — | Valor mínimo da faixa de preço desejada |
+| faixa_preco_max | DECIMAL(10,2) | — | — | Valor máximo da faixa de preço desejada |
+| receber_notificacoes | BOOLEAN | DEFAULT TRUE | — | Indica se o usuário deseja receber notificações |
+| data_atualizacao | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | — | Data e hora da última atualização; mantida automaticamente pelo trigger `trg_preferencias_update` |
+
+---
+
+### 7.7 recomendacoes
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único da recomendação |
+| usuario_id | UUID | NOT NULL, FK | → usuarios(id) ON DELETE CASCADE | Usuário que recebeu a recomendação |
+| espetaculo_id | UUID | NOT NULL, FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo recomendado |
+| score | DECIMAL(4,2) | CHECK(score >= 0 AND score <= 1) | — | Relevância da recomendação; escala de 0 a 1 |
+| motivo | TEXT | — | — | Explicação textual gerada pelo motor de recomendação |
+| data_geracao | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP | — | Data e hora em que a recomendação foi gerada |
+
+> **Constraint Sprint 4:** `UNIQUE(usuario_id, espetaculo_id)` — impede recomendações duplicadas para o mesmo par usuário/espetáculo.
+
+---
+
+### 7.8 usuario_genero_favorito
+
+Tabela associativa N:N entre usuários e gêneros favoritos.
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| usuario_id | UUID | PK (composta), FK | → usuarios(id) ON DELETE CASCADE | Usuário que marcou o gênero como favorito |
+| genero_id | UUID | PK (composta), FK | → generos(id) ON DELETE CASCADE | Gênero marcado como favorito pelo usuário |
+
+---
+
+### 7.9 espetaculo_genero
+
+Tabela associativa N:N entre espetáculos e gêneros.
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| espetaculo_id | UUID | PK (composta), FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo ao qual o gênero está vinculado |
+| genero_id | UUID | PK (composta), FK | → generos(id) ON DELETE CASCADE | Gênero vinculado ao espetáculo |
+
+---
+
+### 7.10 teatro_espetaculo
+
+Tabela associativa N:N entre teatros e espetáculos.
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| teatro_id | UUID | PK (composta), FK | → teatros(id) ON DELETE RESTRICT | Teatro onde o espetáculo é exibido; exclusão bloqueada se houver espetáculos vinculados |
+| espetaculo_id | UUID | PK (composta), FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo exibido no teatro |
+
+---
+
+### 7.11 wishlist_curtidas
+
+Tabela que unifica wishlist e curtidas do usuário em espetáculos.
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| usuario_id | UUID | PK (composta), FK | → usuarios(id) ON DELETE CASCADE | Usuário que realizou a ação |
+| espetaculo_id | UUID | PK (composta), FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo alvo da ação |
+| tipo | tipo_lista | PK (composta) | — | Tipo da ação: `curtida` ou `wishlist` |
+
+---
+
+### 7.12 Objetos de Banco — Sprint 4
+
+Objetos criados em `02_sprint4_improvements.sql`.
+
+#### Índices
+
+| Nome | Tipo | Tabela | Colunas | Finalidade |
+|---|---|---|---|---|
+| idx_interacoes_usuario_expiracao | B-tree | interacoes | (usuario_id, data_expiracao) | Filtragem de interações por usuário e janela temporal para o motor de recomendação; substitui `idx_interacoes_usuario` |
+| idx_teatros_cidade | B-tree | teatros | (cidade) | Suporte ao carrossel "Perto de você", que filtra espetáculos pela cidade do teatro |
+| idx_espetaculos_datas | B-tree | espetaculos | (data_inicio, data_fim) | Filtragem de espetáculos em cartaz por intervalo de datas |
+| idx_recomendacoes_usuario_score | B-tree | recomendacoes | (usuario_id, score DESC) | Recuperação das top recomendações de um usuário ordenadas por relevância; substitui `idx_recomendacao_usuario` |
+| idx_wishlist_usuario | B-tree | wishlist_curtidas | (usuario_id) | Carregamento da wishlist/curtidas na abertura da aba pelo usuário |
+| idx_usuarios_ml_id | B-tree (UNIQUE) | usuarios | (ml_id) | Garante unicidade do identificador inteiro para mapeamento UUID ↔ índice do modelo ML |
+
+#### Funções
+
+| Nome | Retorno | Tabela afetada | Finalidade |
+|---|---|---|---|
+| fn_atualizar_data_preferencias() | TRIGGER | preferencias | Atualiza automaticamente `data_atualizacao` para o timestamp corrente em todo UPDATE na tabela `preferencias` |
+| fn_bloquear_update_anonimizado() | TRIGGER | usuarios | Impede qualquer UPDATE em registros já anonimizados, levantando exceção em conformidade com a LGPD |
+
+#### Triggers
+
+| Nome | Evento | Tabela | Função associada | Finalidade |
+|---|---|---|---|---|
+| trg_preferencias_update | BEFORE UPDATE | preferencias | fn_atualizar_data_preferencias() | Mantém `data_atualizacao` sempre sincronizado com o momento real da alteração |
+| trg_bloquear_update_anonimizado | BEFORE UPDATE | usuarios | fn_bloquear_update_anonimizado() | Protege dados anonimizados de qualquer modificação posterior (LGPD) |
+
+#### Procedures
+
+| Nome | Parâmetros | Tabela afetada | Finalidade |
+|---|---|---|---|
+| sp_anonimizar_usuario | p_id UUID | usuarios | Substitui dados pessoais (nome, e-mail, senha, endereço) por valores neutros e marca `anonimizado = TRUE`; executa somente em usuários com `deleted_at IS NOT NULL` ainda não anonimizados (LGPD) |

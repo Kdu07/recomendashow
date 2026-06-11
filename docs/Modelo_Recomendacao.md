@@ -31,8 +31,8 @@ O motor é **único e híbrido**: **Funk SVD** (via `Microsoft.ML.Recommender` /
 
 ```
 data/raw/database_sympla.csv
-   └─[src/ml: dotnet run train]──► data/dataset/dataset.csv
-                                   + data/models/model.zip
+   └─[src/ml: dotnet run preprocess]──► data/dataset/dataset.csv
+        └─[src/ml: dotnet run train]──► data/models/model.zip
                                    + data/models/{cold_start,item_categories,
                                                   category_affinity,cold_start_by_category}.json
                                         └─[src/inference-service (host ASP.NET)]
@@ -48,6 +48,18 @@ data/raw/database_sympla.csv
                                                         gêneros favoritos quando não há linhas)
 ```
 
+### Pré-processamento (raw → dataset.csv)
+
+O comando `dotnet run preprocess` (`src/ml/Preprocessor.cs`) transforma as transações brutas do Sympla no dataset de interações. As regras são as do pipeline original (nascido nos notebooks de AED e portado para C# na migração):
+
+1. **Leitura**: colunas usadas do raw — `ID COMPRADOR.1.ID USUÁRIO`, `NOME ESPETÁCULO`, `DATA DA APRESENTAÇÃO`, `DATA DA COMPRA`, `VALOR DO INGRESSO`, `TIPO`.
+2. **Limpeza**: linhas com data inválida são descartadas; **lead time** (apresentação − compra) deve estar entre 0 e 180 dias; preço aceita vírgula decimal (`"19,5"` → 19.5; não numérico → 0).
+3. **Dedupe**: compras do mesmo usuário, mesmo espetáculo e mesmo dia contam como **uma** interação (mantém a primeira linha).
+4. **Outliers**: usuários com volume de interações acima do **percentil 99,9** são removidos (compradores institucionais/revendedores distorceriam o sinal de afinidade).
+5. **Agregação** por (usuário, espetáculo): `ranking` = nº de dias distintos de compra, limitado a 5; `valor_medio_ingresso` = média dos preços (2 casas); `tipo_evento` = primeiro `TIPO` observado.
+
+Os nomes de espetáculo são mantidos como estão no raw (sem trim) — `DataPipeline` e `DatasetRepository` normalizam com `Trim()` na leitura.
+
 ### Estrutura dos projetos
 
 ```
@@ -61,6 +73,7 @@ data/
     └── cold_start_by_category.json
 src/
 ├── ml/                                  ← treino e avaliação (console, .NET 9) — AventuraML
+│   ├── Preprocessor.cs                  ← pré-processamento raw → dataset.csv
 │   ├── DataPipeline.cs                  ← leitura e transformação do CSV
 │   ├── Trainer.cs                       ← treino + export dos 5 artefatos
 │   ├── Recommender.cs                   ← fórmula híbrida + PredictRating (fonte única)
@@ -89,17 +102,20 @@ src/
 ### Como executar o pipeline
 
 ```bash
-# 1. Treinar e gerar todos os artefatos em data/models/
+# 1. Gerar data/dataset/dataset.csv a partir do raw do Sympla
 cd src/ml
+dotnet run preprocess
+
+# 2. Treinar e gerar todos os artefatos em data/models/
 dotnet run train
 
-# 2. Testar inferência pelo CLI
+# 3. Testar inferência pelo CLI
 dotnet run recommend 1 --n 10
 
-# 3. Avaliar SVD puro vs. híbrido (split 80/20 por usuário)
+# 4. Avaliar SVD puro vs. híbrido (split 80/20 por usuário)
 dotnet run evaluate --k 10 --alpha 0.7
 
-# 4. Subir o host de inferência (batch 24h + métricas/diagnóstico)
+# 5. Subir o host de inferência (batch 24h + métricas/diagnóstico)
 cd ../inference-service
 dotnet run
 # → GET http://localhost:5000/api/diagnostics/health

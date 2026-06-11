@@ -2,8 +2,8 @@ import { clearAuthStorage, getAuthToken } from './tokenStorageService';
 import { handleSessionExpired } from '../navigation/navigationRef';
 
 export const API_BASE = __DEV__
-  ? 'http://10.254.19.78:5253'
-  : 'http://localhost:5253';
+  ? 'https://10.254.19.78:7151'
+  : 'https://localhost:7151';
 
 const AUTH_PATHS = ['/api/auth/login', '/api/auth/register'];
 

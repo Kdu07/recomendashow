@@ -1,4 +1,12 @@
 -- ============================================================
+-- Migration: Sprint 4 — melhorias de qualidade, endereço, LGPD,
+--            índices de performance, integração ML e triggers
+-- Projeto   : Aventura Teatros
+-- Depende de: 01_create_database.sql
+-- Idempotente: sim — seguro para re-execução
+-- ============================================================
+
+-- ============================================================
 -- Correções de qualidade
 -- ============================================================
 

@@ -24,7 +24,11 @@ Este documento registra a gestão do projeto ao longo das sprints, reunindo retr
  - [Sprint 1](#1-sprint-1)
  - [Sprint 2](#2-sprint-2)
  - [Sprint 3](#3-sprint-3)
- - [Referências](#4-referências)
+ - [Sprint 4 - Gestão Evolutiva](#4-sprint-4---gestão-evolutiva)
+ - [Planejamento da Sprint 5](#5-planejamento-da-sprint-5)
+ - [Atendimento aos Critérios do Escritório de Projetos](#6-atendimento-aos-critérios-do-escritório-de-projetos)
+ - [Uso das Políticas de Gestão de Configuração](#7-uso-das-políticas-de-gestão-de-configuração)
+ - [Referências](#8-referências)
 
 ---
 
@@ -279,6 +283,146 @@ Para a Sprint 4, o foco principal será melhorar a organização e divisão das 
 
 ---
 
-## Referências
+## 4. Sprint 4 - Gestão Evolutiva
+
+### 4.1 Objetivo da Sprint 4
+
+A Sprint 4 teve como foco avançar na consolidação das entregas do projeto, melhorar a qualidade das revisões, alinhar a equipe em relação aos próximos ajustes e preparar o projeto para uma etapa final de refinamento. O acompanhamento considerou a comunicação nas dailies, o andamento das tasks no Kanban, as revisões realizadas pela equipe e os impactos do calendário da sprint.
+
+### 4.2 Pontos Fortes
+
+| Ponto forte | Evidência concreta | Impacto no projeto |
+|---|---|---|
+| Comunicação mais constante entre integrantes | As dailies e alinhamentos foram usados para discutir impedimentos, revisar prioridades e acompanhar o andamento das tasks. | Reduziu dúvidas durante a sprint e ajudou a equipe a manter visibilidade sobre o trabalho em andamento. |
+| Trabalho mais revisado antes da entrega | A equipe passou a revisar com mais atenção documentação, organização dos arquivos e consistência entre artefatos. | Melhorou a qualidade final dos documentos e reduziu riscos de inconsistência entre entregas. |
+| Maior colaboração entre frentes | Integrantes apoiaram atividades de documentação, revisão técnica, frontend, backend e organização do repositório conforme necessidade. | Evitou concentração excessiva de conhecimento em uma única pessoa e ajudou na continuidade das entregas. |
+| Uso do Kanban para acompanhamento | O andamento da sprint foi observado pelo acompanhamento das tasks no Kanban. | Facilitou a visualização de tarefas em andamento, pendências e itens que precisavam de atenção. |
+| Evolução na padronização documental | Documentos principais passaram por revisão de estrutura, cabeçalho, sumário e links. | A documentação ficou mais clara, navegável e alinhada aos critérios de avaliação. |
+
+### 4.3 Pontos Fracos
+
+| Ponto fraco | Evidência concreta | Consequência |
+|---|---|---|
+| Revisões acumuladas de sprints anteriores | Parte dos ajustes da Sprint 4 envolveu revisar e corrigir artefatos já entregues em ciclos anteriores. | Reduziu o tempo disponível para avançar exclusivamente em novas entregas. |
+| Demora para concluir algumas tasks | Algumas atividades permaneceram em andamento por mais tempo que o planejado no acompanhamento do Kanban. | Impactou a previsibilidade da sprint e aumentou a pressão no fechamento das entregas. |
+| Granularidade ainda irregular | Algumas tasks ainda concentraram mais de uma responsabilidade ou exigiram ajustes adicionais durante a execução. | Dificultou medir progresso real e identificar bloqueios rapidamente. |
+| Impacto de feriado durante a sprint | O calendário da sprint teve redução de dias úteis por conta de feriado. | Diminuiu o tempo efetivo de desenvolvimento, revisão e validação. |
+| Validação final concentrada | Parte das revisões ficou próxima ao final da sprint. | Aumentou o risco de retrabalho e de correções em prazo curto. |
+
+### 4.4 Ações de Melhoria para a Sprint 5
+
+| Problema identificado | Ação de melhoria | Indicador de sucesso numérico |
+|---|---|---|
+| Revisões acumuladas de sprints anteriores | Reservar a Sprint 5 para refinamento final e validação dos artefatos principais. | 100% dos documentos principais revisados antes da entrega final. |
+| Demora para concluir tasks | Reduzir escopo de cada task e acompanhar andamento diariamente no Kanban. | Pelo menos 80% das tasks concluídas no prazo definido para a sprint. |
+| Granularidade irregular | Quebrar tasks grandes em itens menores antes do início da execução. | Pelo menos 70% das tasks classificadas como P ou M. |
+| Feriado reduziu tempo útil da sprint | Considerar capacidade reduzida no planejamento e priorizar tarefas críticas. | 100% das tarefas críticas priorizadas antes das tarefas complementares. |
+| Validação final concentrada | Antecipar revisão de documentação, build e testes ao longo da sprint. | Build, testes e revisão documental executados antes do fechamento da sprint, quando aplicável. |
+
+### 4.5 Status das Ações da Sprint Anterior
+
+| Ação definida anteriormente | Resultado obtido na Sprint 4 | Status | Evidência ou justificativa |
+|---|---|---|---|
+| Melhor divisão das tasks | Houve maior atenção à granularidade, mas algumas tarefas ainda ficaram amplas. | Parcialmente concluída | O acompanhamento do Kanban indicou demora em algumas conclusões. |
+| Revisão das estimativas de esforço | A equipe reconheceu a necessidade de considerar capacidade reduzida e feriado no planejamento. | Parcialmente concluída | A estimativa ainda precisa ser refinada no planejamento detalhado da Sprint 5. |
+| Checkpoints frequentes | Dailies e alinhamentos ajudaram na comunicação e no acompanhamento das pendências. | Concluída | A prática foi usada para acompanhar progresso e impedimentos da sprint. |
+| Refinamento técnico prévio | Parte das revisões técnicas e documentais ainda ocorreu perto do fechamento da sprint. | Parcialmente concluída | A Sprint 5 deve antecipar validações e revisão final. |
+| Mapeamento de dependências | Dependências foram discutidas, mas ainda houve impacto de tarefas que demoraram mais do que o previsto. | Parcialmente concluída | O refinamento final deve priorizar itens críticos e dependentes. |
+
+---
+
+## 5. Planejamento da Sprint 5
+
+### 5.1 Objetivo da Sprint 5
+
+A Sprint 5 terá como objetivo realizar o refinamento final do projeto, revisando os artefatos principais, corrigindo lacunas pendentes, validando a consistência técnica e preparando a entrega final com documentação, evidências e organização adequadas.
+
+### 5.2 Critério de Priorização
+
+O detalhamento das tasks da Sprint 5 será definido no board da equipe. A priorização deverá considerar dependência técnica, impacto na nota, risco de entrega, capacidade do time, tempo útil disponível e necessidade de corrigir lacunas apontadas no feedback. A métrica t-shirt adotada para estimativa será:
+
+| Tamanho | Estimativa |
+|---|---|
+| P | Até 30 minutos |
+| M | Entre 30 e 60 minutos |
+| G | Entre 60 e 120 minutos |
+
+### 5.3 Lista de Tasks da Sprint 5
+
+A Sprint 5 será voltada ao refinamento final do projeto. As tasks abaixo foram organizadas em uma sequência lógica, priorizando primeiro a correção de lacunas críticas, depois a validação técnica e, por fim, a revisão final da entrega.
+
+| Ordem | Task | Descrição | Prioridade | Tamanho t-shirt | Estimativa | Dependências | Critério de aceite |
+|---|---|---|---|---|---|---|---|
+| 1 | A preencher | A preencher | Alta / Média / Baixa | P / M / G | Até 30 min / 30-60 min / 60-120 min | A preencher | A preencher |
+| 2 | A preencher | A preencher | Alta / Média / Baixa | P / M / G | Até 30 min / 30-60 min / 60-120 min | A preencher | A preencher |
+| 3 | A preencher | A preencher | Alta / Média / Baixa | P / M / G | Até 30 min / 30-60 min / 60-120 min | A preencher | A preencher |
+| 4 | A preencher | A preencher | Alta / Média / Baixa | P / M / G | Até 30 min / 30-60 min / 60-120 min | A preencher | A preencher |
+| 5 | A preencher | A preencher | Alta / Média / Baixa | P / M / G | Até 30 min / 30-60 min / 60-120 min | A preencher | A preencher |
+
+---
+
+## 6. Atendimento aos Critérios do Escritório de Projetos
+
+### 6.1 README
+
+| Nº | Critério | Evidência no repositório/documentação | Status | Ajuste necessário, se houver |
+|---|---|---|---|---|
+| 1 | Nome do projeto presente? | `README.md` inicia com `# RecomendaShow` e `## Projeto - RecomendaShow`. | Atendido | Nenhum ajuste identificado. |
+| 2 | Nome do grupo presente? | `README.md` apresenta `## Grupo 2 - Aventureiros`. | Atendido | Nenhum ajuste identificado. |
+| 3 | Integrantes descritos? | Seção `Equipe` do `README.md` lista os sete integrantes. | Atendido | Nenhum ajuste identificado. |
+| 4 | Links presentes ou corretos dos integrantes? | Cada integrante está listado com link de LinkedIn no formato `- [Nome](link)`. | Atendido | Nenhum ajuste identificado |
+| 5 | Apresenta descrição curta do projeto? | `README.md` apresenta `Recomendação de Espetáculos no Portal Aventura` e a seção `Descrição do Projeto`. | Atendido | Nenhum ajuste identificado. |
+| 6 | Apresenta estrutura de pastas conforme o modelo? | `README.md` possui a seção `Estrutura do Repositório`, com `docs/` e `src/`. | Parcialmente atendido | Avaliar se a estrutura deve citar explicitamente contrato/front-end/documentação conforme o modelo da disciplina. |
+| 8 | Apresenta histórico de lançamentos? | `README.md` possui a seção `Histórico de Versões`. | Atendido | Nenhum ajuste identificado. |
+| 9 | Histórico de lançamentos adequado? | Histórico apresenta versões `0.1.0`, `0.2.0` e `0.3.0-dev`, com datas e descrições. | Atendido | Atualizar caso exista uma nova versão de entrega. |
+| 10 | Apresenta licença? | `README.md` possui seção `Licença` com Creative Commons Attribution 4.0. | Atendido | Nenhum ajuste identificado. |
+| 11 | Inteli consta na licença? | A licença menciona e linka `Inteli`. | Atendido | Nenhum ajuste identificado. |
+| 12 | Nome do grupo ou integrantes presentes na licença? | A licença atribui o projeto ao Inteli, mas não cita explicitamente o grupo ou integrantes. | Pendente | Incluir `Grupo 2 - Aventureiros` ou integrantes na seção de licença, se exigido. |
+| 13 | Link dos integrantes ou grupo corretos na licença? | A licença possui link do repositório e do Inteli, mas não links do grupo/integrantes. | Pendente | Adicionar link do grupo ou integrantes na licença, se exigido. |
+| 15 | Não apresenta nenhuma outra imagem além da logo do Inteli? | Não foram identificadas imagens no `README.md`. | Atendido | Caso o critério exija a logo do Inteli, adicionar apenas essa imagem. |
+| 16 | Instruções iniciais removidas? | Não foram encontradas instruções iniciais de template no `README.md`. | Atendido | Nenhum ajuste identificado. |
+
+### 6.2 Documentação
+
+| Nº | Critério | Evidência no repositório/documentação | Status | Ajuste necessário, se houver |
+|---|---|---|---|---|
+| 1 | Apresenta pasta `documentos`, `docs` ou `documents` na raiz do projeto? | Existe pasta `docs` na raiz. | Atendido | Nenhum ajuste identificado. |
+| 2 | Apresenta arquivo `Index.md` preenchido que indexa todos os documentos da pasta `docs`? | Existe `docs/Index.md`, indexando os documentos principais encontrados na pasta `docs`. | Atendido | Nenhum ajuste identificado. |
+| 3 | Documentação encontrada? | A pasta `docs` contém `Projeto.md`, `GestaoProjeto.md`, `Gestao_Projeto_Configuracao.md`, `Modelo_Recomendacao.md` e `projeto_visual.md`. | Atendido | Nenhum ajuste identificado. |
+| 4 | Sumário de todos os documentos `.md` navegáveis? | Documentos principais em `docs` possuem seção `Sumário`. | Atendido | Conferir manualmente se todos os links internos funcionam corretamente. |
+| 5 | Instruções e observações dos documentos removidas? | Não foram identificadas instruções iniciais de template nos documentos principais; há templates `A preencher` em seções planejadas. | Parcialmente atendido | Preencher ou remover campos `A preencher` antes da entrega final. |
+| 6 | Links acessíveis? | Links locais principais do `docs/Index.md` apontam para documentos existentes na pasta `docs`. | Atendido | Validar manualmente links externos, quando houver. |
+| 7 | Não compartilha dados sensíveis? | Documentação não expõe credenciais; o README orienta uso de `.env` e alerta que não deve ser versionado. | Parcialmente atendido | Avaliar a presença do arquivo `.env` versionado/local antes da entrega. |
+| 8 | Possui referências bibliográficas, se for o caso? | `docs/Projeto.md` contém seção de referências bibliográficas. | Atendido | Nenhum ajuste identificado. |
+| 9 | Formatação adequada? | Documentos principais usam Markdown com títulos, tabelas e sumários. | Atendido | Fazer revisão final de links e quebras de linha antes da entrega. |
+| 10 | Apresenta todas as seções preenchidas? | Há campos `A preencher` em `GestaoProjeto.md` e em partes de `Projeto.md`. | Parcialmente atendido | Completar os campos pendentes antes da entrega final. |
+| 11 | Arquivos de instrução `.txt` ou não relevantes para o projeto foram removidos? | Não há arquivos `.txt` relevantes na raiz ou em `docs`; há arquivos gerados em ambientes/dependências. | Parcialmente atendido | Ignorar dependências geradas ou garantir que pastas como `.venv311` e `node_modules` não entrem na entrega final. |
+| 12 | Links acessíveis sem solicitação de permissão? | Links de documentos locais são relativos; links externos dependem de acesso público. | Parcialmente atendido | Validar links externos e remover links que exijam permissão. |
+
+### 6.3 Aplicação
+
+| Nº | Critério | Evidência no repositório/documentação | Status | Ajuste necessário, se houver |
+|---|---|---|---|---|
+| 1 | Possui pasta `src`? | Existe pasta `src` na raiz do projeto. | Atendido | Nenhum ajuste identificado. |
+| 2 | Possui pasta para a lógica/codificação da aplicação? | `src` contém `backend`, `frontend`, `inference-service`, `ml`, `recommendation-service` e `training-service`. | Atendido | Nenhum ajuste identificado. |
+| 3 | Possui arquivo `README.md` com informações sobre como executar a aplicação? | `README.md` possui seção `Configuração e Execução`, com comandos para banco, frontend, backend, ML e inferência. | Atendido | Conferir se os comandos estão atualizados com o estado atual do código. |
+
+---
+
+## 7. Uso das Políticas de Gestão de Configuração
+
+| Política | Como foi aplicada | Evidência | Status |
+|---|---|---|---|
+| Padrão de branches | A preencher | A preencher | A preencher |
+| Conventional Commits | A preencher | A preencher | A preencher |
+| Uso de merge requests / pull requests | A preencher | A preencher | A preencher |
+| Relação com issues | A preencher | A preencher | A preencher |
+| Versionamento SemVer | A preencher | A preencher | A preencher |
+| Revisão antes do merge | A preencher | A preencher | A preencher |
+| Atualização de documentação junto com a entrega | A preencher | A preencher | A preencher |
+
+---
+
+## 8. Referências
 
 As informações deste documento foram registradas a partir das observações realizadas durante as plannings, dailies e acompanhamento do Kanban da equipe ao longo das sprints. Também foram considerados os registros documentais já produzidos anteriormente pelo grupo.

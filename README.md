@@ -265,10 +265,11 @@ dotnet run
 
 ### Treinar o modelo de recomendação
 
-Gera `data/models/model.zip` e os artefatos auxiliares (cold-start, categorias, afinidade) a partir de `data/dataset/dataset.csv`:
+Primeiro, gera `data/dataset/dataset.csv` a partir das transações brutas do Sympla (`data/raw/database_sympla.csv`); depois, treina o modelo gerando `data/models/model.zip` e os artefatos auxiliares (cold-start, categorias, afinidade):
 
 ```bash
 cd src/ml
+dotnet run preprocess
 dotnet run train
 ```
 

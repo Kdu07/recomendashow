@@ -188,6 +188,43 @@ public class DatasetRepositoryTests : IDisposable
     }
 
     // -----------------------------------------------------------------------
+    // Normalização (Trim) — paridade com DataPipeline de src/ml
+    // -----------------------------------------------------------------------
+
+    [Fact]
+    public void ItemIdETipoEvento_ComEspacosNasPontas_SaoNormalizadosComTrim()
+    {
+        const string csv = """
+            user_id,item_id,ranking,valor_medio_ingresso,tipo_evento
+            1,"  ShowA  ",5,50.0,"  Teatro "
+            2,ShowB,3,80.0,Musical
+            """;
+        var repo = BuildFromCsv(csv);
+
+        repo.AllItems.Should().BeEquivalentTo(["ShowA", "ShowB"]);
+        repo.GetConsumedItems(1).Should().BeEquivalentTo(["ShowA"]);
+        repo.GetRating(1, "ShowA").Should().Be(5);
+        repo.GetInteractions(1).Should().ContainSingle()
+            .Which.TipoEvento.Should().Be("Teatro");
+    }
+
+    [Fact]
+    public void LinhasQueColidemAposOTrim_NaoDerrubamOCarregamento()
+    {
+        // "ShowA" e "ShowA " viram a mesma chave (user, item) após o Trim;
+        // o repositório deve carregar e responder com o maior ranking do par.
+        const string csv = """
+            user_id,item_id,ranking,valor_medio_ingresso,tipo_evento
+            1,ShowA,2,50.0,Teatro
+            1,"ShowA ",4,50.0,Teatro
+            """;
+        var repo = BuildFromCsv(csv);
+
+        repo.AllItems.Should().BeEquivalentTo(["ShowA"]);
+        repo.GetRating(1, "ShowA").Should().Be(4);
+    }
+
+    // -----------------------------------------------------------------------
     // Edge cases
     // -----------------------------------------------------------------------
 

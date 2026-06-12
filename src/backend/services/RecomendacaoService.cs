@@ -1,21 +1,19 @@
 using BackEnd.Aventura.Domain;
 using BackEnd.Aventura.Dto;
-using BackEnd.Aventura.Mappings;
-using BackEnd.Aventura.Repository;
 
 namespace BackEnd.Aventura.Services
 {
     public class RecomendacaoService : IRecomendacaoService
     {
-        private readonly IRecomendacaoRepository _recomendacaoRepository;
-        private readonly IEspetaculoRepository _espetaculoRepository;
+        private readonly IReadOnlyList<IRecommendationStrategy> _strategies;
 
-        public RecomendacaoService(
-            IRecomendacaoRepository recomendacaoRepository,
-            IEspetaculoRepository espetaculoRepository)
+        public RecomendacaoService(IEnumerable<IRecommendationStrategy> strategies)
         {
-            _recomendacaoRepository = recomendacaoRepository;
-            _espetaculoRepository = espetaculoRepository;
+            _strategies = strategies?.ToList() ?? throw new ArgumentNullException(nameof(strategies));
+            if (_strategies.Count == 0)
+            {
+                throw new InvalidOperationException("Ao menos uma estrategia de recomendacao deve ser registrada.");
+            }
         }
 
         public IReadOnlyList<RecomendacaoItemDto> GetRecomendacoes(Guid usuarioId, int limit)
@@ -26,26 +24,16 @@ namespace BackEnd.Aventura.Services
                 throw new ArgumentException("Limit deve estar entre 1 e 50.");
             }
 
-            var stored = _recomendacaoRepository.GetByUsuario(usuarioId, limit);
-            if (stored.Count > 0)
+            foreach (var strategy in _strategies)
             {
-                return stored.Select(r => r.ToDto()).ToList();
+                var recommendations = strategy.GetRecommendations(usuarioId, limit);
+                if (recommendations.Count > 0)
+                {
+                    return recommendations;
+                }
             }
 
-            return BuildFallback(usuarioId, limit);
-        }
-
-        private IReadOnlyList<RecomendacaoItemDto> BuildFallback(Guid usuarioId, int limit)
-        {
-            return _espetaculoRepository
-                .GetByGenerosFavoritos(usuarioId, limit)
-                .Select((espetaculo, index) => new RecomendacaoItemDto
-                {
-                    Espetaculo = espetaculo.ToDto(),
-                    Score = Math.Max(0.5m, 1.0m - index * 0.05m),
-                    Motivo = "Baseado nos seus gêneros favoritos"
-                })
-                .ToList();
+            return Array.Empty<RecomendacaoItemDto>();
         }
     }
 }

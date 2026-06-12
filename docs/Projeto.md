@@ -191,23 +191,17 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 </details>
 
 <details>
-<summary><a href="#16-linguagens-e-tecnologias-utilizadas">16. Linguagens e Tecnologias Utilizadas</a></summary>
+<summary><a href="#16-diagrama-de-implantação">16. Diagrama de Implantação</a></summary>
 
-- [Linguagens e Tecnologias Utilizadas](#16-linguagens-e-tecnologias-utilizadas)
+- [Diagrama de Implantação](#16-diagrama-de-implantação)
 
 </details>
 
 <details>
-<summary><a href="#17-planejamento-de-testes">17. Planejamento de Testes</a></summary>
+<summary><a href="#17-linguagens-e-tecnologias-utilizadas">17. Linguagens e Tecnologias Utilizadas</a></summary>
 
-- [17.1 Objetivo do planejamento de testes](#171-objetivo-do-planejamento-de-testes)
-- [17.2 Estratégia geral de testes](#172-estratégia-geral-de-testes)
-- [17.3 Testes de funcionalidade](#173-testes-de-funcionalidade)
-- [17.4 Testes de requisitos não funcionais](#174-testes-de-requisitos-não-funcionais)
-- [17.5 Testes de usabilidade](#175-testes-de-usabilidade)
-- [17.6 Testes de APIs externas](#176-testes-de-apis-externas)
-- [17.7 Testes de integração](#177-testes-de-integração)
-- [17.8 Discussão geral de abrangência dos testes](#178-discussão-geral-de-abrangência-dos-testes)
+- [Linguagens e Tecnologias Utilizadas](#17-linguagens-e-tecnologias-utilizadas)
+
 </details>
 
 <details>
@@ -240,7 +234,8 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 - [19.2 Evolução do Frontend Mobile](#192-evolução-do-frontend-mobile)
   - [19.2.1 Arquitetura do frontend](#1921-arquitetura-do-frontend)
   - [19.2.2 Telas e fluxos refinados](#1922-telas-e-fluxos-refinados)
-  - [19.2.3 Evidência demonstrativa do frontend](#1923-evidência-demonstrativa-do-frontend)
+  - [19.2.3 Testes unitários do frontend](#1923-testes-unitários-do-frontend)
+  - [19.2.4 Evidência demonstrativa do frontend](#1924-evidência-demonstrativa-do-frontend)
 - [19.3 Evolução do Backend](#193-evolução-do-backend)
 - [19.4 Integração com Dados e Recomendação](#194-integração-com-dados-e-recomendação)
 - [19.5 Testes e Validação](#195-testes-e-validação)
@@ -1509,45 +1504,273 @@ O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visual
 | RF09 — Redirecionamento de Compra | UC13 — Acessar link de compra |
 | RF10 — Recomendação Inteligente | UC09 — Receber recomendações personalizadas |
 
-## 16. Linguagens e Tecnologias Utilizadas
+## 16. Diagrama de Implantação
+ 
+O diagrama de implantação abaixo apresenta a arquitetura física do Portal Aventura, destacando os ambientes de execução, os componentes implantados e suas comunicações. A solução é composta pelo aplicativo móvel, API Gateway, Backend ASP.NET Core, Training Job, Sistema de Recomendação, banco de dados PostgreSQL, banco de dados MongoDB e serviços externos. As conexões entre os componentes utilizam protocolos como HTTPS e TCP, garantindo a comunicação entre os serviços da plataforma.
+ 
+<div align="center">
+  <sub>Imagem 10 - Diagrama de Implantação UML</sub><br>
+  <img src="../assets/Diagrama-de-implantacao_drawio.png" width="100%" alt="Diagrama de Implantação UML"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+### Ambientes
+ 
+#### Aplicação Mobile
+ 
+Representa o aplicativo executado em dispositivos Android.
+ 
+**Componentes Implantados:**
+ 
+| Componente | Descrição |
+|------------|------------|
+| App Bundle (.apk) | Pacote distribuído para instalação do aplicativo móvel |
+| AsyncStorage | Armazenamento local utilizado para persistência de dados temporários e configurações do usuário |
+ 
+**Tecnologias:**
+ 
+- Android
+- React Native Runtime
+**Comunicação:**
+ 
+| Destino | Protocolo |
+|----------|-----------|
+| API Gateway | HTTPS (TCP 443) |
+| Deep Links | HTTPS (TCP 443) |
+ 
+---
+ 
+#### Ambiente de Servidor
+ 
+Responsável pelo processamento das regras de negócio, autenticação, gerenciamento de usuários, recomendação de eventos e integração com serviços externos.
+ 
+**Componentes:**
+ 
+- API Gateway
+- Backend ASP.NET Core
+- Sistema de Recomendação
+- Training Job
+---
+ 
+**API Gateway:**
+ 
+O API Gateway funciona como ponto único de entrada para as requisições realizadas pelo aplicativo móvel.
+ 
+Artefato Implantado:
+ 
+| Artefato | Descrição |
+|-----------|------------|
+| Gateway Service | Serviço responsável pelo roteamento das requisições para os serviços internos |
+ 
+Responsabilidades:
+ 
+- Receber requisições do aplicativo móvel
+- Encaminhar chamadas para o backend
+- Centralizar o acesso aos serviços internos
+- Aplicar políticas de segurança e controle de acesso
+Comunicação:
+ 
+| Origem | Destino | Protocolo |
+|---------|---------|------------|
+| Mobile App | API Gateway | HTTPS (TCP 443) |
+| API Gateway | Backend ASP.NET Core | TCP 8080 |
+ 
+---
+ 
+**Backend ASP.NET Core:**
+ 
+Representa o núcleo da aplicação, responsável pelas regras de negócio e gerenciamento das funcionalidades disponibilizadas ao usuário.
+ 
+Módulos Implantados:
+- **Autenticação:** Responsável pelo gerenciamento de login, registro e validação de credenciais.
+- **Usuários:** Responsável pelo gerenciamento dos dados dos usuários da plataforma.
+- **Espetáculos:** Responsável pela consulta, cadastro e gerenciamento dos eventos e espetáculos disponíveis.
+- **Interações:** Responsável pelo registro das ações realizadas pelos usuários, utilizadas posteriormente pelo sistema de recomendação.
+- **Geolocalização:** Responsável pelo tratamento de dados geográficos e busca de eventos com base na localização do usuário.
+Comunicação do Backend:
+ 
+| Destino | Protocolo |
+|----------|-----------|
+| PostgreSQL | TCP 5432 |
+| MongoDB | TCP 27017 |
+| Object Storage | HTTPS (TCP 443) |
+| ViaCEP | HTTPS (TCP 443) |
+| Ticketeira (Sympla) | HTTPS (TCP 443) |
+ 
+---
+ 
+**Sistema de Recomendação:**
+ 
+Componente especializado na geração de recomendações personalizadas para os usuários.
+ 
+Artefato Implantado:
+ 
+| Artefato | Descrição |
+|-----------|------------|
+| Recommendation Engine | Motor responsável pela geração de recomendações com base nas interações dos usuários |
+ 
+Responsabilidades:
+ 
+- Processar histórico de interações
+- Gerar recomendações personalizadas
+- Disponibilizar recomendações para o backend
+- Consumir modelos treinados pelo Training Job
+Comunicação:
+ 
+| Origem | Destino | Protocolo |
+|--------|----------|-----------|
+| Training Job | Sistema de Recomendação | HTTP REST (TCP 8081) |
+| Sistema de Recomendação | PostgreSQL | TCP 5432 |
+ 
+---
+ 
+**Training Job:**
+ 
+Serviço responsável pelo treinamento dos modelos utilizados pelo sistema de recomendação.
+ 
+Artefato Implantado:
+ 
+| Artefato | Descrição |
+|-----------|------------|
+| Training Pipeline | Pipeline de treinamento e atualização dos modelos de recomendação |
+ 
+Responsabilidades:
+ 
+- Processar dados históricos
+- Treinar modelos de recomendação
+- Atualizar modelos utilizados pelo Recommendation Engine
+- Consumir dados armazenados na infraestrutura de dados
+Comunicação:
+ 
+| Destino | Protocolo |
+|----------|-----------|
+| PostgreSQL | TCP 5432 |
+| Sistema de Recomendação | HTTP REST (TCP 8081) |
+| Object Storage | HTTPS (TCP 443) |
+ 
+---
+ 
+#### Infraestrutura de Dados
+ 
+Camada responsável pelo armazenamento persistente das informações do sistema.
+ 
+**PostgreSQL:**
+ 
+Banco de dados relacional utilizado pela aplicação.
+ 
+Funções:
+ 
+- Armazenamento de usuários
+- Armazenamento de eventos
+- Armazenamento de interações
+- Persistência das informações de autenticação
+- Base para geração de recomendações
+Porta Utilizada:
+ 
+| Serviço | Porta |
+|----------|--------|
+| PostgreSQL | TCP 5432 |
+ 
+---
+ 
+**MongoDB:**
+ 
+Banco de dados não relacional utilizado pela aplicação.
+ 
+Funções:
+ 
+- Armazenamento de dados não estruturados ou semiestruturados da plataforma
+Porta Utilizada:
+ 
+| Serviço | Porta |
+|----------|--------|
+| MongoDB | TCP 27017 |
+ 
+---
+ 
+**Object Storage:**
+ 
+Armazenamento de objetos utilizado para persistência de arquivos e dados de treinamento.
+ 
+Artefatos Armazenados:
+ 
+| Artefato |
+|-----------|
+| Bucket S3 |
+| Eventos brutos (JSON) |
+| Modelos treinados (ZIP) |
+ 
+Responsabilidades:
+ 
+- Armazenamento de datasets
+- Armazenamento de modelos treinados
+- Disponibilização de arquivos para o pipeline de treinamento
+Comunicação:
+ 
+| Origem | Protocolo |
+|---------|-----------|
+| Backend ASP.NET Core | HTTPS (TCP 443) |
+| Training Job | HTTPS (TCP 443) |
+ 
+---
+ 
+#### Serviços Externos
+ 
+Serviços de terceiros consumidos pela plataforma.
+ 
+**ViaCEP:**
+ 
+Serviço utilizado para consulta de informações de endereço a partir do CEP informado pelo usuário.
+ 
+Comunicação:
+ 
+- HTTPS (TCP 443)
+**Ticketeira (Sympla):**
+ 
+Serviço externo responsável pelo fornecimento de informações relacionadas a eventos e venda de ingressos.
+ 
+Comunicação:
+ 
+- HTTPS (TCP 443)
+
+## 17. Linguagens e Tecnologias Utilizadas
 
 O projeto segue uma Arquitetura Orientada a Serviços (SOA), com camadas bem definidas de apresentação, serviços e dados. As tecnologias foram escolhidas para atender aos requisitos funcionais e não funcionais do sistema, e são descritas a seguir.
 
-**Supabase (banco de dados, autenticação e armazenamento)**
+**PostgreSQL e MongoDB**
 
-O Supabase é uma plataforma open-source construída sobre PostgreSQL que oferece banco de dados relacional, autenticação de usuários e armazenamento de arquivos de forma integrada. Ele será provisionado localmente via Docker, o que garante que todos da equipe trabalhem no mesmo ambiente sem depender de serviços externos pagos durante o desenvolvimento. Usar uma única plataforma para essas três responsabilidades reduz a complexidade da infraestrutura e facilita a manutenção.
+O banco de dados principal do projeto é PostgreSQL, responsável por armazenar entidades transacionais como usuários, preferências, espetáculos, teatros, gêneros, interações, recomendações e wishlist. O schema é mantido em scripts SQL versionados em `src/database`, com constraints, índices, triggers, procedures e dados iniciais.
 
-O banco de dados PostgreSQL armazenará as entidades do sistema como usuários, espetáculos, teatros e wishlists. O módulo de autenticação cuidará do cadastro, login e geração de tokens JWT, dispensando a necessidade de implementar essa lógica do zero. O Storage Bucket será usado para guardar assets de mídia e arquivos gerados pelo modelo de recomendação.
+O MongoDB compõe o ambiente local de dados via Docker Compose, apoiando cenários de desenvolvimento que exigem armazenamento documental. A infraestrutura atual contempla execução local com PostgreSQL e MongoDB em containers, além de banco PostgreSQL remoto hospedado em uma máquina virtual Linux na Oracle Cloud Infrastructure.
 
 **Docker**
 
-O Docker é a ferramenta de conteinerização utilizada para rodar o Supabase localmente. Com ele, toda a infraestrutura de banco de dados, autenticação e storage é empacotada em containers, garantindo que o ambiente seja idêntico para todos os membros da equipe independentemente do sistema operacional. Isso evita problemas de configuração e torna o setup do projeto mais simples e reproduzível.
+O Docker é a ferramenta de conteinerização utilizada para padronizar o ambiente local do projeto. O arquivo `docker-compose-db.yml` sobe PostgreSQL e MongoDB com configuração reproduzível, reduzindo divergências de ambiente entre os integrantes da equipe.
 
 **Backend de APIs em C# com ASP.NET Core**
 
-O backend de APIs será desenvolvido em C# com ASP.NET Core, expondo endpoints REST a serem consumidos pelo frontend. A arquitetura prevê um API Gateway, que receberá todas as requisições e roteará para os serviços corretos, e os Backend Services, que concentrarão a lógica de negócio. O C# é fortemente tipado, o que facilita modelar as entidades do domínio e reduz erros em tempo de execução. O ASP.NET Core oferece suporte nativo a injeção de dependência, autenticação JWT e ferramentas de escalabilidade, atendendo aos requisitos de segurança e disponibilidade do sistema.
+O backend de APIs é desenvolvido em C# com ASP.NET Core, expondo endpoints REST consumidos pelo frontend e pelo serviço de recomendação. A API concentra controllers, services, repositories, regras de negócio, autenticação JWT e integração com PostgreSQL. O C# é fortemente tipado, o que facilita modelar as entidades do domínio e reduz erros em tempo de execução. O ASP.NET Core oferece suporte nativo a injeção de dependência, autenticação JWT e ferramentas de escalabilidade, atendendo aos requisitos de segurança e disponibilidade do sistema.
 
-**Modelo de recomendação em Python com scikit-surprise**
+**Modelo de recomendação em .NET com ML.NET**
 
-O modelo de recomendação está sendo desenvolvido em Python, com a biblioteca scikit-surprise para filtragem colaborativa. Dois algoritmos estão sendo implementados e serão comparados: KNN, que recomenda espetáculos com base em usuários de comportamento similar, e Funk SVD, que fatoriza a matriz de interações em representações latentes para prever o engajamento do usuário com espetáculos não vistos. Os modelos são treinados sobre um dataset de 109.916 interações entre aproximadamente 68 mil usuários e 571 espetáculos, com hiperparâmetros otimizados via GridSearchCV. O modelo final, após a comparação entre os dois algoritmos, será integrado ao backend de recomendação em C#.
+O pipeline atual de recomendação utiliza .NET e ML.NET para pré-processamento, treinamento, avaliação e geração de artefatos do modelo. A solução combina recomendações persistidas, métricas de inferência e fallback por preferências declaradas, permitindo que o backend entregue recomendações mesmo quando ainda não há dados suficientes do usuário.
 
-Python foi escolhido para essa etapa porque seu ecossistema de ciência de dados (pandas, numpy, scikit-learn, scikit-surprise) não tem equivalente de mesma maturidade em C# para tarefas de filtragem colaborativa, tornando a experimentação muito mais ágil.
+Os artefatos do modelo são gerados em `data/models` a partir dos comandos do projeto `src/ml`, e o serviço `src/inference-service` executa inferência, batch de recomendações, métricas e diagnósticos.
 
 **Frontend em React Native**
 
-O frontend será desenvolvido em React Native, framework que permite criar aplicações móveis para iOS e Android a partir de uma única base de código. Isso é importante porque o produto precisa estar disponível nas duas plataformas sem duplicar o esforço de desenvolvimento. O React Native tem bom suporte a geolocalização, notificações push e navegação entre telas, funcionalidades centrais para o app. A proximidade com o ecossistema JavaScript facilita o consumo das APIs REST do backend.
+O frontend é desenvolvido em React Native com Expo, framework que permite criar aplicações móveis para iOS e Android a partir de uma única base de código. Isso é importante porque o produto precisa estar disponível nas duas plataformas sem duplicar o esforço de desenvolvimento. O React Native tem bom suporte a geolocalização, notificações push e navegação entre telas, funcionalidades centrais para o app. A proximidade com o ecossistema JavaScript facilita o consumo das APIs REST do backend.
 
 **Padrão MVVM no frontend**
 
-O frontend seguirá o padrão MVVM (Model-View-ViewModel), separando a interface visual (View) da lógica de estado e apresentação (ViewModel) e do acesso a dados (Repository). Essa separação torna os componentes de tela mais simples, os ViewModels testáveis de forma isolada e facilita mudanças na camada de comunicação com o backend sem impactar a interface. Para um app com muitas telas de conteúdo dinâmico, como carrosséis de recomendação e catálogo filtrado, essa organização evita que lógica e interface se misturem e tornem o código difícil de manter.
+O frontend segue o padrão MVVM (Model-View-ViewModel), separando a interface visual (View) da lógica de estado e apresentação (ViewModel) e do acesso a dados (Repository). Essa separação torna os componentes de tela mais simples, os ViewModels testáveis de forma isolada e facilita mudanças na camada de comunicação com o backend sem impactar a interface. Para um app com muitas telas de conteúdo dinâmico, como carrosséis de recomendação e catálogo filtrado, essa organização evita que lógica e interface se misturem e tornem o código difícil de manter.
 
 **ViaCEP**
 
-O ViaCEP é uma API pública e gratuita que retorna dados de endereço a partir de um CEP informado. No projeto, ela será usada durante o onboarding do usuário para identificar automaticamente a cidade a partir do CEP cadastrado, sem que o usuário precise informar isso manualmente. Essa informação é essencial para o sistema de recomendação, que filtra os espetáculos de acordo com a cidade do usuário, sendo São Paulo ou Rio de Janeiro.
+O ViaCEP é uma API pública e gratuita que retorna dados de endereço a partir de um CEP informado. No projeto, ela apoia fluxos de cadastro e edição de perfil ao enriquecer dados de endereço e cidade, reduzindo preenchimento manual. Essa informação é relevante para recomendações e filtros geográficos, especialmente nos recortes de São Paulo e Rio de Janeiro.
 
 ---
 
-## 17. Planejamento de Testes
+## 18. Planejamento de Testes
 
 Esta seção apresenta a estrutura de planejamento de testes do sistema de recomendação da Aventura. O objetivo é organizar a validação sistemática da solução, cobrindo testes funcionais, testes de requisitos não funcionais, testes de usabilidade, testes de APIs externas e testes de integração.
 
@@ -1557,7 +1780,7 @@ A validação do sistema deve considerar o contexto do produto: um aplicativo mo
 
 ---
 
-### 17.1 Objetivo do planejamento de testes
+### 18.1 Objetivo do planejamento de testes
 
 O objetivo do planejamento de testes é definir como o sistema será validado ao longo da Sprint 3, garantindo que os requisitos funcionais, requisitos não funcionais, integrações e fluxos de uso sejam verificados de forma organizada.
 
@@ -1576,7 +1799,7 @@ Este planejamento também busca garantir que cada cenário de teste possua:
 
 ---
 
-### 17.2 Estratégia geral de testes
+### 18.2 Estratégia geral de testes
 
 A estratégia de testes do projeto está organizada em cinco frentes principais:
 
@@ -1590,7 +1813,7 @@ Os testes deverão contemplar cenários positivos e negativos, garantindo que o 
 
 ---
 
-### 17.3 Testes de funcionalidade
+### 18.3 Testes de funcionalidade
 
 Esta seção evolui os testes de usuário definidos junto a cada Requisito Funcional (RFs da seção 9.2) para casos de teste funcionais completos, com propósito explícito, pré-condições, cenários positivos e negativos, instruções de execução, pós-condições e critério objetivo de sucesso. Dessa forma O plano de testes funcionais cobre **100% dos 10 RFs definidos na seção 9.2**.
 
@@ -1929,7 +2152,7 @@ A premissa adotada foi garantir cobertura mínima de **um caso de teste principa
 
 ---
 
-### 17.4 Testes de requisitos não funcionais
+### 18.4 Testes de requisitos não funcionais
 
 Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atributos de qualidade como desempenho, segurança, disponibilidade, usabilidade, compatibilidade e escalabilidade.
 
@@ -2187,7 +2410,7 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
 | **Resultado Esperado** | Pipeline retorna exit code 1 e bloqueia o merge/deploy quando cobertura < 70% nos módulos críticos; relatório HTML de cobertura indica exatamente as linhas não cobertas; desenvolvedor é notificado automaticamente. |
 | **Pós-condição** | Relatório de cobertura com falha exportado como artefato; testes faltantes registrados como tarefa no backlog antes do próximo deploy. |
 
-### 17.5 Testes de usabilidade
+### 18.5 Testes de usabilidade
 
 Os testes de usabilidade têm como objetivo avaliar se usuários externos ao grupo conseguem compreender e executar os principais fluxos do aplicativo mobile do Portal Aventura de forma clara, intuitiva e sem auxílio excessivo.
 
@@ -2275,7 +2498,7 @@ A aplicação do questionário SUS complementa a observação das tarefas, permi
 
 ---
 
-### 17.6 Testes de APIs externas
+### 18.6 Testes de APIs externas
 
 O sistema prevê a integração com a API **ViaCEP** para validação, autocomplete e enriquecimento automático de endereços. Durante esta etapa, essa integração ainda foi tratada de forma planejada e simulada, por meio de mocks/stubs, sem dependência direta de chamadas reais em produção. Essa integração é essencial para suportar a geolocalização dos usuários e entregar recomendações personalizadas na seção “Perto de você”, com foco nas cidades de São Paulo e Rio de Janeiro.
 
@@ -2301,61 +2524,72 @@ Essa abordagem assegura que a futura integração real com ViaCEP contribua posi
 
 ---
 
-### 17.7 Testes de integração
+### 18.7 Testes de integração
 
 Nesta seção são planejados os testes das interações entre componentes internos e sistemas externos da Plataforma Aventura. O módulo VHS (*Virtual HTTP Store*) é utilizado como mecanismo de cache temporário obrigatório para todas as integrações com APIs externas (TI-04 e TI-05), garantindo estabilidade, isolamento e reprodutibilidade dos testes mesmo em cenários de indisponibilidade de terceiros.
 
 ---
 
-#### 17.7.1 Configuração do módulo VHS
+#### 18.7.1 Simulação de comportamento equivalente ao VHS
 
-O VHS atua como camada intermediária entre o Backend e qualquer serviço HTTP externo. Ele intercepta as chamadas, armazena as respostas em cache com TTL configurável e as serve em requisições subsequentes idênticas. Nos testes, o VHS opera em modo *test* com TTLs reduzidos, cache flush entre suítes e inspeção habilitada via `VhsTestClient`.
+O sistema não utiliza um VHS (Virtual HTTP Storage) em tempo de execução no frontend. No entanto, foi implementado um mecanismo de cache em memória na camada de aplicação (`cachedFetch`), que reproduz comportamentos equivalentes a um VHS, incluindo armazenamento temporário de respostas HTTP, controle de expiração (TTL) e identificação de requisições como MISS ou HIT.
 
+Esse cache atua como otimização local para requisições à API externa ViaCEP, reduzindo chamadas repetidas e melhorando a performance da aplicação.
 
+Nos testes automatizados, esse comportamento é validado através de:
+- limpeza do cache entre execuções (`flushCache`);
+- verificação de estados MISS/HIT (`getLastCacheStatus`);
+- simulação de respostas da API ViaCEP via MSW ou Jest mock;
+- garantia de isolamento total de rede externa.
 
-#### 17.7.1 Tabela de testes
+Dessa forma, embora não exista um VHS como camada intermediária de infraestrutura, o sistema implementa e valida um comportamento funcional equivalente dentro da camada de frontend.
+
+#### 18.7.2 Tabela de testes
 
 | ID do teste | Integração avaliada | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso | Ferramentas | Uso do VHS |
 |---|---|---|---|---|---|---|---|---|---|---|
-| TI-01 | Frontend Mobile → Backend | Validar que as requisições HTTP originadas pelo app mobile chegam corretamente ao Backend, com autenticação JWT, serialização de payloads e tratamento de erros. Cobre os fluxos de Conta e Perfil (cadastro, login, onboarding, edição de preferências) e Exploração (catálogo, busca, detalhes, wishlist). | (1) Backend em execução; (2) banco PostgreSQL disponível; (3) dados seed de espetáculos inseridos;| Usuário realiza login com credenciais válidas: `POST /api/auth/login { email, password }`. O Backend retorna HTTP 200 com `{ token, expiresIn, userId }`. O token JWT é válido, assinado e pode ser utilizado em chamadas subsequentes. | Usuário envia `POST /api/auth/login` com senha incorreta. O Backend retorna HTTP 401 com `{ error: "InvalidCredentials" }`, sem token no response e sem exposição de dados internos. | (1) Executar `dotnet test --filter Category=TI-01`; (2) o Testcontainers sobe automaticamente o container PostgreSQL; (3) o Respawn reseta o banco antes de cada teste individual; (4) o `WebApplicationFactory` hospeda o Backend in-process; (5) as asserções validam status HTTP, campos do body e estado do banco via query direta. | (1) Token descartado ao final da suíte; (2) banco resetado via Respawn; (3) nenhum container residual em execução. | HTTP 200 e token válido no cenário positivo; HTTP 401 sem token no cenário negativo; nenhum HTTP 500 em qualquer fluxo; sem exposição de stack trace no body de erro. | xUnit, WebApplicationFactory (ASP.NET Core 8), Testcontainers (.NET), Respawn, FluentAssertions, Bogus | Não se aplica |
+| TI-01 | Frontend Mobile → Backend | Validar que as requisições HTTP originadas pelo app mobile chegam corretamente ao Backend, com autenticação JWT, serialização de payloads e tratamento de erros. Cobre os fluxos de Conta e Perfil (cadastro, login, onboarding, edição de preferências) e Exploração (catálogo, busca, detalhes, wishlist). | (1) Backend em execução; (2) banco PostgreSQL disponível; (3) dados seed de espetáculos inseridos;| Usuário realiza login com credenciais válidas: `POST /api/auth/login { email, password }`. O Backend retorna HTTP 200 com `{ token, expiresIn, userId }`. O token JWT é válido, assinado e pode ser utilizado em chamadas subsequentes. | Usuário envia `POST /api/auth/login` com senha incorreta. O Backend retorna HTTP 401 com `{ error: "InvalidCredentials" }`, sem token no response e sem exposição de dados internos. | (1) Executar `dotnet test --filter Category=TI-01`; (2) o Testcontainers sobe automaticamente o container PostgreSQL; (3) o Respawn reseta o banco antes de cada teste individual; (4) o `WebApplicationFactory` hospeda o Backend in-process; (5) as asserções validam status HTTP, campos do body e estado do banco via query direta. | (1) Token descartado ao final da suíte; (2) banco resetado via Respawn; (3) nenhum container residual em execução. | HTTP 200 e token válido no cenário positivo; HTTP 401 sem token no cenário negativo; nenhum HTTP 500 em qualquer fluxo; sem exposição de stack trace no body de erro. | xUnit, WebApplicationFactory, Testcontainers (.NET), Respawn, FluentAssertions, Bogus | Não se aplica |
 | TI-02 | Backend → Banco de Dados | Validar a camada de persistência: criação, leitura, atualização e remoção de entidades críticas (usuários, espetáculos, wishlist e interações), garantindo integridade referencial, ausência de duplicatas e comportamento correto em falhas de banco. | (1) PostgreSQL 15+ via Testcontainers com migrations aplicadas; (2) Respawn configurado para reset entre testes; (3) dados seed para espetáculos, teatros e usuário base; (4) connection string apontando para o container de teste. | Usuário é inserido via repositório com dados válidos. A consulta subsequente pelo e-mail retorna o registro com todos os campos obrigatórios (`name`, `email`, `passwordHash`, `createdAt`) preenchidos corretamente e sem a senha em texto puro. | Tentativa de inserir um segundo usuário com o mesmo e-mail. O banco lança violação de unique constraint; o repositório propaga a exceção sem realizar commit; o banco permanece com apenas um registro para o e-mail. | (1) Executar `dotnet test --filter Category=TI-02`; (2) cada teste recebe uma instância limpa do banco via Respawn; (3) as asserções validam tanto o retorno do repositório quanto o estado do banco por query direta; (4) para cenários de wishlist duplicada, verificar contagem de registros após duas inserções do mesmo par `(userId, espetaculoId)`. | (1) Banco resetado via Respawn; (2) sem registros órfãos por FK; (3) nenhum container residual. | Entidades persistidas corretamente com todos os campos no cenário positivo; violação de constraint tratada sem HTTP 500 e sem duplicata no negativo; todas as operações de leitura completadas em menos de 200 ms. | xUnit, Testcontainers (.NET), Respawn, FluentAssertions, Bogus | Não se aplica |
 | TI-03 | Backend → Serviço de Recomendação | Validar que o Backend consulta corretamente o Serviço de Recomendação via `IRecommendationService`, recebe a lista personalizada de espetáculos e trata adequadamente os cenários de fallback (usuário sem histórico) e indisponibilidade do serviço. | (1) Serviço de Recomendação disponível (instância real via Testcontainers ou stub via WireMock.Net); (2) banco com interações seed (mínimo 10 interações por usuário de teste em gênero Musical); (3) usuário "novo" sem nenhuma interação criado para o cenário de fallback; (4) modelo de recomendação inicial disponível no Bucket Storage ou mockado. | Backend chama `GET /api/recomendacoes` com token de usuário que possui 10+ interações em espetáculos do gênero Musical. O Serviço de Recomendação retorna HTTP 200 com lista de 5 a 10 espetáculos, com peso maior para o gênero Musical e sem nenhum espetáculo já visualizado pelo usuário. | Backend chama `GET /api/recomendacoes` com o Serviço de Recomendação indisponível (WireMock retornando HTTP 503). O Backend retorna HTTP 503 com `{ error: "ServiceUnavailable", retryAfter }`, sem HTTP 500, sem exposição de stack trace e com o evento registrado nos logs. | (1) Executar `dotnet test --filter Category=TI-03`; (2) o WireMock.Net simula o Serviço de Recomendação; (3) configurar WireMock para o cenário positivo com response de lista válida e para o negativo com HTTP 503; (4) inspecionar call count do WireMock para garantir que o Backend realizou exatamente uma chamada; (5) no cenário de fallback, verificar que a lista retornada contém espetáculos populares e não está vazia. | (1) WireMock resetado entre testes; (2) banco resetado via Respawn; (3) nenhuma recomendação persiste no banco do teste anterior. | Lista de recomendações retornada com campos obrigatórios (`id`, `titulo`, `score`) no positivo; HTTP 503 tratado com mensagem amigável no negativo; fallback retorna lista não vazia para usuário sem histórico; nenhum HTTP 500 em qualquer cenário. | xUnit, WireMock.Net, Testcontainers (.NET), Respawn, FluentAssertions | Não se aplica |
-| TI-04 | Backend → API externa (ViaCEP) | Validar a integração com o ViaCEP para preenchimento automático de endereço durante o cadastro, garantindo que o VHS armazene e sirva as respostas em cache, e que o Backend trate corretamente CEPs inválidos e indisponibilidade do serviço externo. | (1) WireMock.Net simulando `https://viacep.com.br/ws/{cep}/json/`; (2) VHS configurado com TTL de 24 h para CEP válido e 5 min para CEP inexistente; (3) cache VHS limpo via `VhsTestClient.Flush()` antes de cada suíte; (4) Backend configurado para rotear todas as chamadas ao ViaCEP através do VHS (nenhuma chamada direta permitida). | Backend recebe `POST /api/address/lookup { cep: "01310100" }`. A chamada passa pelo VHS (cache miss na primeira execução, `X-Cache: MISS`), o WireMock retorna os dados do CEP e o Backend responde HTTP 200 com `{ logradouro, bairro, cidade, estado }`. O VHS armazena a resposta com TTL de 24 h. Na segunda execução idêntica, o VHS responde com `X-Cache: HIT` sem consultar o WireMock. | Backend recebe `POST /api/address/lookup` com o WireMock configurado para retornar HTTP 503. O VHS não possui a resposta em cache. O Backend retorna HTTP 503 com mensagem amigável ("Serviço de CEP temporariamente indisponível"), orienta o preenchimento manual e não armazena o erro 5xx no cache do VHS. | (1) Executar `dotnet test --filter Category=TI-04`; (2) usar `VhsTestClient.Flush()` no `BeforeEach`; (3) executar o cenário positivo duas vezes e inspecionar `X-Cache` no segundo response e o `CallCount` do WireMock (deve ser 1, não 2); (4) para o negativo de indisponibilidade, parar o WireMock e verificar que o VHS não criou entrada de erro; (5) para CEP inválido (ex: `"00000"`), verificar HTTP 400 sem nenhuma chamada ao WireMock ou ao VHS. | (1) Cache VHS limpo ao final da suíte; (2) WireMock resetado; (3) nenhuma entrada de erro 5xx armazenada no VHS. | HTTP 200 com dados de endereço no positivo; `X-Cache: HIT` e call count = 1 do WireMock na segunda chamada idêntica; HTTP 400 para CEP mal formatado sem chamada ao serviço externo; HTTP 503 amigável quando ViaCEP indisponível e cache vazio; nenhum HTTP 500 em qualquer cenário. | xUnit, WireMock.Net, VhsTestClient, WebApplicationFactory, FluentAssertions | **Sim** — cache miss/hit de CEPs válidos (TTL 24 h); cache de not-found (TTL 5 min); nenhuma chamada ao ViaCEP real em nenhum cenário de teste. |
-| TI-05 | Backend → Ticketera externa | Validar que o Backend obtém, cacheia via VHS e entrega corretamente os links de compra da ticketera parceira, e que trata de forma adequada links indisponíveis, espetáculos sem link cadastrado e indisponibilidade total do serviço externo. | (1) WireMock.Net simulando o endpoint de links da ticketera parceira; (2) VHS configurado com TTL de 1 h para links válidos e 5 min para respostas de erro 4xx/5xx; (3) cache VHS limpo via `VhsTestClient.Flush()` antes de cada suíte; (4) espetáculo com `compraUrl` válida e espetáculo com `compraUrl` nula cadastrados no banco seed. | Backend recebe `GET /api/espetaculos/{id}/compra-link`. O VHS não possui a URL em cache (cache miss). O Backend consulta a ticketera via WireMock, que retorna a URL de compra válida. O Backend responde HTTP 200 com `{ url, expiresAt }` e registra evento `clique_compra` para analytics. O VHS armazena o link com TTL de 1 h. Na segunda chamada idêntica, `X-Cache: HIT` e o WireMock não é consultado novamente. | Backend recebe `GET /api/espetaculos/{id}/compra-link` com o WireMock retornando HTTP 503 e o VHS sem cache para aquele espetáculo. O Backend retorna HTTP 503 com mensagem amigável, sem expor detalhes internos. Para espetáculo com `compraUrl` nula no banco, o Backend retorna HTTP 404 com `{ error: "PurchaseLinkNotAvailable" }` sem sequer consultar o VHS ou a ticketera. | (1) Executar `dotnet test --filter Category=TI-05`; (2) usar `VhsTestClient.Flush()` no `BeforeEach`; (3) executar a chamada positiva duas vezes, verificar `X-Cache: HIT` na segunda e call count = 1 do WireMock; (4) para o negativo de indisponibilidade, configurar WireMock com HTTP 503 e verificar que o VHS não armazenou o erro; (5) para espetáculo sem link, verificar que a chamada retorna HTTP 404 sem nenhuma consulta ao WireMock ou ao VHS; (6) verificar que o evento `clique_compra` foi registrado no banco apenas no cenário positivo. | (1) Cache VHS limpo ao final da suíte; (2) WireMock resetado; (3) nenhuma entrada de erro armazenada no VHS; (4) evento `clique_compra` registrado somente em chamadas bem-sucedidas. | HTTP 200 com URL válida no positivo; `X-Cache: HIT` e call count = 1 do WireMock na segunda chamada; HTTP 404 com mensagem clara para espetáculo sem link, sem consulta ao VHS ou à ticketera; HTTP 503 amigável com ticketera indisponível e cache vazio; nenhum HTTP 500 em qualquer cenário. | xUnit, WireMock.Net, VhsTestClient, WebApplicationFactory, Respawn, FluentAssertions | **Sim** — cache de links válidos (TTL 1 h); cache de not-found (TTL 5 min); nenhuma chamada à ticketera real em nenhum cenário de teste. |
+| TI-04 | Frontend → API externa (ViaCEP) | Validar a integração do frontend com a API ViaCEP para preenchimento automático de endereço durante o cadastro, garantindo tratamento correto de CEPs válidos, inválidos e falhas de rede, além do comportamento de cache em memória com lógica equivalente a um VHS (Virtual HTTP Storage), simulando MISS/HIT e controle de TTL no cliente. | (1) Mock de requisições HTTP usando MSW (Mock Service Worker) ou Jest fetch mock; (2) simulação de chamadas para `https://viacep.com.br/ws/{cep}/json/`; (3) isolamento total de rede externa nos testes; (4) reset do cache em memória (`flushCache()`) antes de cada teste; (5) validação do comportamento de cache tipo VHS implementado no frontend (`cachedFetch` com MISS/HIT); (6) nenhuma chamada real ao ViaCEP durante testes. | **Cenário positivo (cache MISS → HIT):** Usuário informa CEP `"01310100"`. Frontend executa `cachedFetch` que realiza requisição ao ViaCEP. Na primeira chamada, o sistema registra comportamento equivalente a VHS MISS, realizando a requisição externa e retornando HTTP 200 com `{ logradouro, bairro, localidade, uf }`. Na segunda chamada com o mesmo CEP, a resposta é obtida do cache em memória (comportamento equivalente a VHS HIT), sem nova requisição de rede. | **Cenário de CEP inválido:** Usuário informa CEP inválido (`"00000"`). API retorna resposta com erro (`erro: true` ou dados inválidos). Frontend exibe mensagem de validação ("CEP inválido") e não preenche campos. A resposta pode ser armazenada no cache com TTL reduzido (estratégia equivalente a cache de not-found no VHS). | **Cenário de falha de rede / indisponibilidade:** API ViaCEP retorna erro HTTP (ex: 503) ou falha de conexão. Frontend captura a exceção e exibe fallback amigável ("Não foi possível consultar o CEP no momento"), mantendo o formulário editável manualmente, sem armazenamento de erro no cache. | (1) Executar `jest` ou `detox test --grep TI-04`; (2) mockar fetch com MSW/Jest; (3) validar comportamento de cache equivalente a VHS (MISS na primeira chamada e HIT na segunda via `getLastCacheStatus()`); (4) validar `cacheSize()` para garantir armazenamento; (5) resetar cache com `flushCache()` entre testes; (6) garantir ausência de chamadas reais ao ViaCEP. | (1) Cache em memória limpo após cada teste; (2) MSW handlers resetados; (3) isolamento total de rede externa; (4) consistência do comportamento de cache tipo VHS entre execuções. | HTTP 200 com preenchimento correto de endereço; comportamento equivalente a VHS MISS/HIT; mensagem de erro para CEP inválido; fallback para falha de rede; ausência de chamadas reais em ambiente de teste. | React Native Testing Library, Jest, MSW, Detox (opcional) | Sim — implementação de cache em memória no frontend com comportamento equivalente a VHS (MISS/HIT e TTL), sem uso de infraestrutura externa de cache. |
+| TI-05 | Backend → Ticketera | Validar que o Backend entrega corretamente as URLs de compra cadastradas para os espetáculos, garantindo autenticação, retorno correto dos dados e tratamento de cenários de erro. Não existe integração HTTP externa com a ticketera nesta sprint; o Backend apenas expõe os links armazenados no banco de dados. | (1) PostgreSQL disponível via Testcontainers; (2) Respawn configurado; (3) usuário autenticado cadastrado; (4) espetáculos seedados com campo `url_bilheteria` preenchido. | Backend recebe `GET /api/espetaculo/{id}` para um espetáculo existente. O endpoint retorna HTTP 200 contendo os dados do espetáculo, incluindo o campo `urlBilheteria` preenchido corretamente. | Backend recebe `GET /api/espetaculo/{id}` para um identificador inexistente. O endpoint retorna HTTP 404 sem exposição de detalhes internos. Sem autenticação, o endpoint retorna HTTP 401. | (1) Executar `dotnet test --filter Category=TI-05`; (2) o Testcontainers sobe automaticamente o PostgreSQL; (3) o Respawn limpa o banco antes de cada teste; (4) criar espetáculos com URLs válidas usando os helpers de seed; (5) validar os códigos HTTP e os campos retornados pelo endpoint. | (1) Banco resetado via Respawn; (2) tokens descartados; (3) nenhum container residual em execução. | HTTP 200 contendo `urlBilheteria` válida no cenário positivo; HTTP 404 para espetáculo inexistente; HTTP 401 para acesso sem autenticação; nenhum HTTP 500 em qualquer cenário. | xUnit, WebApplicationFactory, Testcontainers (.NET), Respawn, FluentAssertions | Não se aplica |
+---
+
+#### 18.7.3 Método de validação dos resultados
+
+A validação de cada teste combina três camadas de verificação:
+
+**Status HTTP e body do response** — todas as asserções verificam o código de status esperado (200, 201, 400, 401, 404 e 503) e os campos obrigatórios do JSON retornado.
+
+**Estado do banco de dados** — após operações de escrita, consultas diretas ao PostgreSQL (executando em Testcontainers) confirmam que os dados foram persistidos corretamente e que as restrições de integridade permanecem válidas.
+
+**Logs e rastreabilidade** — os fluxos são executados em ambiente isolado de testes, garantindo repetibilidade. A ausência de exceções não tratadas e de stack traces expostos ao cliente faz parte dos critérios de sucesso.
 
 ---
 
-#### 17.7.2 Método de validação dos resultados
+#### 18.7.4 Discussão de abrangência
 
-A validação de cada teste combina quatro camadas de verificação:
+As cinco integrações mapeadas cobrem os fluxos críticos identificados nos diagramas de Casos de Uso e Componentes.
 
-**Status HTTP e body do response** — todas as asserções verificam o código de status esperado (200, 201, 400, 401, 404, 503) e os campos obrigatórios do JSON de resposta.
+**TI-01 (Frontend → Backend)** valida a comunicação principal da aplicação, incluindo autenticação e operações realizadas pelo usuário através do aplicativo móvel.
 
-**Estado do banco de dados** — após cada operação de escrita, uma query direta ao PostgreSQL (via Testcontainers) confirma que o registro foi criado, atualizado ou removido conforme esperado, e que não há duplicatas nem registros órfãos por violação de FK.
+**TI-02 (Backend → Banco)** garante a confiabilidade da camada de persistência, assegurando integridade dos dados, constraints e consistência das operações CRUD.
 
-**Comportamento do VHS (TI-04 e TI-05)** — o `VhsTestClient` é usado para inspecionar o header `X-Cache` (HIT ou MISS), verificar o `CallCount` do WireMock (garantindo que a segunda chamada idêntica não atinge o serviço externo) e confirmar que respostas de erro 5xx não foram armazenadas em cache.
+**TI-03 (Backend → Serviço de Recomendação)** valida o diferencial da solução, verificando a comunicação com o mecanismo de recomendação e os cenários de fallback quando o serviço não está disponível.
 
-**Logs e rastreabilidade** — o `X-Correlation-Id` é propagado em todas as requisições e verificado nos logs do Serilog/Seq, garantindo rastreabilidade ponta a ponta; a ausência de stack trace em responses de erro é validada como critério explícito de sucesso.
+**TI-04 (Frontend → API externa ViaCEP)** valida a integração direta do frontend com a API ViaCEP para preenchimento automático de endereço durante o cadastro. Este fluxo também valida o comportamento de cache em memória implementado na aplicação, que reproduz características conceituais de um VHS (Virtual HTTP Storage), incluindo armazenamento temporário de respostas, controle de expiração (TTL) e distinção entre requisições do tipo MISS e HIT.
 
----
+Embora não exista uma camada de VHS como infraestrutura intermediária no sistema, seu comportamento é simulado no frontend por meio do módulo `cachedFetch`, garantindo redução de requisições externas e melhoria de performance percebida pelo usuário.
 
-#### 17.7.3 Discussão de abrangência
+Os testes associados ao TI-04 validam tanto a integração com a API externa quanto esse comportamento de cache equivalente ao VHS, por meio de mocks de rede, isolamento de chamadas externas e verificação de HIT/MISS.
 
-As cinco integrações mapeadas cobrem todos os fluxos críticos identificados no Diagrama de Casos de Uso e no Diagrama de Componentes:
+**TI-05 (Backend → Ticketera)** valida a disponibilização dos links de compra associados aos espetáculos. Nesta sprint, a integração é realizada por meio de URLs armazenadas no banco de dados e retornadas pelos endpoints da API, não havendo comunicação HTTP direta com sistemas externos. Os testes garantem que os links são retornados corretamente para o frontend, bem como o tratamento adequado de cenários de autenticação e recursos inexistentes.
 
-**TI-01 (Frontend → Backend)** é o ponto de entrada de toda a jornada do usuário — cadastro, login, onboarding, busca e wishlist. Sua prioridade é máxima porque qualquer falha aqui impede o acesso a todas as demais funcionalidades.
-
-**TI-02 (Backend → Banco)** garante a integridade da camada de persistência, que sustenta tanto o catálogo quanto as interações que alimentam o motor de recomendação. Sem essa camada estável, os testes de TI-03 perdem confiabilidade.
-
-**TI-03 (Backend → Serviço de Recomendação)** valida o diferencial central do produto — a personalização. O uso de WireMock aqui é deliberado: isola o comportamento do Backend do algoritmo interno do serviço, permitindo testar contratos e fallbacks sem depender do modelo treinado.
-
-**TI-04 (Backend → ViaCEP)** e **TI-05 (Backend → Ticketera)** representam integrações externas previstas para o produto, mas nos testes são executadas com serviços simulados por mocks/stubs. Por isso, são as que mais se beneficiam do VHS. O módulo elimina a dependência de disponibilidade e de estado dos terceiros durante os testes, tornando as suítes completamente determinísticas e executáveis offline. Adicionalmente, os cenários de cache hit/miss validam explicitamente que o VHS está funcionando como camada de proteção — e não apenas como detalhe de implementação — por meio do WireMock call count e do header `X-Cache`.
-
-A combinação VHS + WireMock garante que nenhum teste de integração realiza chamadas a serviços externos reais, o que atende ao princípio de isolamento de ambiente e viabiliza a execução no pipeline de CI sem necessidade de credenciais ou conectividade com terceiros.
+A combinação de Testcontainers, Respawn, WebApplicationFactory e FluentAssertions garante que todos os testes de integração sejam executados em ambiente isolado, reproduzível e independente de serviços externos reais, permitindo execução confiável tanto localmente quanto nos pipelines de integração contínua.
 
 ---
 
-### 17.8 Discussão geral de abrangência dos testes
+### 18.8 Discussão geral de abrangência dos testes
 
 O planejamento de testes proposto cobre as principais dimensões de qualidade necessárias para validar o Portal Aventura como uma solução integrada. A estratégia não se limita à verificação isolada de funcionalidades, mas contempla também requisitos não funcionais, usabilidade, APIs externas e integrações entre frontend, backend, banco de dados e serviço de recomendação.
 
@@ -2373,12 +2607,12 @@ Como próximos passos, recomenda-se executar os testes planejados de forma incre
 
 ----
 
-## 18. Desenvolvimento Do Projeto  — Sprint 3
+## 19. Desenvolvimento Do Projeto  — Sprint 3
 
 Esta seção documenta o progresso incremental da solução de software durante a Sprint 3. O objetivo é evidenciar a evolução do backend, frontend, integrações, padrões de desenvolvimento, testes unitários, metodologia e comprovações de execução da aplicação.
 
 ---
-### 18.1 Objetivo da sessão
+### 19.1 Objetivo da sessão
 
 Esta seção evidencia o progresso incremental da solução durante a Sprint 3, contemplando:
 
@@ -2391,7 +2625,7 @@ Esta seção evidencia o progresso incremental da solução durante a Sprint 3, 
 
 ---
 
-### 18.2 Arquitetura de codificação e estrutura de diretórios
+### 19.2 Arquitetura de codificação e estrutura de diretórios
 
 A organização geral do repositório separa claramente backend, frontend, banco de dados, modelos de machine learning, dataset, documentação e ferramentas auxiliares.
 
@@ -2467,9 +2701,9 @@ g02/
 
 ---
 
-### 18.3 Desenvolvimento do Backend
+### 19.3 Desenvolvimento do Backend
 
-#### 18.3.1 Arquitetura do backend
+#### 19.3.1 Arquitetura do backend
 
 O backend foi desenvolvido em **.NET 10 (C#)** e segue uma arquitetura em camadas inspirada nos princípios de **Domain-Driven Design (DDD)** e **Clean Architecture**, com clara separação de responsabilidades entre as camadas.
 
@@ -2557,7 +2791,7 @@ src/backend/
 
 ---
 
-#### 18.3.2 Rotas da API REST
+#### 19.3.2 Rotas da API REST
 
 Todas as rotas estão expostas sob o prefixo `/api`. O Swagger UI está disponível em `/swagger` no ambiente de desenvolvimento.
 
@@ -2696,7 +2930,7 @@ As rotas descritas nesta seção representam os contratos previstos e documentad
 
 ---
 
-### 18.4 Desenvolvimento do Frontend
+### 19.4 Desenvolvimento do Frontend
 
 O frontend da Sprint 3 foi implementado como um aplicativo móvel híbrido em `src/frontend/mobile-app-aventura`, com foco em cross-platform e entrega rápida. A escolha por React Native buscou reduzir tempo de desenvolvimento e garantir disponibilidade simultânea em iOS e Android com um único conjunto de telas.
 
@@ -2711,7 +2945,7 @@ A aplicação utiliza um padrão similar a MVVM. As telas em `screens/` atuam co
 
 Essa decisão foi tomada para validar fluxo, navegação, componentes e experiência de uso antes da integração completa com o backend. A integração REST real fica prevista para as próximas sprints, mantendo os repositories como ponto natural de troca entre mocks e chamadas HTTP.
 
-#### 18.4.1 Arquitetura do frontend
+#### 19.4.1 Arquitetura do frontend
 
 A estrutura adotada no frontend inclui:
 
@@ -2727,7 +2961,7 @@ A estrutura adotada no frontend inclui:
 
 Essa estrutura permite que a equipe evolua a interface e os fluxos de navegação com baixo acoplamento. Quando a integração com o backend for ativada, a principal mudança esperada estará nos repositories e services, preservando as telas e grande parte dos viewmodels.
 
-#### 18.4.2 Telas implementadas
+#### 19.4.2 Telas implementadas
 
 As telas essenciais entregues na Sprint 3 foram:
 
@@ -2744,7 +2978,7 @@ As telas essenciais entregues na Sprint 3 foram:
 
 A implementação foi orientada pelas decisões de produto e pela estrutura esperada das APIs, mas nesta sprint o frontend opera majoritariamente com mocks locais. Isso permitiu validar o desenho das telas e a separação MVVM antes da integração real com os endpoints do backend nas próximas etapas.
 
-#### 18.4.3 Vídeo demonstrativo do frontend
+#### 19.4.3 Vídeo demonstrativo do frontend
 
 Como evidência complementar da Sprint 3, será adicionado aqui o link para um vídeo demonstrativo do aplicativo mobile em execução, mostrando o fluxo de navegação, as telas implementadas, a bottom tab bar, o uso de dados mockados e as interações principais do frontend.
 
@@ -2752,7 +2986,7 @@ Como evidência complementar da Sprint 3, será adicionado aqui o link para um v
 
 ---
 
-### 18.5 Padrões de codificação e padrões de projeto
+### 19.5 Padrões de codificação e padrões de projeto
 
 Nesta seção documentamos as decisões que guiaram o desenvolvimento do backend e do frontend na Sprint 3. Essas escolhas foram feitas para garantir consistência no código, manutenção previsível e alinhamento com boas práticas de engenharia.
 
@@ -2775,14 +3009,16 @@ A aplicação utiliza padrões de projeto concretos para garantir robustez e cla
 |---|---|---|---|
 | Criacional | Factory | `infrastructure/DbConnectionFactory.cs` | Centraliza a criação de `NpgsqlConnection`, reduz duplicação e valida credenciais de ambiente antes de abrir a conexão. |
 | Estrutural | Mapper | `mappings/DtoMapper.cs` | Separa as entidades do domínio dos contratos de API, permitindo que alterações internas não virem quebra de contrato. |
-| Comportamental | Repository | `repository/*Repository.cs` | Isola o acesso ao banco de dados, facilita testes de integração e mantém queries SQL organizadas. |
-| Comportamental | Service | `services/*Service.cs` | Orquestra regras de negócio, validações e fluxos transacionais fora dos controllers. |
-| Comportamental | Middleware | `extensions/middleware` | Centraliza o tratamento de exceções e a formatação de responses de erro, mantendo os controllers limpos. |
+| Comportamental | Strategy | `services/IRecommendationStrategy.cs`, `services/StoredRecommendationStrategy.cs`, `services/FavoriteGenresRecommendationStrategy.cs` | Separa as estratégias de recomendação persistida e fallback por gêneros favoritos, permitindo alternar ou adicionar algoritmos sem alterar o contrato de `RecomendacaoService`. |
+| Arquitetural | Repository | `repository/*Repository.cs` | Isola o acesso ao banco de dados, facilita testes de integração e mantém queries SQL organizadas. |
+| Arquitetural | Service Layer | `services/*Service.cs` | Orquestra regras de negócio, validações e fluxos transacionais fora dos controllers. |
+| Infraestrutura ASP.NET | Middleware | `infrastructure/middleware/GlobalExceptionHandler.cs` | Centraliza o tratamento de exceções e a formatação de responses de erro, mantendo os controllers limpos. |
 
 #### Justificativas das escolhas
 
 - O padrão **Service/Repository** foi adotado para garantir que a camada de API mantenha apenas responsabilidades de roteamento e autorização, enquanto a lógica de domínio permanece testável.
 - O padrão **Factory** para conexão foi usado para evitar replicação de string de conexão e para encapsular a lógica de fallback entre `appsettings` e variáveis de ambiente.
+- O padrão **Strategy** foi aplicado no fluxo de recomendação para separar a busca por recomendações persistidas do fallback por gêneros favoritos.
 - O uso de **Mapper** evita o vazamento de entidades de domínio na API e permite evoluir o modelo interno sem alterar os resultados expostos.
 - A opção por **React Native** no frontend foi tomada para reduzir o tempo de entrega e permitir uma única base de código para Android e iOS.
 
@@ -2790,7 +3026,7 @@ Essas decisões de codificação e arquitetura foram tomadas para oferecer um ba
 
 ---
 
-### 18.6 Testes unitários do Backend e metodologia TDD
+### 19.6 Testes unitários do Backend e metodologia TDD
 
 Esta seção deve documentar a estratégia de testes unitários adotada no projeto, com foco nas funcionalidades implementadas e na aplicação da metodologia TDD.
 
@@ -2837,7 +3073,7 @@ Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositó
 
 ---
 
-### 18.7 Testes unitários do Frontend (React Native)
+### 19.7 Testes unitários do Frontend (React Native)
  
 Esta seção documenta a estratégia de testes unitários adotada para o frontend mobile do projeto, cobrindo as camadas de ViewModel e Service da arquitetura MVVM.
  
@@ -2898,7 +3134,7 @@ Cobertura focada nas camadas de ViewModel e Service, que concentram toda a lógi
 
 ---
 
-### 18.8 Testes unitários do Backend
+### 19.8 Testes unitários do Backend
 
 Esta seção documenta a estratégia de testes unitários adotada para o backend da aplicação.
 
@@ -3028,7 +3264,7 @@ Cobertura focada nas camadas de Domain, Service, Controller, Middleware e Infrae
 
 ---
 
-### 18.9 Documentação de API (Swagger)
+### 19.9 Documentação de API (Swagger)
 
 Esta seção documenta a API REST do backend, exposta via Swagger UI em ambiente de desenvolvimento. Na Sprint 3, essa documentação serviu como contrato técnico das rotas previstas e implementadas no backend; no frontend mobile, fluxos como autenticação ainda foram consumidos de forma simulada, por meio de mocks e serviços locais.
 
@@ -3142,7 +3378,24 @@ As principais telas e fluxos refinados na Sprint 4 foram:
 
 Além dos ajustes por tela, foram adicionados feedbacks de sistema em ações importantes para o usuário, como salvar perfil, editar preferências e interagir com a wishlist. Esses retornos ajudam a confirmar o resultado das ações e tornam o fluxo mais claro em cenários que dependem de respostas do backend.
 
-#### 19.2.3 Evidência demonstrativa do frontend
+#### 19.2.3 Testes unitários do frontend
+
+Na Sprint 4, os testes unitários do frontend foram atualizados para acompanhar a evolução da aplicação React Native, especialmente a transição de fluxos baseados em mocks locais para fluxos conectados a services, repositórios e sessão autenticada. A suíte fica localizada em `src/frontend/mobile-app-aventura/tests` e é executada com Jest.
+
+Os testes mantêm foco nas camadas de `services` e `viewmodels`, pois concentram regras de apresentação, validações, carregamento assíncrono, busca, onboarding, edição de interesses e integração com APIs internas. Dependências externas como navegação, armazenamento de token, cliente HTTP e dados de apoio são isoladas por mocks, garantindo que os cenários validem o comportamento da lógica do frontend sem depender de ambiente nativo ou backend em execução.
+
+Durante o refinamento, os testes de onboarding foram alinhados ao modelo atual de categorias, cidades e frequências; os testes de busca passaram a considerar carregamento assíncrono e debounce; e os testes de edição de interesses foram ajustados para aguardar corretamente o estado inicial vindo dos services. Também foi adicionado um setup do Jest para compatibilidade com variáveis globais esperadas pelo ambiente React Native.
+
+**Comando de execução:**
+
+```bash
+cd src/frontend/mobile-app-aventura
+npm test -- --runInBand
+```
+
+**Resultado validado na Sprint 4:** 9 suítes aprovadas, totalizando 109 testes unitários aprovados.
+
+#### 19.2.4 Evidência demonstrativa do frontend
 
 Como evidência complementar da Sprint 4, será adicionado aqui o link para um vídeo demonstrativo do aplicativo mobile em execução, destacando os refinamentos visuais, o novo fluxo de cadastro, a edição de perfil, a navegação em teatros, os feedbacks de sistema e os principais fluxos conectados ao backend.
 
@@ -3150,11 +3403,239 @@ Como evidência complementar da Sprint 4, será adicionado aqui o link para um v
 
 ### 19.3 Evolução do Backend
 
+Na Sprint 4, o backend evoluiu de uma camada de API planejada para uma aplicação ASP.NET Core mais completa, com autenticação, autorização, persistência em PostgreSQL, tratamento padronizado de erros, suporte aos fluxos do aplicativo mobile e integração indireta com o motor de recomendação. O código da aplicação está concentrado em `src/backend` e mantém uma organização em camadas, separando controllers, serviços de aplicação, repositórios, domínio, DTOs, infraestrutura e mapeamentos.
+
+#### 19.3.1 Estrutura técnica do backend
+
+A arquitetura implementada no backend segue uma separação simples e rastreável:
+
+- `controller/` — expõe os endpoints REST consumidos pelo aplicativo mobile e pelo Swagger.
+- `services/` — concentra regras de negócio, validações, fallback de recomendação, autenticação, wishlist, preferências e anonimização.
+- `repository/` — executa acesso ao PostgreSQL com `Npgsql`, usando consultas parametrizadas.
+- `domain/` — representa entidades e regras internas de consistência, como usuário, espetáculo, teatro, preferências e recomendação.
+- `dto/` — define contratos de entrada e saída da API.
+- `mappings/` — converte entidades de domínio para DTOs, evitando exposição direta do modelo interno.
+- `infrastructure/` — centraliza conexão com banco, middleware de exceções e persistência auxiliar.
+- `extensions/DependencyInjection.cs` — registra repositórios, serviços, middleware e jobs em injeção de dependência.
+
+Essa estrutura mantém os controllers finos: eles recebem a requisição, chamam o serviço correspondente e retornam o resultado. As regras de negócio ficam nos services, enquanto a leitura e escrita no banco ficam nos repositories.
+
+#### 19.3.2 Configuração da aplicação
+
+O arquivo `Program.cs` passou a concentrar as principais configurações de execução:
+
+- carregamento de variáveis de ambiente a partir de `.env`;
+- leitura de configurações por `builder.Configuration.AddEnvironmentVariables()`;
+- ativação de controllers com política global de autenticação;
+- configuração de JWT Bearer Authentication;
+- habilitação de Swagger em ambiente de desenvolvimento;
+- habilitação de CORS;
+- uso de `UseExceptionHandler()` com respostas `ProblemDetails`;
+- registro das camadas por `AddAventuraInfrastructure()` e `AddAventuraApplication()`.
+
+A autenticação é aplicada globalmente aos controllers por meio de uma `AuthorizationPolicy` que exige usuário autenticado. O `AuthController` é a exceção explícita, pois recebe `[AllowAnonymous]` para permitir cadastro e login.
+
+#### 19.3.3 Autenticação, usuário e LGPD
+
+O fluxo de autenticação foi estruturado no conjunto `AuthController`, `AuthService`, `UsuarioRepository` e DTOs de autenticação. O cadastro valida nome, e-mail, senha mínima, idade mínima e aceite de consentimento. A senha cadastrada é armazenada com hash BCrypt e o usuário recebe um token JWT com `sub`, `email` e `name`.
+
+Também foi adicionada evolução importante para LGPD:
+
+- campos de consentimento (`consentimento_aceito` e `data_consentimento`);
+- exclusão lógica por `deleted_at`;
+- flag `anonimizado`;
+- endpoint de exclusão de usuário em `DELETE /api/usuario/{id}`;
+- `AnonimizacaoJob`, executado a cada 24 horas, que anonimiza contas marcadas para exclusão há pelo menos 30 dias.
+
+Com isso, o backend deixa de tratar exclusão como remoção imediata e passa a manter um ciclo compatível com retenção temporária e anonimização posterior.
+
+#### 19.3.4 Endpoints REST implementados na Sprint 4
+
+A API utiliza o prefixo `api/[controller]`. Os principais endpoints disponíveis são:
+
+| Grupo | Método | Rota | Finalidade | Retorno esperado |
+|---|---|---|---|---|
+| Autenticação | POST | `/api/auth/register` | Cadastrar usuário com dados pessoais, endereço e consentimento | `201 Created` + `AuthResponse` |
+| Autenticação | POST | `/api/auth/login` | Autenticar usuário e emitir token JWT | `200 OK` + `AuthResponse` |
+| Usuário | GET | `/api/usuario/{id}` | Consultar perfil do usuário | `200 OK` + `UsuarioResponse` |
+| Usuário | PUT | `/api/usuario/{id}` | Atualizar dados pessoais e endereço | `200 OK` + `UsuarioResponse` |
+| Usuário | DELETE | `/api/usuario/{id}` | Solicitar exclusão lógica da conta | `204 No Content` |
+| Espetáculos | GET | `/api/espetaculo` | Listar espetáculos ordenados por data de início | `200 OK` + lista de `EspetaculoDto` |
+| Espetáculos | GET | `/api/espetaculo/{id}` | Consultar espetáculo por ID | `200 OK` + `EspetaculoDto` |
+| Espetáculos | GET | `/api/espetaculo/search?genero=&nome=` | Buscar espetáculos por gênero e/ou nome | `200 OK` + lista de `EspetaculoDto` |
+| Teatros | GET | `/api/teatro` | Listar teatros | `200 OK` + lista de `TeatroDto` |
+| Teatros | GET | `/api/teatro/{id}` | Consultar teatro por ID | `200 OK` + `TeatroDto` |
+| Teatros | GET | `/api/teatro/{id}/espetaculos` | Listar espetáculos vinculados ao teatro | `200 OK` + lista de `EspetaculoDto` |
+| Preferências | GET | `/api/preferencias/{usuarioId}` | Consultar preferências do usuário | `200 OK` + `PreferenciasDto` |
+| Preferências | PUT | `/api/preferencias/{usuarioId}` | Atualizar gêneros, tags, localização, faixa de preço e notificações | `200 OK` + `PreferenciasDto` |
+| Wishlist | GET | `/api/wishlist/{usuarioId}` | Listar espetáculos salvos | `200 OK` + lista de `EspetaculoDto` |
+| Wishlist | GET | `/api/wishlist/{usuarioId}/contains/{espetaculoId}` | Verificar se o espetáculo está salvo | `200 OK` + `bool` |
+| Wishlist | POST | `/api/wishlist/{usuarioId}/{espetaculoId}` | Adicionar espetáculo à wishlist | `201 Created` |
+| Wishlist | DELETE | `/api/wishlist/{usuarioId}/{espetaculoId}` | Remover espetáculo da wishlist | `204 No Content` |
+| Recomendações | GET | `/api/recomendacao/{usuarioId}?limit=` | Retornar recomendações persistidas ou fallback por gêneros favoritos | `200 OK` + lista de `RecomendacaoItemDto` |
+| Gêneros | GET | `/api/genero` | Listar gêneros cadastrados | `200 OK` + lista de strings |
+| Preferências auxiliares | GET | `/api/preference/{userId}` | Consultar preferências em memória para cold-start auxiliar | `200 OK` + lista de strings |
+| Preferências auxiliares | POST | `/api/preference/{userId}` | Salvar tipos de evento em memória para cold-start auxiliar | `204 No Content` |
+
+#### 19.3.5 Regras de negócio implementadas
+
+As regras implementadas no backend cobrem os principais fluxos do app:
+
+- cadastro exige consentimento de privacidade, e-mail válido, senha com no mínimo 6 caracteres e idade mínima de 13 anos;
+- e-mails são únicos e verificados de forma case-insensitive;
+- usuários excluídos logicamente não são retornados por consulta de ID;
+- atualização de perfil permite alterar nome, idade e endereço;
+- preferências são criadas automaticamente quando ainda não existem para o usuário;
+- atualização de preferências usa transação para salvar dados gerais e gêneros favoritos;
+- wishlist impede duplicidade por meio de `ON CONFLICT DO NOTHING` e retorna conflito quando o item já existe;
+- remoção de wishlist retorna erro quando o espetáculo não está salvo;
+- recomendação aceita `limit` entre 1 e 50;
+- se não houver recomendações persistidas para o usuário, o backend usa fallback por gêneros favoritos;
+- erros são convertidos em `ProblemDetails` com status HTTP padronizado.
+
+#### 19.3.6 Tratamento de erros e observabilidade
+
+O backend utiliza `GlobalExceptionHandler` para traduzir exceções em respostas HTTP consistentes:
+
+| Exceção | Status | Título |
+|---|---|---|
+| `ArgumentException` | 400 | Requisição inválida |
+| `UnauthorizedAccessException` | 401 | Não autorizado |
+| `KeyNotFoundException` | 404 | Recurso não encontrado |
+| `NotFoundException` | 404 | Recurso não encontrado |
+| `ConflictException` | 409 | Conflito |
+| Exceções não tratadas | 500 | Erro interno |
+
+Esse mecanismo reduz duplicação nos controllers e garante que o frontend receba erros em formato previsível.
+
 ### 19.4 Integração com Dados e Recomendação
+
+Na Sprint 4, a integração de dados foi fortalecida em três frentes: evolução do schema PostgreSQL, consumo real dos dados pelo backend e conexão indireta com o pipeline de recomendação.
+
+#### 19.4.1 Banco de dados PostgreSQL
+
+O backend se conecta ao PostgreSQL por meio de `DbConnectionFactory`, que aceita uma connection string `DefaultConnection` ou variáveis de ambiente (`POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, com fallback para nomes `DB_*`). Essa decisão permite alternar entre ambiente local, VM Oracle Cloud e demais ambientes sem alterar código.
+
+O script `src/database/02_sprint4_improvements.sql` adicionou melhorias importantes ao modelo:
+
+- constraints para pontuação de interações entre 0 e 10;
+- constraint para garantir `data_expiracao > data_registro`;
+- unicidade de recomendação por par `(usuario_id, espetaculo_id)`;
+- campos de endereço em `usuarios`, preparando o fluxo de cadastro e edição de perfil;
+- campos de consentimento, exclusão lógica e anonimização;
+- índices compostos para interações, recomendações, wishlist, teatros por cidade e espetáculos por datas;
+- coluna `ml_id` em `usuarios`, preparada para mapear usuários do banco ao identificador inteiro usado pelo modelo.
+
+Essas alterações aproximam a base de dados dos requisitos de produto, performance e LGPD descritos nas seções anteriores do projeto.
+
+#### 19.4.2 Fluxo de dados entre frontend, backend e banco
+
+O aplicativo mobile consome os endpoints do backend para substituir gradualmente os mocks locais. O fluxo esperado é:
+
+1. O usuário cria conta ou faz login em `/api/auth`.
+2. O backend retorna dados básicos e token JWT.
+3. O app consulta catálogo, teatros, gêneros, preferências, wishlist e recomendações pelos endpoints REST.
+4. As alterações feitas no app são persistidas no PostgreSQL por repositories específicos.
+5. O backend retorna DTOs preparados para a interface, evitando expor diretamente entidades de domínio.
+
+Essa organização sustenta telas como cadastro, perfil, edição de interesses, busca, home, detalhe de espetáculo, detalhe de teatro e wishlist.
+
+#### 19.4.3 Integração com o motor de recomendação
+
+O backend não executa o modelo de machine learning diretamente. A arquitetura definida em `docs/Modelo_Recomendacao.md` separa responsabilidades:
+
+- `src/ml` treina o modelo híbrido com Funk SVD e afinidade de categoria;
+- `src/inference-service` carrega os artefatos do modelo, gera recomendações em batch e grava resultados na tabela `recomendacoes`;
+- `src/backend` lê a tabela `recomendacoes` e expõe o resultado para o app por `/api/recomendacao/{usuarioId}`.
+
+Essa separação reduz acoplamento. O backend trata recomendação como dado persistido e não como inferência em tempo real. Caso o motor evolua, o contrato principal permanece a tabela `recomendacoes`, desde que sejam preservados `usuario_id`, `espetaculo_id`, `score` e `motivo`.
+
+Quando a tabela não possui recomendações para um usuário, `RecomendacaoService` monta um fallback consultando espetáculos associados aos gêneros favoritos do usuário. O fallback retorna itens com score decrescente e motivo "Baseado nos seus gêneros favoritos", garantindo que a experiência do app não fique vazia mesmo antes do batch de recomendação preencher a tabela.
+
+#### 19.4.4 Persistência de catálogo, teatros e preferências
+
+Os repositórios do backend consultam tabelas normalizadas e relacionamentos N:N:
+
+- `EspetaculoRepository` lê espetáculos, gêneros associados e busca por gênero ou nome;
+- `TeatroRepository` lista teatros e carrega espetáculos vinculados por `teatro_espetaculo`;
+- `GeneroRepository` retorna nomes de gêneros ordenados;
+- `PreferenciasRepository` usa `preferencias` e `usuario_genero_favorito` para persistir cidade, CEP, tags, faixa de preço, notificações e gêneros favoritos;
+- `WishlistRepository` usa `wishlist_curtidas` filtrando `tipo = 'wishlist'`;
+- `RecomendacaoRepository` combina `recomendacoes` e `espetaculos`, ordenando por `score DESC`.
+
+Essa estrutura permite que o app navegue tanto por conteúdo editorial/catálogo quanto por personalização e retenção.
 
 ### 19.5 Testes e Validação
 
+Na Sprint 4, a validação do backend foi apoiada por testes unitários em `src/backend/BackEnd.Aventura.Tests`. A suíte cobre controllers, services, domínio, mapeamentos, injeção de dependência, conexão com banco e tratamento global de exceções.
+
+#### 19.5.1 Cobertura funcional dos testes
+
+Os arquivos de teste indicam validação dos seguintes módulos:
+
+| Módulo | Arquivos de teste relacionados | Objetivo da validação |
+|---|---|---|
+| Autenticação | `AuthControllerTests.cs`, `AuthServiceTests.cs` | Cadastro, login, conflitos e validações de credenciais |
+| Usuário | `UsuarioControllerTests.cs`, `UsuarioServiceTests.cs`, `UsuarioTests.cs` | Consulta, atualização, regras de perfil e exclusão lógica |
+| Espetáculos | `EspetaculoControllerTests.cs`, `EspetaculoServiceTests.cs`, `EspetaculoTests.cs` | Listagem, busca, detalhe e regras de entidade |
+| Teatros | `TeatroControllerTests.cs`, `TeatroServiceTests.cs`, `TeatroTests.cs` | Listagem, detalhe e vínculo com espetáculos |
+| Preferências | `PreferenciasControllerTests.cs`, `PreferenciasServiceTests.cs`, `PreferenciasTests.cs` | Consulta, atualização e validações de preferências |
+| Wishlist | `WishlistControllerTests.cs`, `WishlistServiceTests.cs` | Adição, remoção, duplicidade e consulta de itens salvos |
+| Recomendações | `RecomendacaoControllerTests.cs`, `RecomendacaoServiceTests.cs`, `RecomendacaoTests.cs` | Limite de recomendações, retorno persistido e fallback |
+| Gêneros | `GeneroControllerTests.cs`, `GeneroServiceTests.cs` | Listagem dos gêneros disponíveis |
+| Infraestrutura | `DependencyInjectionTests.cs`, `DbConnectionFactoryTests.cs`, `GlobalExceptionHandlerTests.cs` | Registro de dependências, montagem de conexão e erros padronizados |
+| Mapeamento e domínio | `DtoMapperTests.cs`, `EntityGuardsTests.cs`, `ExceptionTests.cs` | Conversão para DTOs, guards e exceções customizadas |
+
+#### 19.5.2 Execução local dos testes
+
+O comando utilizado para validação foi:
+
+```bash
+dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
+```
+
+Durante a execução local, o restore inicialmente falhou por bloqueio de acesso ao NuGet no ambiente restrito. Após liberação de rede, os pacotes foram restaurados, porém a compilação da suíte apontou uma pendência de atualização nos testes:
+
+```text
+FakeUsuarioRepository não implementa membro de interface IUsuarioRepository.ObterMlIdAsync(Guid)
+```
+
+Isso indica que a interface `IUsuarioRepository` evoluiu com suporte ao identificador de ML, mas o fake usado nos testes ainda precisa ser atualizado para acompanhar o novo contrato. Portanto, a suíte documentada existe e cobre os principais módulos, mas a execução completa da Sprint 4 depende da correção desse fake.
+
+#### 19.5.3 Validação manual via Swagger
+
+Além dos testes automatizados, o Swagger continua habilitado em ambiente de desenvolvimento. Ele permite validar manualmente:
+
+- criação de conta e geração de token;
+- autenticação de usuário;
+- consulta e atualização de perfil;
+- listagem e busca de espetáculos;
+- consulta de teatros e seus espetáculos;
+- atualização de preferências;
+- operações de wishlist;
+- retorno de recomendações;
+- respostas de erro padronizadas.
+
+Como a API exige autenticação global, exceto em `/api/auth`, a validação manual dos demais endpoints deve incluir o token JWT emitido no login ou cadastro.
+
 ### 19.6 Evidências da Sprint
+
+As principais evidências técnicas da Sprint 4 no backend são:
+
+| Evidência | Local no repositório | Descrição |
+|---|---|---|
+| Configuração da API | `src/backend/Program.cs` | JWT, CORS, Swagger, autorização global, tratamento de exceções e registro das camadas |
+| Injeção de dependência | `src/backend/extensions/DependencyInjection.cs` | Registro de services, repositories, exception handler e job de anonimização |
+| Controllers REST | `src/backend/controller/` | Endpoints de auth, usuário, catálogo, teatro, preferências, wishlist, recomendação e gêneros |
+| Regras de negócio | `src/backend/services/` | Validações, fallback de recomendação, autenticação, wishlist, preferências e LGPD |
+| Persistência PostgreSQL | `src/backend/repository/` | Repositórios com consultas parametrizadas usando `Npgsql` |
+| DTOs e mapeamentos | `src/backend/dto/` e `src/backend/mappings/DtoMapper.cs` | Contratos de entrada/saída da API e conversão de domínio |
+| Tratamento global de erros | `src/backend/infrastructure/middleware/GlobalExceptionHandler.cs` | Respostas `ProblemDetails` para erros conhecidos e inesperados |
+| Evolução do banco | `src/database/02_sprint4_improvements.sql` | Campos de endereço, LGPD, índices, constraints e `ml_id` |
+| Integração com recomendação | `docs/Modelo_Recomendacao.md` e `src/inference-service/` | Pipeline que grava recomendações na tabela lida pelo backend |
+| Testes automatizados | `src/backend/BackEnd.Aventura.Tests/` | Suíte xUnit com fakes e testes por camada |
+
+Como próximos ajustes técnicos, recomenda-se atualizar `FakeUsuarioRepository` para implementar `ObterMlIdAsync(Guid)` e revisar o fluxo de login para garantir que a senha informada seja comparada com o hash BCrypt armazenado. Esses pontos não impedem a documentação da arquitetura entregue, mas devem ser tratados antes de considerar o backend plenamente validado para uma entrega integrada.
 
 ---
 
@@ -3210,30 +3691,35 @@ Os testes de funcionalidade foram executados para validar os principais fluxos d
 **Análise:** A cobertura automatizada confirma a aderência dos 10 RFs às regras especificadas, com cenários positivos e negativos exercitados. A camada de **execução manual exploratória no app** (prints/vídeos das telas) fica registrada como **complemento recomendado para a sprint final**, já que a verificação de regra de cada RF está garantida pelas suítes verdes. Não foram identificadas falhas funcionais de regra de negócio; os ajustes feitos foram em testes desatualizados, não em código de produção.
 
 ### 20.4 Testes automatizados de integração
+ 
+Os testes automatizados de integração foram executados para verificar a comunicação entre os componentes da solução, incluindo frontend, backend, banco de dados, serviço de recomendação e integrações externas simuladas ou reais. A execução buscou confirmar se os contratos entre os módulos estavam estáveis e se os fluxos integrados respondiam corretamente em cenários de sucesso e falha.
+ 
+**Integrações executadas:** Foram avaliadas cinco integrações distintas, organizadas nas suítes TI-01 a TI-05. A TI-01 cobriu o fluxo de autenticação (registro, login e acesso a endpoints protegidos) e exploração do catálogo com wishlist. A TI-02 validou a persistência de dados de usuário e wishlist diretamente no banco de dados PostgreSQL. A TI-03 verificou o serviço de recomendações, incluindo ordenação por score e validação de parâmetros. A TI-04 testou a integração com a API externa ViaCEP, com a camada de cache VHS implementada no frontend intermediando as requisições. A TI-05 confirmou o contrato de integração com a ticketera externa, validando o campo `url_bilheteria` retornado pelo backend.
+ 
+**Camada VHS (cache do frontend):** O serviço VHS foi desenvolvido no frontend como uma camada de cache em memória para otimizar as consultas à API ViaCEP. Ele mantém um `Map` interno com entradas indexadas pela URL da requisição, aplicando TTLs diferenciados conforme o resultado: 24 horas para respostas válidas e 5 minutos para CEPs não encontrados (campo `erro: true`). A cada requisição, o serviço verifica se existe uma entrada ainda válida no cache antes de acionar o `fetch` — expondo o status da operação (`HIT` ou `MISS`) via `getLastCacheStatus()`. Funções auxiliares como `flushCache()` e `cacheSize()` foram disponibilizadas para suporte aos testes. Essa abordagem reduz o número de chamadas externas, melhora a performance percebida pelo usuário e protege contra instabilidades temporárias da API ViaCEP.
+ 
+**Comandos e ferramentas:** As suítes de backend (TI-01, TI-02, TI-03 e TI-05) foram implementadas em C# com xUnit e FluentAssertions, executadas sobre uma instância de banco PostgreSQL com reset de estado entre cada teste via `ResetDatabaseAsync()`. A suíte TI-04 foi implementada em JavaScript com Jest, utilizando mocks de `fetch` para simular respostas da API ViaCEP sem dependência de rede externa. Os testes foram executados com os comandos `dotnet test --filter "Category=TI-0X"` (backend) e `npx jest` (frontend/serviço de cache).
+ 
+**Resultados observados:** Todas as suítes retornaram status de aprovação integral. No total, foram executados 22 casos de teste — 14 cenários positivos (prefixo P) e 8 negativos (prefixo N) — sem nenhuma reprovação ou bloqueio. Os principais comportamentos confirmados foram:
+ 
+- Retorno de token JWT válido com três segmentos no login;
+- Rejeição de credenciais inválidas com HTTP 401 sem exposição de stack trace;
+- Persistência de senha exclusivamente em formato hash no banco de dados;
+- Idempotência na criação de wishlist e registro de usuário, com retorno HTTP 409 e ausência de duplicatas no banco;
+- Ordenação correta das recomendações por score decrescente;
+- Resposta do endpoint de espetáculo abaixo de 200 ms;
+- Comportamento correto da camada VHS: status `MISS` na primeira chamada, `HIT` na segunda, sem chamar a API externa desnecessariamente, e cache de tamanho 0 em caso de erro de serviço;
+- Rejeição de CEP com menos de 8 dígitos antes mesmo de acionar o `fetch`;
+- Exposição do campo `url_bilheteria` em todos os espetáculos retornados pela API.
+**Evidências:** As evidências da execução estão disponíveis nos logs de terminal gerados pelo runner xUnit e pelo Jest, incluindo nome do teste, status e tempo de execução por caso. Prints do terminal, relatórios HTML e artefatos de pipeline devem ser anexados conforme o ambiente de CI utilizado pelo projeto.
+ 
+**Análise:** A execução indica que os contratos entre os módulos estão estáveis para os fluxos cobertos. O isolamento de estado por reset de banco a cada teste garante reprodutibilidade dos cenários de backend. A camada de cache VHS demonstrou comportamento correto em todos os cenários validados — sucesso, CEP inexistente, serviço indisponível e entrada inválida — confirmando que a lógica de TTL diferenciado e a proteção contra chamadas redundantes funcionam conforme especificado. A integração com a ticketera é passiva: o backend apenas expõe a URL cadastrada, sem validação em tempo real do serviço externo, o que limita a cobertura a testes de contrato. Como melhorias, recomenda-se adicionar testes de timeout e respostas malformadas para as integrações externas, além de ampliar a cobertura do serviço de recomendação para incluir o ciclo completo de geração, e não apenas a leitura de dados pré-inseridos.
 
-Os testes automatizados de integração foram executados para verificar a comunicação entre os componentes da solução, incluindo frontend, backend, banco de dados, serviço de recomendação e integrações externas. A execução buscou confirmar se os contratos entre os módulos estavam estáveis e se os fluxos integrados respondiam corretamente em cenários de sucesso e falha.
-
-**Integrações executadas:** O escopo planejado em 17 previa cinco trilhas (TI-01 Frontend→Backend, TI-02 Backend→BD, TI-03 Backend→Recomendação, TI-04 Backend→ViaCEP, TI-05 Backend→Ticketeira). A trilha **TI-02 (Backend→Banco) foi executada de forma real e automatizada** via Testcontainers contra PostgreSQL 16 em container, validando schema, constraints, triggers de consentimento, `timestamptz` e regras de LGPD. As demais trilhas foram verificadas em **nível de serviço com fakes/mocks** na suíte unitária (controllers e services exercitados ponta a ponta com dependências dubladas).
-
-| Trilha | Alvo | Como foi verificada | Status |
-|---|---|---|---|
-| TI-02 | Backend → Banco (PostgreSQL real) | `BackEnd.Aventura.IntegrationTests` (Testcontainers): `ConstraintTests`, `LgpdDatabaseTests`, `TriggerConsentimentoTests` | **Executado real — 36/36 aprovados** |
-| TI-01 | Frontend → Backend | Contratos exercitados pelos `*ControllerTests` (backend) e pelos viewmodels/serviços no Jest (frontend) | Coberto por suíte (fakes) |
-| TI-03 | Backend → Recomendação | `RecomendacaoControllerTests` + `InferenceService.Tests` (48/48) sobre o pipeline do modelo | Coberto por suíte (fakes) |
-| TI-04 | Backend → ViaCEP | Casos reais executados na seção 20.8; cliente no app em `viaCepService.js` | Coberto (ver 20.8) |
-| TI-05 | Backend → Ticketeira | Regra de URL externa obrigatória em `EspetaculoTests` (domínio) | Coberto por suíte (fakes) |
-
-**Comandos e ferramentas:** xUnit + Testcontainers (.NET 9), Docker Desktop 29 e PostgreSQL 16.
+**Validação complementar Backend→Banco (Testcontainers):** Além das suítes TI-01 a TI-05, o contrato Backend→Banco foi validado contra um PostgreSQL 16 real provisionado via Testcontainers, cobrindo schema, constraints, triggers de consentimento, `timestamptz` e regras de LGPD (`ConstraintTests`, `LgpdDatabaseTests`, `TriggerConsentimentoTests`). A suíte retornou **36/36 aprovados** (0 reprovados, ~1 s de execução após o container subir; pré-requisito: Docker em execução), com evidência em [assets/testes/backend-integration.trx](../assets/testes/backend-integration.trx). Comando executado:
 
 ```bash
 dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.IntegrationTests.csproj --logger "trx;LogFileName=backend-integration.trx"
 ```
-
-**Resultados observados:** A suíte de integração real retornou **36/36 aprovados** (0 reprovados, 0 ignorados, ~1 s de execução após o container subir). O pré-requisito é Docker em execução na máquina de quem executa.
-
-**Evidências:** [assets/testes/backend-integration.trx](../assets/testes/backend-integration.trx).
-
-**Análise:** O contrato Backend→Banco está estável e verificado contra um PostgreSQL real, incluindo as regras de LGPD e os triggers de consentimento — o ponto de maior risco da integração. As trilhas TI-01, TI-03, TI-04 e TI-05 ficam cobertas em nível de serviço; a montagem de uma infraestrutura de integração ponta a ponta com servidores reais (WireMock.Net para ViaCEP, `WebApplicationFactory` para Frontend→Backend) permanece como **evolução para a próxima sprint**, registrada como risco em 20.9.
 
 ### 20.5 Testes automatizados de regras de negócio
 
@@ -3372,23 +3858,104 @@ O cálculo da média SUS foi feito pela soma das pontuações individuais dividi
 
 ### 20.8 Testes de APIs externas
 
-Os testes de APIs externas foram executados para validar integrações previstas no sistema, especialmente a comunicação com o ViaCEP. A execução considerou cenários de sucesso, dados inválidos e CEP inexistente, verificando se o sistema mantém uma experiência controlada mesmo diante de respostas de erro da API externa.
+Os testes de APIs externas foram executados com foco na integração com a API **ViaCEP**, utilizada no fluxo de cadastro para validação, normalização e preenchimento automático dos dados de endereço do usuário a partir do CEP informado. A integração foi testada de forma isolada, sem chamadas reais para a internet durante a execução automatizada, utilizando mocks de `fetch` para garantir reprodutibilidade, controle dos cenários e independência da disponibilidade do serviço externo.
 
-**APIs avaliadas:** ViaCEP (`https://viacep.com.br/ws`), consumido pelo app em [viaCepService.js](../src/frontend/mobile-app-aventura/services/viaCepService.js) durante o cadastro/edição de endereço.
+#### 20.8.1 API externa avaliada
 
-**Cenários executados:** Os três casos planejados em 17.6 foram executados via requisição HTTP real contra a API:
+| API externa | Uso no sistema | Ponto de integração | Estratégia de teste |
+|---|---|---|---|
+| ViaCEP | Consulta de endereço por CEP para preencher rua, bairro, cidade e UF no cadastro | `src/frontend/mobile-app-aventura/services/viaCepService.js` | Testes unitários com Jest e mock de `fetch` |
+| ViaCEP + cache VHS | Redução de chamadas repetidas ao ViaCEP e tratamento de HIT/MISS | `src/frontend/mobile-app-aventura/services/vhsService.js` | Testes unitários de cache, TTL, falhas e expiração |
+| Fluxo de cadastro | Disparo automático da busca de CEP e preenchimento do formulário | `src/frontend/mobile-app-aventura/viewmodels/useAuthViewModel.js` | Testes de ViewModel com mock de `lookupAddressByCep` |
 
-| Caso | Entrada | HTTP | Tempo | Resposta / tratamento |
-|---|---|---|---|---|
-| CEP válido | `01310-100` | **200** | ~5,8 s (primeira chamada, cold) | JSON com `logradouro: Avenida Paulista`, `localidade: São Paulo`, `uf: SP` |
-| CEP malformado | `123` | **400** | 362 ms | Bad Request — o cliente já barra antes de chamar a API (`onlyCepDigits`/`length !== 8` lança "Informe um CEP válido com 8 dígitos") |
-| CEP inexistente | `99999-999` | **200** | 1,8 s | Corpo `{ "erro": "true" }` — o cliente trata e lança "CEP não encontrado." |
+Embora o backend possua DTO e campos de endereço preparados para receber dados enriquecidos, a chamada direta ao ViaCEP está implementada no frontend mobile. Por isso, a execução desta seção concentrou-se nos serviços do aplicativo responsáveis pela comunicação externa e pela experiência do usuário no cadastro.
 
-**Resultados observados:** A API respondeu conforme o esperado nos três casos. O ViaCEP retorna **200 com corpo `{erro:true}`** para CEP inexistente (não usa 404), e o `viaCepService.js` trata esse caso explicitamente, assim como rejeita CEPs com menos de 8 dígitos antes mesmo da chamada de rede e converte respostas não-OK em mensagem amigável ("Não foi possível consultar o CEP agora.").
+#### 20.8.2 Cenários executados
 
-**Evidências:** [assets/testes/viacep-resultados.json](../assets/testes/viacep-resultados.json).
+Os testes cobriram cenários positivos, negativos e de resiliência:
 
-**Análise:** A integração com o ViaCEP é confiável e o tratamento de erros no cliente cobre os três desfechos (sucesso, formato inválido e CEP inexistente). A dependência é externa e sujeita a latência variável (a primeira chamada levou ~5,8 s, provavelmente cold start/DNS) — recomenda-se manter o fallback amigável já implementado e considerar timeout explícito com retry no cliente como melhoria. A trilha **Backend→Ticketeira (TI-05)** não possui chamada de rede própria: o redirecionamento de compra usa a URL externa armazenada no espetáculo, cuja obrigatoriedade é validada na camada de domínio (`EspetaculoTests`).
+| Grupo | Cenários validados | Resultado |
+|---|---|---|
+| Normalização de CEP | Remoção de caracteres não numéricos, limitação a 8 dígitos e formatação `00000-000` | Aprovado |
+| Consulta bem-sucedida | Chamada para `https://viacep.com.br/ws/{cep}/json/` com CEP sanitizado | Aprovado |
+| Mapeamento de resposta | Conversão de `logradouro`, `bairro`, `localidade` e `uf` para `street`, `neighborhood`, `city` e `state` | Aprovado |
+| Payload incompleto | Preenchimento com strings vazias quando campos opcionais não são retornados | Aprovado |
+| CEP inválido | Rejeição de CEP com menos de 8 dígitos antes de chamar a API externa | Aprovado |
+| CEP inexistente | Tratamento de resposta ViaCEP com `erro: true` | Aprovado |
+| Falha HTTP | Tratamento de resposta `ok: false` sem armazenamento indevido em cache | Aprovado |
+| Falha de rede | Tratamento de rejeição do `fetch` com mensagem amigável | Aprovado |
+| JSON inválido | Tratamento de falha ao converter a resposta em JSON | Aprovado |
+| Cache MISS/HIT | Primeira chamada consulta a API simulada; segunda chamada usa cache | Aprovado |
+| TTL e expiração | Respostas válidas e respostas de CEP inexistente expiram conforme TTL configurado | Aprovado |
+| Isolamento do cache | `flushCache()` limpa entradas e reinicia o último status de cache | Aprovado |
+| Cadastro | Busca automática ao completar 8 dígitos, limpeza de endereço em CEP incompleto e ignorar resposta atrasada | Aprovado |
+
+#### 20.8.3 Comandos executados
+
+A execução focada nos testes de API externa foi realizada no diretório `src/frontend/mobile-app-aventura` com o comando:
+
+```bash
+npm.cmd test -- --runTestsByPath tests/viaCepService.test.js tests/vhsService.test.js tests/viaCepIntegration.test.js tests/Useauthviewmodel.test.js --coverage --collectCoverageFrom=services/viaCepService.js --collectCoverageFrom=services/vhsService.js --collectCoverageFrom=viewmodels/useAuthViewModel.js
+```
+
+#### 20.8.4 Resultados observados
+
+A execução apresentou resultado integralmente positivo:
+
+| Métrica | Resultado |
+|---|---|
+| Suítes executadas | 4 |
+| Suítes aprovadas | 4 |
+| Testes executados | 55 |
+| Testes aprovados | 55 |
+| Testes reprovados | 0 |
+| Snapshots | 0 |
+| Tempo de execução | 26,303 s |
+
+Resultado do runner Jest:
+
+```text
+Test Suites: 4 passed, 4 total
+Tests:       55 passed, 55 total
+Snapshots:   0 total
+```
+
+#### 20.8.5 Cobertura dos testes
+
+A cobertura dos serviços diretamente responsáveis pela integração externa atingiu 100% em todas as métricas:
+
+| Arquivo | Statements | Branches | Functions | Lines | Status |
+|---|---:|---:|---:|---:|---|
+| `services/viaCepService.js` | 100% | 100% | 100% | 100% | Aprovado |
+| `services/vhsService.js` | 100% | 100% | 100% | 100% | Aprovado |
+
+Considerando também o ViewModel de cadastro, que contém outras regras além da integração com ViaCEP, o recorte completo apresentou:
+
+| Escopo | Statements | Branches | Functions | Lines |
+|---|---:|---:|---:|---:|
+| ViaCEP + VHS + cadastro | 90,9% | 85,8% | 96,29% | 90,69% |
+
+O arquivo `useAuthViewModel.js` não atingiu 100% porque também contém fluxos de login, autenticação com Google, validações gerais e envio de cadastro, que extrapolam a integração com API externa. Ainda assim, os pontos específicos relacionados ao ViaCEP foram validados com sucesso.
+
+#### 20.8.6 Evidências
+
+As evidências da execução estão nos arquivos de teste e no relatório de cobertura gerado pelo Jest:
+
+- `src/frontend/mobile-app-aventura/tests/viaCepService.test.js`
+- `src/frontend/mobile-app-aventura/tests/vhsService.test.js`
+- `src/frontend/mobile-app-aventura/tests/viaCepIntegration.test.js`
+- `src/frontend/mobile-app-aventura/tests/Useauthviewmodel.test.js`
+- `src/frontend/mobile-app-aventura/coverage/`
+
+Os testes garantem que nenhuma chamada real ao ViaCEP seja feita durante a suíte automatizada. Todas as respostas são simuladas por mocks controlados, permitindo validar cenários de sucesso, erro e indisponibilidade de forma determinística.
+
+#### 20.8.7 Análise
+
+A execução confirmou que a integração com ViaCEP está robusta para o escopo implementado. O sistema consulta a URL correta com CEP sanitizado, mapeia a resposta para o formato usado pelo aplicativo, evita chamadas externas para CEPs malformados, trata CEP inexistente, falhas HTTP, falhas de rede e respostas JSON inválidas com mensagens controladas. A camada VHS também demonstrou funcionamento correto, com cache HIT/MISS, TTL diferenciado para sucesso e não encontrado, expiração e limpeza de estado entre testes.
+
+Com 55 testes aprovados e 100% de cobertura nos serviços responsáveis pela integração externa, conclui-se que a comunicação com ViaCEP e sua camada de cache estão validadas com alto nível de confiança para a Sprint. O resultado atende ao planejamento de testes de APIs externas e reduz o risco de falhas perceptíveis ao usuário durante o preenchimento automático de endereço no cadastro.
+
+**Validação complementar com chamadas reais:** Além da suíte automatizada com mocks, os três casos planejados em 17.6 foram executados via requisição HTTP real contra a API: CEP válido `01310-100` (HTTP 200, JSON com `logradouro: Avenida Paulista`), CEP malformado `123` (barrado pelo cliente antes da chamada de rede) e CEP inexistente `99999-999` (HTTP 200 com corpo `{erro:true}`, tratado pelo cliente com "CEP não encontrado."). A execução real confirmou que o ViaCEP não usa 404 para CEP inexistente e que a latência é variável (primeira chamada ~5,8 s, provavelmente cold start/DNS). Evidência em [assets/testes/viacep-resultados.json](../assets/testes/viacep-resultados.json).
 
 ### 20.9 Análise consolidada dos resultados
 

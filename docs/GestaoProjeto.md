@@ -382,8 +382,8 @@ A Sprint 5 será voltada ao refinamento final do projeto. As tasks abaixo foram 
 | 9 | Histórico de lançamentos adequado? | Histórico apresenta versões `0.1.0`, `0.2.0` e `0.3.0-dev`, com datas e descrições. | Atendido | Atualizar caso exista uma nova versão de entrega. |
 | 10 | Apresenta licença? | `README.md` possui seção `Licença` com Creative Commons Attribution 4.0. | Atendido | Nenhum ajuste identificado. |
 | 11 | Inteli consta na licença? | A licença menciona e linka `Inteli`. | Atendido | Nenhum ajuste identificado. |
-| 12 | Nome do grupo ou integrantes presentes na licença? | A licença atribui o projeto ao Inteli, mas não cita explicitamente o grupo ou integrantes. | Pendente | Incluir `Grupo 2 - Aventureiros` ou integrantes na seção de licença, se exigido. |
-| 13 | Link dos integrantes ou grupo corretos na licença? | A licença possui link do repositório e do Inteli, mas não links do grupo/integrantes. | Pendente | Adicionar link do grupo ou integrantes na licença, se exigido. |
+| 12 | Nome do grupo ou integrantes presentes na licença? | A licença menciona explicitamente `Grupo 2 - Aventureiros` e lista os integrantes. | Atendido | Nenhum ajuste identificado. |
+| 13 | Link dos integrantes ou grupo corretos na licença? | A licença mantém link do repositório e links corretos dos integrantes. | Atendido | Nenhum ajuste identificado. |
 | 15 | Não apresenta nenhuma outra imagem além da logo do Inteli? | Não foram identificadas imagens no `README.md`. | Atendido | Caso o critério exija a logo do Inteli, adicionar apenas essa imagem. |
 | 16 | Instruções iniciais removidas? | Não foram encontradas instruções iniciais de template no `README.md`. | Atendido | Nenhum ajuste identificado. |
 

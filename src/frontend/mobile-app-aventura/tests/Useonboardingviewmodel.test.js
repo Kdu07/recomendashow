@@ -8,10 +8,7 @@
 
 import { renderHook, act } from '@testing-library/react';
 import { useOnboardingViewModel } from '../viewmodels/useOnboardingViewModel';
-import { CATEGORIES } from '../models/onboardingData';
-
-// A finalização só envia ids que existem no catálogo (GUIDs de onboardingData)
-const TEATRO_ID = CATEGORIES[1].id; // Drama
+import { CATEGORIES, CITIES, FREQUENCIES } from '../models/onboardingData';
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
 
@@ -50,29 +47,29 @@ describe('useOnboardingViewModel – estado inicial', () => {
 describe('useOnboardingViewModel – toggleCategory', () => {
   test('adiciona categoria ao selecionar', () => {
     const { result } = setup();
-    act(() => result.current.toggleCategory('teatro'));
-    expect(result.current.selectedCategories).toContain('teatro');
+    act(() => result.current.toggleCategory(CATEGORIES[0].id));
+    expect(result.current.selectedCategories).toContain(CATEGORIES[0].id);
   });
 
   test('remove categoria ao selecionar de novo (toggle)', () => {
     const { result } = setup();
-    act(() => result.current.toggleCategory('teatro'));
-    act(() => result.current.toggleCategory('teatro'));
-    expect(result.current.selectedCategories).not.toContain('teatro');
+    act(() => result.current.toggleCategory(CATEGORIES[0].id));
+    act(() => result.current.toggleCategory(CATEGORIES[0].id));
+    expect(result.current.selectedCategories).not.toContain(CATEGORIES[0].id);
   });
 
   test('permite múltiplas categorias', () => {
     const { result } = setup();
     act(() => {
-      result.current.toggleCategory('teatro');
-      result.current.toggleCategory('musical');
+      result.current.toggleCategory(CATEGORIES[0].id);
+      result.current.toggleCategory(CATEGORIES[1].id);
     });
     expect(result.current.selectedCategories).toHaveLength(2);
   });
 
   test('canContinue vira true com pelo menos uma categoria', () => {
     const { result } = setup();
-    act(() => result.current.toggleCategory('teatro'));
+    act(() => result.current.toggleCategory(CATEGORIES[0].id));
     expect(result.current.canContinue()).toBe(true);
   });
 });
@@ -82,14 +79,14 @@ describe('useOnboardingViewModel – toggleCategory', () => {
 describe('useOnboardingViewModel – goNext / goBack', () => {
   test('goNext avança para o passo 1', async () => {
     const { result } = setup();
-    act(() => result.current.toggleCategory('teatro'));
+    act(() => result.current.toggleCategory(CATEGORIES[0].id));
     await act(async () => { await result.current.goNext(); });
     expect(result.current.step).toBe(1);
   });
 
   test('goBack volta para o passo anterior', async () => {
     const { result } = setup();
-    act(() => result.current.toggleCategory('teatro'));
+    act(() => result.current.toggleCategory(CATEGORIES[0].id));
     await act(async () => { await result.current.goNext(); });
     act(() => result.current.goBack());
     expect(result.current.step).toBe(0);
@@ -107,16 +104,16 @@ describe('useOnboardingViewModel – goNext / goBack', () => {
 describe('useOnboardingViewModel – selectCity', () => {
   test('define a cidade selecionada', () => {
     const { result } = setup();
-    act(() => result.current.selectCity('sp'));
-    expect(result.current.selectedCity).toBe('sp');
+    act(() => result.current.selectCity(CITIES[0].id));
+    expect(result.current.selectedCity).toBe(CITIES[0].id);
   });
 
   test('canContinue no passo 1 só é true com cidade selecionada', async () => {
     const { result } = setup();
-    act(() => result.current.toggleCategory('teatro'));
+    act(() => result.current.toggleCategory(CATEGORIES[0].id));
     await act(async () => { await result.current.goNext(); });
     expect(result.current.canContinue()).toBe(false);
-    act(() => result.current.selectCity('sp'));
+    act(() => result.current.selectCity(CITIES[0].id));
     expect(result.current.canContinue()).toBe(true);
   });
 });
@@ -125,24 +122,24 @@ describe('useOnboardingViewModel – selectCity', () => {
 
 describe('useOnboardingViewModel – selectFrequency', () => {
   async function goToStep2(result) {
-    act(() => result.current.toggleCategory('teatro'));
+    act(() => result.current.toggleCategory(CATEGORIES[0].id));
     await act(async () => { await result.current.goNext(); });
-    act(() => result.current.selectCity('sp'));
+    act(() => result.current.selectCity(CITIES[0].id));
     await act(async () => { await result.current.goNext(); });
   }
 
   test('define a frequência selecionada', async () => {
     const { result } = setup();
     await goToStep2(result);
-    act(() => result.current.selectFrequency('monthly'));
-    expect(result.current.selectedFrequency).toBe('monthly');
+    act(() => result.current.selectFrequency(FREQUENCIES[1].id));
+    expect(result.current.selectedFrequency).toBe(FREQUENCIES[1].id);
   });
 
   test('canContinue no passo 2 só é true com frequência selecionada', async () => {
     const { result } = setup();
     await goToStep2(result);
     expect(result.current.canContinue()).toBe(false);
-    act(() => result.current.selectFrequency('monthly'));
+    act(() => result.current.selectFrequency(FREQUENCIES[1].id));
     expect(result.current.canContinue()).toBe(true);
   });
 });
@@ -152,11 +149,11 @@ describe('useOnboardingViewModel – selectFrequency', () => {
 describe('useOnboardingViewModel – finalização', () => {
   async function fillAndFinish(onFinish) {
     const { result } = setup(onFinish);
-    act(() => result.current.toggleCategory(TEATRO_ID));
+    act(() => result.current.toggleCategory(CATEGORIES[0].id));
     await act(async () => { await result.current.goNext(); });
-    act(() => result.current.selectCity('sp'));
+    act(() => result.current.selectCity(CITIES[0].id));
     await act(async () => { await result.current.goNext(); });
-    act(() => result.current.selectFrequency('monthly'));
+    act(() => result.current.selectFrequency(FREQUENCIES[1].id));
     await act(async () => { await result.current.goNext(); });
     return result;
   }
@@ -165,9 +162,9 @@ describe('useOnboardingViewModel – finalização', () => {
     const onFinish = jest.fn();
     await fillAndFinish(onFinish);
     expect(onboardingService.save).toHaveBeenCalledWith({
-      categories: [TEATRO_ID],
-      city: 'sp',
-      frequency: 'monthly',
+      categories: [CATEGORIES[0].id],
+      city: CITIES[0].id,
+      frequency: FREQUENCIES[1].id,
     });
   });
 

@@ -60,6 +60,11 @@ function makeNavigation() {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  jest.useRealTimers();
+});
+
+afterEach(() => {
+  jest.useRealTimers();
 });
 
 // ── Testes: modo e conteúdo ───────────────────────────────────────────────────
@@ -321,6 +326,109 @@ describe('useAuthViewModel – validação (register)', () => {
     expect(result.current.values.city).toBe('São Paulo');
 
     jest.useRealTimers();
+  });
+
+  test('nao consulta ViaCEP enquanto esta no modo login', async () => {
+    jest.useFakeTimers();
+
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+
+    act(() => result.current.updateField('cep', '01310100'));
+
+    await act(async () => {
+      jest.advanceTimersByTime(500);
+      await Promise.resolve();
+    });
+
+    expect(lookupAddressByCep).not.toHaveBeenCalled();
+  });
+
+  test('limpa endereco preenchido quando o CEP fica incompleto', async () => {
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+
+    act(() => result.current.setMode('register'));
+    act(() => {
+      result.current.updateField('street', 'Avenida Paulista');
+      result.current.updateField('neighborhood', 'Bela Vista');
+      result.current.updateField('city', 'Sao Paulo');
+    });
+
+    await act(async () => {
+      result.current.updateField('cep', '123');
+      await Promise.resolve();
+    });
+
+    expect(result.current.values.cep).toBe('123');
+    expect(result.current.values.street).toBe('');
+    expect(result.current.values.neighborhood).toBe('');
+    expect(result.current.values.city).toBe('');
+    expect(result.current.cepLookupLoading).toBe(false);
+  });
+
+  test('quando ViaCEP falha, limpa endereco e registra erro no CEP', async () => {
+    jest.useFakeTimers();
+    lookupAddressByCep.mockRejectedValue(new Error('CEP indisponivel'));
+
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+
+    act(() => result.current.setMode('register'));
+    act(() => {
+      result.current.updateField('street', 'Rua antiga');
+      result.current.updateField('neighborhood', 'Bairro antigo');
+      result.current.updateField('city', 'Cidade antiga');
+      result.current.updateField('cep', '01310100');
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(350);
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(lookupAddressByCep).toHaveBeenCalledWith('01310100');
+    expect(result.current.values.street).toBe('');
+    expect(result.current.values.neighborhood).toBe('');
+    expect(result.current.values.city).toBe('');
+    expect(result.current.errors.cep).toBe('CEP indisponivel');
+    expect(result.current.cepLookupLoading).toBe(false);
+  });
+
+  test('ignora resposta atrasada quando o usuario troca o CEP antes do retorno', async () => {
+    jest.useFakeTimers();
+    let resolveLookup;
+    lookupAddressByCep.mockReturnValue(
+      new Promise((resolve) => {
+        resolveLookup = resolve;
+      })
+    );
+
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+
+    act(() => result.current.setMode('register'));
+    act(() => result.current.updateField('cep', '01310100'));
+
+    await act(async () => {
+      jest.advanceTimersByTime(350);
+      await Promise.resolve();
+    });
+
+    act(() => result.current.updateField('cep', '22041001'));
+
+    await act(async () => {
+      resolveLookup({
+        street: 'Avenida Paulista',
+        neighborhood: 'Bela Vista',
+        city: 'Sao Paulo',
+      });
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(lookupAddressByCep).toHaveBeenCalledTimes(1);
+    expect(result.current.values.cep).toBe('22041-001');
+    expect(result.current.values.street).toBe('');
+    expect(result.current.values.neighborhood).toBe('');
+    expect(result.current.values.city).toBe('');
   });
 });
 

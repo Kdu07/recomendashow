@@ -448,7 +448,7 @@ Objetos criados em `02_sprint4_improvements.sql`.
 
 | Nome | Parâmetros | Tabela afetada | Finalidade |
 |---|---|---|---|
-| sp_anonimizar_usuario | p_id UUID | usuarios | Substitui dados pessoais (nome, e-mail, senha, endereço) por valores neutros e marca `anonimizado = TRUE`; executa somente em usuários com `deleted_at IS NOT NULL` ainda não anonimizados (LGPD) |
+| sp_anonimizar_usuario | p_id UUID | usuarios | Substitui dados pessoais (nome, e-mail, senha, endereço) por valores neutros, marca `anonimizado = TRUE` e registra `anonimizado_em = NOW()` no mesmo `UPDATE`; executa somente em usuários com `deleted_at IS NOT NULL` ainda não anonimizados (LGPD) |
 
 ---
 
@@ -559,7 +559,7 @@ Novos índices sem predecessor no Sprint 3:
 #### sp_anonimizar_usuario
 
 - **Problema que resolve:** ao receber uma solicitação de exclusão (LGPD art. 18, IV), os dados pessoais precisam ser substituídos por valores neutros de forma atômica, preservando o UUID e o histórico de interações para análise estatística agregada (art. 7, IV — tratamento para pesquisa).
-- **Por que implementado no banco e não na aplicação:** a substituição de múltiplos campos sensíveis (nome, email, senha_hash, seis colunas de endereço) ocorre em uma única transação, eliminando janelas de inconsistência que existiriam se a aplicação fizesse os `UPDATE`s em passos separados.
+- **Por que implementado no banco e não na aplicação:** a substituição de múltiplos campos sensíveis (nome, email, senha_hash, seis colunas de endereço) ocorre em uma única transação, eliminando janelas de inconsistência que existiriam se a aplicação fizesse os `UPDATE`s em passos separados. No mesmo `UPDATE`, a procedure registra `anonimizado_em = NOW()`, garantindo que o momento exato da anonimização seja gravado atomicamente junto à operação.
 - **Princípio LGPD:** art. 5, XI (tratamento) e art. 18, IV (direito à eliminação/anonimização). A procedure exige `deleted_at IS NOT NULL AND anonimizado = FALSE` como guarda dupla, prevenindo dupla anonimização e garantindo que o soft-delete preceda a anonimização.
 
 #### fn_sincronizar_data_consentimento / trg_sincronizar_data_consentimento

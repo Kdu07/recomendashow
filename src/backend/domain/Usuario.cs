@@ -84,21 +84,6 @@ namespace BackEnd.Aventura.Domain
             DeletedAt = DateTime.UtcNow;
         }
 
-        public void Anonimizar()
-        {
-            Nome = "Usuário Removido";
-            Email = $"{Id}@anonimizado.invalid";
-            SenhaHash = string.Empty;
-            DataNascimento = null;
-            Cep = null;
-            Logradouro = null;
-            Numero = null;
-            Complemento = null;
-            Bairro = null;
-            Cidade = null;
-            Anonimizado = true;
-        }
-
         public void AtualizarPerfil(string? nome, int? idade, DateTime? dataNascimento = null,
             string? cep = null, string? logradouro = null, string? numero = null,
             string? complemento = null, string? bairro = null, string? cidade = null)

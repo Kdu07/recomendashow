@@ -6,7 +6,7 @@ using BackEnd.Aventura.Dto;
 using FluentAssertions;
 using Xunit;
 
-namespace BackEnd.Aventura.ApiTests.TI04;
+namespace BackEnd.Aventura.ApiTests.TI05;
 
 // O fluxo real da ticketera: o espetáculo tem url_bilheteria no banco.
 // GET /api/espetaculo/{id} retorna essa URL no campo UrlBilheteria.
@@ -14,7 +14,7 @@ namespace BackEnd.Aventura.ApiTests.TI04;
 // Não há endpoint separado de validação.
 
 [Collection("Api")]
-[Trait("Category", "TI-04")]
+[Trait("Category", "TI-05")]
 public class TicketeraIntegrationTests : IAsyncLifetime
 {
     private readonly ApiFixture _api;
@@ -35,7 +35,7 @@ public class TicketeraIntegrationTests : IAsyncLifetime
 
     public Task DisposeAsync() => Task.CompletedTask;
 
-    [Fact(DisplayName = "TI-04-P1: Espetáculo retorna url_bilheteria correta no response")]
+    [Fact(DisplayName = "TI-05-P1: Espetáculo retorna url_bilheteria correta no response")]
     public async Task GetEspetaculo_ReturnsBilheteriaUrl()
     {
         await using var conn = _api.CreateConnection();
@@ -51,7 +51,7 @@ public class TicketeraIntegrationTests : IAsyncLifetime
         body!.UrlBilheteria.Should().Be("https://ticketera.com/show-123");
     }
 
-    [Fact(DisplayName = "TI-04-P2: Todos espetáculos retornam url_bilheteria preenchida")]
+    [Fact(DisplayName = "TI-05-P2: Todos espetáculos retornam url_bilheteria preenchida")]
     public async Task GetAll_AllEspetaculosHaveUrl()
     {
         await using var conn = _api.CreateConnection();
@@ -67,14 +67,14 @@ public class TicketeraIntegrationTests : IAsyncLifetime
         body!.Should().OnlyContain(e => !string.IsNullOrWhiteSpace(e.UrlBilheteria));
     }
 
-    [Fact(DisplayName = "TI-04-N1: Espetáculo inexistente retorna 404")]
+    [Fact(DisplayName = "TI-05-N1: Espetáculo inexistente retorna 404")]
     public async Task GetEspetaculo_UnknownId_Returns404()
     {
         var r = await _api.HttpClient.GetAsync($"/api/espetaculo/{Guid.NewGuid()}");
         r.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
-    [Fact(DisplayName = "TI-04-N2: Sem autenticação retorna 401")]
+    [Fact(DisplayName = "TI-05-N2: Sem autenticação retorna 401")]
     public async Task GetEspetaculo_WithoutToken_Returns401()
     {
         using var client = _api.CreateClient();

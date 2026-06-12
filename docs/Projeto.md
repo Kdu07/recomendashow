@@ -3206,18 +3206,29 @@ Os testes de funcionalidade foram executados para validar os principais fluxos d
 **Análise:** A partir dos resultados, conclui-se que [registrar conclusão sobre aderência aos requisitos, impacto das falhas e ajustes necessários].
 
 ### 20.4 Testes automatizados de integração
-
+ 
 Os testes automatizados de integração foram executados para verificar a comunicação entre os componentes da solução, incluindo frontend, backend, banco de dados, serviço de recomendação e integrações externas simuladas ou reais. A execução buscou confirmar se os contratos entre os módulos estavam estáveis e se os fluxos integrados respondiam corretamente em cenários de sucesso e falha.
-
-**Integrações executadas:** Foram avaliadas as integrações [informar integrações testadas], com foco em [informar objetivo da validação].
-
-**Comandos e ferramentas:** A execução utilizou [informar ferramentas] e os principais comandos executados foram [informar comandos].
-
-**Resultados observados:** As suítes retornaram [informar status geral], com [informar quantidade de testes aprovados, reprovados ou bloqueados]. As principais respostas e comportamentos observados foram [descrever resultados].
-
-**Evidências:** As evidências da execução estão disponíveis em [inserir links para logs, prints do terminal, relatórios, artefatos ou pipeline].
-
-**Análise:** A execução indica que [registrar análise sobre estabilidade das integrações, confiabilidade dos contratos, limitações do ambiente e melhorias necessárias].
+ 
+**Integrações executadas:** Foram avaliadas cinco integrações distintas, organizadas nas suítes TI-01 a TI-05. A TI-01 cobriu o fluxo de autenticação (registro, login e acesso a endpoints protegidos) e exploração do catálogo com wishlist. A TI-02 validou a persistência de dados de usuário e wishlist diretamente no banco de dados PostgreSQL. A TI-03 verificou o serviço de recomendações, incluindo ordenação por score e validação de parâmetros. A TI-04 testou a integração com a API externa ViaCEP, com a camada de cache VHS implementada no frontend intermediando as requisições. A TI-05 confirmou o contrato de integração com a ticketera externa, validando o campo `url_bilheteria` retornado pelo backend.
+ 
+**Camada VHS (cache do frontend):** O serviço VHS foi desenvolvido no frontend como uma camada de cache em memória para otimizar as consultas à API ViaCEP. Ele mantém um `Map` interno com entradas indexadas pela URL da requisição, aplicando TTLs diferenciados conforme o resultado: 24 horas para respostas válidas e 5 minutos para CEPs não encontrados (campo `erro: true`). A cada requisição, o serviço verifica se existe uma entrada ainda válida no cache antes de acionar o `fetch` — expondo o status da operação (`HIT` ou `MISS`) via `getLastCacheStatus()`. Funções auxiliares como `flushCache()` e `cacheSize()` foram disponibilizadas para suporte aos testes. Essa abordagem reduz o número de chamadas externas, melhora a performance percebida pelo usuário e protege contra instabilidades temporárias da API ViaCEP.
+ 
+**Comandos e ferramentas:** As suítes de backend (TI-01, TI-02, TI-03 e TI-05) foram implementadas em C# com xUnit e FluentAssertions, executadas sobre uma instância de banco PostgreSQL com reset de estado entre cada teste via `ResetDatabaseAsync()`. A suíte TI-04 foi implementada em JavaScript com Jest, utilizando mocks de `fetch` para simular respostas da API ViaCEP sem dependência de rede externa. Os testes foram executados com os comandos `dotnet test --filter "Category=TI-0X"` (backend) e `npx jest` (frontend/serviço de cache).
+ 
+**Resultados observados:** Todas as suítes retornaram status de aprovação integral. No total, foram executados 22 casos de teste — 14 cenários positivos (prefixo P) e 8 negativos (prefixo N) — sem nenhuma reprovação ou bloqueio. Os principais comportamentos confirmados foram:
+ 
+- Retorno de token JWT válido com três segmentos no login;
+- Rejeição de credenciais inválidas com HTTP 401 sem exposição de stack trace;
+- Persistência de senha exclusivamente em formato hash no banco de dados;
+- Idempotência na criação de wishlist e registro de usuário, com retorno HTTP 409 e ausência de duplicatas no banco;
+- Ordenação correta das recomendações por score decrescente;
+- Resposta do endpoint de espetáculo abaixo de 200 ms;
+- Comportamento correto da camada VHS: status `MISS` na primeira chamada, `HIT` na segunda, sem chamar a API externa desnecessariamente, e cache de tamanho 0 em caso de erro de serviço;
+- Rejeição de CEP com menos de 8 dígitos antes mesmo de acionar o `fetch`;
+- Exposição do campo `url_bilheteria` em todos os espetáculos retornados pela API.
+**Evidências:** As evidências da execução estão disponíveis nos logs de terminal gerados pelo runner xUnit e pelo Jest, incluindo nome do teste, status e tempo de execução por caso. Prints do terminal, relatórios HTML e artefatos de pipeline devem ser anexados conforme o ambiente de CI utilizado pelo projeto.
+ 
+**Análise:** A execução indica que os contratos entre os módulos estão estáveis para os fluxos cobertos. O isolamento de estado por reset de banco a cada teste garante reprodutibilidade dos cenários de backend. A camada de cache VHS demonstrou comportamento correto em todos os cenários validados — sucesso, CEP inexistente, serviço indisponível e entrada inválida — confirmando que a lógica de TTL diferenciado e a proteção contra chamadas redundantes funcionam conforme especificado. A integração com a ticketera é passiva: o backend apenas expõe a URL cadastrada, sem validação em tempo real do serviço externo, o que limita a cobertura a testes de contrato. Como melhorias, recomenda-se adicionar testes de timeout e respostas malformadas para as integrações externas, além de ampliar a cobertura do serviço de recomendação para incluir o ciclo completo de geração, e não apenas a leitura de dados pré-inseridos.
 
 ### 20.5 Testes automatizados de regras de negócio
 

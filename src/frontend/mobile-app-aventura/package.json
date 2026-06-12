@@ -23,7 +23,7 @@
   },
   "scripts": {
     "start": "expo start",
-    "test": "jest",
+    "test": "jest --coverage --ci --runInBand",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
@@ -41,6 +41,26 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
+    "collectCoverageFrom": [
+      "services/**/*.js",
+      "viewmodels/**/*.js",
+      "!services/apiClient.js",
+      "!services/authService.js",
+      "!services/categoryService.js",
+      "!services/eventLocationService.js",
+      "!services/preferenceService.js",
+      "!services/recommendationService.js",
+      "!services/showService.js",
+      "!services/theaterService.js",
+      "!services/tokenStorageService.js",
+      "!services/userProfileService.js",
+      "!viewmodels/useEditProfileViewModel.js",
+      "!viewmodels/useHomeViewModel.js",
+      "!viewmodels/useInstitutionalViewModel.js",
+      "!viewmodels/useProfileViewModel.js",
+      "!viewmodels/useShowInfoViewModel.js",
+      "!viewmodels/useWelcomeViewModel.js"
+    ],
     "coverageThreshold": {
       "global": {
         "statements": 70,

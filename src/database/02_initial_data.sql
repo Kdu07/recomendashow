@@ -206,7 +206,7 @@ WHERE nome='Musical'
 ON CONFLICT DO NOTHING;
 
 
-INSERT INTO wishlist_curtidas
+INSERT INTO wishlist_curtidas(usuario_id, espetaculo_id, tipo)
 VALUES
 (
 (

@@ -452,7 +452,7 @@ Objetos criados em `02_sprint4_improvements.sql`.
 
 | Nome | Parâmetros | Tabela afetada | Finalidade |
 |---|---|---|---|
-| sp_anonimizar_usuario | p_id UUID | usuarios | Substitui dados pessoais (nome, e-mail, senha, endereço) por valores neutros, marca `anonimizado = TRUE` e registra `anonimizado_em = NOW()` no mesmo `UPDATE`; executa somente em usuários com `deleted_at IS NOT NULL` ainda não anonimizados (LGPD) |
+| sp_anonimizar_usuario | p_id UUID | usuarios | Substitui dados pessoais (nome, e-mail, senha, endereço) por valores neutros, marca `anonimizado = TRUE` e registra `anonimizado_em = CURRENT_TIMESTAMP` no mesmo `UPDATE`; executa somente em usuários com `deleted_at IS NOT NULL` ainda não anonimizados (LGPD) |
 
 ---
 
@@ -470,6 +470,7 @@ O schema definido na Sprint 3 (`01_create_database.sql`) foi auditado na Sprint 
 
 | Coluna | Tipo | Por que foi necessária |
 |---|---|---|
+| data_nascimento | DATE | Registrar a data de nascimento para cálculo e validação de idade mínima (13 anos) |
 | cep | VARCHAR(9) | Suportar integração com a API ViaCEP para preenchimento automático de endereço |
 | logradouro | VARCHAR(255) | Complementar os dados de endereço retornados pelo ViaCEP |
 | numero | VARCHAR(10) | Campo de endereço não fornecido pelo ViaCEP; preenchido manualmente pelo usuário |
@@ -482,12 +483,19 @@ O schema definido na Sprint 3 (`01_create_database.sql`) foi auditado na Sprint 
 | anonimizado | BOOLEAN NOT NULL DEFAULT FALSE | Sinalizar que os dados pessoais já foram substituídos por valores neutros pela `sp_anonimizar_usuario` |
 | anonimizado_em | TIMESTAMPTZ | Registrar o momento exato em que `sp_anonimizar_usuario` executou a substituição dos dados pessoais; gravado pela procedure no mesmo `UPDATE` (LGPD) |
 | ml_id | SERIAL UNIQUE | Prover um identificador inteiro sequencial para mapear o UUID do usuário ao índice do modelo de fatoração de matriz (SVD), que requer inteiros contíguos |
+| data_atualizacao | TIMESTAMPTZ | Registrar o momento da última modificação do perfil; mantido automaticamente pelo trigger `trg_usuarios_update` a cada `UPDATE` na tabela |
 
 #### recomendacoes
 
 | Coluna | Tipo | Por que foi necessária |
 |---|---|---|
 | visualizada_em | TIMESTAMPTZ | Registrar quando o usuário visualizou a recomendação, permitindo ao motor desconsiderar recomendações já exibidas e medir o tempo entre geração e exibição; preenchido pelo backend |
+
+#### wishlist_curtidas
+
+| Coluna | Tipo | Por que foi necessária |
+|---|---|---|
+| adicionado_em | TIMESTAMPTZ | Registrar quando o usuário adicionou o item à wishlist ou curtiu, habilitando ordenação por data de adição e análise de comportamento temporal; preenchido automaticamente pelo banco via `DEFAULT CURRENT_TIMESTAMP` |
 
 #### interacoes
 
@@ -512,6 +520,7 @@ Como parte da Sprint 4, colunas de data/hora que usavam `TIMESTAMP` (sem fuso) f
 | data_fim | espetaculos | TIMESTAMPTZ (corrigido em `01_create_database.sql` e migrado em `02_sprint4_improvements.sql`) |
 | anonimizado_em | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
 | visualizada_em | recomendacoes | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
+| data_atualizacao | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
 
 ---
 
@@ -554,6 +563,11 @@ Novos índices sem predecessor no Sprint 3:
 - **Problema que resolve:** a coluna `preferencias.data_atualizacao` precisaria ser atualizada manualmente por cada camada da aplicação que executasse um `UPDATE` nessa tabela, tornando a manutenção do timestamp sujeita a esquecimento ou inconsistência.
 - **Por que implementado no banco e não na aplicação:** o trigger `BEFORE UPDATE` garante que qualquer cliente — API, script administrativo ou acesso direto via psql — atualize `data_atualizacao` automaticamente, sem depender de lógica de aplicação.
 
+#### fn_atualizar_data_usuario / trg_usuarios_update
+
+- **Problema que resolve:** toda modificação no perfil do usuário — nome, endereço, e-mail — não deixava rastro de quando ocorreu. Sem esse timestamp, não é possível saber a data da última alteração nem ordenar históricos de mudança.
+- **Por que implementado no banco e não na aplicação:** o trigger `BEFORE UPDATE` garante que `data_atualizacao` seja sempre reescrito com o momento correto, independentemente da camada que disparou o `UPDATE` — API, script administrativo ou acesso direto via psql. A aplicação não precisa se preocupar em enviar esse campo.
+
 #### fn_bloquear_update_anonimizado / trg_bloquear_update_anonimizado
 
 - **Problema que resolve:** após a anonimização de um usuário, qualquer `UPDATE` posterior poderia inadvertidamente reintroduzir dados pessoais ou reverter o estado `anonimizado = TRUE`.
@@ -563,7 +577,7 @@ Novos índices sem predecessor no Sprint 3:
 #### sp_anonimizar_usuario
 
 - **Problema que resolve:** ao receber uma solicitação de exclusão (LGPD art. 18, IV), os dados pessoais precisam ser substituídos por valores neutros de forma atômica, preservando o UUID e o histórico de interações para análise estatística agregada (art. 7, IV — tratamento para pesquisa).
-- **Por que implementado no banco e não na aplicação:** a substituição de múltiplos campos sensíveis (nome, email, senha_hash, seis colunas de endereço) ocorre em uma única transação, eliminando janelas de inconsistência que existiriam se a aplicação fizesse os `UPDATE`s em passos separados. No mesmo `UPDATE`, a procedure registra `anonimizado_em = NOW()`, garantindo que o momento exato da anonimização seja gravado atomicamente junto à operação.
+- **Por que implementado no banco e não na aplicação:** a substituição de múltiplos campos sensíveis (nome, email, senha_hash, seis colunas de endereço) ocorre em uma única transação, eliminando janelas de inconsistência que existiriam se a aplicação fizesse os `UPDATE`s em passos separados. No mesmo `UPDATE`, a procedure registra `anonimizado_em = CURRENT_TIMESTAMP`, garantindo que o momento exato da anonimização seja gravado atomicamente junto à operação.
 - **Princípio LGPD:** art. 5, XI (tratamento) e art. 18, IV (direito à eliminação/anonimização). A procedure exige `deleted_at IS NOT NULL AND anonimizado = FALSE` como guarda dupla, prevenindo dupla anonimização e garantindo que o soft-delete preceda a anonimização.
 
 #### fn_sincronizar_data_consentimento / trg_sincronizar_data_consentimento
@@ -583,9 +597,8 @@ Novos índices sem predecessor no Sprint 3:
 | espetaculos | id, nome, tipo_evento, descricao, url_bilheteria, data_inicio, data_fim, valor_ingresso | + TIMESTAMPTZ em data_inicio e data_fim; + índice `idx_espetaculos_datas` |
 | interacoes | id, usuario_id, espetaculo_id, tipo, pontuacao, data_registro, data_expiracao; índice `idx_interacoes_usuario` | + constraints `chk_pontuacao`, `chk_data_expiracao`; `idx_interacoes_usuario` → `idx_interacoes_usuario_expiracao` |
 | preferencias | id, usuario_id, cidade, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes, data_atualizacao | + trigger `trg_preferencias_update` |
-| wishlist_curtidas | usuario_id, espetaculo_id, tipo | + `adicionado_em` |
+| wishlist_curtidas | usuario_id, espetaculo_id, tipo | + `adicionado_em`; + índice `idx_wishlist_usuario` |
 | recomendacoes | id, usuario_id, espetaculo_id, score, motivo, data_geracao; índice `idx_recomendacao_usuario` | + `UNIQUE(usuario_id, espetaculo_id)`; + visualizada_em; `idx_recomendacao_usuario` → `idx_recomendacoes_usuario_score` |
-| wishlist_curtidas | usuario_id, espetaculo_id, tipo | + índice `idx_wishlist_usuario` |
 | usuario_genero_favorito | usuario_id, genero_id | sem alterações |
 | espetaculo_genero | espetaculo_id, genero_id | sem alterações |
 | teatro_espetaculo | teatro_id, espetaculo_id | sem alterações |
@@ -604,7 +617,7 @@ Novos índices sem predecessor no Sprint 3:
 | `trg_preferencias_update` → `fn_atualizar_data_preferencias()` | `preferencias.data_atualizacao` | Reescrito com `CURRENT_TIMESTAMP` a cada `UPDATE` na tabela `preferencias`, independentemente da origem da alteração |
 | `DEFAULT CURRENT_TIMESTAMP` | `recomendacoes.data_geracao` | Momento em que o motor de recomendação gerou a linha; gravado no INSERT, nunca atualizado |
 | Aplicação (explícito) | `interacoes.data_expiracao` | Janela temporal definida pela camada de aplicação; determina até quando a interação é considerada pelo motor de recomendação |
-| Aplicação (explícito) | `usuarios.data_consentimento` | Momento em que o usuário concedeu consentimento LGPD; a aplicação é responsável por gravar o valor |
+| Aplicação (explícito) + `trg_sincronizar_data_consentimento` | `usuarios.data_consentimento` | Gravado pela aplicação no momento do aceite; quando a aplicação omite o valor, o trigger preenche automaticamente com `CURRENT_TIMESTAMP` ao detectar que `consentimento_aceito` mudou de FALSE para TRUE |
 | Aplicação (explícito) | `usuarios.deleted_at` | Momento do soft-delete; gravado pela aplicação; pré-requisito obrigatório para execução de `sp_anonimizar_usuario` |
 | `sp_anonimizar_usuario` | `usuarios.anonimizado_em` | Gravado pela procedure no mesmo `UPDATE` que substitui os dados pessoais; confirma o momento exato da anonimização (LGPD) |
 | Aplicação (explícito) | `recomendacoes.visualizada_em` | Gravado pelo backend quando a recomendação é exibida ao usuário; `NULL` enquanto não visualizada |

@@ -1,5 +1,4 @@
 # CI mínimo — testes + gate de cobertura (RNF08, cenário negativo 2 de 17.4)
-# Plano: docs/Plano_CI_Minimo.md
 #
 # Os thresholds do gate ficam nos próprios projetos:
 #   - src/backend/BackEnd.Aventura.Tests/*.csproj  → 70% linha (módulos críticos;

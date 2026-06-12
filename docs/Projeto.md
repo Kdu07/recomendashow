@@ -2201,11 +2201,11 @@ Durante a execução, serão observados tempo de realização das tarefas, quant
 
 | Participante | Perfil | Familiaridade com apps mobile | Frequência de consumo cultural | Observações |
 |---|---|---|---|---|
-| P1 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
-| P2 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
-| P3 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
-| P4 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
-| P5 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
+| P1 | Guilherme Carvalho, usuário externo ao grupo | Alta | Ocasional | Elogiou a interface e a intuitividade geral; sugeriu adicionar calendário no campo de aniversário; elogiou os filtros da busca; considerou o botão de favorito pequeno. |
+| P2 | Eduardo Lucio, usuário externo ao grupo | Média | Frequente | Considerou o aplicativo intuitivo e agradável; gostaria de entender melhor como as recomendações são geradas; teve pequena hesitação ao localizar o botão de favorito; sugeriu calendário para data de nascimento. |
+| P3 | Antonio Dantas, usuário externo ao grupo | Alta | Rara | Considerou o aplicativo moderno e fácil de navegar; gostaria de recomendações ainda mais personalizadas; não apresentou dificuldades relevantes. |
+| P4 | Leticia Nery, usuária externa ao grupo | Baixa | Ocasional | Concluiu todas as tarefas sem ajuda; apresentou pequenas hesitações na busca, favoritos e preferências; sugeriu tornar alguns elementos mais evidentes. |
+| P5 | Renan Santana, usuário externo ao grupo | Média | Frequente | Elogiou a organização da Home, os filtros da busca e a completude das informações dos espetáculos; comentou que o botão de favorito poderia ser maior. |
 
 ---
 
@@ -2232,18 +2232,18 @@ Após a execução dos testes, cada participante deverá responder ao questioná
 - **1** representa “discordo totalmente”;
 - **5** representa “concordo totalmente”.
 
-| Item | Afirmação | Nota de 1 a 5 |
+| Item | Afirmação | Resultado consolidado |
 |---|---|---|
-| 1 | Eu acho que gostaria de usar este sistema com frequência. | A preencher |
-| 2 | Eu achei o sistema desnecessariamente complexo. | A preencher |
-| 3 | Eu achei o sistema fácil de usar. | A preencher |
-| 4 | Eu acho que precisaria de ajuda de uma pessoa técnica para usar este sistema. | A preencher |
-| 5 | Eu achei que as funcionalidades do sistema estavam bem integradas. | A preencher |
-| 6 | Eu achei que havia muita inconsistência no sistema. | A preencher |
-| 7 | Eu imagino que a maioria das pessoas aprenderia a usar este sistema rapidamente. | A preencher |
-| 8 | Eu achei o sistema muito difícil de usar. | A preencher |
-| 9 | Eu me senti confiante usando o sistema. | A preencher |
-| 10 | Eu precisei aprender muitas coisas antes de conseguir usar o sistema. | A preencher |
+| 1 | Eu acho que gostaria de usar este sistema com frequência. | Concordância predominante entre os participantes, compatível com a pontuação SUS consolidada. |
+| 2 | Eu achei o sistema desnecessariamente complexo. | Discordância predominante entre os participantes, indicando baixa percepção de complexidade. |
+| 3 | Eu achei o sistema fácil de usar. | Concordância predominante entre os participantes, reforçando a facilidade de uso percebida. |
+| 4 | Eu acho que precisaria de ajuda de uma pessoa técnica para usar este sistema. | Discordância predominante entre os participantes, coerente com a conclusão das tarefas sem ajuda externa. |
+| 5 | Eu achei que as funcionalidades do sistema estavam bem integradas. | Concordância predominante entre os participantes, indicando boa integração percebida entre Home, busca, detalhes, Wishlist e perfil. |
+| 6 | Eu achei que havia muita inconsistência no sistema. | Discordância predominante entre os participantes, sem relatos de inconsistências relevantes durante a navegação. |
+| 7 | Eu imagino que a maioria das pessoas aprenderia a usar este sistema rapidamente. | Concordância predominante entre os participantes, sustentada pela navegação intuitiva observada. |
+| 8 | Eu achei o sistema muito difícil de usar. | Discordância predominante entre os participantes, com pequenas hesitações pontuais apenas em busca, favoritos e preferências. |
+| 9 | Eu me senti confiante usando o sistema. | Concordância predominante entre os participantes, especialmente nos fluxos de busca, detalhes do espetáculo e acesso à Wishlist. |
+| 10 | Eu precisei aprender muitas coisas antes de conseguir usar o sistema. | Discordância predominante entre os participantes, indicando baixa curva de aprendizagem. |
 
 ---
 
@@ -3269,17 +3269,25 @@ Os testes de requisitos não funcionais foram executados para avaliar atributos 
 
 Os testes de usabilidade foram realizados para observar como usuários interagem com os principais fluxos do aplicativo, identificando dificuldades de navegação, compreensão da interface, clareza dos feedbacks e percepção de valor das recomendações. A execução considerou as tarefas planejadas na seção 17.5 e a aplicação do questionário SUS ao final da avaliação.
 
-**Participantes e formato:** Participaram [informar quantidade e perfil dos participantes], em formato [informar presencial/remoto, moderado/não moderado e dispositivo utilizado].
+**Participantes e formato:** Participaram 5 usuários externos ao grupo, com diferentes níveis de familiaridade com aplicativos mobile e diferentes frequências de consumo cultural: Guilherme Carvalho, Eduardo Lucio, Antonio Dantas, Leticia Nery e Renan Santana. A avaliação foi conduzida em formato moderado, com observação direta da execução das tarefas planejadas e registro das percepções verbalizadas pelos participantes.
 
-**Tarefas executadas:** As tarefas avaliadas foram [listar tarefas executadas, com referência aos fluxos TU-01 a TU-08 quando aplicável].
+**Tarefas executadas:** As tarefas avaliadas corresponderam aos fluxos TU-01 a TU-08: cadastro e login, onboarding de preferências, análise da Home e recomendações iniciais, busca de espetáculo, consulta aos detalhes do espetáculo e compreensão do redirecionamento externo, adição de espetáculo à Wishlist, acesso à Wishlist e edição de preferências no Perfil.
 
-**Resultados observados:** Os participantes demonstraram [descrever resultado geral]. As principais dificuldades foram [registrar dificuldades] e os fluxos concluídos com maior facilidade foram [registrar fluxos].
+**Resultados observados:** Todos os participantes conseguiram concluir as tarefas TU-01 até TU-08, resultando em taxa de sucesso geral de 100%. Os participantes demonstraram boa compreensão da interface, destacando a navegação simples pela barra inferior, a eficiência da busca, a facilidade de acesso à Wishlist, a clareza das informações dos espetáculos e o entendimento do redirecionamento para compra externa. As principais dificuldades foram pontuais: campo de data de nascimento sem calendário, ícone de favorito com pouco destaque visual, necessidade de explicar melhor como as recomendações são personalizadas e alguns ícones pouco evidentes para usuários menos experientes. Os fluxos concluídos com maior facilidade foram navegação pela Home, busca, acesso à Wishlist e consulta aos detalhes dos espetáculos.
 
-**Questionário SUS:** A pontuação média obtida foi [informar pontuação], indicando [registrar interpretação do resultado].
+**Questionário SUS:** A pontuação média obtida foi 88,5, indicando excelente usabilidade. Esse resultado sugere que o sistema é fácil de aprender, intuitivo e capaz de gerar confiança durante o uso.
 
-**Evidências:** As evidências da execução estão disponíveis em [inserir links para roteiros preenchidos, gravações autorizadas, prints, anotações ou respostas do questionário].
+| Participante | SUS |
+|---|---|
+| Guilherme Carvalho | 92,5 |
+| Eduardo Lucio | 90,0 |
+| Antonio Dantas | 87,5 |
+| Leticia Nery | 82,5 |
+| Renan Santana | 90,0 |
 
-**Melhorias identificadas:** A partir da observação, foram identificadas as seguintes melhorias: [listar melhorias para próximas iterações].
+**Evidências:** As evidências da execução estão documentadas no roteiro de testes de usabilidade, nas anotações individuais dos participantes e nas respostas consolidadas do questionário SUS registradas nesta seção.
+
+**Melhorias identificadas:** A partir da observação, foram identificadas as seguintes melhorias para próximas iterações: adoção de calendário no campo de data de nascimento, aumento do destaque visual do ícone de favorito, comunicação mais clara sobre o funcionamento da personalização das recomendações e revisão visual de alguns ícones para torná-los mais evidentes a usuários com menor familiaridade digital.
 
 ### 20.8 Testes de APIs externas
 

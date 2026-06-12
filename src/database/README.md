@@ -14,6 +14,16 @@
    - 5.1 [Migração da Infraestrutura](#migração-da-infraestrutura)
    - 5.2 [Especificações da Máquina Virtual](#especificações-da-máquina-virtual)
    - 5.3 [Benefícios da Arquitetura Utilizada](#benefícios-da-arquitetura-utilizada)
+6. [Subindo o banco localmente com Docker](#subindo-o-banco-localmente-com-docker)
+   - 6.1 [Pré-requisito](#pré-requisito)
+   - 6.2 [Variáveis de ambiente](#variáveis-de-ambiente)
+   - 6.3 [Subir o banco](#subir-o-banco)
+   - 6.4 [Verificar que o banco subiu](#verificar-que-o-banco-subiu)
+   - 6.5 [Derrubar o banco](#derrubar-o-banco)
+7. [Dicionário de Dados](#dicionário-de-dados)
+8. [Explain Analyze](#explain-analyze)
+9. [Teste de Carga (pgbench)](#teste-de-carga-pgbench)
+10. [Evoluções - Sprint 4](#evoluções--sprint-4)
 
 ---
 
@@ -456,15 +466,268 @@ Objetos criados em `02_sprint4_improvements.sql`.
 
 ---
 
-## 8. Evoluções — Sprint 4
+## 8. Explain Analyze
 
-### 8.1 Contexto
+Os testes de plano de execução foram realizados no banco real do projeto, utilizando dados existentes no ambiente PostgreSQL. O objetivo foi avaliar o comportamento do otimizador diante das consultas mais relevantes para o uso da aplicação.
+
+### Volume encontrado
+
+| Tabela | Registros |
+|---|---:|
+| usuarios | 17 |
+| teatros | 7 |
+| espetaculos | 7 |
+| interacoes | 2 |
+| recomendacoes | 0 |
+| wishlist_curtidas | 6 |
+
+### Índices relevantes existentes
+
+- `idx_wishlist_usuario`
+- `idx_teatros_cidade`
+- `idx_espetaculos_datas`
+- `idx_interacoes_usuario_expiracao`
+- `idx_recomendacoes_usuario_score`
+
+### Consulta 1 - Wishlist por usuário
+
+```sql
+SELECT *
+FROM wishlist_curtidas
+WHERE usuario_id = '606f6cae-1d85-46b0-aa6f-dc5fabad9037';
+```
+
+Resultado registrado do `EXPLAIN (ANALYZE, BUFFERS)`:
+
+```text
+Seq Scan
+Rows Removed by Filter: 4
+Buffers: shared hit=1
+Execution Time: 0.021 ms
+```
+
+Apesar da existência do índice `idx_wishlist_usuario`, o PostgreSQL optou por `Seq Scan` devido ao pequeno volume da tabela, composta por 6 registros.
+
+### Consulta 2 - Espetáculos por cidade
+
+```sql
+SELECT e.*
+FROM teatros t
+JOIN teatro_espetaculo te ON te.teatro_id = t.id
+JOIN espetaculos e ON e.id = te.espetaculo_id
+WHERE t.cidade = 'São Paulo';
+```
+
+Resultado registrado do `EXPLAIN (ANALYZE, BUFFERS)`:
+
+```text
+Nested Loop
+Seq Scan em teatros
+Seq Scan em espetaculos
+Index Only Scan usando teatro_espetaculo_pkey
+Execution Time: 0.115 ms
+```
+
+O PostgreSQL utilizou o índice da tabela associativa, por meio de `Index Only Scan` sobre `teatro_espetaculo_pkey`. Entretanto, optou por `Seq Scan` nas tabelas `teatros` e `espetaculos` devido ao baixo número de registros.
+
+### Consulta 3 - Espetáculos por intervalo de datas
+
+```sql
+SELECT *
+FROM espetaculos
+WHERE data_inicio >= CURRENT_DATE
+  AND data_fim <= CURRENT_DATE + INTERVAL '90 days';
+```
+
+Resultado registrado do `EXPLAIN (ANALYZE, BUFFERS)`:
+
+```text
+Seq Scan
+Rows Removed by Filter: 5
+Buffers: shared hit=1
+Execution Time: 0.020 ms
+```
+
+Apesar da existência do índice `idx_espetaculos_datas`, o PostgreSQL escolheu `Seq Scan` devido ao pequeno tamanho da tabela `espetaculos`.
+
+### Consulta 4 - Interações por usuário
+
+```sql
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT *
+FROM interacoes
+WHERE usuario_id = '13b71d3d-f518-4a8c-9e14-cee1bdfc173d'
+ORDER BY data_expiracao DESC;
+```
+
+Resultado normal:
+
+```text
+Sort  (cost=1.03..1.04 rows=1 width=80) (actual time=0.019..0.020 rows=1 loops=1)
+  Sort Key: data_expiracao DESC
+  Sort Method: quicksort  Memory: 25kB
+  Buffers: shared hit=4
+  ->  Seq Scan on interacoes  (cost=0.00..1.02 rows=1 width=80) (actual time=0.007..0.007 rows=1 loops=1)
+        Filter: (usuario_id = '13b71d3d-f518-4a8c-9e14-cee1bdfc173d'::uuid)
+        Rows Removed by Filter: 1
+        Buffers: shared hit=1
+Planning:
+  Buffers: shared hit=4
+Planning Time: 0.086 ms
+Execution Time: 0.032 ms
+```
+
+Com o comportamento padrão, o PostgreSQL escolheu `Seq Scan` porque a tabela `interacoes` possui apenas 2 registros.
+
+Consulta diagnóstica com `enable_seqscan` desativado:
+
+```sql
+SET enable_seqscan = off;
+
+EXPLAIN (ANALYZE, BUFFERS)
+SELECT *
+FROM interacoes
+WHERE usuario_id = '13b71d3d-f518-4a8c-9e14-cee1bdfc173d'
+ORDER BY data_expiracao DESC;
+
+SET enable_seqscan = on;
+```
+
+Resultado:
+
+```text
+Index Scan Backward using idx_interacoes_usuario_expiracao on interacoes  (cost=0.13..8.14 rows=1 width=80) (actual time=1.291..1.293 rows=1 loops=1)
+  Index Cond: (usuario_id = '13b71d3d-f518-4a8c-9e14-cee1bdfc173d'::uuid)
+  Buffers: shared hit=2 read=1
+Planning Time: 0.076 ms
+Execution Time: 1.309 ms
+```
+
+Ao desativar temporariamente `enable_seqscan`, o PostgreSQL utilizou o índice `idx_interacoes_usuario_expiracao`, comprovando que o índice existe, está válido e pode ser utilizado em cenários com maior volume. Esse ajuste foi usado apenas como diagnóstico e não deve ser aplicado como configuração de produção.
+
+### Conclusão
+
+Os índices avaliados estão corretamente criados e disponíveis no banco de dados. Contudo, nos testes realizados, o otimizador do PostgreSQL escolheu leituras sequenciais em parte das consultas porque as tabelas possuem poucos registros. Em ambientes com maior volume de dados, espera-se maior utilização dos índices, especialmente nas consultas filtradas por usuário, cidade, intervalo de datas e interações por usuário.
+
+## 9. Teste de Carga (pgbench)
+
+### Metodologia
+
+Os testes de carga foram realizados utilizando a ferramenta `pgbench` sobre o banco PostgreSQL real do projeto. Foi utilizado um workload customizado contendo exclusivamente consultas de leitura (`SELECT`), evitando qualquer alteração nos dados da aplicação durante a execução dos testes.
+
+As consultas simuladas representam operações reais do sistema, incluindo:
+
+- Consulta de wishlist/curtidas por usuário;
+- Busca de espetáculos por cidade;
+- Busca de espetáculos por intervalo de datas;
+- Consulta de recomendações por usuário.
+
+Todos os testes foram executados durante 60 segundos e utilizaram apenas operações de leitura.
+
+### Configuração do Ambiente
+
+- PostgreSQL 16.14
+- pgbench 16.14
+- Banco de dados: `aventura_db`
+- Tipo de workload: somente leitura (`read-only`)
+- Duração dos testes: 60 segundos
+
+Exemplo de execução:
+
+```bash
+pgbench -n -h <host> -p 5432 -U postgres -c <clientes> -j <threads> -T 60 -f pgbench_readonly_workload.sql aventura_db
+```
+
+### Workload utilizado
+
+O workload utilizado no `pgbench` foi definido no arquivo `pgbench_readonly_workload.sql` e contém apenas comandos `SELECT`, sem transações explícitas e sem comandos de escrita.
+
+```sql
+-- 1. Wishlist/curtidas por usuario.
+SELECT *
+FROM wishlist_curtidas
+WHERE usuario_id = '606f6cae-1d85-46b0-aa6f-dc5fabad9037';
+
+-- 2. Espetaculos por cidade.
+SELECT e.*
+FROM teatros t
+JOIN teatro_espetaculo te ON te.teatro_id = t.id
+JOIN espetaculos e ON e.id = te.espetaculo_id
+WHERE t.cidade = 'São Paulo';
+
+-- 3. Espetaculos por intervalo de datas.
+SELECT *
+FROM espetaculos
+WHERE data_inicio >= CURRENT_DATE
+  AND data_fim <= CURRENT_DATE + INTERVAL '90 days';
+
+-- 4. Recomendacoes por usuario.
+SELECT *
+FROM recomendacoes
+WHERE usuario_id = '606f6cae-1d85-46b0-aa6f-dc5fabad9037'
+ORDER BY score DESC;
+```
+
+### Resultados
+
+| Clientes | Threads | TPS | Latência Média | Falhas |
+|---:|---:|---:|---:|---:|
+| 5 | 2 | 50,36 | 99,28 ms | 0 |
+| 20 | 4 | 96,26 | 207,77 ms | 0 |
+| 50 | 4 | 345,99 | 144,52 ms | 0 |
+| 75 | 8 | 389,95 | 192,33 ms | 0 |
+
+### Análise dos Resultados
+
+Os resultados demonstram que o banco de dados permaneceu estável durante todos os cenários executados, sem ocorrência de falhas de transação.
+
+Observou-se aumento progressivo da taxa de transações por segundo (TPS) conforme o número de clientes simultâneos foi ampliado. O throughput evoluiu de aproximadamente 50 TPS no cenário de 5 clientes para cerca de 390 TPS no cenário de 75 clientes simultâneos.
+
+Apesar do aumento da concorrência, a latência média permaneceu em níveis aceitáveis para o tipo de workload executado. Como o banco possui baixo volume de dados e as consultas utilizadas são predominantemente simples, grande parte dos acessos permaneceu em memória, contribuindo para a estabilidade observada.
+
+Observou-se uma anomalia entre os cenários de 20 e 50 clientes: com 20 clientes, a latência média foi de 207,77 ms, enquanto com 50 clientes a latência média foi de 144,52 ms. Essa redução pode estar relacionada ao aquecimento de cache do PostgreSQL e do sistema operacional, pois os testes foram executados sequencialmente e o volume de dados é pequeno.
+
+### Limitação Observada
+
+Foi realizado um teste adicional com 100 clientes simultâneos.
+
+Durante a execução, o PostgreSQL retornou o erro:
+
+```text
+FATAL: sorry, too many clients already
+```
+
+A configuração do banco indicou:
+
+```sql
+SHOW max_connections;
+```
+
+Resultado:
+
+```text
+max_connections = 100
+```
+
+Esse comportamento indica que o ambiente não possuía conexões disponíveis suficientes para atender 100 novos clientes simultâneos, pois parte das conexões já estava sendo utilizada por outras sessões ativas. Portanto, o limite prático observado para o ambiente de testes ficou abaixo de 100 conexões concorrentes.
+
+Uma possível evolução para mitigar esse limite em cenários com maior concorrência seria utilizar connection pooling, por exemplo com PgBouncer, reduzindo a necessidade de abrir uma conexão direta ao PostgreSQL para cada cliente simultâneo.
+
+### Conclusão
+
+Os testes de carga realizados com `pgbench` forneceram evidências quantitativas do comportamento do banco de dados sob diferentes níveis de concorrência. Os resultados demonstraram estabilidade operacional, ausência de falhas e crescimento do throughput conforme o aumento do número de clientes simultâneos. Além disso, foi possível identificar uma limitação real da infraestrutura relacionada ao limite de conexões configurado no PostgreSQL, contribuindo para a compreensão da capacidade operacional do ambiente.
+
+---
+
+## 10. Evoluções - Sprint 4
+
+### 10.1 Contexto
 
 O schema definido na Sprint 3 (`01_create_database.sql`) foi auditado na Sprint 4 e identificou-se a necessidade de novos campos, correções de qualidade e objetos de banco para suportar integração com ViaCEP, conformidade com a LGPD e o motor de recomendação por ML. Todas as evoluções foram concentradas em `02_sprint4_improvements.sql` — um script idempotente e re-executável —, mantendo o script original sem modificações estruturais adicionais.
 
 ---
 
-### 8.2 Novas colunas em tabelas existentes
+### 10.2 Novas colunas em tabelas existentes
 
 #### usuarios
 
@@ -503,7 +766,7 @@ A coluna `data_expiracao` já existia em `01_create_database.sql`, mas sem nenhu
 
 ---
 
-### 8.3 Mudança de tipo de dado
+### 10.3 Mudança de tipo de dado
 
 Como parte da Sprint 4, colunas de data/hora que usavam `TIMESTAMP` (sem fuso) foram corrigidas para `TIMESTAMPTZ` no script base (`01_create_database.sql`). O banco roda na Oracle Cloud Infrastructure (UTC); colunas `TIMESTAMP` armazenam instantes sem informação de fuso, gerando ambiguidade na interpretação de horários entre clientes em timezones distintos. `TIMESTAMPTZ` armazena o instante em UTC e permite conversão correta no momento da leitura.
 
@@ -524,7 +787,7 @@ Como parte da Sprint 4, colunas de data/hora que usavam `TIMESTAMP` (sem fuso) f
 
 ---
 
-### 8.4 Nova constraint
+### 10.4 Nova constraint
 
 A Sprint 4 adicionou três constraints ausentes no script original:
 
@@ -536,7 +799,7 @@ A Sprint 4 adicionou três constraints ausentes no script original:
 
 ---
 
-### 8.5 Índices substituídos
+### 10.5 Índices substituídos
 
 Dois índices simples do Sprint 3 foram removidos e substituídos por índices compostos que cobrem os padrões de busca reais usados pelos módulos de recomendação.
 
@@ -556,7 +819,7 @@ Novos índices sem predecessor no Sprint 3:
 
 ---
 
-### 8.6 Objetos de banco — motivação
+### 10.6 Objetos de banco — motivação
 
 #### fn_atualizar_data_preferencias / trg_preferencias_update
 
@@ -588,7 +851,7 @@ Novos índices sem predecessor no Sprint 3:
 
 ---
 
-### 8.7 Estado Sprint 3 → Sprint 4
+### 10.7 Estado Sprint 3 → Sprint 4
 
 | Tabela | Sprint 3 (`01_create_database.sql`) | Sprint 4 (adições via `02_sprint4_improvements.sql`) |
 |---|---|---|
@@ -605,7 +868,7 @@ Novos índices sem predecessor no Sprint 3:
 
 ---
 
-### 8.9 Rastreabilidade das transações
+### 10.9 Rastreabilidade das transações
 
 #### Mecanismos existentes no schema
 

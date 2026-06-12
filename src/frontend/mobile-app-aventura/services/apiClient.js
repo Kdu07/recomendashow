@@ -2,10 +2,10 @@ import { clearAuthStorage, getAuthToken } from './tokenStorageService';
 import { handleSessionExpired } from '../navigation/navigationRef';
 
 export const API_BASE = __DEV__
-  ? 'http://172.20.10.3:5253'
+  ? 'http://163.176.204.208:5253'
   : 'http://localhost:5253';
 
-const AUTH_PATHS = ['/api/auth/login'];
+const AUTH_PATHS = ['/api/auth/login', '/api/auth/register'];
 
 function isAuthPath(path) {
   return AUTH_PATHS.some((authPath) => path.startsWith(authPath));

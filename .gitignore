@@ -1,20 +1,76 @@
-# macOS
-.DS_Store
-**/.DS_Store
+# ============================================================
+#  Secrets & credentials  (NEVER commit these)
+# ============================================================
+.env
+.env.*
+!.env.example
+chave.key
+chave-back.key
+*.key
+*.pem
+*.pfx
+*.p12
+secrets.json
+appsettings.*.local.json
 
-dataset.csv
+# ============================================================
+#  Node / npm / Expo / React Native  (src/frontend)
+# ============================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.expo/
+.expo-shared/
+dist/
+web-build/
+*.jks
+*.keystore
+!debug.keystore
+
+# ============================================================
+#  Python  (src/ml, training/recommendation services)
+# ============================================================
 .venv/
 .venv311/
 venv/
 env/
 __pycache__/
-*.pyc
-.env
-DbRunner/bin/
-DbRunner/obj/
-.env
-.DS_Store
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
 
-# .NET build outputs
+# ============================================================
+#  .NET / C#  (src/backend, src/ml, DbRunner, tests)
+# ============================================================
 **/bin/
 **/obj/
+**/.build-check/
+**/TestResults/
+*.user
+*.suo
+.vs/
+
+# Local certificates and runtime logs
+**/*.pfx
+**/*.log
+**/*.err.log
+
+# ============================================================
+#  Data  (large/generated datasets - models are tracked on purpose)
+# ============================================================
+dataset.csv
+
+# ============================================================
+#  OS / editor
+# ============================================================
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini

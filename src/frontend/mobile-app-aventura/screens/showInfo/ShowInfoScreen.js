@@ -34,34 +34,7 @@ export default function ShowInfoScreen({ route, navigation }) {
   const [systemStatus, setSystemStatus] = useState(null);
   const showId = route?.params?.showId ?? '1';
   const topInset = Platform.OS === 'android' ? StatusBar.currentHeight || 0 : 0;
-  const { show, error, subtitle, toggleFavorite, onPressTickets, onPressVenue } = useShowInfoViewModel(showId);
-
-  function handleBackPress() {
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-      return;
-    }
-
-    navigation.navigate('MainTabs', { screen: 'Home' });
-  }
-
-  if (error) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <TouchableOpacity
-          style={[styles.backButton, { top: topInset + spacing.xxxl }]}
-          onPress={handleBackPress}
-          activeOpacity={0.75}
-        >
-          <Ionicons name="chevron-back" size={22} color={colors.grayDark} />
-        </TouchableOpacity>
-
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>Espetáculo não encontrado.</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
+  const { show, loading, error, subtitle, toggleFavorite, onPressTickets, onPressVenue } = useShowInfoViewModel(showId);
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -82,6 +55,52 @@ export default function ShowInfoScreen({ route, navigation }) {
     outputRange: [0, 1],
     extrapolate: 'clamp',
   });
+
+  function handleBackPress() {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+      return;
+    }
+
+    navigation.navigate('MainTabs', { screen: 'Home' });
+  }
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <TouchableOpacity
+          style={[styles.backButton, { top: topInset + spacing.xxxl }]}
+          onPress={handleBackPress}
+          activeOpacity={0.75}
+        >
+          <Ionicons name="chevron-back" size={22} color={colors.grayDark} />
+        </TouchableOpacity>
+
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Carregando espetáculo...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (error || !show) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <TouchableOpacity
+          style={[styles.backButton, { top: topInset + spacing.xxxl }]}
+          onPress={handleBackPress}
+          activeOpacity={0.75}
+        >
+          <Ionicons name="chevron-back" size={22} color={colors.grayDark} />
+        </TouchableOpacity>
+
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>Espetáculo não encontrado.</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
 
   function handlePressVenueWithStatus() {
     onPressVenue();
@@ -241,6 +260,17 @@ const styles = StyleSheet.create({
       height: 3,
     },
     elevation: 4,
+  },
+
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  loadingText: {
+    fontSize: 16,
+    color: colors.grayText,
   },
 
   errorContainer: {

@@ -25,6 +25,7 @@ export default function AuthScreen({ navigation }) {
     errors,
     content,
     loading,
+    cepLookupLoading,
     setMode,
     updateField,
     validateRegisterStep,
@@ -86,6 +87,7 @@ export default function AuthScreen({ navigation }) {
               errors={errors}
               submitLabel={content.submitLabel}
               loading={loading}
+              cepLookupLoading={cepLookupLoading}
               onChangeField={updateField}
               onValidateStep={validateRegisterStep}
               onSubmit={handleSubmitWithStatus}

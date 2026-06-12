@@ -10,7 +10,6 @@ namespace BackEnd.Aventura.Repository
         Usuario Create(Usuario usuario);
         bool Update(Usuario usuario);
         bool SolicitarExclusao(Guid id);
-        bool Anonimizar(Guid id);
         Task<int?> ObterMlIdAsync(Guid usuarioId);
     }
 }

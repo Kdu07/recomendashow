@@ -37,7 +37,7 @@ namespace BackEnd.Aventura.Tests
             _serviceMock.Setup(s => s.GetRecomendacoes(userId, 10)).Returns(list);
 
             // Act
-            var result = _controller.GetRecomendacoes(userId, 10);
+            var result = _controller.Get(userId, 10);
 
             // Assert
             var actionResult = Assert.IsType<OkObjectResult>(result.Result);

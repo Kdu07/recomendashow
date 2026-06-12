@@ -1,23 +1,23 @@
-# G2 - Recomendação de Espetáculos no Portal Aventura
+# RecomendaShow
+
+## Grupo 2 - Aventureiros
+
+Recomendação inteligente de espetáculos para o Portal Aventura.
 
 **Repositório:** `2026-1b/t17/g02`  
-🔗 [https://git.inteli.edu.br/graduacao/2026-1b/t17/g02](https://git.inteli.edu.br/graduacao/2026-1b/t17/g02)
+[https://git.inteli.edu.br/graduacao/2026-1b/t17/g02](https://git.inteli.edu.br/graduacao/2026-1b/t17/g02)
 
 ---
 
 ## Equipe
 
-| Nome                                      | LinkedIn |
-|-------------------------------------------|----------|
-| Alexsander da Silva Barbosa              | [LinkedIn](https://www.linkedin.com/in/alexsander-dsbarbosa/) |
-| Carlos Eduardo Serrano Quaglia           | [LinkedIn](https://www.linkedin.com/in/carlos-quaglia-309088357/) |
-| Catarina Sayuri Arashiro Braga Felipe    | [LinkedIn](https://www.linkedin.com/in/catarina-sayuri/) |
-| Débora Pereira Nogueira                  | [LinkedIn](https://www.linkedin.com/in/debora-pereira-nogueira/) |
-| Isaac Souza Santos                       | [LinkedIn](https://www.linkedin.com/in/isaac-souza-santos/) |
-| Nicholas Anantha Krishnan Millani        | [LinkedIn](https://www.linkedin.com/in/nicholas-millani-83a950357/) |
-| Paulo Henrique Bueno Fernandes           | [LinkedIn](https://www.linkedin.com/in/paulo-henrique0601/) |
-
----
+- [Alexsander da Silva Barbosa](https://www.linkedin.com/in/alexsander-dsbarbosa/)
+- [Carlos Eduardo Serrano Quaglia](https://www.linkedin.com/in/carlos-quaglia-309088357/)
+- [Catarina Sayuri Arashiro Braga Felipe](https://www.linkedin.com/in/catarina-sayuri/)
+- [Débora Pereira Nogueira](https://www.linkedin.com/in/debora-pereira-nogueira/)
+- [Isaac Souza Santos](https://www.linkedin.com/in/isaac-souza-santos/)
+- [Nicholas Anantha Krishnan Millani](https://www.linkedin.com/in/nicholas-millani-83a950357/)
+- [Paulo Henrique Bueno Fernandes](https://www.linkedin.com/in/paulo-henrique0601/)
 
 ## Corpo Docente
 
@@ -34,226 +34,143 @@
 
 ---
 
-## Descrição do Projeto
+## Sobre o Projeto
 
-O projeto consiste no desenvolvimento de uma **solução de recomendação inteligente de espetáculos** para o **Portal Aventura**, em parceria com a **Aventura Teatros**.
+O RecomendaShow é uma solução de recomendação para a **Aventura Teatros**, criada para sugerir espetáculos, conteúdos e experiências culturais alinhadas ao perfil e ao comportamento dos usuários do Portal Aventura.
 
-Fundada em 2008, a Aventura é referência nacional na produção de espetáculos de altíssima qualidade, responsável por grandes sucessos como *Elis, o Musical*, *Mamma Mia!*, *A Noviça Rebelde*, *O Mágico de Oz*, *Ayrton Senna - O Musical*, *Pixar in Concert* e *Vozes Negras*. Com mais de 50 produções, 5 milhões de espectadores e forte atuação na gestão de venues culturais, a empresa busca inovar a experiência do público por meio da tecnologia.
-
-**Objetivo principal:** Criar um sistema de recomendação inteligente capaz de sugerir espetáculos, conteúdos e experiências culturais alinhadas aos interesses do usuário, aumentando o engajamento, o tempo de permanência no portal e a conversão em vendas de ingressos.
-
----
-
-## Escopo do Produto
-
-### O que a plataforma faz:
-- Recomenda espetáculos personalizados com base no perfil e comportamento do usuário
-- Exibe vitrines e carrosséis dinâmicos de conteúdo
-- Filtra sugestões por geolocalização (São Paulo e Rio de Janeiro)
-- Redireciona o usuário para a compra de ingressos via parceiros de bilheteria
-
-### O que a plataforma **não** faz:
-- Processa pagamentos ou vende ingressos diretamente
-- Substitui o CMS de cadastro de eventos da Aventura
-- Funciona offline ou atua como rede social entre usuários
+A plataforma recomenda espetáculos personalizados, organiza vitrines dinâmicas de conteúdo, considera preferências e localização do usuário e redireciona a compra de ingressos para parceiros de bilheteria. O produto não processa pagamentos, não substitui o CMS da Aventura e não atua como rede social.
 
 ---
 
 ## Documentação
 
 | Documento | Descrição |
-|-----------|-----------|
-| [Índice da Documentação](docs/Index.md) | Navegação central para todos os documentos presentes na pasta `docs` |
-| [Projeto](docs/Projeto.md) | Documento principal com contexto, requisitos, arquitetura, diagramas, planejamento de testes e evolução da solução |
-| [Gestão e Configuração](docs/Gestao_Projeto_Configuracao.md) | Metodologia de versionamento, organização de branches, commits e práticas de gestão |
-| [Gestão de Projeto - Sprint 2](docs/Gestão_projeto_SP2.md) | Registro de planejamento e acompanhamento da Sprint 2 |
-| [Gestão de Projeto - Sprint 3](docs/Gestão_projeto_SP3.md) | Registro de planejamento e acompanhamento da Sprint 3 |
-| [Projeto Visual](docs/projeto_visual.md) | Diretrizes visuais, telas, fluxos e decisões de interface |
+|---|---|
+| [Índice da Documentação](docs/Index.md) | Navegação central dos documentos do projeto. |
+| [Projeto](docs/Projeto.md) | Contexto, problema, requisitos, arquitetura, diagramas, testes e evolução da solução. |
+| [Guia de Padrões de Desenvolvimento](docs/GuiaPadroesDesenvolvimento.md) | Padrões de pastas, branches, commits, nomenclatura, camadas, erros, testes, padrões de projeto, DoR e DoD. |
+| [Gestão do Projeto](docs/GestaoProjeto.md) | Sprints, retrospectivas, ações de melhoria e planejamento. |
+| [Gestão e Configuração](docs/Gestao_Projeto_Configuracao.md) | Versionamento, branches, commits, Pull Requests e configuração. |
+| [Modelo de Recomendação](docs/Modelo_Recomendacao.md) | Pipeline de dados, treinamento, inferência, métricas e artefatos do modelo. |
+| [Projeto Visual](docs/projeto_visual.md) | Diretrizes visuais, telas, fluxos e decisões de interface. |
+| [Banco de Dados](src/database/README.md) | Schema, infraestrutura, Docker, dicionário de dados e evoluções do banco. |
 
 ---
 
----
+## Arquitetura
 
-## Arquitetura da Solução
-
-A solução adota uma abordagem baseada em **SOA (Service-Oriented Architecture)**, organizando o projeto em módulos com responsabilidades específicas para interface mobile, backend, banco de dados, recomendação, treinamento de modelos, análise de dados e documentação. Essa separação favorece a manutenção, a evolução dos componentes e a integração entre as partes da aplicação.
-
-A organização atual da solução contempla os seguintes módulos:
+A solução segue uma abordagem orientada a serviços, separando interface mobile, API, banco de dados, treinamento de modelo, inferência e documentação.
 
 | Módulo | Responsabilidade |
 |---|---|
-| Frontend mobile | Interface em React Native/Expo responsável pelas telas e fluxos de navegação do usuário. |
-| Backend | API principal em C#/.NET, responsável por expor endpoints e concentrar regras de integração da aplicação. |
-| Banco de dados | Estrutura PostgreSQL definida por scripts SQL, com suporte a execução local via Docker e configuração hospedada via Supabase. |
-| Serviço de recomendação | Serviço em C#/.NET responsável por carregar modelos/dados e fornecer recomendações e métricas. |
-| Serviço de treinamento | Módulo em C#/.NET voltado ao processamento dos dados e geração de artefatos de modelo. |
-| Dados e notebooks | Área de análise, experimentação e avaliação dos modelos de recomendação. |
-| Documentação | Registros acadêmicos, técnicos, visuais e de gestão do projeto. |
+| `src/frontend/mobile-app-aventura` | Aplicativo mobile em React Native/Expo. |
+| `src/backend` | API principal em C#/.NET, com controllers, services, repositories e regras de negócio. |
+| `src/database` | Scripts SQL, schema PostgreSQL e configuração do banco. |
+| `src/mongodb` | Configuração do MongoDB local usado no ambiente Docker. |
+| `src/ml` | Preprocessamento, treinamento, avaliação e geração dos artefatos do modelo. |
+| `src/inference-service` | Host de inferência, métricas, diagnósticos e batch de recomendações. |
+| `data` | Dados brutos e artefatos treinados do modelo. |
+| `docs` | Documentação acadêmica, técnica, visual e de gestão. |
 
-### Fluxo lógico da solução
+### Tecnologias
 
-1. Os dados são organizados em `data/` e explorados nos notebooks.
-2. O serviço de treinamento processa os dados e gera artefatos de modelo.
-3. O serviço de recomendação utiliza os artefatos para calcular recomendações.
-4. O backend atua como camada de API e integração.
-5. O frontend mobile apresenta a experiência ao usuário.
-6. O banco PostgreSQL armazena entidades, preferências, interações e recomendações.
-
-### Tecnologias utilizadas
-
-| Camada | Tecnologia |
-|----------|-------------|
-| Frontend | HTML, CSS, JavaScript |
-| Backend | C# (.NET) |
-| Banco de Dados | PostgreSQL |
-| Infraestrutura de banco | Supabase e Docker Compose para ambiente local |
-| Controle de versão | Git/GitLab |
-| Ambiente de desenvolvimento | VS Code |
-
-### Estrutura do Repositório
-
-```text
-g02-2/
-│ .env
-│ .gitignore
-│ docker-compose-db.yml
-│ README.md
-│ requirements.txt
-│
-├── assets/
-├── docs/
-├── src/
-│   ├── backend/
-│   ├── frontend/
-│   ├── models/
-│   ├── dataset/
-│   └── database/
-│       ├──01_create_database.sql
-│       └──02_initial_data.sql
-│
-├── DbRunner/
-```
+| Camada | Tecnologias |
+|---|---|
+| Mobile | React Native, Expo, JavaScript, Jest |
+| Backend | C#, .NET 9, ASP.NET Core, xUnit |
+| Dados | PostgreSQL, MongoDB, Docker Compose |
+| Machine Learning | ML.NET, pipeline híbrido de recomendação |
+| Infraestrutura | Oracle Cloud Infrastructure para banco remoto e Docker para ambiente local |
+| Colaboração | Git, GitLab, VS Code |
 
 ---
 
 ## Banco de Dados
 
-O banco de dados foi modelado em PostgreSQL utilizando identificadores UUID e hospedado na plataforma Supabase.
+O banco de dados foi modelado em PostgreSQL com identificadores UUID e entidades voltadas ao registro de usuários, preferências, espetáculos, teatros, gêneros, interações, recomendações, wishlist e curtidas.
 
-A modelagem contempla entidades relacionadas ao comportamento do usuário, espetáculos, preferências e mecanismos de recomendação.
+A infraestrutura atual contempla execução local via Docker Compose, com PostgreSQL e MongoDB, e banco remoto hospedado em uma máquina virtual Linux na Oracle Cloud Infrastructure. Os scripts SQL ficam em `src/database` e são responsáveis pela criação do schema, carga inicial, melhorias incrementais, constraints, índices, triggers e procedures.
 
-Principais entidades:
+Principais relacionamentos implementados:
 
-- Usuários
-- Preferências
-- Espetáculos
-- Teatros
-- Gêneros
-- Interações
-- Recomendações
-- Wishlist e Curtidas
+- Usuário e preferências (1:1)
+- Usuário e interações (1:N)
+- Usuário e gêneros favoritos (N:N)
+- Espetáculos e gêneros (N:N)
+- Teatro e espetáculos (N:N)
+- Usuário e recomendações (1:N)
 
-Relacionamentos implementados:
-
-- Usuário ↔ Preferências (1:1)
-- Usuário ↔ Interações (1:N)
-- Usuário ↔ Gêneros Favoritos (N:N)
-- Espetáculos ↔ Gêneros (N:N)
-- Teatro ↔ Espetáculos (N:N)
-- Usuário ↔ Recomendações (1:N)
+A documentação completa do banco, incluindo infraestrutura, execução local, dicionário de dados e evolução dos scripts, está em [src/database/README.md](src/database/README.md).
 
 ---
 
-## Regras de Negócio Implementadas
+## Estrutura do Repositório
 
-As seguintes regras foram consideradas na modelagem:
-
-- Cada usuário possui email único
-- Usuários devem possuir idade mínima de 13 anos
-- Cada gênero possui nome único
-- Cada espetáculo possui nome único
-- Cada teatro possui nome único
-- O valor do ingresso não pode ser negativo
-- A data de encerramento do espetáculo deve ser posterior à data inicial
-- Recomendações possuem score entre 0 e 1
-- Exclusão de usuários remove automaticamente registros dependentes (`ON DELETE CASCADE`)
-- Exclusão de teatros vinculados a espetáculos utiliza restrição (`ON DELETE RESTRICT`)
+```text
+g02/
+|-- assets/
+|-- data/
+|   |-- raw/
+|   `-- models/
+|-- docs/
+|-- DbRunner/
+|-- src/
+|   |-- backend/
+|   |-- database/
+|   |-- frontend/mobile-app-aventura/
+|   |-- inference-service/
+|   |-- ml/
+|   `-- mongodb/
+|-- tests/
+|-- docker-compose-db.yml
+|-- global.json
+`-- README.md
+```
 
 ---
 
-## Configuração e Execução
+## Configuração
 
 ### Pré-requisitos
 
-- .NET SDK instalado
-- Conta no Supabase
-- Visual Studio Code
+- .NET SDK 9, conforme `global.json`
+- Node.js e npm
+- Docker e Docker Compose
+- VS Code ou editor equivalente
 
-### Variáveis de ambiente
+### Variáveis de Ambiente
 
-Criar um arquivo `.env` na raiz do projeto a partir do modelo seguro:
+Crie um arquivo `.env` na raiz do projeto a partir de `.env.example` e preencha as credenciais do ambiente desejado. Não versionar valores reais de usuário, senha ou conexão.
 
-```bash
-cp .env.example .env
+Para o banco local via Docker, o `docker-compose-db.yml` espera as seguintes variáveis:
+
+```env
+POSTGRES_USER=<usuario_local>
+POSTGRES_PASSWORD=<senha_local>
+POSTGRES_DB=<nome_do_banco>
+POSTGRES_PORT=5432
+MONGO_USER=<usuario_local>
+MONGO_PASSWORD=<senha_local>
+MONGO_PORT=27017
 ```
 
-Preencha o arquivo `.env` com as credenciais do ambiente local ou hospedado. O arquivo `.env` não deve conter valores fictícios em execução real e não deve ser versionado.
+O `.env` contém credenciais e não deve ser versionado. Use apenas valores locais de desenvolvimento e nunca credenciais de produção no repositório.
 
 ---
 
-### Banco de dados local com Docker
+## Execução Local
+
+### Banco de Dados
+
+Sobe PostgreSQL e MongoDB localmente:
 
 ```bash
 docker compose -f docker-compose-db.yml up --build
 ```
 
-O serviço utiliza as variáveis `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` e `POSTGRES_PORT`.
+Para aplicar os scripts em um banco remoto, use o `DbRunner` conforme as instruções da documentação completa do banco.
 
----
-
-### Executar scripts SQL com DbRunner
-
-Entrar na pasta:
-
-```bash
-cd DbRunner
-```
-
-Restaurar dependências:
-
-```bash
-dotnet restore
-```
-
-Executar os scripts SQL:
-
-```bash
-dotnet run
-```
-
-O processo realiza:
-
-1. Leitura do arquivo `.env`
-2. Conexão com Supabase
-3. Execução do script estrutural
-4. Execução dos dados iniciais
-5. Validação da conexão
-
----
-
-### Executar frontend mobile
-
-```bash
-cd src/frontend/mobile-app-aventura
-npm install
-npm start
-```
-
-Também estão disponíveis os scripts `npm run android`, `npm run ios` e `npm run web`, conforme configuração do Expo.
-
----
-
-### Executar backend
+### Backend
 
 ```bash
 cd src/backend
@@ -261,11 +178,25 @@ dotnet restore
 dotnet run
 ```
 
----
+### Frontend Mobile
 
-### Treinar o modelo de recomendação
+```bash
+cd src/frontend/mobile-app-aventura
+npm install
+npm start
+```
 
-Primeiro, gera `data/dataset/dataset.csv` a partir das transações brutas do Sympla (`data/raw/database_sympla.csv`); depois, treina o modelo gerando `data/models/model.zip` e os artefatos auxiliares (cold-start, categorias, afinidade):
+Também estão disponíveis os scripts:
+
+```bash
+npm run android
+npm run ios
+npm run web
+```
+
+### Treinamento do Modelo
+
+O preprocessamento usa `data/raw/database_sympla.csv` e gera o dataset processado. O treinamento gera `data/models/model.zip` e artefatos auxiliares de cold-start, categorias e afinidade.
 
 ```bash
 cd src/ml
@@ -273,11 +204,7 @@ dotnet run preprocess
 dotnet run train
 ```
 
----
-
-### Executar host de inferência
-
-Carrega o modelo híbrido treinado e roda o batch (24h) que persiste as recomendações na tabela `recomendacoes`; expõe também endpoints de métricas e diagnóstico:
+### Serviço de Inferência
 
 ```bash
 cd src/inference-service
@@ -285,37 +212,37 @@ dotnet restore
 dotnet run
 ```
 
-Alguns serviços dependem de arquivos de dados, modelos treinados e variáveis de ambiente configuradas corretamente. Detalhes do pipeline de recomendação em `docs/Modelo_Recomendacao.md`.
+O serviço carrega os artefatos do modelo, executa o batch de recomendações e expõe endpoints de métricas e diagnóstico.
 
 ---
 
-## Modelo de Dados
+## Testes
 
-A modelagem foi construída com foco em personalização de recomendações, rastreamento de comportamento e organização das informações culturais disponibilizadas pelo Portal Aventura.
-
-O modelo utiliza:
-
-- UUID como chave primária
-- tabelas associativas para relacionamentos N:N
-- constraints de integridade
-- índices para otimização
-- enums para categorização de interações
-
-Diagramas e detalhes adicionais encontram-se na pasta:
-
-```text
-assets/
+```bash
+dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
+dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.IntegrationTests.csproj
+dotnet test src/inference-service/InferenceService.Tests/InferenceService.Tests.csproj
 ```
+
+Testes do aplicativo mobile:
+
+```bash
+cd src/frontend/mobile-app-aventura
+npm test
+```
+
+Os testes de integração podem depender de Docker ativo para criação dos containers de banco.
 
 ---
 
 ## Histórico de Versões
 
-| Versão | Data       | Descrição |
-|--------|------------|---------|
-| 0.1.0  | Abril/2026 | Visão inicial do produto, definição de requisitos e entrega do artefato de Dataset (Sprint 01) |
-| 0.2.0  | Maio/2026 | Evolução da documentação, modelagem de banco, protótipos visuais e organização dos artefatos do projeto |
-| 0.3.0-dev | Maio/2026 | Estruturação em andamento de frontend mobile, backend, serviços de recomendação, treinamento e documentação acadêmica |
+| Versão | Data | Descrição |
+|---|---|---|
+| 0.1.0 | Abril/2026 | Visão inicial do produto, requisitos e dataset da Sprint 1. |
+| 0.2.0 | Maio/2026 | Modelagem de banco, protótipos visuais e organização dos artefatos. |
+| 0.3.0 | Maio/2026 | Estruturação do frontend mobile, backend, banco e serviços de recomendação. |
+| 0.4.0 | Junho/2026 | Integração entre backend, banco, ML, inferência, testes automatizados e refinamento documental. |
 
 ---
 
@@ -324,10 +251,17 @@ assets/
 <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/">
   Este projeto,
   <a property="dct:title" rel="cc:attributionURL" href="https://git.inteli.edu.br/graduacao/2026-1b/t17/g02">Recomendação de Espetáculos no Portal Aventura</a>,
-  desenvolvido por
-  <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://www.inteli.edu.br/">Inteli</a>,
+  foi desenvolvido pelo
+  <span property="cc:attributionName dct:creator">Grupo 2 - Aventureiros</span>,
+  composto por
+  <a rel="cc:attributionURL" href="https://www.linkedin.com/in/alexsander-dsbarbosa/">Alexsander da Silva Barbosa</a>,
+  <a rel="cc:attributionURL" href="https://www.linkedin.com/in/carlos-quaglia-309088357/">Carlos Eduardo Serrano Quaglia</a>,
+  <a rel="cc:attributionURL" href="https://www.linkedin.com/in/catarina-sayuri/">Catarina Sayuri Arashiro Braga Felipe</a>,
+  <a rel="cc:attributionURL" href="https://www.linkedin.com/in/debora-pereira-nogueira/">Débora Pereira Nogueira</a>,
+  <a rel="cc:attributionURL" href="https://www.linkedin.com/in/isaac-souza-santos/">Isaac Souza Santos</a>,
+  <a rel="cc:attributionURL" href="https://www.linkedin.com/in/nicholas-millani-83a950357/">Nicholas Anantha Krishnan Millani</a>
+  e
+  <a rel="cc:attributionURL" href="https://www.linkedin.com/in/paulo-henrique0601/">Paulo Henrique Bueno Fernandes</a>,
   está licenciado sob
   <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="license noopener noreferrer">Creative Commons Attribution 4.0 International</a>.
 </p>
-
----

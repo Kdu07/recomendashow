@@ -64,18 +64,5 @@ namespace BackEnd.Aventura.Tests
             Assert.NotNull(usuario.DeletedAt);
         }
 
-        [Fact]
-        public void Anonimizar_ShouldOverwritePersonalDataAndSetFlag()
-        {
-            var usuario = Usuario.Create("Ana", "ana@example.com", "hash", 20);
-            usuario.SolicitarExclusao();
-
-            usuario.Anonimizar();
-
-            Assert.Equal("Usuário Removido", usuario.Nome);
-            Assert.Contains("@anonimizado.invalid", usuario.Email);
-            Assert.Equal(string.Empty, usuario.SenhaHash);
-            Assert.True(usuario.Anonimizado);
-        }
     }
 }

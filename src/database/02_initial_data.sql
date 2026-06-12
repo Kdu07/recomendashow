@@ -38,28 +38,36 @@ INSERT INTO usuarios(
 nome,
 email,
 senha_hash,
-idade
+idade,
+consentimento_aceito,
+data_consentimento
 )
 VALUES
 (
 'Alexsander Barbosa',
 'alex@email.com',
-'123hash',
-21
+'$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+21,
+TRUE,
+'2026-06-01 10:00:00'
 ),
 
 (
 'Maria Silva',
 'maria@email.com',
-'123hash',
-25
+'$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+25,
+TRUE,
+'2026-06-01 10:00:00'
 ),
 
 (
 'João Santos',
 'joao@email.com',
-'123hash',
-30
+'$2a$11$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+30,
+TRUE,
+'2026-06-01 10:00:00'
 )
 ON CONFLICT(email)
 DO NOTHING;
@@ -198,7 +206,7 @@ WHERE nome='Musical'
 ON CONFLICT DO NOTHING;
 
 
-INSERT INTO wishlist_curtidas
+INSERT INTO wishlist_curtidas(usuario_id, espetaculo_id, tipo)
 VALUES
 (
 (

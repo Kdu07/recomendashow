@@ -18,6 +18,8 @@ export default function AppInput({
   textContentType,
   returnKeyType,
   autoCorrect = true,
+  editable = true,
+  helperText,
 }) {
   const [focused, setFocused] = useState(false);
 
@@ -30,6 +32,7 @@ export default function AppInput({
           styles.input,
           focused && styles.inputFocused,
           error && styles.inputError,
+          !editable && styles.inputDisabled,
         ]}
         placeholder={placeholder}
         placeholderTextColor={colors.grayText}
@@ -44,10 +47,12 @@ export default function AppInput({
         textContentType={textContentType}
         returnKeyType={returnKeyType}
         autoCorrect={autoCorrect}
+        editable={editable}
         accessibilityLabel={label}
       />
 
       {error && <Text style={styles.errorText}>{error}</Text>}
+      {!error && helperText && <Text style={styles.helperText}>{helperText}</Text>}
     </View>
   );
 }
@@ -86,9 +91,20 @@ const styles = StyleSheet.create({
     borderColor: colors.peachBurnt,
   },
 
+  inputDisabled: {
+    color: colors.grayText,
+    backgroundColor: colors.whiteSoft,
+  },
+
   errorText: {
     fontSize: typography.size.xs,
     lineHeight: typography.lineHeight.xs,
     color: colors.peachBurnt,
+  },
+
+  helperText: {
+    fontSize: typography.size.xs,
+    lineHeight: typography.lineHeight.xs,
+    color: colors.grayText,
   },
 });

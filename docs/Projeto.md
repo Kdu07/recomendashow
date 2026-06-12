@@ -3271,9 +3271,22 @@ Os testes de usabilidade foram realizados para observar como usuários interagem
 
 **Participantes e formato:** Participaram 5 usuários externos ao grupo, com diferentes níveis de familiaridade com aplicativos mobile e diferentes frequências de consumo cultural: Guilherme Carvalho, Eduardo Lucio, Antonio Dantas, Leticia Nery e Renan Santana. A avaliação foi conduzida em formato moderado, com observação direta da execução das tarefas planejadas e registro das percepções verbalizadas pelos participantes.
 
-**Tarefas executadas:** As tarefas avaliadas corresponderam aos fluxos TU-01 a TU-08: cadastro e login, onboarding de preferências, análise da Home e recomendações iniciais, busca de espetáculo, consulta aos detalhes do espetáculo e compreensão do redirecionamento externo, adição de espetáculo à Wishlist, acesso à Wishlist e edição de preferências no Perfil.
+**Tarefas executadas:** As tarefas avaliadas corresponderam aos fluxos TU-01 a TU-08: cadastro e login, onboarding de preferências, análise da Home e recomendações iniciais, busca de espetáculo, consulta aos detalhes do espetáculo e compreensão do redirecionamento externo, adição de espetáculo à Wishlist, acesso à Wishlist e edição de preferências no Perfil. Todos os fluxos planejados na seção 17.5 foram executados por todos os participantes.
 
-**Resultados observados:** Todos os participantes conseguiram concluir as tarefas TU-01 até TU-08, resultando em taxa de sucesso geral de 100%. Os participantes demonstraram boa compreensão da interface, destacando a navegação simples pela barra inferior, a eficiência da busca, a facilidade de acesso à Wishlist, a clareza das informações dos espetáculos e o entendimento do redirecionamento para compra externa. As principais dificuldades foram pontuais: campo de data de nascimento sem calendário, ícone de favorito com pouco destaque visual, necessidade de explicar melhor como as recomendações são personalizadas e alguns ícones pouco evidentes para usuários menos experientes. Os fluxos concluídos com maior facilidade foram navegação pela Home, busca, acesso à Wishlist e consulta aos detalhes dos espetáculos.
+#### Resultado por tarefa
+
+| ID | Fluxo avaliado | Resultado da execução | Evidência observada | Status |
+|---|---|---|---|---|
+| TU-01 | Cadastro e login | 5 de 5 participantes concluíram o acesso sem ajuda externa. | Os usuários compreenderam os campos de entrada e avançaram para o fluxo inicial do app. | Aprovado |
+| TU-02 | Onboarding de preferências | 5 de 5 participantes concluíram o onboarding. | As escolhas de cidade e interesses foram entendidas como parte da personalização da experiência. | Aprovado |
+| TU-03 | Home e recomendações iniciais | 5 de 5 participantes compreenderam a organização da Home. | A Home foi descrita como organizada e intuitiva; houve pedido de maior explicação sobre como as recomendações são geradas. | Aprovado com melhoria |
+| TU-04 | Busca de espetáculo | 5 de 5 participantes encontraram a busca e interpretaram os resultados. | A busca e os filtros foram elogiados; uma participante apresentou pequena hesitação inicial. | Aprovado |
+| TU-05 | Detalhes e redirecionamento externo | 5 de 5 participantes localizaram as informações principais e entenderam a compra externa. | Os participantes compreenderam data, local, sinopse e o encaminhamento para bilheteria/ticketeira. | Aprovado |
+| TU-06 | Adicionar à Wishlist | 5 de 5 participantes salvaram espetáculo na Wishlist. | A ação foi concluída, mas três participantes comentaram que o ícone de favorito poderia ter maior destaque visual. | Aprovado com melhoria |
+| TU-07 | Acessar Wishlist | 5 de 5 participantes localizaram a Wishlist pela navegação principal. | A barra inferior facilitou o acesso e a compreensão da função da lista de favoritos. | Aprovado |
+| TU-08 | Perfil e edição de preferências | 5 de 5 participantes acessaram Perfil/Preferências e compreenderam a relação com recomendações. | Usuários com menor familiaridade digital hesitaram em alguns ícones e rótulos, mas concluíram o fluxo sem ajuda. | Aprovado com melhoria |
+
+**Resultados observados:** A taxa de sucesso geral foi de 100%, pois todos os 5 participantes concluíram as 8 tarefas propostas, totalizando 40 conclusões de tarefa em 40 tentativas. O resultado supera o critério planejado de taxa de conclusão mínima de 90% sem ajuda externa. Os participantes demonstraram boa compreensão da interface, destacando a navegação simples pela barra inferior, a eficiência da busca, a facilidade de acesso à Wishlist, a clareza das informações dos espetáculos e o entendimento do redirecionamento para compra externa. As principais dificuldades foram pontuais: campo de data de nascimento sem calendário, ícone de favorito com pouco destaque visual, necessidade de explicar melhor como as recomendações são personalizadas e alguns ícones pouco evidentes para usuários menos experientes.
 
 **Questionário SUS:** A pontuação média obtida foi 88,5, indicando excelente usabilidade. Esse resultado sugere que o sistema é fácil de aprender, intuitivo e capaz de gerar confiança durante o uso.
 
@@ -3285,9 +3298,19 @@ Os testes de usabilidade foram realizados para observar como usuários interagem
 | Leticia Nery | 82,5 |
 | Renan Santana | 90,0 |
 
-**Evidências:** As evidências da execução estão documentadas no roteiro de testes de usabilidade, nas anotações individuais dos participantes e nas respostas consolidadas do questionário SUS registradas nesta seção.
+O cálculo da média SUS foi feito pela soma das pontuações individuais dividida pelo total de participantes:
+
+```text
+(92,5 + 90,0 + 87,5 + 82,5 + 90,0) / 5 = 88,5
+```
+
+**Comparação com os critérios planejados:** A execução atendeu aos dois critérios principais definidos no planejamento: taxa de conclusão superior a 90% e SUS superior a 70. A média SUS de 88,5 ficou 18,5 pontos acima do mínimo planejado, e a menor pontuação individual, 82,5, também permaneceu acima do critério de aceitação. A avaliação de responsividade visual foi realizada por inspeção durante os fluxos mobile, sem registro de elemento crítico cortado ou inacessível nas tarefas observadas.
+
+**Evidências:** As evidências da execução estão documentadas no roteiro de testes de usabilidade da seção 17.5, nas anotações individuais dos participantes, na tabela de resultado por tarefa e nas respostas consolidadas do questionário SUS registradas nesta seção.
 
 **Melhorias identificadas:** A partir da observação, foram identificadas as seguintes melhorias para próximas iterações: adoção de calendário no campo de data de nascimento, aumento do destaque visual do ícone de favorito, comunicação mais clara sobre o funcionamento da personalização das recomendações e revisão visual de alguns ícones para torná-los mais evidentes a usuários com menor familiaridade digital.
+
+**Conclusão da execução de usabilidade:** A execução dos testes de usabilidade demonstrou um resultado muito positivo para a experiência mobile do Portal Aventura. Todos os fluxos TU-01 a TU-08 planejados foram concluídos pelos 5 participantes, a taxa de sucesso atingiu 100% e a média SUS de 88,5 indicou excelente percepção de facilidade de uso, confiança e integração entre as funcionalidades. Os feedbacks coletados não apontaram bloqueios críticos, mas sim oportunidades de refinamento visual e de comunicação, como melhorar o destaque do favorito, adicionar calendário no campo de data de nascimento e explicar melhor a personalização das recomendações. Na sprint final, será realizada uma nova rodada de testes de usabilidade para validar esses ajustes, verificar se os feedbacks foram atendidos e confirmar a evolução da experiência antes da entrega final.
 
 ### 20.8 Testes de APIs externas
 

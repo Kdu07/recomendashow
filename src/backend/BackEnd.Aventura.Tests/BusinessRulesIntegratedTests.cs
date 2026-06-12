@@ -145,7 +145,11 @@ namespace BackEnd.Aventura.Tests
         {
             var recomendacoes = new FakeRecomendacaoRepository();
             var espetaculos = new FakeEspetaculoRepository();
-            var service = new RecomendacaoService(recomendacoes, espetaculos);
+            var service = new RecomendacaoService(new IRecommendationStrategy[]
+            {
+                new StoredRecommendationStrategy(recomendacoes),
+                new FavoriteGenresRecommendationStrategy(espetaculos)
+            });
             var usuarioId = Guid.NewGuid();
             var stored = CreateEspetaculo("Musical Armazenado", "Musical");
             var fallback = CreateEspetaculo("Musical Fallback", "Musical");

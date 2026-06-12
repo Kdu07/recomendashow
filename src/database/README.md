@@ -271,6 +271,7 @@ Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventu
 | senha_hash | TEXT | NOT NULL | — | Hash BCrypt da senha do usuário |
 | idade | INT | CHECK(idade >= 13) | — | Idade do usuário; mínimo 13 anos |
 | data_cadastro | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | — | Data e hora do registro do usuário |
+| data_nascimento | DATE | — | — | Data de nascimento do usuário, usada para cálculo e validação de idade |
 | cep | VARCHAR(9) | — | — | CEP do endereço (integração ViaCEP) |
 | logradouro | VARCHAR(255) | — | — | Rua/avenida do endereço |
 | numero | VARCHAR(10) | — | — | Número do imóvel |
@@ -433,6 +434,7 @@ Objetos criados em `02_sprint4_improvements.sql`.
 |---|---|---|---|
 | fn_atualizar_data_preferencias() | TRIGGER | preferencias | Atualiza automaticamente `data_atualizacao` para o timestamp corrente em todo UPDATE na tabela `preferencias` |
 | fn_bloquear_update_anonimizado() | TRIGGER | usuarios | Impede qualquer UPDATE em registros já anonimizados, levantando exceção em conformidade com a LGPD |
+| fn_sincronizar_data_consentimento() | TRIGGER | usuarios | Preenche automaticamente `data_consentimento` quando o consentimento passa de `FALSE` para `TRUE` e a data ainda não foi informada |
 
 #### Triggers
 
@@ -440,6 +442,7 @@ Objetos criados em `02_sprint4_improvements.sql`.
 |---|---|---|---|---|
 | trg_preferencias_update | BEFORE UPDATE | preferencias | fn_atualizar_data_preferencias() | Mantém `data_atualizacao` sempre sincronizado com o momento real da alteração |
 | trg_bloquear_update_anonimizado | BEFORE UPDATE | usuarios | fn_bloquear_update_anonimizado() | Protege dados anonimizados de qualquer modificação posterior (LGPD) |
+| trg_sincronizar_data_consentimento | BEFORE UPDATE | usuarios | fn_sincronizar_data_consentimento() | Sincroniza automaticamente a data de consentimento quando o aceite LGPD é registrado |
 
 #### Procedures
 

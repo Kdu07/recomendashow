@@ -76,21 +76,6 @@ namespace BackEnd.Aventura.Tests.Fakes
             return true;
         }
 
-        public bool Anonimizar(Guid id)
-        {
-            if (!_usuarios.TryGetValue(id, out var usuario))
-                return false;
-
-            if (usuario.DeletedAt is null || usuario.Anonimizado)
-                return false;
-
-            var oldEmail = usuario.Email.ToLowerInvariant();
-            usuario.Anonimizar();
-            _usuariosByEmail.Remove(oldEmail);
-            _usuariosByEmail[usuario.Email.ToLowerInvariant()] = usuario;
-            return true;
-        }
-
         public Task<int?> ObterMlIdAsync(Guid usuarioId) => Task.FromResult<int?>(null);
     }
 }

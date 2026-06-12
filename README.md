@@ -1,4 +1,10 @@
-# G2 - Recomendação de Espetáculos no Portal Aventura
+# RecomendaShow
+
+## Grupo 2 - Aventureiros
+
+## Projeto - RecomendaShow
+
+Recomendação de Espetáculos no Portal Aventura
 
 **Repositório:** `2026-1b/t17/g02`  
 🔗 [https://git.inteli.edu.br/graduacao/2026-1b/t17/g02](https://git.inteli.edu.br/graduacao/2026-1b/t17/g02)
@@ -7,15 +13,13 @@
 
 ## Equipe
 
-| Nome                                      | LinkedIn |
-|-------------------------------------------|----------|
-| Alexsander da Silva Barbosa              | [LinkedIn](https://www.linkedin.com/in/alexsander-dsbarbosa/) |
-| Carlos Eduardo Serrano Quaglia           | [LinkedIn](https://www.linkedin.com/in/carlos-quaglia-309088357/) |
-| Catarina Sayuri Arashiro Braga Felipe    | [LinkedIn](https://www.linkedin.com/in/catarina-sayuri/) |
-| Débora Pereira Nogueira                  | [LinkedIn](https://www.linkedin.com/in/debora-pereira-nogueira/) |
-| Isaac Souza Santos                       | [LinkedIn](https://www.linkedin.com/in/isaac-souza-santos/) |
-| Nicholas Anantha Krishnan Millani        | [LinkedIn](https://www.linkedin.com/in/nicholas-millani-83a950357/) |
-| Paulo Henrique Bueno Fernandes           | [LinkedIn](https://www.linkedin.com/in/paulo-henrique0601/) |
+- [Alexsander da Silva Barbosa](https://www.linkedin.com/in/alexsander-dsbarbosa/)
+- [Carlos Eduardo Serrano Quaglia](https://www.linkedin.com/in/carlos-quaglia-309088357/)
+- [Catarina Sayuri Arashiro Braga Felipe](https://www.linkedin.com/in/catarina-sayuri/)
+- [Débora Pereira Nogueira](https://www.linkedin.com/in/debora-pereira-nogueira/)
+- [Isaac Souza Santos](https://www.linkedin.com/in/isaac-souza-santos/)
+- [Nicholas Anantha Krishnan Millani](https://www.linkedin.com/in/nicholas-millani-83a950357/)
+- [Paulo Henrique Bueno Fernandes](https://www.linkedin.com/in/paulo-henrique0601/)
 
 ---
 
@@ -65,9 +69,9 @@ Fundada em 2008, a Aventura é referência nacional na produção de espetáculo
 |-----------|-----------|
 | [Índice da Documentação](docs/Index.md) | Navegação central para todos os documentos presentes na pasta `docs` |
 | [Projeto](docs/Projeto.md) | Documento principal com contexto, requisitos, arquitetura, diagramas, planejamento de testes e evolução da solução |
-| [Gestão e Configuração](docs/Gestao_Projeto_Configuracao.md) | Metodologia de versionamento, organização de branches, commits e práticas de gestão |
-| [Gestão de Projeto - Sprint 2](docs/Gestão_projeto_SP2.md) | Registro de planejamento e acompanhamento da Sprint 2 |
-| [Gestão de Projeto - Sprint 3](docs/Gestão_projeto_SP3.md) | Registro de planejamento e acompanhamento da Sprint 3 |
+| [Gestão do Projeto](docs/GestaoProjeto.md) | Gestão evolutiva das sprints, retrospectivas, ações de melhoria e planejamento das sprints. |
+| [Gestão e Configuração](docs/Gestao_Projeto_Configuracao.md) | Metodologia de versionamento, organização de branches, commits, Pull Requests e práticas de configuração |
+| [Modelo de Recomendação](docs/Modelo_Recomendacao.md) | Documentação do modelo de recomendação, dados utilizados, estratégia de treinamento e inferência |
 | [Projeto Visual](docs/projeto_visual.md) | Diretrizes visuais, telas, fluxos e decisões de interface |
 
 ---

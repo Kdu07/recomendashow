@@ -1,4 +1,23 @@
 # Projeto - Sistema de Recomendação - Aventura
+----
+
+## Grupo 2 - Aventureiros
+
+## Projeto - RecomendaShow
+
+## Integrantes
+
+- [Alexsander da Silva Barbosa](https://www.linkedin.com/in/alexsander-dsbarbosa/)
+- [Carlos Eduardo Serrano Quaglia](https://www.linkedin.com/in/carlos-quaglia-309088357/)
+- [Catarina Sayuri Arashiro Braga Felipe](https://www.linkedin.com/in/catarina-sayuri/)
+- [Débora Pereira Nogueira](https://www.linkedin.com/in/debora-pereira-nogueira/)
+- [Isaac Souza Santos](https://www.linkedin.com/in/isaac-souza-santos/)
+- [Nicholas Anantha Krishnan Millani](https://www.linkedin.com/in/nicholas-millani-83a950357/)
+- [Paulo Henrique Bueno Fernandes](https://www.linkedin.com/in/paulo-henrique0601/)
+
+## Objetivo do Documento
+
+Este documento apresenta a documentação principal do projeto, reunindo contexto do parceiro, problema, requisitos, arquitetura, diagramas, planejamento e execução de testes, desenvolvimento das sprints e evolução técnica da solução.
 
 ## Sumário
 
@@ -103,10 +122,10 @@
 
 - [RNF01 — Tempo de resposta das recomendações](#rnf01--tempo-de-resposta-das-recomendações)
 - [RNF02 — Segurança das credenciais de usuário](#rnf02--segurança-das-credenciais-de-usuário)
-- [RNF03 — Conformidade com a LGPD](#rnf03--conformidade-com-a-lgpd)
-- [RNF04 — Usabilidade da interface em dispositivos móveis](#rnf04--usabilidade-da-interface-em-dispositivos-móveis)
+- [RNF03 — Privacidade e direitos do titular (LGPD)](#rnf03--privacidade-e-direitos-do-titular-lgpd)
+- [RNF04 — Usabilidade e responsividade em dispositivos móveis](#rnf04--usabilidade-e-responsividade-em-dispositivos-móveis)
 - [RNF05 — Disponibilidade da plataforma](#rnf05--disponibilidade-da-plataforma)
-- [RNF06 — Escalabilidade do sistema de recomendação](#rnf06--escalabilidade-do-sistema-de-recomendação)
+- [RNF06 — Capacidade sob carga em pico de campanha](#rnf06--capacidade-sob-carga-em-pico-de-campanha)
 - [RNF07 — Precisão da geolocalização](#rnf07--precisão-da-geolocalização)
 
 </details>
@@ -192,9 +211,9 @@
 </details>
 
 <details>
-<summary><a href="#18-desenvolvimento-do-projeto--sprint-3">18. Desenvolvimento Do Projeto — Sprint 3</a></summary>
+<summary><a href="#18-desenvolvimento-do-projeto---sprint-3">18. Desenvolvimento Do Projeto — Sprint 3</a></summary>
 
-- [18.1 Objetivo do artefato](#181-objetivo-do-artefato)
+- [18.1 Objetivo da sessão](#181-objetivo-da-sessão)
 - [18.2 Arquitetura de codificação e estrutura de diretórios](#182-arquitetura-de-codificação-e-estrutura-de-diretórios)
 - [18.3 Desenvolvimento do Backend](#183-desenvolvimento-do-backend)
   - [18.3.1 Arquitetura do backend](#1831-arquitetura-do-backend)
@@ -205,7 +224,7 @@
 - [18.5 Padrões de codificação e padrões de projeto](#185-padrões-de-codificação-e-padrões-de-projeto)
   - [Padrões de codificação](#padrões-de-codificação)
   - [Padrões de projeto](#padrões-de-projeto)
-- [18.6 Testes unitários e metodologia TDD](#186-testes-unitários-e-metodologia-tdd)
+- [18.6 Testes unitários do Backend e metodologia TDD](#186-testes-unitários-do-backend-e-metodologia-tdd)
   - [Estratégia de testes](#estratégia-de-testes)
   - [Testes implementados](#testes-implementados)
   - [Execução dos testes](#execução-dos-testes)
@@ -215,9 +234,39 @@
 </details>
 
 <details>
-<summary><a href="#19-termos-e-abreviações">19. Termos e Abreviações</a></summary>
+<summary><a href="#19-desenvolvimento-do-projeto--sprint-4">19. Desenvolvimento do Projeto — Sprint 4</a></summary>
 
-- [Termos e Abreviações](#19-termos-e-abreviações)
+- [19.1 Objetivo da Sprint 4](#191-objetivo-da-sprint-4)
+- [19.2 Evolução do Frontend Mobile](#192-evolução-do-frontend-mobile)
+  - [19.2.1 Arquitetura do frontend](#1921-arquitetura-do-frontend)
+  - [19.2.2 Telas e fluxos refinados](#1922-telas-e-fluxos-refinados)
+  - [19.2.3 Evidência demonstrativa do frontend](#1923-evidência-demonstrativa-do-frontend)
+- [19.3 Evolução do Backend](#193-evolução-do-backend)
+- [19.4 Integração com Dados e Recomendação](#194-integração-com-dados-e-recomendação)
+- [19.5 Testes e Validação](#195-testes-e-validação)
+- [19.6 Evidências da Sprint](#196-evidências-da-sprint)
+
+</details>
+
+<details>
+<summary><a href="#20-execução-dos-testes">20. Execução dos Testes</a></summary>
+
+- [20.1 Objetivo da execução dos testes](#201-objetivo-da-execução-dos-testes)
+- [20.2 Visão geral da execução](#202-visão-geral-da-execução)
+- [20.3 Testes de funcionalidade](#203-testes-de-funcionalidade)
+- [20.4 Testes automatizados de integração](#204-testes-automatizados-de-integração)
+- [20.5 Testes automatizados de regras de negócio](#205-testes-automatizados-de-regras-de-negócio)
+- [20.6 Testes de requisitos não funcionais](#206-testes-de-requisitos-não-funcionais)
+- [20.7 Testes de usabilidade](#207-testes-de-usabilidade)
+- [20.8 Testes de APIs externas](#208-testes-de-apis-externas)
+- [20.9 Análise consolidada dos resultados](#209-análise-consolidada-dos-resultados)
+
+</details>
+
+<details>
+<summary><a href="#21-termos-e-abreviações">21. Termos e Abreviações</a></summary>
+
+- [Termos e Abreviações](#21-termos-e-abreviações)
 
 </details>
 
@@ -2228,17 +2277,17 @@ A aplicação do questionário SUS complementa a observação das tarefas, permi
 
 ### 17.6 Testes de APIs externas
 
-O sistema integra a API **ViaCEP** para validação, autocomplete e enriquecimento automático de endereços. Essa integração é essencial para suportar a geolocalização dos usuários e entregar recomendações personalizadas na seção “Perto de você”, com foco nas cidades de São Paulo e Rio de Janeiro.
+O sistema prevê a integração com a API **ViaCEP** para validação, autocomplete e enriquecimento automático de endereços. Durante esta etapa, essa integração ainda foi tratada de forma planejada e simulada, por meio de mocks/stubs, sem dependência direta de chamadas reais em produção. Essa integração é essencial para suportar a geolocalização dos usuários e entregar recomendações personalizadas na seção “Perto de você”, com foco nas cidades de São Paulo e Rio de Janeiro.
 
 | ID do teste | API externa | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso | Ferramentas |
 |-------------|-------------|-----------|---------------|------------------|------------------|------------------------|---------------|---------------------|-------------|
-| 01 | ViaCEP | Validar CEP e enriquecer automaticamente os dados completos de endereço (logradouro, bairro, cidade e UF) | Usuário autenticado na tela de cadastro ou edição de perfil com conexão estável | Envio de CEP válido e existente (ex: 01310-100) | - | 1. Realizar requisição GET para `https://viacep.com.br/ws/{CEP}/json/`<br>2. Validar status code, tempo de resposta e estrutura da resposta JSON<br>3. Confirmar o mapeamento correto dos dados no backend e persistência no banco | Dados de endereço enriquecidos são salvos no perfil do usuário e utilizados nos filtros geográficos | HTTP 200, todos os campos principais preenchidos corretamente, tempo de resposta ≤ 1,5s | Postman / Insomnia / cURL |
+| 01 | ViaCEP | Validar CEP e enriquecer automaticamente os dados completos de endereço (logradouro, bairro, cidade e UF) | Usuário autenticado na tela de cadastro ou edição de perfil com conexão estável ou ambiente mockado | Envio de CEP válido e existente (ex: 01310-100) | - | 1. Realizar requisição GET para `https://viacep.com.br/ws/{CEP}/json/` ou simular a resposta via mock/stub<br>2. Validar status code, tempo de resposta e estrutura da resposta JSON<br>3. Confirmar o mapeamento correto dos dados no backend e persistência no banco | Dados de endereço enriquecidos são salvos no perfil do usuário e utilizados nos filtros geográficos | HTTP 200, todos os campos principais preenchidos corretamente, tempo de resposta ≤ 1,5s | Postman / Insomnia / cURL / WireMock |
 | 02 | ViaCEP | Testar tratamento robusto de CEPs inválidos, mal formatados ou inexistentes | Conexão com internet disponível | - | Envio de CEP inválido (ex: 123, 99999-999 ou com caracteres alfabéticos) | 1. Enviar requisição com CEP inválido<br>2. Validar resposta da API e lógica de tratamento aplicada pelo backend<br>3. Verificar feedback exibido ao usuário | Sistema exibe mensagem clara e permite prosseguimento com fallback | HTTP 200 com `erro: true` tratado corretamente, fluxo mantido sem interrupções, log registrado | Postman / Insomnia |
 | 03 | ViaCEP | Avaliar performance, latência, timeout e resiliência sob diferentes condições de rede | Ambiente de homologação com ferramentas de simulação de rede | Resposta rápida em condições normais de rede | Alta latência ou indisponibilidade temporária da API | 1. Executar 30 consultas sequenciais com CEPs válidos<br>2. Aplicar Network Throttling (4G, Slow 3G e Offline)<br>3. Simular timeout forçado<br>4. Registrar todas as métricas de performance | Sistema aplica fallback de forma transparente e mantém a jornada do usuário fluida | Tempo médio ≤ 1,2s (p95 ≤ 2,0s), taxa de sucesso ≥ 98%, tratamento graceful sem impacto na experiência | Postman / Insomnia + Chrome DevTools + Network Throttling |
 
 **Métricas dos Testes:**
 
-Os testes da integração com ViaCEP foram projetados com alto rigor para garantir desempenho, confiabilidade e excelente experiência do usuário. As principais métricas avaliadas são:
+Os testes da integração planejada com ViaCEP foram projetados com alto rigor para garantir desempenho, confiabilidade e excelente experiência do usuário. Como a integração ainda estava mockada nesta etapa, as métricas abaixo funcionam como critérios-alvo para a validação em homologação e produção. As principais métricas avaliadas são:
 
 - **Tempo de Resposta**: Média ≤ 1,2 segundos e p95 ≤ 2,0 segundos em rede normal. Em condições de Slow 3G, o p95 não deve exceder 4,5 segundos.
 - **Taxa de Sucesso**: ≥ 98% das requisições tratadas com sucesso ou fallback adequado.
@@ -2248,7 +2297,7 @@ Os testes da integração com ViaCEP foram projetados com alto rigor para garant
 - **Resiliência**: 100% dos fluxos críticos (cadastro e edição de perfil) devem ser completados mesmo em cenários de rede degradada.
 - **Monitoramento**: Todos os eventos são logados com contexto completo (CEP, tempo de resposta, código de erro e usuário) para análise contínua.
 
-Essa abordagem assegura que a integração com ViaCEP contribua positivamente para a qualidade geral do sistema, oferecendo rapidez, precisão e robustez na geolocalização dos usuários do Portal Aventura.
+Essa abordagem assegura que a futura integração real com ViaCEP contribua positivamente para a qualidade geral do sistema, oferecendo rapidez, precisão e robustez na geolocalização dos usuários do Portal Aventura.
 
 ---
 
@@ -2300,7 +2349,7 @@ As cinco integrações mapeadas cobrem todos os fluxos críticos identificados n
 
 **TI-03 (Backend → Serviço de Recomendação)** valida o diferencial central do produto — a personalização. O uso de WireMock aqui é deliberado: isola o comportamento do Backend do algoritmo interno do serviço, permitindo testar contratos e fallbacks sem depender do modelo treinado.
 
-**TI-04 (Backend → ViaCEP)** e **TI-05 (Backend → Ticketera)** são as únicas integrações com serviços externos reais e, por isso, são as que mais se beneficiam do VHS. O módulo elimina a dependência de disponibilidade e de estado dos terceiros durante os testes, tornando as suítes completamente determinísticas e executáveis offline. Adicionalmente, os cenários de cache hit/miss validam explicitamente que o VHS está funcionando como camada de proteção — e não apenas como detalhe de implementação — por meio do WireMock call count e do header `X-Cache`.
+**TI-04 (Backend → ViaCEP)** e **TI-05 (Backend → Ticketera)** representam integrações externas previstas para o produto, mas nos testes são executadas com serviços simulados por mocks/stubs. Por isso, são as que mais se beneficiam do VHS. O módulo elimina a dependência de disponibilidade e de estado dos terceiros durante os testes, tornando as suítes completamente determinísticas e executáveis offline. Adicionalmente, os cenários de cache hit/miss validam explicitamente que o VHS está funcionando como camada de proteção — e não apenas como detalhe de implementação — por meio do WireMock call count e do header `X-Cache`.
 
 A combinação VHS + WireMock garante que nenhum teste de integração realiza chamadas a serviços externos reais, o que atende ao princípio de isolamento de ambiente e viabiliza a execução no pipeline de CI sem necessidade de credenciais ou conectividade com terceiros.
 
@@ -2308,9 +2357,19 @@ A combinação VHS + WireMock garante que nenhum teste de integração realiza c
 
 ### 17.8 Discussão geral de abrangência dos testes
 
-A preencher após a conclusão das subseções anteriores.
+O planejamento de testes proposto cobre as principais dimensões de qualidade necessárias para validar o Portal Aventura como uma solução integrada. A estratégia não se limita à verificação isolada de funcionalidades, mas contempla também requisitos não funcionais, usabilidade, APIs externas e integrações entre frontend, backend, banco de dados e serviço de recomendação.
 
-Nesta seção, o grupo deve discutir a cobertura geral do planejamento, destacando quais dimensões do sistema foram contempladas, quais riscos permanecem e quais seriam os próximos passos para execução dos testes.
+Do ponto de vista funcional, os testes cobrem os fluxos centrais da jornada do usuário: cadastro, login, onboarding, busca de espetáculos, visualização de detalhes, gerenciamento de wishlist, edição de perfil, preferências e consumo de recomendações. Esses cenários foram priorizados porque representam o núcleo da experiência proposta pelo produto e sustentam diretamente a geração de valor para o usuário final.
+
+Em relação aos requisitos não funcionais, o planejamento considera aspectos como desempenho, disponibilidade, segurança, usabilidade, confiabilidade das integrações e tratamento adequado de erros. A inclusão desses testes é importante porque o sistema depende de uma experiência fluida e responsiva, especialmente em ambiente mobile, além de exigir proteção de dados pessoais e estabilidade nos fluxos que envolvem autenticação, perfil, endereço e recomendações.
+
+Os testes de usabilidade complementam a validação técnica ao observar como usuários reais interagem com a aplicação. Essa camada permite identificar problemas que não aparecem apenas por meio de testes automatizados, como dúvidas de navegação, falta de clareza em rótulos, dificuldade para entender feedbacks visuais ou baixa percepção de relevância nas recomendações. A aplicação do questionário SUS contribui para transformar essas percepções em uma métrica comparável de qualidade de uso.
+
+Já os testes de APIs externas e integração ampliam a abrangência do planejamento ao validar dependências críticas do sistema. A integração com ViaCEP apoia a coleta e o enriquecimento de dados de endereço, enquanto a integração com serviços de ticketera e recomendação sustenta fluxos essenciais de compra e personalização. O uso de ferramentas como WireMock, Testcontainers, Respawn e VHS foi previsto para garantir testes reprodutíveis, isolados e menos dependentes da disponibilidade de terceiros.
+
+Apesar da abrangência planejada, alguns riscos permanecem. Parte dos fluxos ainda pode operar com dados mockados ou integrações simuladas, o que exige validação posterior em ambiente de homologação com backend, banco e serviços externos reais. Também é necessário ampliar a massa de testes conforme o volume de usuários, espetáculos, teatros e interações aumentar, principalmente para avaliar a qualidade das recomendações em cenários mais próximos de produção.
+
+Como próximos passos, recomenda-se executar os testes planejados de forma incremental, começando pelos fluxos críticos de autenticação, perfil, catálogo, wishlist e recomendação. Em seguida, deve registrar evidências de execução, corrigir falhas encontradas, acompanhar métricas de cobertura e repetir os testes após cada integração relevante. Dessa forma, o planejamento de testes funciona não apenas como uma etapa de verificação final, mas como um mecanismo contínuo de controle de qualidade durante a evolução do produto.
 
 ----
 
@@ -2501,6 +2560,8 @@ src/backend/
 #### 18.3.2 Rotas da API REST
 
 Todas as rotas estão expostas sob o prefixo `/api`. O Swagger UI está disponível em `/swagger` no ambiente de desenvolvimento.
+
+As rotas descritas nesta seção representam os contratos previstos e documentados para o backend. Na Sprint 3, parte dos fluxos consumidos pelo frontend ainda operava com dados mockados ou serviços locais simulados. Em especial, o fluxo de autenticação no aplicativo mobile foi validado por meio de simulação local, enquanto os endpoints de Auth foram documentados e testados no backend como contrato da API.
 
 ##### Auth — `/api/auth`
 
@@ -2969,7 +3030,7 @@ Cobertura focada nas camadas de Domain, Service, Controller, Middleware e Infrae
 
 ### 18.9 Documentação de API (Swagger)
 
-Esta seção documenta a API REST do backend, exposta via Swagger UI em ambiente de desenvolvimento.
+Esta seção documenta a API REST do backend, exposta via Swagger UI em ambiente de desenvolvimento. Na Sprint 3, essa documentação serviu como contrato técnico das rotas previstas e implementadas no backend; no frontend mobile, fluxos como autenticação ainda foram consumidos de forma simulada, por meio de mocks e serviços locais.
 
 #### Configuração
 
@@ -2987,6 +3048,8 @@ if (app.Environment.IsDevelopment())
 ```
 
 A API está disponível em `http://localhost:5253` em ambiente local. A interface interativa do Swagger pode ser acessada em `http://localhost:5253/swagger`.
+
+Observa-se que integrações externas, como ViaCEP, não foram tratadas como dependência real da aplicação nesta etapa. Elas aparecem no planejamento de testes e integração como contratos a validar, com execução mockada/stubada até a consolidação do ambiente integrado.
 
 #### Endpoints documentados
 
@@ -3025,7 +3088,229 @@ Todos os endpoints retornam erros no formato `ProblemDetails` (RFC 7807), gerenc
 
 ---
 
-## 19. Termos e Abreviações
+## 19. Desenvolvimento do Projeto — Sprint 4
+
+### 19.1 Objetivo da Sprint 4
+
+O objetivo da Sprint 4 foi consolidar a evolução técnica do Portal Aventura a partir do refinamento das principais camadas da solução: frontend mobile, backend e motor de recomendação. Nesta etapa, o foco deixou de estar apenas na implementação isolada de funcionalidades e passou a concentrar-se na integração entre os módulos do sistema, garantindo que as telas, os fluxos de dados, as regras de negócio e os serviços de recomendação funcionassem de forma mais coesa.
+
+No frontend, a sprint teve como objetivo aprimorar a experiência do usuário por meio da padronização visual das telas, refinamento de fluxos de cadastro, perfil, preferências, wishlist, busca e detalhes de espetáculos e teatros. No backend, o trabalho concentrou-se na continuidade da estrutura de APIs, serviços e regras necessárias para sustentar os fluxos da aplicação. Já no motor de recomendação, o objetivo foi avançar na preparação e utilização dos dados para apoiar sugestões mais aderentes ao perfil e ao comportamento do usuário.
+
+Apesar desses avanços em cada frente, o principal objetivo da Sprint 4 foi a integração do sistema e a validação do funcionamento conjunto das partes desenvolvidas. Dessa forma, os testes ganharam papel central na sprint, tanto para verificar a estabilidade das funcionalidades existentes quanto para avaliar se os fluxos integrados estavam preparados para evoluir em direção a um produto mais completo, consistente e próximo do uso real.
+
+### 19.2 Evolução do Frontend Mobile
+
+O frontend mobile da Sprint 4 continuou sendo desenvolvido como um aplicativo React Native no diretório `src/frontend/mobile-app-aventura`. Diferente da Sprint 3, em que o foco principal estava na construção dos fluxos iniciais e validação da arquitetura MVVM com dados mockados, esta etapa concentrou-se no refinamento visual, na melhoria de usabilidade e na substituição gradual dos mocks pela conexão com o backend e com os dados persistidos no banco de dados.
+
+A evolução do frontend foi orientada por três objetivos principais:
+
+- padronizar a experiência visual entre telas principais e secundárias;
+- melhorar fluxos de cadastro, onboarding, perfil, wishlist, busca, teatros e detalhes de espetáculos;
+- fortalecer a separação entre telas, estado, modelos e acesso a dados para viabilizar o consumo de dados reais vindos do backend.
+
+A aplicação manteve a estrutura inspirada em MVVM. As telas em `screens/` continuam atuando como camada de View, os hooks em `viewmodels/` concentram estado e regras de apresentação, os arquivos em `repositories/` abstraem a origem dos dados e os `services/` passaram a concentrar a comunicação com o backend. Com isso, os mocks em `data/` deixaram de ser a fonte principal dos fluxos integrados e passaram a ser utilizados apenas como apoio para telas, estados ou cenários ainda não conectados à API.
+
+#### 19.2.1 Arquitetura do frontend
+
+A estrutura utilizada no frontend durante a Sprint 4 inclui:
+
+- `screens/` — telas de fluxo principal e secundário, incluindo login, cadastro, onboarding, Home/Explorar, Busca, Detalhes de Espetáculo, Detalhes de Teatro, Wishlist, Perfil, Edição de Perfil, Preferências, Notificações e Informações Institucionais.
+- `components/` — componentes reutilizáveis como formulários, botões, cards, inputs, cabeçalhos, estruturas visuais e elementos de feedback.
+- `viewmodels/` — hooks responsáveis por estado de tela, validações, ações do usuário, navegação e preparação dos dados para exibição.
+- `repositories/` — camada de acesso a dados, responsável por intermediar o consumo das informações entre viewmodels, services e fontes de dados da aplicação.
+- `services/` — serviços auxiliares e clientes de comunicação com o backend, utilizados para substituir dados mockados por respostas reais da API conectada ao banco de dados.
+- `data/` — massas mockadas mantidas como apoio para estados locais, fallback visual e cenários ainda não integrados completamente.
+- `models/` — estruturas-base utilizadas pelos fluxos de autenticação, perfil, preferências e demais áreas do aplicativo.
+- `constants/` — tokens visuais, cores, tipografia, espaçamentos e constantes compartilhadas.
+- `assets/` — imagens, logos, ícones e recursos estáticos usados pela interface.
+
+Essa organização permitiu que os refinamentos visuais fossem feitos sem concentrar regras de negócio diretamente nas telas. Com isso, os fluxos de cadastro, perfil, preferências, catálogo, teatros e wishlist puderam evoluir da leitura de mocks locais para o consumo de dados fornecidos pelo backend, preservando a organização da arquitetura e facilitando os testes de integração.
+
+#### 19.2.2 Telas e fluxos refinados
+
+As principais telas e fluxos refinados na Sprint 4 foram:
+
+- **Login e Cadastro** — padronização visual com a identidade da Aventura, ajuste do logo e evolução do cadastro para um fluxo em etapas. O cadastro passou a coletar dados pessoais e informações de endereço, como CEP, cidade, bairro, rua, número e complemento.
+- **Onboarding** — remoção de categorias fora do escopo atual, como opções que não seriam utilizadas no produto, e ajuste do comportamento visual para evitar deslocamento dos cards quando o contador de interesses selecionados aparece.
+- **Home/Explorar e Busca** — ajustes em cards, consumo de dados vindos do backend e consistência visual para manter os espetáculos associados aos teatros previstos no escopo.
+- **Detalhes de Espetáculo** — refinamentos de espaçamento, navegação e inclusão de botão de voltar, melhorando o comportamento da tela ao ser rolada.
+- **Teatros e Detalhes de Teatro** — atualização dos dados dos teatros da Aventura com nome, cidade, localização, capacidade, descrição, destaques e imagens, considerando a transição dos mocks para dados persistidos. Os cards passaram a permitir navegação para uma tela com mais informações sobre cada teatro.
+- **Wishlist** — revisão dos cards e inclusão de feedbacks de sistema para ações como adicionar ou remover espetáculos salvos.
+- **Perfil** — refinamento visual da tela, ajuste do botão de sair para retornar ao login, remoção de elementos que não estavam no escopo e substituição da foto fixa por avatar em ícone.
+- **Edição de Perfil** — criação de uma tela dedicada para edição de informações pessoais, endereço e seleção de avatar, mantendo a mesma linguagem visual das demais telas.
+- **Preferências, Notificações e Informações Institucionais** — ajustes de navegação para que essas telas secundárias não exibam a tab bar, além de refinamentos visuais em cards, ícones e organização dos conteúdos.
+
+Além dos ajustes por tela, foram adicionados feedbacks de sistema em ações importantes para o usuário, como salvar perfil, editar preferências e interagir com a wishlist. Esses retornos ajudam a confirmar o resultado das ações e tornam o fluxo mais claro em cenários que dependem de respostas do backend.
+
+#### 19.2.3 Evidência demonstrativa do frontend
+
+Como evidência complementar da Sprint 4, será adicionado aqui o link para um vídeo demonstrativo do aplicativo mobile em execução, destacando os refinamentos visuais, o novo fluxo de cadastro, a edição de perfil, a navegação em teatros, os feedbacks de sistema e os principais fluxos conectados ao backend.
+
+**Link do vídeo demonstrativo:** [Adicionar link da demonstração do frontend da Sprint 4]().
+
+### 19.3 Evolução do Backend
+
+### 19.4 Integração com Dados e Recomendação
+
+### 19.5 Testes e Validação
+
+### 19.6 Evidências da Sprint
+
+---
+
+## 20. Execução dos Testes
+
+### 20.1 Objetivo da execução dos testes
+
+Este artefato tem como objetivo documentar a execução dos testes planejados na seção [17. Planejamento de Testes](#17-planejamento-de-testes), validando o comportamento do sistema de forma abrangente e verificando se os requisitos de negócio foram atendidos. A seção deve demonstrar a capacidade do grupo de executar, documentar e analisar os resultados de diferentes tipos de teste, registrando evidências, falhas encontradas, melhorias propostas e encaminhamentos para evoluções futuras.
+
+A execução deve manter rastreabilidade com os casos planejados na seção 17, mas sem repetir integralmente o planejamento. O foco desta seção é registrar o que foi efetivamente executado, quais resultados foram observados, quais evidências comprovam a execução e quais melhorias foram identificadas.
+
+### 20.2 Visão geral da execução
+
+Nesta seção, são documentados os testes executados a partir do planejamento definido na seção 17. O registro apresenta, em texto, o período de execução, os responsáveis, o ambiente utilizado, as ferramentas adotadas e as principais evidências coletadas.
+
+Os **testes de funcionalidade** validaram os fluxos centrais do aplicativo, como cadastro, login, onboarding, catálogo, busca, wishlist, perfil, redirecionamento para compra e recomendações. A documentação indica quais requisitos funcionais foram cobertos e se o comportamento observado atendeu ao esperado.
+
+Os **testes automatizados de integração** verificaram a comunicação entre os componentes da solução, como frontend, backend, banco de dados, serviço de recomendação e integrações externas simuladas ou reais. A documentação registra comandos executados, ferramentas utilizadas, resultados das suítes e evidências de execução.
+
+Os **testes automatizados de regras de negócio** validaram regras críticas do sistema, contemplando cenários positivos e negativos. A documentação explica quais regras foram verificadas, quais comportamentos foram confirmados e quais inconsistências foram encontradas.
+
+Os **testes de requisitos não funcionais** avaliaram atributos de qualidade como desempenho, segurança, privacidade, disponibilidade, usabilidade, carga, geolocalização e modularidade. A documentação apresenta as métricas coletadas e compara os resultados com os critérios planejados.
+
+Os **testes de usabilidade** observaram a interação de usuários com os principais fluxos do aplicativo. A documentação descreve o perfil dos participantes, as tarefas propostas, as dificuldades percebidas, os resultados do questionário SUS e as melhorias identificadas.
+
+Os **testes de APIs externas** validaram integrações como ViaCEP e eventuais serviços de ticketera, considerando cenários de sucesso, erro, timeout, indisponibilidade e fallback. A documentação registra as respostas obtidas, os tempos observados, o tratamento de falhas e as evidências coletadas.
+
+### 20.3 Testes de funcionalidade
+
+Os testes de funcionalidade foram executados para validar os principais fluxos do aplicativo conforme os requisitos funcionais definidos na seção 9 e os casos planejados na seção 17.3. A execução considerou tanto cenários positivos quanto cenários negativos, verificando se o comportamento apresentado pelo sistema estava aderente ao esperado para a jornada do usuário.
+
+**Testes executados:** Foram executados os casos [informar IDs, como TF-01 a TF-10], cobrindo os fluxos de [informar fluxos validados].
+
+**Resultados observados:** Os testes apresentaram [informar resultado geral: aprovação total, aprovação parcial, falhas ou bloqueios]. Os principais comportamentos observados foram [descrever resultados].
+
+**Evidências:** As evidências da execução estão disponíveis em [inserir links para prints, vídeos, logs, issues ou relatórios].
+
+**Análise:** A partir dos resultados, conclui-se que [registrar conclusão sobre aderência aos requisitos, impacto das falhas e ajustes necessários].
+
+### 20.4 Testes automatizados de integração
+
+Os testes automatizados de integração foram executados para verificar a comunicação entre os componentes da solução, incluindo frontend, backend, banco de dados, serviço de recomendação e integrações externas simuladas ou reais. A execução buscou confirmar se os contratos entre os módulos estavam estáveis e se os fluxos integrados respondiam corretamente em cenários de sucesso e falha.
+
+**Integrações executadas:** Foram avaliadas as integrações [informar integrações testadas], com foco em [informar objetivo da validação].
+
+**Comandos e ferramentas:** A execução utilizou [informar ferramentas] e os principais comandos executados foram [informar comandos].
+
+**Resultados observados:** As suítes retornaram [informar status geral], com [informar quantidade de testes aprovados, reprovados ou bloqueados]. As principais respostas e comportamentos observados foram [descrever resultados].
+
+**Evidências:** As evidências da execução estão disponíveis em [inserir links para logs, prints do terminal, relatórios, artefatos ou pipeline].
+
+**Análise:** A execução indica que [registrar análise sobre estabilidade das integrações, confiabilidade dos contratos, limitações do ambiente e melhorias necessárias].
+
+### 20.5 Testes automatizados de regras de negócio
+
+Os testes automatizados de regras de negócio foram executados para validar comportamentos críticos da aplicação, contemplando cenários positivos e negativos. A execução verificou se as regras implementadas estavam coerentes com os requisitos funcionais, critérios de sucesso e fluxos definidos no planejamento de testes.
+
+#### Síntese das regras validadas
+
+| Grupo de regra | Regras cobertas | Cenários positivos | Cenários negativos | Evidência | Status |
+|---|---|---|---|---|---|
+| Autenticação e cadastro | Cadastro de usuários, validação de e-mail, senha, consentimento LGPD e rejeição de e-mail duplicado | Cadastro válido e login válido | E-mail inválido, senha inválida, duplicidade, ausência de consentimento e credenciais inválidas | `business-rules-tests.trx` | Aprovado |
+| Perfil e LGPD | Idade mínima, atualização de perfil, encerramento de conta e anonimização | Atualização válida e anonimização após solicitação | Menor de idade e login em conta encerrada | `business-rules-tests.trx` | Aprovado |
+| Preferências | Persistência de preferências, faixa de preço, gêneros e localização | Preferências válidas são salvas e atualizadas | Faixa de preço inválida e dados inconsistentes são rejeitados | `business-rules-tests.trx` | Aprovado |
+| Wishlist | Adição, remoção e prevenção de duplicidade | Item é salvo e removido corretamente | Duplicidade e identificadores inválidos são rejeitados | `business-rules-tests.trx` | Aprovado |
+| Catálogo e espetáculos | Busca, consulta de detalhes, associação com teatros e URL externa de compra | Espetáculos são consultados e associados corretamente | Recursos inexistentes e duplicidades são rejeitados | `business-rules-tests.trx` | Aprovado |
+| Recomendação | Limites válidos, recomendações persistidas e fallback | Recomendações são retornadas dentro do limite esperado | Limites inválidos ou ausência de dados acionam tratamento controlado | `business-rules-new-tests.trx` | Aprovado |
+
+#### Resultados da execução
+
+A suíte unitária do backend foi executada com sucesso em 11/06/2026.
+
+- Total de testes executados: 123
+- Testes aprovados: 123
+- Testes reprovados: 0
+- Testes ignorados: 0
+- Testes diretamente ligados a regras de negócio: 87
+- Novos testes criados para esta validação: 10, na classe `BusinessRulesIntegratedTests`
+
+**Evidências:** As evidências da execução foram registradas nos arquivos:
+
+- `src/backend/BackEnd.Aventura.Tests/TestResults/business-rules-tests.trx`
+- `src/backend/BackEnd.Aventura.Tests/TestResults/business-rules-new-tests.trx`
+
+Comandos executados:
+
+```bash
+dotnet test src\backend\BackEnd.Aventura.Tests\BackEnd.Aventura.Tests.csproj --logger "trx;LogFileName=business-rules-tests.trx" --logger "console;verbosity=minimal"
+```
+
+```bash
+dotnet test src\backend\BackEnd.Aventura.Tests\BackEnd.Aventura.Tests.csproj --filter Category=BusinessRules --logger "trx;LogFileName=business-rules-new-tests.trx" --logger "console;verbosity=minimal"
+```
+
+**Análise:** Com base na execução, as regras de negócio implementadas demonstraram aderência ao comportamento esperado nos cenários automatizados. Não foram identificadas falhas na suíte executada, e os testes criados ampliaram a cobertura sobre regras críticas relacionadas a autenticação, consentimento, perfil, preferências, wishlist, recomendações, catálogo e LGPD.
+
+### 20.6 Testes de requisitos não funcionais
+
+Os testes de requisitos não funcionais foram executados para avaliar atributos de qualidade da solução, considerando desempenho, segurança, privacidade, usabilidade, disponibilidade, capacidade sob carga, precisão da geolocalização e modularidade do serviço de recomendação. A execução comparou as métricas observadas com os critérios definidos no planejamento.
+
+**RNFs avaliados:** Foram avaliados os requisitos [informar RNFs testados]. Permaneceram pendentes [informar RNFs não executados, se houver].
+
+**Métricas coletadas:** Foram coletadas métricas de [informar métricas, como tempo médio, p95, taxa de erro, disponibilidade, cobertura, SUS, CPU/memória ou auditoria].
+
+**Resultados observados:** Os critérios planejados foram [informar se atendidos, parcialmente atendidos ou não atendidos], com destaque para [descrever resultados principais].
+
+**Evidências:** As evidências da execução estão disponíveis em [inserir links para relatórios, logs, prints, resultados de carga, evidências de segurança ou registros de monitoramento].
+
+**Análise:** Os resultados indicam [registrar riscos, limitações, gargalos, impacto para o usuário e recomendações de melhoria].
+
+### 20.7 Testes de usabilidade
+
+Os testes de usabilidade foram realizados para observar como usuários interagem com os principais fluxos do aplicativo, identificando dificuldades de navegação, compreensão da interface, clareza dos feedbacks e percepção de valor das recomendações. A execução considerou as tarefas planejadas na seção 17.5 e a aplicação do questionário SUS ao final da avaliação.
+
+**Participantes e formato:** Participaram [informar quantidade e perfil dos participantes], em formato [informar presencial/remoto, moderado/não moderado e dispositivo utilizado].
+
+**Tarefas executadas:** As tarefas avaliadas foram [listar tarefas executadas, com referência aos fluxos TU-01 a TU-08 quando aplicável].
+
+**Resultados observados:** Os participantes demonstraram [descrever resultado geral]. As principais dificuldades foram [registrar dificuldades] e os fluxos concluídos com maior facilidade foram [registrar fluxos].
+
+**Questionário SUS:** A pontuação média obtida foi [informar pontuação], indicando [registrar interpretação do resultado].
+
+**Evidências:** As evidências da execução estão disponíveis em [inserir links para roteiros preenchidos, gravações autorizadas, prints, anotações ou respostas do questionário].
+
+**Melhorias identificadas:** A partir da observação, foram identificadas as seguintes melhorias: [listar melhorias para próximas iterações].
+
+### 20.8 Testes de APIs externas
+
+Os testes de APIs externas foram executados para validar integrações previstas no sistema, especialmente a comunicação com o ViaCEP e eventuais serviços de ticketera. A execução considerou cenários de sucesso, erro, timeout, indisponibilidade e fallback, verificando se o sistema manteve uma experiência controlada mesmo diante de falhas externas.
+
+**APIs avaliadas:** Foram avaliadas as APIs [informar APIs testadas].
+
+**Cenários executados:** Os cenários executados incluíram [descrever cenários de sucesso, erro, timeout, indisponibilidade, dados inválidos e fallback].
+
+**Resultados observados:** As respostas apresentaram [registrar códigos HTTP, estrutura das respostas, tempos observados, comportamento do sistema e tratamento de erros].
+
+**Evidências:** As evidências da execução estão disponíveis em [inserir links para prints de Postman/Insomnia/cURL, logs, mocks/stubs, respostas JSON ou relatórios].
+
+**Análise:** A integração demonstrou [registrar confiabilidade, dependências externas, limitações e melhorias necessárias].
+
+### 20.9 Análise consolidada dos resultados
+
+| Indicador | Resultado |
+|---|---|
+| Total de testes executados | [Quantidade total] |
+| Testes aprovados | [Quantidade e percentual] |
+| Testes reprovados | [Quantidade e percentual] |
+| Testes bloqueados | [Quantidade e percentual] |
+| Principais falhas encontradas | [Resumo das falhas mais relevantes] |
+| Riscos remanescentes | [Riscos ainda existentes após a execução] |
+| Ações corretivas planejadas | [Correções e melhorias previstas] |
+| Conclusão geral | [Avaliação final sobre qualidade, aderência aos requisitos e prontidão do sistema] |
+
+---
+
+## 21. Termos e Abreviações
 
 | Termo / Abreviação | Definição |
 |---|---|

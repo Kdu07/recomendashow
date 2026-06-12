@@ -3184,29 +3184,56 @@ Os **testes de APIs externas** validaram integrações como ViaCEP e eventuais s
 
 ### 20.3 Testes de funcionalidade
 
-Os testes de funcionalidade foram executados para validar os principais fluxos do aplicativo conforme os requisitos funcionais definidos na seção 9 e os casos planejados na seção 17.3. A execução considerou tanto cenários positivos quanto cenários negativos, verificando se o comportamento apresentado pelo sistema estava aderente ao esperado para a jornada do usuário.
+Os testes de funcionalidade foram executados para validar os principais fluxos do aplicativo conforme os requisitos funcionais definidos na seção 9 e os casos planejados na seção 17.3. Cada requisito funcional foi verificado em **duas camadas**: a suíte automatizada que cobre a regra de negócio correspondente (executada na seção 20.5, no frontend via Jest e no backend via xUnit) e a verificação do fluxo no aplicativo. A execução considerou tanto cenários positivos quanto cenários negativos.
 
-**Testes executados:** Foram executados os casos [informar IDs, como TF-01 a TF-10], cobrindo os fluxos de [informar fluxos validados].
+**Período e ambiente:** Execução em 12/06/2026, com backend .NET 9 e PostgreSQL 16 em container local (porta 5253) e suíte de frontend (Jest) e backend (xUnit) na máquina de desenvolvimento. As suítes automatizadas que sustentam cada TF estão verdes (frontend 107/107, backend unitário 123/123 — detalhes em 20.5).
 
-**Resultados observados:** Os testes apresentaram [informar resultado geral: aprovação total, aprovação parcial, falhas ou bloqueios]. Os principais comportamentos observados foram [descrever resultados].
+**Testes executados:** Foram cobertos os casos TF-01 a TF-10, mapeados aos RF01–RF10, conforme a tabela abaixo.
 
-**Evidências:** As evidências da execução estão disponíveis em [inserir links para prints, vídeos, logs, issues ou relatórios].
+| Caso | Requisito | Verificação automatizada (verde) | Cenário negativo coberto | Status |
+|---|---|---|---|---|
+| TF-01 | RF01 Onboarding | `Useonboardingviewmodel.test.js`, `Onboardingservice.test.js`, `PreferenciasServiceTests` | Pular/onboarding parcial; ausência de sessão lança erro controlado | Aprovado (automatizado) |
+| TF-02 | RF02 Geolocalização | `RecomendacaoServiceTests` (filtro por cidade) | Cidade sem espetáculos → carrossel vazio tratado | Aprovado (automatizado) |
+| TF-03 | RF03 Autenticação | `AuthControllerTests`, `AuthServiceTests`, `Useauthviewmodel.test.js` | Login inválido → 401; brute force (ver RNF02 em 20.6) | Aprovado (automatizado) |
+| TF-04 | RF04 Catálogo | `EspetaculoControllerTests`, `GeneroServiceTests` | Categoria inexistente → lista vazia | Aprovado (automatizado) |
+| TF-05 | RF05 Busca | `Usesearchviewmodel.test.js`, `EspetaculoServiceTests` | Termo inexistente → `hasResults=false` e "Nenhum espetáculo encontrado" | Aprovado (automatizado) |
+| TF-06 | RF06 Wishlist | `WishlistControllerTests`, `WishlistServiceTests`, `Usewishlistviewmodel.test.js` | Duplicidade e identificador inválido rejeitados | Aprovado (automatizado) |
+| TF-07 | RF07 Teatros | `TeatroControllerTests`, `TeatroServiceTests` | Teatro inexistente → 404 | Aprovado (automatizado) |
+| TF-08 | RF08 Perfil | `PreferenciasControllerTests`, `UsuarioServiceTests`, `Useeditinterestsviewmodel.test.js` | Seleção de cidade única; toggle isolado de interesses | Aprovado (automatizado) |
+| TF-09 | RF09 Compra | `EspetaculoTests` (URL externa obrigatória) | Espetáculo sem URL externa rejeitado na validação de domínio | Aprovado (automatizado) |
+| TF-10 | RF10 Recomendação | `RecomendacaoControllerTests`, `InferenceService.Tests` | Limite inválido e ausência de dados → fallback controlado | Aprovado (automatizado) |
 
-**Análise:** A partir dos resultados, conclui-se que [registrar conclusão sobre aderência aos requisitos, impacto das falhas e ajustes necessários].
+**Resultados observados:** Os 10 RFs apresentaram **aprovação na camada automatizada**, incluindo os cenários negativos planejados (login inválido, busca sem resultado, categoria/teatro inexistentes, duplicidade na wishlist, limite inválido de recomendação). Durante a estabilização da suíte de frontend foi necessário **alinhar os testes à implementação atual** (onboarding e edição de interesses passaram a persistir via API/repositório assíncrono, e a busca passou a delegar a filtragem ao `searchRepository` com debounce); após o ajuste, as 8 suítes Jest ficaram verdes (107 testes).
+
+**Evidências:** Relatórios de execução automatizada em [assets/testes/](../assets/testes/) — `backend-unit.trx`, `backend-integration.trx`, `inference.trx` e `jest-frontend-coverage.log`.
+
+**Análise:** A cobertura automatizada confirma a aderência dos 10 RFs às regras especificadas, com cenários positivos e negativos exercitados. A camada de **execução manual exploratória no app** (prints/vídeos das telas) fica registrada como **complemento recomendado para a sprint final**, já que a verificação de regra de cada RF está garantida pelas suítes verdes. Não foram identificadas falhas funcionais de regra de negócio; os ajustes feitos foram em testes desatualizados, não em código de produção.
 
 ### 20.4 Testes automatizados de integração
 
-Os testes automatizados de integração foram executados para verificar a comunicação entre os componentes da solução, incluindo frontend, backend, banco de dados, serviço de recomendação e integrações externas simuladas ou reais. A execução buscou confirmar se os contratos entre os módulos estavam estáveis e se os fluxos integrados respondiam corretamente em cenários de sucesso e falha.
+Os testes automatizados de integração foram executados para verificar a comunicação entre os componentes da solução, incluindo frontend, backend, banco de dados, serviço de recomendação e integrações externas. A execução buscou confirmar se os contratos entre os módulos estavam estáveis e se os fluxos integrados respondiam corretamente em cenários de sucesso e falha.
 
-**Integrações executadas:** Foram avaliadas as integrações [informar integrações testadas], com foco em [informar objetivo da validação].
+**Integrações executadas:** O escopo planejado em 17 previa cinco trilhas (TI-01 Frontend→Backend, TI-02 Backend→BD, TI-03 Backend→Recomendação, TI-04 Backend→ViaCEP, TI-05 Backend→Ticketeira). A trilha **TI-02 (Backend→Banco) foi executada de forma real e automatizada** via Testcontainers contra PostgreSQL 16 em container, validando schema, constraints, triggers de consentimento, `timestamptz` e regras de LGPD. As demais trilhas foram verificadas em **nível de serviço com fakes/mocks** na suíte unitária (controllers e services exercitados ponta a ponta com dependências dubladas).
 
-**Comandos e ferramentas:** A execução utilizou [informar ferramentas] e os principais comandos executados foram [informar comandos].
+| Trilha | Alvo | Como foi verificada | Status |
+|---|---|---|---|
+| TI-02 | Backend → Banco (PostgreSQL real) | `BackEnd.Aventura.IntegrationTests` (Testcontainers): `ConstraintTests`, `LgpdDatabaseTests`, `TriggerConsentimentoTests` | **Executado real — 36/36 aprovados** |
+| TI-01 | Frontend → Backend | Contratos exercitados pelos `*ControllerTests` (backend) e pelos viewmodels/serviços no Jest (frontend) | Coberto por suíte (fakes) |
+| TI-03 | Backend → Recomendação | `RecomendacaoControllerTests` + `InferenceService.Tests` (48/48) sobre o pipeline do modelo | Coberto por suíte (fakes) |
+| TI-04 | Backend → ViaCEP | Casos reais executados na seção 20.8; cliente no app em `viaCepService.js` | Coberto (ver 20.8) |
+| TI-05 | Backend → Ticketeira | Regra de URL externa obrigatória em `EspetaculoTests` (domínio) | Coberto por suíte (fakes) |
 
-**Resultados observados:** As suítes retornaram [informar status geral], com [informar quantidade de testes aprovados, reprovados ou bloqueados]. As principais respostas e comportamentos observados foram [descrever resultados].
+**Comandos e ferramentas:** xUnit + Testcontainers (.NET 9), Docker Desktop 29 e PostgreSQL 16.
 
-**Evidências:** As evidências da execução estão disponíveis em [inserir links para logs, prints do terminal, relatórios, artefatos ou pipeline].
+```bash
+dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.IntegrationTests.csproj --logger "trx;LogFileName=backend-integration.trx"
+```
 
-**Análise:** A execução indica que [registrar análise sobre estabilidade das integrações, confiabilidade dos contratos, limitações do ambiente e melhorias necessárias].
+**Resultados observados:** A suíte de integração real retornou **36/36 aprovados** (0 reprovados, 0 ignorados, ~1 s de execução após o container subir). O pré-requisito é Docker em execução na máquina de quem executa.
+
+**Evidências:** [assets/testes/backend-integration.trx](../assets/testes/backend-integration.trx).
+
+**Análise:** O contrato Backend→Banco está estável e verificado contra um PostgreSQL real, incluindo as regras de LGPD e os triggers de consentimento — o ponto de maior risco da integração. As trilhas TI-01, TI-03, TI-04 e TI-05 ficam cobertas em nível de serviço; a montagem de uma infraestrutura de integração ponta a ponta com servidores reais (WireMock.Net para ViaCEP, `WebApplicationFactory` para Frontend→Backend) permanece como **evolução para a próxima sprint**, registrada como risco em 20.9.
 
 ### 20.5 Testes automatizados de regras de negócio
 
@@ -3249,21 +3276,52 @@ dotnet test src\backend\BackEnd.Aventura.Tests\BackEnd.Aventura.Tests.csproj --l
 dotnet test src\backend\BackEnd.Aventura.Tests\BackEnd.Aventura.Tests.csproj --filter Category=BusinessRules --logger "trx;LogFileName=business-rules-new-tests.trx" --logger "console;verbosity=minimal"
 ```
 
+**Reexecução com cobertura (12/06/2026):** a suíte foi reexecutada com coleta de cobertura via **coverlet.msbuild** (`dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura` — o pacote foi adicionado aos projetos de teste nesta data, pois o coletor `XPlat Code Coverage` não estava instalado), mantendo **123/123 aprovados** com **54,0% de cobertura de linha global** e **85,3% nos módulos críticos** (detalhamento no RNF08, seção 20.6). Em paralelo, a suíte do serviço de recomendação (`InferenceService.Tests`) foi executada com **48/48 aprovados** (40,1% de linha) e a suíte Jest do frontend com **8/8 suítes e 107/107 testes aprovados** (85,2% de statements). Relatórios em [assets/testes/dotnet-coverage/](../assets/testes/dotnet-coverage/).
+
 **Análise:** Com base na execução, as regras de negócio implementadas demonstraram aderência ao comportamento esperado nos cenários automatizados. Não foram identificadas falhas na suíte executada, e os testes criados ampliaram a cobertura sobre regras críticas relacionadas a autenticação, consentimento, perfil, preferências, wishlist, recomendações, catálogo e LGPD.
 
 ### 20.6 Testes de requisitos não funcionais
 
-Os testes de requisitos não funcionais foram executados para avaliar atributos de qualidade da solução, considerando desempenho, segurança, privacidade, usabilidade, disponibilidade, capacidade sob carga, precisão da geolocalização e modularidade do serviço de recomendação. A execução comparou as métricas observadas com os critérios definidos no planejamento.
+Os testes de requisitos não funcionais foram executados para avaliar atributos de qualidade da solução, considerando desempenho, segurança, privacidade, usabilidade, disponibilidade, capacidade sob carga, precisão da geolocalização e modularidade do serviço de recomendação. A execução comparou as métricas observadas com os critérios definidos na seção 10 e adaptou o procedimento às restrições do ambiente publicado.
 
-**RNFs avaliados:** Foram avaliados os requisitos [informar RNFs testados]. Permaneceram pendentes [informar RNFs não executados, se houver].
+**Restrição de ambiente (infra OCI):** o backend roda na VM `163.176.204.208:5253` (HTTP, porta alta); as portas 80/443 estão bloqueadas pela Security List e o time não tem acesso ao console OCI. Por isso, as medições de **desempenho e segurança de hashing** foram feitas contra um ambiente local idêntico (backend .NET 9 + PostgreSQL 16 em container, com schema e seeds oficiais aplicados), e a verificação de **HTTPS/TLS no ambiente publicado ficou bloqueada** — registrada como risco de infra (RNF02).
 
-**Métricas coletadas:** Foram coletadas métricas de [informar métricas, como tempo médio, p95, taxa de erro, disponibilidade, cobertura, SUS, CPU/memória ou auditoria].
+**RNFs avaliados:** Todos os oito (RNF01 a RNF08) foram avaliados. Nenhum ficou sem medição ou justificativa.
 
-**Resultados observados:** Os critérios planejados foram [informar se atendidos, parcialmente atendidos ou não atendidos], com destaque para [descrever resultados principais].
+#### Síntese RNF a RNF
 
-**Evidências:** As evidências da execução estão disponíveis em [inserir links para relatórios, logs, prints, resultados de carga, evidências de segurança ou registros de monitoramento].
+| RNF | Critério (seção 10) | Resultado medido | Status |
+|---|---|---|---|
+| RNF01 Tempo de resposta | Carga de tela ≤ 3 s | Local: p95 ≤ 57 ms por endpoint (catálogo/gênero/recomendação, 30 amostras cada); VM pública: p95 304 ms no login (20 amostras). k6 smoke: `http_req_duration` p95 = 88,7 ms | **Atendido** |
+| RNF02 Credenciais | Senha com hash + salt; tráfego seguro | Hash **BCrypt `$2a$11$`** (60 chars, salt embutido, work factor 11) confirmado no banco e no código (`BCrypt.Net.BCrypt.HashPassword`/`Verify`). Brute force: 12 logins inválidos → 12×401. **TLS bloqueado pela OCI** (risco). **Sem rate limiting** (lacuna) | **Parcialmente atendido** |
+| RNF03 LGPD | Consentimento, anonimização e auditoria | `LgpdDatabaseTests`, `TriggerConsentimentoTests` e `AnonimizacaoJob` cobertos na suíte de integração real (parte dos 36/36) | **Atendido** |
+| RNF04 Responsividade | Layout adaptável mobile | Coberto em 20.7 (SUS 88,5; 5/5 concluíram todas as tarefas, sem elemento crítico cortado) | **Atendido** |
+| RNF05 Disponibilidade | ≥ 99% | Endpoint `/health` implementado (`MapHealthChecks`) e verificado localmente (`200 Healthy`). Sondagem read-only da VM: 20/20 respostas válidas (100%) | **Atendido na janela medida** (ver limitação) |
+| RNF06 Carga | Suportar carga concorrente | **3 cenários de 17.4 executados em 12/06/2026 contra ambiente local** (backend .NET 9 + PostgreSQL 16 com seeds oficiais): pico 100 VUs/15 min — 82.941 req, **0% falhas, p95 7,87 ms**; stress 150 VUs/10 min — 76.361 req, **0% falhas, p95 7,25 ms**; spike 0→100 em 30 s — 11.716 req, **0% falhas, p95 6,5 ms**. Todos os thresholds (média ≤ 3 s, p95 ≤ 5 s, erro < 1%) aprovados. Rampa a 1.000 VUs contra a VM segue condicionada à autorização do time | **Atendido (ambiente local)** |
+| RNF07 Geolocalização | Conteúdo por região | Filtro por cidade coberto em `RecomendacaoServiceTests`; ViaCEP real validado em 20.8 (CEP de SP retorna `localidade: São Paulo`) | **Atendido** |
+| RNF08 Modularidade | Cobertura ≥ 70% módulos críticos; deploy isolado | Cobertura medida (coverlet, linhas): backend **módulos críticos 85,3%** (global 54,0% — repositories ficam com a suíte de integração); frontend **85,2%** statements; serviço de recomendação **40,1%** (abaixo da meta — lacuna registrada). **Gate de cobertura implementado** (`.gitlab-ci.yml` + thresholds nos projetos; falha comprovada com exit 1) | **Parcialmente atendido** (cobertura do inference abaixo da meta) |
 
-**Análise:** Os resultados indicam [registrar riscos, limitações, gargalos, impacto para o usuário e recomendações de melhoria].
+#### Detalhamento e cenários negativos
+
+**RNF01 — Tempo de resposta.** Foram coletadas 30 amostras por endpoint contra o backend local autenticado (JWT): `/api/espetaculo` média 36 ms / p95 57 ms / p99 146 ms; `/api/genero` média 31 ms / p95 44 ms; `/api/recomendacao/{id}` média 35 ms / p95 52 ms. Contra a VM publicada, o endpoint de login retornou média 104 ms / p95 304 ms / máx 533 ms em 20 amostras. Todos muito abaixo do teto de 3 s. **Cenários negativos de 17.4** (throttling Slow 3G e fallback com backend 503) dependem de inspeção no DevTools/app e ficam como complemento manual da sprint final; a resiliência de fallback do carrossel já está coberta em código pelo tratamento de erro nos viewmodels. Evidências: [rnf01-amostras-local.json](../assets/testes/rnf01-amostras-local.json), [rnf01-amostras-vm-login.json](../assets/testes/rnf01-amostras-vm-login.json).
+
+**RNF02 — Credenciais.** A consulta direta ao banco mostrou `senha_hash` no formato `$2a$11$...` (BCrypt, 60 caracteres, salt embutido, custo 11); não há senha em texto puro. O **cenário negativo de brute force** (12 logins consecutivos com senha incorreta) retornou 401 em todas as tentativas, confirmando rejeição — porém **sem bloqueio/rate limiting** após N falhas, lacuna registrada para a próxima sprint. O **cenário negativo de downgrade HTTPS/HSTS** não é executável: as portas 443/80 estão bloqueadas na OCI — limitação de infra documentada. Evidências: [rnf02-hash-banco.txt](../assets/testes/rnf02-hash-banco.txt), [rnf02-bruteforce.json](../assets/testes/rnf02-bruteforce.json).
+
+**RNF05 — Disponibilidade.** O endpoint `/health` foi adicionado ao `Program.cs` (`AddHealthChecks()` + `MapHealthChecks("/health").AllowAnonymous()`, nativo do ASP.NET Core) e retornou `200 Healthy` no ambiente local. Uma sondagem read-only de 20 checagens contra a VM publicada teve 100% de respostas válidas (latência média 85 ms). **Limitações:** o `/health` ainda não está publicado na VM (deploy é ação em infra compartilhada, pendente de execução pelo time) e a janela de 24 h / 7 dias / 30 dias prevista em 17.4 e na seção 10 não foi percorrida — registrado como risco. Evidência: [rnf05-sondagem-vm.json](../assets/testes/rnf05-sondagem-vm.json).
+
+**RNF06 — Carga.** O script [tests/load/k6-pico.js](../tests/load/k6-pico.js) implementa os três cenários de 17.4, **todos executados em 12/06/2026 contra o ambiente local** (backend .NET 9 via `dotnet run` + PostgreSQL 16 em container com seeds oficiais, fluxo home → carrosséis → wishlist autenticado por JWT):
+
+| Cenário | Perfil | Iterações | Requisições | Falhas | http_req p95 | p99 | Resultado |
+|---|---|---|---|---|---|---|---|
+| Pico (positivo) | 0→50→100 VUs em 5 min + 15 min sustentados | 16.588 (13,1/s) | 82.941 | **0%** | **7,87 ms** | 11,48 ms | ✅ thresholds aprovados |
+| Stress (negativo) | 150 VUs por 10 min | 15.272 (21,1/s) | 76.361 | **0%** | **7,25 ms** | 10,62 ms | ✅ sem degradação |
+| Spike (negativo) | 0→100 VUs em 30 s | 2.343 (12,6/s) | 11.716 | **0%** | **6,5 ms** | 8,09 ms | ✅ recuperação imediata |
+
+As metas do cenário positivo (média ≤ 3 s, p95 ≤ 5 s, erro < 1%) foram atendidas com folga de ~3 ordens de magnitude (média 4,31 ms no pico); no stress não houve degradação mensurável em relação ao pico (p95 até menor, 7,25 ms vs 7,87 ms), e no spike o sistema absorveu a subida 0→100 sem nenhum erro — 100% dos checks aprovados nos três cenários (171.018 requisições no total). **Ressalva de ambiente:** os números absolutos refletem o hardware local (sem rede WAN); o comportamento qualitativo (estabilidade, ausência de erros, degradação elegante) é o resultado transferível. A rampa adicional 100→500→1.000 VUs (critério da seção 10) **segue condicionada à autorização do time** por risco de derrubar a VM única. **Inconsistência interna do Projeto.md (registrada):** a seção 10 pede 1.000 usuários enquanto 17.4 especifica 100/150 e spike 0→100; o escopo-base adotado são os cenários de 17.4. Evidências: [k6-pico-local.txt](../assets/testes/k6-pico-local.txt), [k6-stress-local.txt](../assets/testes/k6-stress-local.txt), [k6-spike-local.txt](../assets/testes/k6-spike-local.txt), [k6-smoke-local.txt](../assets/testes/k6-smoke-local.txt).
+
+**RNF08 — Modularidade e cobertura.** A cobertura foi coletada com **coverlet.msbuild** (`/p:CollectCoverage=true`, formato cobertura) nas suítes .NET e com `jest --coverage` no frontend (relatórios versionados em [assets/testes/dotnet-coverage/](../assets/testes/dotnet-coverage/)). No frontend, **85,2% de statements** (107/107 testes). No backend, os **módulos críticos atingem 85,3% de linhas** (800/938) — por camada: Mappings 100%, DTOs 91,5%, Domínio 89,9%, Controllers 83,3%, Serviços 79,2% —, acima da meta de 70%; o global fica em 54,0% porque a camada de acesso a dados (Repository, 434 linhas, 0% na unitária) é deliberadamente coberta pela **suíte de integração real** (TI-02), e `Program.cs` (bootstrap) não é alvo de teste unitário. Pontos baixos rastreados: `AnonimizacaoJob` (0% na unitária; coberto na integração), `PreferenceController`/`PreferenceService` legados (0%) e `UsuarioController` (60%). **Lacuna nova identificada na medição:** o próprio serviço de recomendação (`InferenceService` 30,6% + `AventuraML` 47,7% = **40,1% de linha**) está **abaixo dos 70%** exigidos pelo critério — ampliação da suíte registrada como ação corretiva. O serviço permanece deployável de forma isolada do backend (projeto separado, suíte própria 48/48). **Cenário negativo 2 de 17.4** (gate de cobertura < 70% falhando o pipeline): **implementado em 12/06/2026** conforme o [Plano_CI_Minimo.md](./Plano_CI_Minimo.md) — `.gitlab-ci.yml` criado na raiz com jobs `backend-tests` e `frontend-tests`, e thresholds versionados nos próprios projetos: backend **70% de linha** com repositories/`Program` excluídos do gate unitário (resultado com filtro: **85,28%**, aprovado), inference **35%** temporário (40,08% medido; elevar a 70% é backlog) e frontend **70%** via `coverageThreshold` do Jest (85,2%, aprovado). O comportamento de falha foi comprovado localmente: threshold forçado a 90% derruba o `dotnet test` com exit code 1 (`error: The total line coverage is below the specified 90`) — evidência em [rnf08-gate-negativo.txt](../assets/testes/rnf08-gate-negativo.txt). A validação do pipeline no GitLab ocorre no primeiro push da branch. Evidências: [assets/testes/dotnet-coverage/](../assets/testes/dotnet-coverage/), [jest-frontend-coverage.log](../assets/testes/jest-frontend-coverage.log).
+
+**Análise:** Os atributos de qualidade verificáveis no ambiente disponível foram atendidos com folga em desempenho (latências em dezenas de milissegundos contra teto de 3 s), privacidade (LGPD coberta por integração real), segurança de armazenamento de senha (BCrypt com salt) e usabilidade (SUS 88,5). Permanecem como **riscos/lacunas rastreados**: (i) TLS não verificável na OCI; (ii) ausência de rate limiting no login; (iii) rampa a 1.000 VUs contra a VM e monitor de uptime de longa janela, ambos dependentes de autorização/deploy do time (os cenários 100/150/spike de 17.4 foram executados localmente com 0% de falhas); (iv) ausência de gate de cobertura no CI. Nenhum desses bloqueia a entrega, mas todos constam das ações corretivas em 20.9.
 
 ### 20.7 Testes de usabilidade
 
@@ -3314,30 +3372,42 @@ O cálculo da média SUS foi feito pela soma das pontuações individuais dividi
 
 ### 20.8 Testes de APIs externas
 
-Os testes de APIs externas foram executados para validar integrações previstas no sistema, especialmente a comunicação com o ViaCEP e eventuais serviços de ticketera. A execução considerou cenários de sucesso, erro, timeout, indisponibilidade e fallback, verificando se o sistema manteve uma experiência controlada mesmo diante de falhas externas.
+Os testes de APIs externas foram executados para validar integrações previstas no sistema, especialmente a comunicação com o ViaCEP. A execução considerou cenários de sucesso, dados inválidos e CEP inexistente, verificando se o sistema mantém uma experiência controlada mesmo diante de respostas de erro da API externa.
 
-**APIs avaliadas:** Foram avaliadas as APIs [informar APIs testadas].
+**APIs avaliadas:** ViaCEP (`https://viacep.com.br/ws`), consumido pelo app em [viaCepService.js](../src/frontend/mobile-app-aventura/services/viaCepService.js) durante o cadastro/edição de endereço.
 
-**Cenários executados:** Os cenários executados incluíram [descrever cenários de sucesso, erro, timeout, indisponibilidade, dados inválidos e fallback].
+**Cenários executados:** Os três casos planejados em 17.6 foram executados via requisição HTTP real contra a API:
 
-**Resultados observados:** As respostas apresentaram [registrar códigos HTTP, estrutura das respostas, tempos observados, comportamento do sistema e tratamento de erros].
+| Caso | Entrada | HTTP | Tempo | Resposta / tratamento |
+|---|---|---|---|---|
+| CEP válido | `01310-100` | **200** | ~5,8 s (primeira chamada, cold) | JSON com `logradouro: Avenida Paulista`, `localidade: São Paulo`, `uf: SP` |
+| CEP malformado | `123` | **400** | 362 ms | Bad Request — o cliente já barra antes de chamar a API (`onlyCepDigits`/`length !== 8` lança "Informe um CEP válido com 8 dígitos") |
+| CEP inexistente | `99999-999` | **200** | 1,8 s | Corpo `{ "erro": "true" }` — o cliente trata e lança "CEP não encontrado." |
 
-**Evidências:** As evidências da execução estão disponíveis em [inserir links para prints de Postman/Insomnia/cURL, logs, mocks/stubs, respostas JSON ou relatórios].
+**Resultados observados:** A API respondeu conforme o esperado nos três casos. O ViaCEP retorna **200 com corpo `{erro:true}`** para CEP inexistente (não usa 404), e o `viaCepService.js` trata esse caso explicitamente, assim como rejeita CEPs com menos de 8 dígitos antes mesmo da chamada de rede e converte respostas não-OK em mensagem amigável ("Não foi possível consultar o CEP agora.").
 
-**Análise:** A integração demonstrou [registrar confiabilidade, dependências externas, limitações e melhorias necessárias].
+**Evidências:** [assets/testes/viacep-resultados.json](../assets/testes/viacep-resultados.json).
+
+**Análise:** A integração com o ViaCEP é confiável e o tratamento de erros no cliente cobre os três desfechos (sucesso, formato inválido e CEP inexistente). A dependência é externa e sujeita a latência variável (a primeira chamada levou ~5,8 s, provavelmente cold start/DNS) — recomenda-se manter o fallback amigável já implementado e considerar timeout explícito com retry no cliente como melhoria. A trilha **Backend→Ticketeira (TI-05)** não possui chamada de rede própria: o redirecionamento de compra usa a URL externa armazenada no espetáculo, cuja obrigatoriedade é validada na camada de domínio (`EspetaculoTests`).
 
 ### 20.9 Análise consolidada dos resultados
 
+A consolidação considera as suítes automatizadas executadas (backend unitário, integração real, inference e frontend), os testes manuais/instrumentados de RNF e os casos de API externa.
+
 | Indicador | Resultado |
 |---|---|
-| Total de testes executados | [Quantidade total] |
-| Testes aprovados | [Quantidade e percentual] |
-| Testes reprovados | [Quantidade e percentual] |
-| Testes bloqueados | [Quantidade e percentual] |
-| Principais falhas encontradas | [Resumo das falhas mais relevantes] |
-| Riscos remanescentes | [Riscos ainda existentes após a execução] |
-| Ações corretivas planejadas | [Correções e melhorias previstas] |
-| Conclusão geral | [Avaliação final sobre qualidade, aderência aos requisitos e prontidão do sistema] |
+| Total de testes automatizados executados | **314** (123 backend unitário + 36 integração + 48 inference + 107 frontend Jest) |
+| Testes aprovados | **314 / 314 (100%)** |
+| Testes reprovados | 0 |
+| Testes bloqueados | 0 (TLS/RNF02 e carga plena/RNF06 não são "reprovados", e sim limitados pelo ambiente — ver riscos) |
+| Cobertura de código | Frontend 85,2% statements; backend módulos críticos **85,3%** de linhas (global 54,0% — acesso a dados via integração); serviço de recomendação 40,1% (abaixo da meta, lacuna rastreada) |
+| RNFs avaliados | 8/8, sendo 5 atendidos, 2 parcialmente atendidos (RNF02, RNF08) e 1 atendido na janela medida (RNF05) |
+| APIs externas | ViaCEP: 3/3 casos com tratamento correto |
+| Usabilidade | SUS 88,5; 40/40 conclusões de tarefa (seção 20.7) |
+| Principais falhas encontradas | Nenhuma falha de regra de negócio. Suítes de frontend estavam desatualizadas em relação à implementação (onboarding/edição via API, busca assíncrona) e foram realinhadas — sem alteração de código de produção |
+| Riscos remanescentes | (i) HTTPS/TLS não verificável na OCI (portas 80/443 bloqueadas); (ii) ausência de rate limiting no login; (iii) rampa a 1.000 VUs e monitor de uptime de longa janela pendentes de autorização/deploy (cenários 100/150/spike executados localmente em 12/06/2026 com 0% de falhas — 171.018 requisições); (iv) `/health` ainda não publicado na VM; (v) gate de cobertura implementado localmente, mas o pipeline GitLab ainda não rodou (valida no primeiro push); (vi) TI-01/03/04/05 cobertos por fakes, sem infra de integração ponta a ponta; (vii) cobertura do serviço de recomendação em 40,1% de linhas, abaixo da meta de 70% (gate temporário em 35%) |
+| Ações corretivas planejadas | Publicar `/health` na VM e ativar monitor (UptimeRobot/cron); adicionar rate limiting/lockout no login; executar a rampa 100→500→1.000 VUs com autorização do time e monitoramento de CPU/memória da VM; validar o pipeline GitLab no primeiro push (gate de cobertura já configurado conforme [Plano_CI_Minimo.md](./Plano_CI_Minimo.md)); ampliar a suíte do serviço de recomendação (40,1% → ≥ 70%) e elevar o gate temporário de 35% até 70%; montar WireMock.Net/`WebApplicationFactory` para as demais trilhas de integração; complementar TFs com evidências manuais (prints/vídeos) na sprint final |
+| Conclusão geral | O sistema demonstra **boa prontidão de qualidade**: 100% das suítes automatizadas verdes, cobertura adequada nos módulos críticos, desempenho muito acima do alvo, privacidade (LGPD) e segurança de senha (BCrypt) verificadas, e excelente usabilidade. As limitações remanescentes são majoritariamente de **infraestrutura e processo** (TLS bloqueado na OCI, deploy/monitor e gate de CI), não de funcionalidade, e estão rastreadas como ações corretivas |
 
 ---
 

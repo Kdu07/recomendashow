@@ -1,0 +1,444 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="b68a64fb-907c-4577-af7b-e10bdb1213ea" name="cadus@KDU_LEGION 2026-06-12 11:00:59" runUser="KDU_LEGION\cadus" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-06-12T11:00:59.8860570-03:00" queuing="2026-06-12T11:00:59.8860580-03:00" start="2026-06-12T11:00:51.5807055-03:00" finish="2026-06-12T11:01:03.5016444-03:00" />
+  <TestSettings name="default" id="23440383-d0e6-46cf-87a6-ee34792da903">
+    <Deployment runDeploymentRoot="cadus_KDU_LEGION_2026-06-12_11_00_59" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="2f3e8ba5-d5b8-4917-8290-18327ad29836" testId="7200a5ca-ab99-fa85-4bff-ebf3f58f9524" testName="InferenceService.Tests.HybridModelLoaderTests.IsLoaded_DeveSerFalse_AntesDeStartAsync" computerName="KDU_LEGION" duration="00:00:00.0094574" startTime="2026-06-12T11:01:00.7892582-03:00" endTime="2026-06-12T11:01:00.7892587-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2f3e8ba5-d5b8-4917-8290-18327ad29836" />
+    <UnitTestResult executionId="79efe59c-e8e0-4991-b18b-3b0a3c931ad4" testId="533771ae-3ca5-b34b-09fe-0b884844ebbb" testName="InferenceService.Tests.DatasetRepositoryTests.ColdStartItems_DeveConterTodosOsItens" computerName="KDU_LEGION" duration="00:00:00.0159792" startTime="2026-06-12T11:00:59.8492577-03:00" endTime="2026-06-12T11:00:59.8492580-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="79efe59c-e8e0-4991-b18b-3b0a3c931ad4" />
+    <UnitTestResult executionId="0b76c7cf-720a-44db-9d7a-73299fbcd1d1" testId="c67ad204-f158-54ab-8161-249269e6d265" testName="InferenceService.Tests.DatasetRepositoryTests.GetConsumedItems_DeveRetornarVazio_ParaUsuarioDesconhecido" computerName="KDU_LEGION" duration="00:00:00.0188162" startTime="2026-06-12T11:00:59.8785475-03:00" endTime="2026-06-12T11:00:59.8785481-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0b76c7cf-720a-44db-9d7a-73299fbcd1d1" />
+    <UnitTestResult executionId="d58f0908-d6e4-42f6-8ab2-f28800866beb" testId="263ea5f6-ea5f-2995-c6cb-b45b5f538fa6" testName="InferenceService.Tests.DatasetRepositoryTests.Repositorio_ComUmUnicoUsuario_DeveCarregarCorretamente" computerName="KDU_LEGION" duration="00:00:00.1648182" startTime="2026-06-12T11:00:59.6385615-03:00" endTime="2026-06-12T11:00:59.6386156-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d58f0908-d6e4-42f6-8ab2-f28800866beb" />
+    <UnitTestResult executionId="b5d6663a-58f7-47a1-99fe-5098e098d850" testId="96732851-a606-33bf-3bf0-494f62826cc9" testName="InferenceService.Tests.RecommendationBatchJobTests.ExecuteAsync_DeveParar_QuandoCancelado" computerName="KDU_LEGION" duration="00:00:00.0032737" startTime="2026-06-12T11:00:59.8669147-03:00" endTime="2026-06-12T11:00:59.8669153-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b5d6663a-58f7-47a1-99fe-5098e098d850" />
+    <UnitTestResult executionId="1daea1e9-edcb-4164-a88a-cb03708499e3" testId="710b2e98-4406-cf2a-4c51-174bc008f295" testName="InferenceService.Tests.PreprocessorTests.UsuarioAcimaDoPercentil999_ERemovido" computerName="KDU_LEGION" duration="00:00:00.0343165" startTime="2026-06-12T11:01:00.0002590-03:00" endTime="2026-06-12T11:01:00.0002596-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1daea1e9-edcb-4164-a88a-cb03708499e3" />
+    <UnitTestResult executionId="a55622ed-6c0e-4c10-9621-515c19cb0481" testId="220878d9-7159-3627-be9a-d9773e17930f" testName="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_DeveFazerColdStart_QuandoUsuarioDesconhecido" computerName="KDU_LEGION" duration="00:00:00.0815566" startTime="2026-06-12T11:01:02.0738703-03:00" endTime="2026-06-12T11:01:02.0738706-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a55622ed-6c0e-4c10-9621-515c19cb0481" />
+    <UnitTestResult executionId="9c595a28-34bd-4e8e-ab03-0e8982313c34" testId="18c97593-0d2e-5cc4-6a89-c806671ee18a" testName="InferenceService.Tests.DatasetRepositoryTests.ColdStartItems_PrimeiroItemDeveSerOMaisPopular" computerName="KDU_LEGION" duration="00:00:00.0120898" startTime="2026-06-12T11:00:59.7661114-03:00" endTime="2026-06-12T11:00:59.7661121-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9c595a28-34bd-4e8e-ab03-0e8982313c34" />
+    <UnitTestResult executionId="37e9899a-8726-4e0f-a702-b1a69ae0dbe1" testId="34ed8188-5b92-1774-7679-5a871d59d9d4" testName="InferenceService.Tests.PreprocessorTests.CompraDepoisDaApresentacao_EDescartada" computerName="KDU_LEGION" duration="00:00:00.0283915" startTime="2026-06-12T11:01:00.0731878-03:00" endTime="2026-06-12T11:01:00.0731885-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="37e9899a-8726-4e0f-a702-b1a69ae0dbe1" />
+    <UnitTestResult executionId="a8388010-1560-457e-bf9e-c569905d069e" testId="d77e5f79-6056-7371-35ab-8db2923248fd" testName="InferenceService.Tests.DatasetRepositoryTests.ColdStartItems_DeveEstarOrdenadoPorContagemDecrescente" computerName="KDU_LEGION" duration="00:00:00.0110126" startTime="2026-06-12T11:00:59.9674687-03:00" endTime="2026-06-12T11:00:59.9674690-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a8388010-1560-457e-bf9e-c569905d069e" />
+    <UnitTestResult executionId="87776033-00f0-46c6-b78f-69a869a341d9" testId="9ab2f4f2-4261-2438-0b8e-17909b0a93b5" testName="InferenceService.Tests.DatasetRepositoryTests.UserExists_DeveRetornarFalse_ParaUsuarioAusente" computerName="KDU_LEGION" duration="00:00:00.0136296" startTime="2026-06-12T11:00:59.7790632-03:00" endTime="2026-06-12T11:00:59.7790640-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="87776033-00f0-46c6-b78f-69a869a341d9" />
+    <UnitTestResult executionId="8ed35cd3-20b3-44b2-9864-8d91144aa337" testId="4d36042b-44ab-c5bb-01e9-8a5b121508ff" testName="InferenceService.Tests.PreprocessorTests.SaidaGerada_ELegivelPeloDataPipeline" computerName="KDU_LEGION" duration="00:00:00.3365226" startTime="2026-06-12T11:00:59.8021378-03:00" endTime="2026-06-12T11:00:59.8021385-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8ed35cd3-20b3-44b2-9864-8d91144aa337" />
+    <UnitTestResult executionId="b60af16e-8929-4473-9938-2fe480b24ce9" testId="8cc51d05-3ccb-029a-4b6a-fe330bf109c9" testName="InferenceService.Tests.DatasetRepositoryTests.LinhasQueColidemAposOTrim_NaoDerrubamOCarregamento" computerName="KDU_LEGION" duration="00:00:00.0186141" startTime="2026-06-12T11:00:59.8680980-03:00" endTime="2026-06-12T11:00:59.8680982-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b60af16e-8929-4473-9938-2fe480b24ce9" />
+    <UnitTestResult executionId="7dfc2c1b-2924-438c-b67a-d049816de18b" testId="d7af34a3-8acb-fa8b-1b10-9f90ded67bca" testName="InferenceService.Tests.HybridModelLoaderTests.StartAsync_DeveExporMetadadosDoModelo" computerName="KDU_LEGION" duration="00:00:00.3652505" startTime="2026-06-12T11:01:01.1548665-03:00" endTime="2026-06-12T11:01:01.1548673-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7dfc2c1b-2924-438c-b67a-d049816de18b" />
+    <UnitTestResult executionId="bd999934-fa17-441d-89fb-6b2b68d5aca7" testId="29d0bd8a-7ebd-72b1-567d-5cbd072e73e1" testName="InferenceService.Tests.DatasetRepositoryTests.GetRating_DeveRetornarNull_ParaUsuarioDesconhecido" computerName="KDU_LEGION" duration="00:00:00.0149306" startTime="2026-06-12T11:00:59.7942578-03:00" endTime="2026-06-12T11:00:59.7942585-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bd999934-fa17-441d-89fb-6b2b68d5aca7" />
+    <UnitTestResult executionId="2820ac0d-bb9d-4c5e-b62e-9d7a0b32a3aa" testId="6ff59558-cea3-6c7e-dd58-6b166ce71213" testName="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_DeveRetornarItensOrdenadosPorScoreHibrido" computerName="KDU_LEGION" duration="00:00:00.1053434" startTime="2026-06-12T11:01:01.9092573-03:00" endTime="2026-06-12T11:01:01.9092577-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2820ac0d-bb9d-4c5e-b62e-9d7a0b32a3aa" />
+    <UnitTestResult executionId="6de211f5-6f99-4f9e-aa29-63e3b60f5932" testId="aae9adfa-84b9-3a23-3c85-d23d74a4305b" testName="InferenceService.Tests.DatasetRepositoryTests.GetRating_DeveRetornarNull_QuandoInteracaoNaoExiste" computerName="KDU_LEGION" duration="00:00:00.0124692" startTime="2026-06-12T11:00:59.8430048-03:00" endTime="2026-06-12T11:00:59.8430054-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6de211f5-6f99-4f9e-aa29-63e3b60f5932" />
+    <UnitTestResult executionId="a5394e0a-81be-4318-a1fe-b243e456d162" testId="f43b4b55-0773-02cc-e6ce-81ffea8519f7" testName="InferenceService.Tests.DatasetRepositoryTests.GetConsumedItems_DeveRetornarItensDoUsuario" computerName="KDU_LEGION" duration="00:00:00.1157880" startTime="2026-06-12T11:00:59.7528245-03:00" endTime="2026-06-12T11:00:59.7528250-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a5394e0a-81be-4318-a1fe-b243e456d162" />
+    <UnitTestResult executionId="bbdeb34e-e4f2-4101-bb69-8b03a6e26f74" testId="5ceab937-1ea1-5bde-94ee-76b151033a0c" testName="InferenceService.Tests.RecommendationBatchJobTests.ExecuteAsync_DeveContinuar_QuandoSalvarFalha" computerName="KDU_LEGION" duration="00:00:00.0103544" startTime="2026-06-12T11:00:59.8647822-03:00" endTime="2026-06-12T11:00:59.8647825-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bbdeb34e-e4f2-4101-bb69-8b03a6e26f74" />
+    <UnitTestResult executionId="09682d55-f67b-45aa-b6e2-df9de3bf6ef0" testId="19972cc2-1d7c-817d-4c08-49285bb311bc" testName="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_DeveTerScoreNaoNuloEmEscala01_ParaUsuarioConhecido" computerName="KDU_LEGION" duration="00:00:00.1146225" startTime="2026-06-12T11:01:01.8034993-03:00" endTime="2026-06-12T11:01:01.8034999-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="09682d55-f67b-45aa-b6e2-df9de3bf6ef0" />
+    <UnitTestResult executionId="9013ac4f-88fe-4b3c-8c5d-fa0e0bfac242" testId="31e3bfcd-f4ab-458f-4a86-bc5543ff90a4" testName="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_DeveExcluirItensConsumidos" computerName="KDU_LEGION" duration="00:00:00.1204206" startTime="2026-06-12T11:01:01.5980758-03:00" endTime="2026-06-12T11:01:01.5980767-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9013ac4f-88fe-4b3c-8c5d-fa0e0bfac242" />
+    <UnitTestResult executionId="f92d1809-1cb6-4d86-9eaf-67fac49d8c2c" testId="42c43177-547b-c1b5-d641-854389b9abdc" testName="InferenceService.Tests.RecommendationBatchJobTests.ExecuteAsync_DeveSalvarRecomendacoesParaCadaUsuario" computerName="KDU_LEGION" duration="00:00:00.0365568" startTime="2026-06-12T11:00:59.8472254-03:00" endTime="2026-06-12T11:00:59.8472258-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f92d1809-1cb6-4d86-9eaf-67fac49d8c2c" />
+    <UnitTestResult executionId="1245f798-e44e-4c7b-b66d-0f0493f6a968" testId="b23d56a7-1f0e-8576-4198-5a3f38f98665" testName="InferenceService.Tests.DatasetRepositoryTests.ItemIdETipoEvento_ComEspacosNasPontas_SaoNormalizadosComTrim" computerName="KDU_LEGION" duration="00:00:00.0117112" startTime="2026-06-12T11:00:59.9923637-03:00" endTime="2026-06-12T11:00:59.9923641-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1245f798-e44e-4c7b-b66d-0f0493f6a968" />
+    <UnitTestResult executionId="f0f7f185-95e3-47b8-8555-c633d21dfe9d" testId="54371a25-ebf4-b374-d896-e7c66bae6b4c" testName="InferenceService.Tests.RecommendationBatchJobTests.ExecuteAsync_ComDatasetVazio_NaoDeveChamarRecommendAsync" computerName="KDU_LEGION" duration="00:00:00.3014908" startTime="2026-06-12T11:00:59.7685029-03:00" endTime="2026-06-12T11:00:59.7685032-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f0f7f185-95e3-47b8-8555-c633d21dfe9d" />
+    <UnitTestResult executionId="88521ad0-e7f8-4eec-92ec-6a5ed343197d" testId="76bc02b7-109e-f7c8-e435-5022734e966a" testName="InferenceService.Tests.PreprocessorTests.CompraComMaisDe180DiasDeAntecedencia_EDescartada" computerName="KDU_LEGION" duration="00:00:00.0363633" startTime="2026-06-12T11:00:59.8557820-03:00" endTime="2026-06-12T11:00:59.8557823-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="88521ad0-e7f8-4eec-92ec-6a5ed343197d" />
+    <UnitTestResult executionId="fae7fb33-fe6d-49c4-ad40-6b3d2dde3892" testId="12b401de-963c-c474-2a3e-84472ef0b424" testName="InferenceService.Tests.PreprocessorTests.DataInvalida_DescartaALinha" computerName="KDU_LEGION" duration="00:00:00.0442206" startTime="2026-06-12T11:00:59.9656697-03:00" endTime="2026-06-12T11:00:59.9656703-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fae7fb33-fe6d-49c4-ad40-6b3d2dde3892" />
+    <UnitTestResult executionId="b0cd96f7-cf1d-45c5-be0b-b48c2e69e358" testId="4fce3635-d36d-b005-6f27-8ca87b25e652" testName="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_DeveLancarExcecao_QuandoNMenorOuIgualZero" computerName="KDU_LEGION" duration="00:00:00.0901377" startTime="2026-06-12T11:01:01.6886582-03:00" endTime="2026-06-12T11:01:01.6886588-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b0cd96f7-cf1d-45c5-be0b-b48c2e69e358" />
+    <UnitTestResult executionId="e046af86-bd0c-424f-9611-d49886b61392" testId="eb042f6e-0e27-ae9f-3e33-661507d6c5e7" testName="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_ColdStart_DeveRespeitarOrdemDePopularidade" computerName="KDU_LEGION" duration="00:00:00.1184628" startTime="2026-06-12T11:01:01.4773384-03:00" endTime="2026-06-12T11:01:01.4773390-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e046af86-bd0c-424f-9611-d49886b61392" />
+    <UnitTestResult executionId="7a488fd0-b734-4a76-92a8-ee81dc4a2a72" testId="dd4dce3f-f2ca-7e61-afd4-8b240cd01fef" testName="InferenceService.Tests.DatasetRepositoryTests.UserExists_DeveRetornarTrue_ParaUsuarioPresenteNoCsv" computerName="KDU_LEGION" duration="00:00:00.0169342" startTime="2026-06-12T11:00:59.8578106-03:00" endTime="2026-06-12T11:00:59.8578109-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7a488fd0-b734-4a76-92a8-ee81dc4a2a72" />
+    <UnitTestResult executionId="2dc71512-8fa4-4d4e-8c1a-c615478972d1" testId="30c232b7-57cf-091b-a835-a8dab9f1aa85" testName="InferenceService.Tests.HybridRecommendationServiceTests.ModelType_DeveSerHibrido" computerName="KDU_LEGION" duration="00:00:00.0821449" startTime="2026-06-12T11:01:01.3585420-03:00" endTime="2026-06-12T11:01:01.3585426-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2dc71512-8fa4-4d4e-8c1a-c615478972d1" />
+    <UnitTestResult executionId="732e3455-966d-4c14-b26b-ef7a3de316f0" testId="1de3f4bf-6c9f-73b6-a0ff-c38df10457f2" testName="InferenceService.Tests.HybridModelLoaderTests.StartAsync_DeveCarregarModeloHibrido" computerName="KDU_LEGION" duration="00:00:00.0966400" startTime="2026-06-12T11:01:01.2517899-03:00" endTime="2026-06-12T11:01:01.2517904-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="732e3455-966d-4c14-b26b-ef7a3de316f0" />
+    <UnitTestResult executionId="8b9b9f23-bcee-4139-939b-ca20941c746b" testId="59a5b8b6-957f-9edb-64b3-7144e7930cb1" testName="InferenceService.Tests.DatasetRepositoryTests.GetRating_DeveRetornarRanking_QuandoInteracaoExiste" computerName="KDU_LEGION" duration="00:00:00.0110215" startTime="2026-06-12T11:00:59.9027105-03:00" endTime="2026-06-12T11:00:59.9027111-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8b9b9f23-bcee-4139-939b-ca20941c746b" />
+    <UnitTestResult executionId="1bfba461-e7da-41f9-8f13-dd5632e28fe6" testId="100b7109-db6f-125f-a851-b58849297c12" testName="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_DeveRespeitarLimiteN" computerName="KDU_LEGION" duration="00:00:00.0819631" startTime="2026-06-12T11:01:02.1560758-03:00" endTime="2026-06-12T11:01:02.1560765-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1bfba461-e7da-41f9-8f13-dd5632e28fe6" />
+    <UnitTestResult executionId="ec51f6ff-34d7-4662-b08e-bc63233a44bc" testId="4ac48c87-6e0c-91a8-d665-99e9b6bf9bb5" testName="InferenceService.Tests.RecommendationBatchJobTests.ExecuteAsync_DeveContinuar_QuandoUmUsuarioFalha" computerName="KDU_LEGION" duration="00:00:00.0122525" startTime="2026-06-12T11:00:59.8521630-03:00" endTime="2026-06-12T11:00:59.8521633-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ec51f6ff-34d7-4662-b08e-bc63233a44bc" />
+    <UnitTestResult executionId="112032b5-d200-4c09-bc7e-3565f7cbc4b7" testId="c87d0bb8-103f-6037-aa99-10d8d577d6ed" testName="InferenceService.Tests.PreprocessorTests.ComprasEmDiasDistintos_IncrementamORanking" computerName="KDU_LEGION" duration="00:00:00.0242950" startTime="2026-06-12T11:00:59.8977702-03:00" endTime="2026-06-12T11:00:59.8977707-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="112032b5-d200-4c09-bc7e-3565f7cbc4b7" />
+    <UnitTestResult executionId="fa57be87-d44e-4609-a79b-a67128f33f7e" testId="30971ee8-e9d3-19c3-df9d-945efa9cc8ae" testName="InferenceService.Tests.PreprocessorTests.PrecoNaoNumerico_ViraZero" computerName="KDU_LEGION" duration="00:00:00.0438404" startTime="2026-06-12T11:01:00.0444045-03:00" endTime="2026-06-12T11:01:00.0444052-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fa57be87-d44e-4609-a79b-a67128f33f7e" />
+    <UnitTestResult executionId="dfb07fad-750c-4bd7-ae9d-05a427356702" testId="777ec724-6a45-6108-b46f-d9a0fe95f1ca" testName="InferenceService.Tests.PreprocessorTests.PrecoComVirgulaDecimal_EConvertidoCorretamente" computerName="KDU_LEGION" duration="00:00:00.0230556" startTime="2026-06-12T11:00:59.9210490-03:00" endTime="2026-06-12T11:00:59.9210496-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="dfb07fad-750c-4bd7-ae9d-05a427356702" />
+    <UnitTestResult executionId="3693649d-70e7-4758-b443-38c815820cd0" testId="187f49aa-3561-4557-6c60-d4c41e83da60" testName="InferenceService.Tests.DatasetRepositoryTests.GetInteractions_DeveRetornarVazio_ParaUsuarioDesconhecido" computerName="KDU_LEGION" duration="00:00:00.0314325" startTime="2026-06-12T11:00:59.9552779-03:00" endTime="2026-06-12T11:00:59.9552784-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3693649d-70e7-4758-b443-38c815820cd0" />
+    <UnitTestResult executionId="78222b6a-fb8a-42a3-bea5-80b61586431f" testId="bda63051-936c-059a-fe7a-b4a9dbfa5c0e" testName="InferenceService.Tests.RecommendationBatchJobTests.ExecuteAsync_DeveProcessarTodosOsUsuariosDoDataset" computerName="KDU_LEGION" duration="00:00:00.0124245" startTime="2026-06-12T11:00:59.8539796-03:00" endTime="2026-06-12T11:00:59.8539799-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="78222b6a-fb8a-42a3-bea5-80b61586431f" />
+    <UnitTestResult executionId="215c45e0-437a-4bab-9139-cdef3e7c2a0b" testId="0280534c-dcf6-caac-d391-db6ff439d1dc" testName="InferenceService.Tests.DatasetRepositoryTests.AllItems_DeveConterTodosOsItensUnicos" computerName="KDU_LEGION" duration="00:00:00.0125568" startTime="2026-06-12T11:00:59.8914523-03:00" endTime="2026-06-12T11:00:59.8914529-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="215c45e0-437a-4bab-9139-cdef3e7c2a0b" />
+    <UnitTestResult executionId="0f1bb0eb-4ef3-4654-b79c-f2a34736c55c" testId="54ae4fae-f088-0887-7fa4-5d6cfc9980ab" testName="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_ColdStart_DeveRespeitarLimiteN" computerName="KDU_LEGION" duration="00:00:00.0824923" startTime="2026-06-12T11:01:01.9927102-03:00" endTime="2026-06-12T11:01:01.9927108-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0f1bb0eb-4ef3-4654-b79c-f2a34736c55c" />
+    <UnitTestResult executionId="d0cb5dc7-80a0-46f5-85e4-35cd571546e3" testId="1d3cad8b-b705-9e1c-d086-2472abfda422" testName="InferenceService.Tests.HybridModelLoaderTests.Recommender_AntesDeStartAsync_DeveLancarInvalidOperationException" computerName="KDU_LEGION" duration="00:00:00.0029738" startTime="2026-06-12T11:01:01.2758967-03:00" endTime="2026-06-12T11:01:01.2758970-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d0cb5dc7-80a0-46f5-85e4-35cd571546e3" />
+    <UnitTestResult executionId="2fe190f7-48d1-4084-a6a6-57e7ac53f012" testId="d8c73dfa-e09a-b736-b3ee-8d3179bab6e1" testName="InferenceService.Tests.HybridModelLoaderTests.Construtor_ComArtefatoInexistente_DeveLancarFileNotFoundException" computerName="KDU_LEGION" duration="00:00:00.0198972" startTime="2026-06-12T11:01:01.2726900-03:00" endTime="2026-06-12T11:01:01.2726906-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2fe190f7-48d1-4084-a6a6-57e7ac53f012" />
+    <UnitTestResult executionId="c37c508b-397f-401a-a4fb-6c3a7adabc99" testId="686e64eb-49a6-1203-c41d-4b41ab96cdb0" testName="InferenceService.Tests.DatasetRepositoryTests.AllInteractions_DeveConterTodasAsLinhasDoCSV" computerName="KDU_LEGION" duration="00:00:00.0111380" startTime="2026-06-12T11:00:59.9140710-03:00" endTime="2026-06-12T11:00:59.9140715-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c37c508b-397f-401a-a4fb-6c3a7adabc99" />
+    <UnitTestResult executionId="912e2274-f6e5-4008-9569-cb025fdd4c2a" testId="29d750c9-0aa1-ffb5-369a-6222f649d909" testName="InferenceService.Tests.DatasetRepositoryTests.GetInteractions_DeveRetornarTodasAsInteracoesDoUsuario" computerName="KDU_LEGION" duration="00:00:00.0135399" startTime="2026-06-12T11:00:59.9804184-03:00" endTime="2026-06-12T11:00:59.9804190-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="912e2274-f6e5-4008-9569-cb025fdd4c2a" />
+    <UnitTestResult executionId="7c91f851-991f-4981-9fdb-5017978cf955" testId="9358c00d-ed0c-2913-2076-0821f6842e39" testName="InferenceService.Tests.DatasetRepositoryTests.Repositorio_ComCsvApenasComCabecalho_DeveCarregarSemErros" computerName="KDU_LEGION" duration="00:00:00.0092415" startTime="2026-06-12T11:00:59.9235622-03:00" endTime="2026-06-12T11:00:59.9235627-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7c91f851-991f-4981-9fdb-5017978cf955" />
+    <UnitTestResult executionId="b2a12d65-8f72-448c-bb82-af0bdd837140" testId="8e5026bc-4a46-6ce6-7bc6-3c9f26118d69" testName="InferenceService.Tests.PreprocessorTests.Ranking_LimitadoA5_MesmoComMaisDiasDistintos" computerName="KDU_LEGION" duration="00:00:00.0268027" startTime="2026-06-12T11:01:00.1002183-03:00" endTime="2026-06-12T11:01:00.1002189-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b2a12d65-8f72-448c-bb82-af0bdd837140" />
+    <UnitTestResult executionId="94f8d873-8592-4db9-a8e4-43da6933ece0" testId="d1a0d2ec-5c5f-205d-aa03-172867fe4409" testName="InferenceService.Tests.PreprocessorTests.ComprasNoMesmoDia_ContamComoUmaInteracao_EUsamApenasAPrimeiraLinha" computerName="KDU_LEGION" duration="00:00:00.0340943" startTime="2026-06-12T11:00:59.8731216-03:00" endTime="2026-06-12T11:00:59.8731222-03:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="94f8d873-8592-4db9-a8e4-43da6933ece0" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_DeveRetornarItensOrdenadosPorScoreHibrido" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="6ff59558-cea3-6c7e-dd58-6b166ce71213">
+      <Execution id="2820ac0d-bb9d-4c5e-b62e-9d7a0b32a3aa" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridRecommendationServiceTests" name="RecommendAsync_DeveRetornarItensOrdenadosPorScoreHibrido" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.ColdStartItems_DeveEstarOrdenadoPorContagemDecrescente" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="d77e5f79-6056-7371-35ab-8db2923248fd">
+      <Execution id="a8388010-1560-457e-bf9e-c569905d069e" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="ColdStartItems_DeveEstarOrdenadoPorContagemDecrescente" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.RecommendationBatchJobTests.ExecuteAsync_DeveSalvarRecomendacoesParaCadaUsuario" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="42c43177-547b-c1b5-d641-854389b9abdc">
+      <Execution id="f92d1809-1cb6-4d86-9eaf-67fac49d8c2c" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.RecommendationBatchJobTests" name="ExecuteAsync_DeveSalvarRecomendacoesParaCadaUsuario" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridModelLoaderTests.Construtor_ComArtefatoInexistente_DeveLancarFileNotFoundException" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="d8c73dfa-e09a-b736-b3ee-8d3179bab6e1">
+      <Execution id="2fe190f7-48d1-4084-a6a6-57e7ac53f012" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridModelLoaderTests" name="Construtor_ComArtefatoInexistente_DeveLancarFileNotFoundException" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.GetConsumedItems_DeveRetornarItensDoUsuario" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="f43b4b55-0773-02cc-e6ce-81ffea8519f7">
+      <Execution id="a5394e0a-81be-4318-a1fe-b243e456d162" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="GetConsumedItems_DeveRetornarItensDoUsuario" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.Repositorio_ComUmUnicoUsuario_DeveCarregarCorretamente" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="263ea5f6-ea5f-2995-c6cb-b45b5f538fa6">
+      <Execution id="d58f0908-d6e4-42f6-8ab2-f28800866beb" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="Repositorio_ComUmUnicoUsuario_DeveCarregarCorretamente" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.PreprocessorTests.DataInvalida_DescartaALinha" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="12b401de-963c-c474-2a3e-84472ef0b424">
+      <Execution id="fae7fb33-fe6d-49c4-ad40-6b3d2dde3892" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.PreprocessorTests" name="DataInvalida_DescartaALinha" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_DeveLancarExcecao_QuandoNMenorOuIgualZero" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="4fce3635-d36d-b005-6f27-8ca87b25e652">
+      <Execution id="b0cd96f7-cf1d-45c5-be0b-b48c2e69e358" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridRecommendationServiceTests" name="RecommendAsync_DeveLancarExcecao_QuandoNMenorOuIgualZero" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.PreprocessorTests.ComprasEmDiasDistintos_IncrementamORanking" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="c87d0bb8-103f-6037-aa99-10d8d577d6ed">
+      <Execution id="112032b5-d200-4c09-bc7e-3565f7cbc4b7" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.PreprocessorTests" name="ComprasEmDiasDistintos_IncrementamORanking" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.RecommendationBatchJobTests.ExecuteAsync_DeveContinuar_QuandoSalvarFalha" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="5ceab937-1ea1-5bde-94ee-76b151033a0c">
+      <Execution id="bbdeb34e-e4f2-4101-bb69-8b03a6e26f74" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.RecommendationBatchJobTests" name="ExecuteAsync_DeveContinuar_QuandoSalvarFalha" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.GetInteractions_DeveRetornarTodasAsInteracoesDoUsuario" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="29d750c9-0aa1-ffb5-369a-6222f649d909">
+      <Execution id="912e2274-f6e5-4008-9569-cb025fdd4c2a" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="GetInteractions_DeveRetornarTodasAsInteracoesDoUsuario" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.RecommendationBatchJobTests.ExecuteAsync_DeveProcessarTodosOsUsuariosDoDataset" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="bda63051-936c-059a-fe7a-b4a9dbfa5c0e">
+      <Execution id="78222b6a-fb8a-42a3-bea5-80b61586431f" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.RecommendationBatchJobTests" name="ExecuteAsync_DeveProcessarTodosOsUsuariosDoDataset" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.ColdStartItems_PrimeiroItemDeveSerOMaisPopular" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="18c97593-0d2e-5cc4-6a89-c806671ee18a">
+      <Execution id="9c595a28-34bd-4e8e-ab03-0e8982313c34" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="ColdStartItems_PrimeiroItemDeveSerOMaisPopular" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.PreprocessorTests.Ranking_LimitadoA5_MesmoComMaisDiasDistintos" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="8e5026bc-4a46-6ce6-7bc6-3c9f26118d69">
+      <Execution id="b2a12d65-8f72-448c-bb82-af0bdd837140" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.PreprocessorTests" name="Ranking_LimitadoA5_MesmoComMaisDiasDistintos" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.Repositorio_ComCsvApenasComCabecalho_DeveCarregarSemErros" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="9358c00d-ed0c-2913-2076-0821f6842e39">
+      <Execution id="7c91f851-991f-4981-9fdb-5017978cf955" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="Repositorio_ComCsvApenasComCabecalho_DeveCarregarSemErros" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_DeveExcluirItensConsumidos" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="31e3bfcd-f4ab-458f-4a86-bc5543ff90a4">
+      <Execution id="9013ac4f-88fe-4b3c-8c5d-fa0e0bfac242" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridRecommendationServiceTests" name="RecommendAsync_DeveExcluirItensConsumidos" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.ItemIdETipoEvento_ComEspacosNasPontas_SaoNormalizadosComTrim" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="b23d56a7-1f0e-8576-4198-5a3f38f98665">
+      <Execution id="1245f798-e44e-4c7b-b66d-0f0493f6a968" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="ItemIdETipoEvento_ComEspacosNasPontas_SaoNormalizadosComTrim" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.RecommendationBatchJobTests.ExecuteAsync_DeveParar_QuandoCancelado" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="96732851-a606-33bf-3bf0-494f62826cc9">
+      <Execution id="b5d6663a-58f7-47a1-99fe-5098e098d850" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.RecommendationBatchJobTests" name="ExecuteAsync_DeveParar_QuandoCancelado" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_ColdStart_DeveRespeitarOrdemDePopularidade" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="eb042f6e-0e27-ae9f-3e33-661507d6c5e7">
+      <Execution id="e046af86-bd0c-424f-9611-d49886b61392" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridRecommendationServiceTests" name="RecommendAsync_ColdStart_DeveRespeitarOrdemDePopularidade" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.ColdStartItems_DeveConterTodosOsItens" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="533771ae-3ca5-b34b-09fe-0b884844ebbb">
+      <Execution id="79efe59c-e8e0-4991-b18b-3b0a3c931ad4" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="ColdStartItems_DeveConterTodosOsItens" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.PreprocessorTests.PrecoComVirgulaDecimal_EConvertidoCorretamente" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="777ec724-6a45-6108-b46f-d9a0fe95f1ca">
+      <Execution id="dfb07fad-750c-4bd7-ae9d-05a427356702" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.PreprocessorTests" name="PrecoComVirgulaDecimal_EConvertidoCorretamente" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.GetRating_DeveRetornarNull_QuandoInteracaoNaoExiste" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="aae9adfa-84b9-3a23-3c85-d23d74a4305b">
+      <Execution id="6de211f5-6f99-4f9e-aa29-63e3b60f5932" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="GetRating_DeveRetornarNull_QuandoInteracaoNaoExiste" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.AllInteractions_DeveConterTodasAsLinhasDoCSV" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="686e64eb-49a6-1203-c41d-4b41ab96cdb0">
+      <Execution id="c37c508b-397f-401a-a4fb-6c3a7adabc99" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="AllInteractions_DeveConterTodasAsLinhasDoCSV" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.RecommendationBatchJobTests.ExecuteAsync_ComDatasetVazio_NaoDeveChamarRecommendAsync" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="54371a25-ebf4-b374-d896-e7c66bae6b4c">
+      <Execution id="f0f7f185-95e3-47b8-8555-c633d21dfe9d" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.RecommendationBatchJobTests" name="ExecuteAsync_ComDatasetVazio_NaoDeveChamarRecommendAsync" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.AllItems_DeveConterTodosOsItensUnicos" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="0280534c-dcf6-caac-d391-db6ff439d1dc">
+      <Execution id="215c45e0-437a-4bab-9139-cdef3e7c2a0b" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="AllItems_DeveConterTodosOsItensUnicos" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.PreprocessorTests.ComprasNoMesmoDia_ContamComoUmaInteracao_EUsamApenasAPrimeiraLinha" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="d1a0d2ec-5c5f-205d-aa03-172867fe4409">
+      <Execution id="94f8d873-8592-4db9-a8e4-43da6933ece0" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.PreprocessorTests" name="ComprasNoMesmoDia_ContamComoUmaInteracao_EUsamApenasAPrimeiraLinha" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.PreprocessorTests.SaidaGerada_ELegivelPeloDataPipeline" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="4d36042b-44ab-c5bb-01e9-8a5b121508ff">
+      <Execution id="8ed35cd3-20b3-44b2-9864-8d91144aa337" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.PreprocessorTests" name="SaidaGerada_ELegivelPeloDataPipeline" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.PreprocessorTests.CompraDepoisDaApresentacao_EDescartada" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="34ed8188-5b92-1774-7679-5a871d59d9d4">
+      <Execution id="37e9899a-8726-4e0f-a702-b1a69ae0dbe1" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.PreprocessorTests" name="CompraDepoisDaApresentacao_EDescartada" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridModelLoaderTests.StartAsync_DeveCarregarModeloHibrido" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="1de3f4bf-6c9f-73b6-a0ff-c38df10457f2">
+      <Execution id="732e3455-966d-4c14-b26b-ef7a3de316f0" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridModelLoaderTests" name="StartAsync_DeveCarregarModeloHibrido" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.RecommendationBatchJobTests.ExecuteAsync_DeveContinuar_QuandoUmUsuarioFalha" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="4ac48c87-6e0c-91a8-d665-99e9b6bf9bb5">
+      <Execution id="ec51f6ff-34d7-4662-b08e-bc63233a44bc" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.RecommendationBatchJobTests" name="ExecuteAsync_DeveContinuar_QuandoUmUsuarioFalha" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.GetRating_DeveRetornarNull_ParaUsuarioDesconhecido" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="29d0bd8a-7ebd-72b1-567d-5cbd072e73e1">
+      <Execution id="bd999934-fa17-441d-89fb-6b2b68d5aca7" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="GetRating_DeveRetornarNull_ParaUsuarioDesconhecido" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.GetInteractions_DeveRetornarVazio_ParaUsuarioDesconhecido" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="187f49aa-3561-4557-6c60-d4c41e83da60">
+      <Execution id="3693649d-70e7-4758-b443-38c815820cd0" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="GetInteractions_DeveRetornarVazio_ParaUsuarioDesconhecido" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridModelLoaderTests.IsLoaded_DeveSerFalse_AntesDeStartAsync" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="7200a5ca-ab99-fa85-4bff-ebf3f58f9524">
+      <Execution id="2f3e8ba5-d5b8-4917-8290-18327ad29836" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridModelLoaderTests" name="IsLoaded_DeveSerFalse_AntesDeStartAsync" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_DeveFazerColdStart_QuandoUsuarioDesconhecido" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="220878d9-7159-3627-be9a-d9773e17930f">
+      <Execution id="a55622ed-6c0e-4c10-9621-515c19cb0481" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridRecommendationServiceTests" name="RecommendAsync_DeveFazerColdStart_QuandoUsuarioDesconhecido" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_DeveRespeitarLimiteN" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="100b7109-db6f-125f-a851-b58849297c12">
+      <Execution id="1bfba461-e7da-41f9-8f13-dd5632e28fe6" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridRecommendationServiceTests" name="RecommendAsync_DeveRespeitarLimiteN" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.PreprocessorTests.CompraComMaisDe180DiasDeAntecedencia_EDescartada" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="76bc02b7-109e-f7c8-e435-5022734e966a">
+      <Execution id="88521ad0-e7f8-4eec-92ec-6a5ed343197d" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.PreprocessorTests" name="CompraComMaisDe180DiasDeAntecedencia_EDescartada" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.LinhasQueColidemAposOTrim_NaoDerrubamOCarregamento" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="8cc51d05-3ccb-029a-4b6a-fe330bf109c9">
+      <Execution id="b60af16e-8929-4473-9938-2fe480b24ce9" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="LinhasQueColidemAposOTrim_NaoDerrubamOCarregamento" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.PreprocessorTests.PrecoNaoNumerico_ViraZero" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="30971ee8-e9d3-19c3-df9d-945efa9cc8ae">
+      <Execution id="fa57be87-d44e-4609-a79b-a67128f33f7e" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.PreprocessorTests" name="PrecoNaoNumerico_ViraZero" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_DeveTerScoreNaoNuloEmEscala01_ParaUsuarioConhecido" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="19972cc2-1d7c-817d-4c08-49285bb311bc">
+      <Execution id="09682d55-f67b-45aa-b6e2-df9de3bf6ef0" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridRecommendationServiceTests" name="RecommendAsync_DeveTerScoreNaoNuloEmEscala01_ParaUsuarioConhecido" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridRecommendationServiceTests.ModelType_DeveSerHibrido" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="30c232b7-57cf-091b-a835-a8dab9f1aa85">
+      <Execution id="2dc71512-8fa4-4d4e-8c1a-c615478972d1" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridRecommendationServiceTests" name="ModelType_DeveSerHibrido" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.PreprocessorTests.UsuarioAcimaDoPercentil999_ERemovido" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="710b2e98-4406-cf2a-4c51-174bc008f295">
+      <Execution id="1daea1e9-edcb-4164-a88a-cb03708499e3" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.PreprocessorTests" name="UsuarioAcimaDoPercentil999_ERemovido" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridRecommendationServiceTests.RecommendAsync_ColdStart_DeveRespeitarLimiteN" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="54ae4fae-f088-0887-7fa4-5d6cfc9980ab">
+      <Execution id="0f1bb0eb-4ef3-4654-b79c-f2a34736c55c" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridRecommendationServiceTests" name="RecommendAsync_ColdStart_DeveRespeitarLimiteN" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridModelLoaderTests.StartAsync_DeveExporMetadadosDoModelo" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="d7af34a3-8acb-fa8b-1b10-9f90ded67bca">
+      <Execution id="7dfc2c1b-2924-438c-b67a-d049816de18b" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridModelLoaderTests" name="StartAsync_DeveExporMetadadosDoModelo" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.UserExists_DeveRetornarTrue_ParaUsuarioPresenteNoCsv" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="dd4dce3f-f2ca-7e61-afd4-8b240cd01fef">
+      <Execution id="7a488fd0-b734-4a76-92a8-ee81dc4a2a72" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="UserExists_DeveRetornarTrue_ParaUsuarioPresenteNoCsv" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.GetRating_DeveRetornarRanking_QuandoInteracaoExiste" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="59a5b8b6-957f-9edb-64b3-7144e7930cb1">
+      <Execution id="8b9b9f23-bcee-4139-939b-ca20941c746b" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="GetRating_DeveRetornarRanking_QuandoInteracaoExiste" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.HybridModelLoaderTests.Recommender_AntesDeStartAsync_DeveLancarInvalidOperationException" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="1d3cad8b-b705-9e1c-d086-2472abfda422">
+      <Execution id="d0cb5dc7-80a0-46f5-85e4-35cd571546e3" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.HybridModelLoaderTests" name="Recommender_AntesDeStartAsync_DeveLancarInvalidOperationException" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.UserExists_DeveRetornarFalse_ParaUsuarioAusente" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="9ab2f4f2-4261-2438-0b8e-17909b0a93b5">
+      <Execution id="87776033-00f0-46c6-b78f-69a869a341d9" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="UserExists_DeveRetornarFalse_ParaUsuarioAusente" />
+    </UnitTest>
+    <UnitTest name="InferenceService.Tests.DatasetRepositoryTests.GetConsumedItems_DeveRetornarVazio_ParaUsuarioDesconhecido" storage="c:\users\cadus\cadu_files\inteli\projeto 6 - aventura\g02\src\inference-service\inferenceservice.tests\bin\debug\net9.0\inferenceservice.tests.dll" id="c67ad204-f158-54ab-8161-249269e6d265">
+      <Execution id="0b76c7cf-720a-44db-9d7a-73299fbcd1d1" />
+      <TestMethod codeBase="C:\Users\cadus\CADU_FILES\Inteli\Projeto 6 - Aventura\g02\src\inference-service\InferenceService.Tests\bin\Debug\net9.0\InferenceService.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="InferenceService.Tests.DatasetRepositoryTests" name="GetConsumedItems_DeveRetornarVazio_ParaUsuarioDesconhecido" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="7200a5ca-ab99-fa85-4bff-ebf3f58f9524" executionId="2f3e8ba5-d5b8-4917-8290-18327ad29836" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="533771ae-3ca5-b34b-09fe-0b884844ebbb" executionId="79efe59c-e8e0-4991-b18b-3b0a3c931ad4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c67ad204-f158-54ab-8161-249269e6d265" executionId="0b76c7cf-720a-44db-9d7a-73299fbcd1d1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="263ea5f6-ea5f-2995-c6cb-b45b5f538fa6" executionId="d58f0908-d6e4-42f6-8ab2-f28800866beb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="96732851-a606-33bf-3bf0-494f62826cc9" executionId="b5d6663a-58f7-47a1-99fe-5098e098d850" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="710b2e98-4406-cf2a-4c51-174bc008f295" executionId="1daea1e9-edcb-4164-a88a-cb03708499e3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="220878d9-7159-3627-be9a-d9773e17930f" executionId="a55622ed-6c0e-4c10-9621-515c19cb0481" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="18c97593-0d2e-5cc4-6a89-c806671ee18a" executionId="9c595a28-34bd-4e8e-ab03-0e8982313c34" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="34ed8188-5b92-1774-7679-5a871d59d9d4" executionId="37e9899a-8726-4e0f-a702-b1a69ae0dbe1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d77e5f79-6056-7371-35ab-8db2923248fd" executionId="a8388010-1560-457e-bf9e-c569905d069e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9ab2f4f2-4261-2438-0b8e-17909b0a93b5" executionId="87776033-00f0-46c6-b78f-69a869a341d9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4d36042b-44ab-c5bb-01e9-8a5b121508ff" executionId="8ed35cd3-20b3-44b2-9864-8d91144aa337" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8cc51d05-3ccb-029a-4b6a-fe330bf109c9" executionId="b60af16e-8929-4473-9938-2fe480b24ce9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d7af34a3-8acb-fa8b-1b10-9f90ded67bca" executionId="7dfc2c1b-2924-438c-b67a-d049816de18b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="29d0bd8a-7ebd-72b1-567d-5cbd072e73e1" executionId="bd999934-fa17-441d-89fb-6b2b68d5aca7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6ff59558-cea3-6c7e-dd58-6b166ce71213" executionId="2820ac0d-bb9d-4c5e-b62e-9d7a0b32a3aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="aae9adfa-84b9-3a23-3c85-d23d74a4305b" executionId="6de211f5-6f99-4f9e-aa29-63e3b60f5932" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f43b4b55-0773-02cc-e6ce-81ffea8519f7" executionId="a5394e0a-81be-4318-a1fe-b243e456d162" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5ceab937-1ea1-5bde-94ee-76b151033a0c" executionId="bbdeb34e-e4f2-4101-bb69-8b03a6e26f74" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="19972cc2-1d7c-817d-4c08-49285bb311bc" executionId="09682d55-f67b-45aa-b6e2-df9de3bf6ef0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="31e3bfcd-f4ab-458f-4a86-bc5543ff90a4" executionId="9013ac4f-88fe-4b3c-8c5d-fa0e0bfac242" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="42c43177-547b-c1b5-d641-854389b9abdc" executionId="f92d1809-1cb6-4d86-9eaf-67fac49d8c2c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b23d56a7-1f0e-8576-4198-5a3f38f98665" executionId="1245f798-e44e-4c7b-b66d-0f0493f6a968" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="54371a25-ebf4-b374-d896-e7c66bae6b4c" executionId="f0f7f185-95e3-47b8-8555-c633d21dfe9d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="76bc02b7-109e-f7c8-e435-5022734e966a" executionId="88521ad0-e7f8-4eec-92ec-6a5ed343197d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="12b401de-963c-c474-2a3e-84472ef0b424" executionId="fae7fb33-fe6d-49c4-ad40-6b3d2dde3892" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4fce3635-d36d-b005-6f27-8ca87b25e652" executionId="b0cd96f7-cf1d-45c5-be0b-b48c2e69e358" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="eb042f6e-0e27-ae9f-3e33-661507d6c5e7" executionId="e046af86-bd0c-424f-9611-d49886b61392" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dd4dce3f-f2ca-7e61-afd4-8b240cd01fef" executionId="7a488fd0-b734-4a76-92a8-ee81dc4a2a72" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="30c232b7-57cf-091b-a835-a8dab9f1aa85" executionId="2dc71512-8fa4-4d4e-8c1a-c615478972d1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1de3f4bf-6c9f-73b6-a0ff-c38df10457f2" executionId="732e3455-966d-4c14-b26b-ef7a3de316f0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="59a5b8b6-957f-9edb-64b3-7144e7930cb1" executionId="8b9b9f23-bcee-4139-939b-ca20941c746b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="100b7109-db6f-125f-a851-b58849297c12" executionId="1bfba461-e7da-41f9-8f13-dd5632e28fe6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4ac48c87-6e0c-91a8-d665-99e9b6bf9bb5" executionId="ec51f6ff-34d7-4662-b08e-bc63233a44bc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c87d0bb8-103f-6037-aa99-10d8d577d6ed" executionId="112032b5-d200-4c09-bc7e-3565f7cbc4b7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="30971ee8-e9d3-19c3-df9d-945efa9cc8ae" executionId="fa57be87-d44e-4609-a79b-a67128f33f7e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="777ec724-6a45-6108-b46f-d9a0fe95f1ca" executionId="dfb07fad-750c-4bd7-ae9d-05a427356702" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="187f49aa-3561-4557-6c60-d4c41e83da60" executionId="3693649d-70e7-4758-b443-38c815820cd0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bda63051-936c-059a-fe7a-b4a9dbfa5c0e" executionId="78222b6a-fb8a-42a3-bea5-80b61586431f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0280534c-dcf6-caac-d391-db6ff439d1dc" executionId="215c45e0-437a-4bab-9139-cdef3e7c2a0b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="54ae4fae-f088-0887-7fa4-5d6cfc9980ab" executionId="0f1bb0eb-4ef3-4654-b79c-f2a34736c55c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1d3cad8b-b705-9e1c-d086-2472abfda422" executionId="d0cb5dc7-80a0-46f5-85e4-35cd571546e3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d8c73dfa-e09a-b736-b3ee-8d3179bab6e1" executionId="2fe190f7-48d1-4084-a6a6-57e7ac53f012" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="686e64eb-49a6-1203-c41d-4b41ab96cdb0" executionId="c37c508b-397f-401a-a4fb-6c3a7adabc99" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="29d750c9-0aa1-ffb5-369a-6222f649d909" executionId="912e2274-f6e5-4008-9569-cb025fdd4c2a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9358c00d-ed0c-2913-2076-0821f6842e39" executionId="7c91f851-991f-4981-9fdb-5017978cf955" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8e5026bc-4a46-6ce6-7bc6-3c9f26118d69" executionId="b2a12d65-8f72-448c-bb82-af0bdd837140" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d1a0d2ec-5c5f-205d-aa03-172867fe4409" executionId="94f8d873-8592-4db9-a8e4-43da6933ece0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="48" executed="48" passed="48" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 9.0.16)&#xD;
+[xUnit.net 00:00:01.63]   Discovering: InferenceService.Tests&#xD;
+[xUnit.net 00:00:01.69]   Discovered:  InferenceService.Tests&#xD;
+[xUnit.net 00:00:01.70]   Starting:    InferenceService.Tests&#xD;
+Carregando dataset...&#xD;
+[1/4] Lendo dados brutos: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-04b89bcb6abf40178a9dc377de2529c6\raw.csv&#xD;
+      2 linhas lidas.&#xD;
+[2/4] Limpando e filtrando...&#xD;
+      2 linhas ap�s limpeza (lead time 0-180 dias).&#xD;
+[3/4] Removendo outliers e agregando...&#xD;
+  10 registros carregados.&#xD;
+     Warning:&#xD;
+     The component "Fluent Assertions" is governed by the rules defined in the Xceed License Agreement and&#xD;
+     the Xceed Fluent Assertions Community License. You may use Fluent Assertions free of charge for&#xD;
+     non-commercial use only. An active subscription is required to use Fluent Assertions for commercial use.&#xD;
+     Please contact Xceed Sales mailto:sales@xceed.com to acquire a subscription at a very low cost.&#xD;
+     A paid commercial license supports the development and continued increasing support of&#xD;
+     Fluent Assertions users under both commercial and community licenses. Help us&#xD;
+     keep Fluent Assertions at the forefront of unit testing.&#xD;
+     For more information, visit https://xceed.com/products/unit-testing/fluent-assertions/&#xD;
+      Outlier threshold (P99.9): 1 intera�oes, 0 usu�rios removidos.&#xD;
+  4 itens �nicos. Cold-start salvo em C:\Users\cadus\AppData\Local\Temp\aventura-hybrid-tests-5bfa357fc1f1469da78c0b403d3122ee\cold_start.json&#xD;
+  item_categories salvo em C:\Users\cadus\AppData\Local\Temp\aventura-hybrid-tests-5bfa357fc1f1469da78c0b403d3122ee\item_categories.json&#xD;
+      2 pares (usu�rio, espet�culo) �nicos.&#xD;
+[4/4] Salvando dataset: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-04b89bcb6abf40178a9dc377de2529c6\dataset.csv&#xD;
+  category_affinity salvo em C:\Users\cadus\AppData\Local\Temp\aventura-hybrid-tests-5bfa357fc1f1469da78c0b403d3122ee\category_affinity.json&#xD;
+  cold_start_by_category salvo em C:\Users\cadus\AppData\Local\Temp\aventura-hybrid-tests-5bfa357fc1f1469da78c0b403d3122ee\cold_start_by_category.json&#xD;
+Treinando modelo (MatrixFactorization)...&#xD;
+[1/4] Lendo dados brutos: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-268875d4d52644138ace4fc55715cf75\raw.csv&#xD;
+      2 linhas lidas.&#xD;
+[2/4] Limpando e filtrando...&#xD;
+      1 linhas ap�s limpeza (lead time 0-180 dias).&#xD;
+[3/4] Removendo outliers e agregando...&#xD;
+      Outlier threshold (P99.9): 1 intera�oes, 0 usu�rios removidos.&#xD;
+      1 pares (usu�rio, espet�culo) �nicos.&#xD;
+[4/4] Salvando dataset: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-268875d4d52644138ace4fc55715cf75\dataset.csv&#xD;
+[1/4] Lendo dados brutos: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-a4142bbf426148cc8c20c300c2c060a9\raw.csv&#xD;
+      2 linhas lidas.&#xD;
+[2/4] Limpando e filtrando...&#xD;
+      2 linhas ap�s limpeza (lead time 0-180 dias).&#xD;
+[3/4] Removendo outliers e agregando...&#xD;
+      Outlier threshold (P99.9): 1 intera�oes, 0 usu�rios removidos.&#xD;
+      1 pares (usu�rio, espet�culo) �nicos.&#xD;
+[4/4] Salvando dataset: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-a4142bbf426148cc8c20c300c2c060a9\dataset.csv&#xD;
+[1/4] Lendo dados brutos: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-850d30c03c2c48c389f04e128fb6e147\raw.csv&#xD;
+      2 linhas lidas.&#xD;
+[2/4] Limpando e filtrando...&#xD;
+      2 linhas ap�s limpeza (lead time 0-180 dias).&#xD;
+[3/4] Removendo outliers e agregando...&#xD;
+      Outlier threshold (P99.9): 2 intera�oes, 0 usu�rios removidos.&#xD;
+      1 pares (usu�rio, espet�culo) �nicos.&#xD;
+[4/4] Salvando dataset: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-850d30c03c2c48c389f04e128fb6e147\dataset.csv&#xD;
+[1/4] Lendo dados brutos: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-64eae30199dc40b59afcd54cc4cc5366\raw.csv&#xD;
+      1 linhas lidas.&#xD;
+[2/4] Limpando e filtrando...&#xD;
+      1 linhas ap�s limpeza (lead time 0-180 dias).&#xD;
+[3/4] Removendo outliers e agregando...&#xD;
+      Outlier threshold (P99.9): 1 intera�oes, 0 usu�rios removidos.&#xD;
+      1 pares (usu�rio, espet�culo) �nicos.&#xD;
+[4/4] Salvando dataset: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-64eae30199dc40b59afcd54cc4cc5366\dataset.csv&#xD;
+[1/4] Lendo dados brutos: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-aed216b55b064f18b73ea3beb6fe0c85\raw.csv&#xD;
+      2 linhas lidas.&#xD;
+[2/4] Limpando e filtrando...&#xD;
+      1 linhas ap�s limpeza (lead time 0-180 dias).&#xD;
+[3/4] Removendo outliers e agregando...&#xD;
+      Outlier threshold (P99.9): 1 intera�oes, 0 usu�rios removidos.&#xD;
+      1 pares (usu�rio, espet�culo) �nicos.&#xD;
+[4/4] Salvando dataset: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-aed216b55b064f18b73ea3beb6fe0c85\dataset.csv&#xD;
+[1/4] Lendo dados brutos: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-271dff926e7c4e5a8d46473ee32fff2c\raw.csv&#xD;
+      110 linhas lidas.&#xD;
+[2/4] Limpando e filtrando...&#xD;
+      110 linhas ap�s limpeza (lead time 0-180 dias).&#xD;
+[3/4] Removendo outliers e agregando...&#xD;
+      Outlier threshold (P99.9): 99 intera�oes, 1 usu�rios removidos.&#xD;
+      10 pares (usu�rio, espet�culo) �nicos.&#xD;
+[4/4] Salvando dataset: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-271dff926e7c4e5a8d46473ee32fff2c\dataset.csv&#xD;
+[1/4] Lendo dados brutos: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-113ed89edb994ef6975394358b8f1b9c\raw.csv&#xD;
+      1 linhas lidas.&#xD;
+[2/4] Limpando e filtrando...&#xD;
+      1 linhas ap�s limpeza (lead time 0-180 dias).&#xD;
+[3/4] Removendo outliers e agregando...&#xD;
+      Outlier threshold (P99.9): 1 intera�oes, 0 usu�rios removidos.&#xD;
+      1 pares (usu�rio, espet�culo) �nicos.&#xD;
+[4/4] Salvando dataset: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-113ed89edb994ef6975394358b8f1b9c\dataset.csv&#xD;
+[1/4] Lendo dados brutos: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-b28f63de528e442bb5529954986e5d49\raw.csv&#xD;
+      2 linhas lidas.&#xD;
+[2/4] Limpando e filtrando...&#xD;
+      1 linhas ap�s limpeza (lead time 0-180 dias).&#xD;
+[3/4] Removendo outliers e agregando...&#xD;
+      Outlier threshold (P99.9): 1 intera�oes, 0 usu�rios removidos.&#xD;
+      1 pares (usu�rio, espet�culo) �nicos.&#xD;
+[4/4] Salvando dataset: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-b28f63de528e442bb5529954986e5d49\dataset.csv&#xD;
+[1/4] Lendo dados brutos: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-8b47b433da184cda932bec110603fa14\raw.csv&#xD;
+      7 linhas lidas.&#xD;
+[2/4] Limpando e filtrando...&#xD;
+      7 linhas ap�s limpeza (lead time 0-180 dias).&#xD;
+[3/4] Removendo outliers e agregando...&#xD;
+      Outlier threshold (P99.9): 7 intera�oes, 0 usu�rios removidos.&#xD;
+      1 pares (usu�rio, espet�culo) �nicos.&#xD;
+[4/4] Salvando dataset: C:\Users\cadus\AppData\Local\Temp\aventura-preproc-tests-8b47b433da184cda932bec110603fa14\dataset.csv&#xD;
+iter      tr_rmse          obj&#xD;
+   0       3.3304   1.1099e+02&#xD;
+   1       3.3111   1.0971e+02&#xD;
+   2       3.2719   1.0714e+02&#xD;
+   3       3.2307   1.0447e+02&#xD;
+   4       3.1938   1.0210e+02&#xD;
+   5       3.1571   9.9775e+01&#xD;
+   6       3.1215   9.7547e+01&#xD;
+   7       3.0868   9.5397e+01&#xD;
+   8       3.0527   9.3310e+01&#xD;
+   9       3.0192   9.1284e+01&#xD;
+  10       2.9863   8.9309e+01&#xD;
+  11       2.9537   8.7377e+01&#xD;
+  12       2.9216   8.5499e+01&#xD;
+  13       2.8868   8.3482e+01&#xD;
+  14       2.8586   8.1868e+01&#xD;
+  15       2.8275   8.0106e+01&#xD;
+  16       2.7974   7.8415e+01&#xD;
+  17       2.7672   7.6741e+01&#xD;
+  18       2.7374   7.5106e+01&#xD;
+  19       2.7079   7.3507e+01&#xD;
+  Treinamento conclu�do.&#xD;
+  Modelo salvo em C:\Users\cadus\AppData\Local\Temp\aventura-hybrid-tests-5bfa357fc1f1469da78c0b403d3122ee\model.zip&#xD;
+[xUnit.net 00:00:04.49]   Finished:    InferenceService.Tests&#xD;
+</StdOut>
+    </Output>
+    <CollectorDataEntries>
+      <Collector agentName="KDU_LEGION" uri="datacollector://microsoft/CoverletCodeCoverage/1.0" collectorDisplayName="XPlat code coverage">
+        <UriAttachments>
+          <UriAttachment>
+            <A href="KDU_LEGION\coverage.cobertura.xml"></A>
+          </UriAttachment>
+        </UriAttachments>
+      </Collector>
+    </CollectorDataEntries>
+  </ResultSummary>
+</TestRun>

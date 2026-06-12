@@ -1,0 +1,5 @@
+﻿          email           |                          senha_hash                          | len 
+--------------------------+--------------------------------------------------------------+-----
+ teste.local@aventura.com | $2a$11$fPiUJkvVijduKYnyGpAvfeKMANYvIfB9VuDmQ1H2naB11P48Bab5u |  60
+(1 row)
+

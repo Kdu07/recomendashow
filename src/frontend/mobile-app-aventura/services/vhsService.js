@@ -25,13 +25,25 @@ export async function cachedFetch(url, options = {}) {
 
   lastCacheStatus = CACHE_STATUS.MISS;
 
-  const response = await fetch(url);
+  let response;
+
+  try {
+    response = await fetch(url);
+  } catch {
+    throw new Error('Não foi possível consultar o CEP agora.');
+  }
 
   if (!response.ok) {
     throw new Error('Não foi possível consultar o CEP agora.');
   }
 
-  const data = await response.json();
+  let data;
+
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error('Não foi possível consultar o CEP agora.');
+  }
 
   const ttl = data?.erro
     ? notFoundTtl
@@ -47,6 +59,7 @@ export async function cachedFetch(url, options = {}) {
 
 export function flushCache() {
   cache.clear();
+  lastCacheStatus = null;
 }
 
 export function cacheSize() {

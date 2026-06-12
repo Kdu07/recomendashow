@@ -136,8 +136,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseExceptionHandler();
 app.UseCors();
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
+
+public partial class Program
+{
+}

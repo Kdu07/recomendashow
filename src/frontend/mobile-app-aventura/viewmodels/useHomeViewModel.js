@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { getHomeData } from '../repositories/homeRepository';
@@ -6,15 +6,67 @@ import {
   getWishlistData,
   toggleWishlistEvent,
 } from '../repositories/wishlistRepository';
+import { getAuthSession } from '../services/tokenStorageService';
+import { fetchPreferences } from '../services/preferenceService';
+import { getUserInfo } from '../services/userProfileService';
 
 export default function useHomeViewModel(navigation) {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [savedEventIds, setSavedEventIds] = useState([]);
+  const [homeData, setHomeData] = useState({
+    categories: [{ id: 'all', label: 'Todos' }],
+    heroBanners: [],
+    theaters: [],
+    trendingEvents: [],
+    recommendedEvents: [],
+    newEvents: [],
+    nearbyEvents: [],
+  });
 
-  const [hasInterests] = useState(true);
-  const [hasLocation] = useState(true);
+  const [hasInterests, setHasInterests] = useState(false);
+  const [hasLocation, setHasLocation] = useState(false);
+  const [nearbyCity, setNearbyCity] = useState('');
 
-  const homeData = useMemo(() => getHomeData() || {}, []);
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadHomeData() {
+      try {
+        const session = await getAuthSession();
+        const userId = session?.usuarioId;
+        
+        let userCity = null;
+        if (userId) {
+          const [prefs, profile] = await Promise.all([
+            fetchPreferences(userId),
+            getUserInfo().catch(() => null),
+          ]);
+
+          if (prefs) {
+            setHasInterests(prefs.generos?.length > 0 || prefs.tags?.length > 0);
+            userCity = prefs.cidade ?? prefs.Cidade ?? null;
+          }
+
+          userCity = userCity || profile?.city || null;
+          setHasLocation(!!userCity);
+          setNearbyCity(userCity || '');
+        }
+
+        const data = await getHomeData(userId, userCity);
+        if (isMounted) {
+          setHomeData(data);
+        }
+      } catch (error) {
+        console.error('Failed to load home data:', error);
+      }
+    }
+
+    loadHomeData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const categories = homeData.categories || [];
   const heroBanners = homeData.heroBanners || [];
@@ -101,7 +153,7 @@ export default function useHomeViewModel(navigation) {
   }
 
   function handleAddLocation() {
-    console.log('Ação futura: navegar para adicionar localidade');
+    navigation.navigate('EditProfile');
   }
 
   function handleTabPress(tab) {
@@ -112,6 +164,7 @@ export default function useHomeViewModel(navigation) {
     selectedCategory,
     hasInterests,
     hasLocation,
+    nearbyCity,
 
     heroBanners,
     categories,

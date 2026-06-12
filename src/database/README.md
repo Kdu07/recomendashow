@@ -188,3 +188,422 @@ Com o banco hospedado em uma máquina persistente, o time não precisa reconfigu
 
 **Escalabilidade**
 A infraestrutura possibilita futuras expansões, como hospedagem de APIs auxiliares, execução de containers Docker, utilização de serviços de monitoramento, backups automatizados e replicação do banco de dados.
+
+---
+
+## 6. Subindo o banco localmente com Docker
+
+### 6.1 Pré-requisito
+
+- [Docker](https://docs.docker.com/get-docker/) instalado (inclui Docker Compose)
+
+### 6.2 Variáveis de ambiente
+
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+
+```env
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+POSTGRES_DB=aventura
+POSTGRES_PORT=5432
+MONGO_USER=mongo
+MONGO_PASSWORD=mongo
+MONGO_PORT=27017
+```
+
+### 6.3 Subir o banco
+
+```bash
+docker compose -f docker-compose-db.yml up -d
+```
+
+Isso inicia dois containers: `postgres_db` (PostgreSQL 16) e `aventura_mongodb` (MongoDB). Os scripts SQL são executados automaticamente na primeira inicialização, na ordem:
+
+1. `01_create_database.sql` — estrutura do banco
+2. `02_sprint4_improvements.sql` — melhorias da Sprint 4
+3. `02_initial_data.sql` — dados de seed
+
+### 6.4 Verificar que o banco subiu
+
+```bash
+docker ps
+```
+
+O container `postgres_db` deve aparecer com status `Up`. Para conectar:
+
+```bash
+psql -h localhost -p 5432 -U postgres -d aventura
+```
+
+Ou via qualquer cliente (DBeaver, TablePlus etc.) com `host=localhost`, `port=5432`, `database=aventura`.
+
+### 6.5 Derrubar o banco
+
+```bash
+docker compose -f docker-compose-db.yml down
+```
+
+Para remover também os volumes (apaga todos os dados):
+
+```bash
+docker compose -f docker-compose-db.yml down -v
+```
+
+---
+
+## 7. Dicionário de Dados
+
+Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventura Teatros, com base nos arquivos `01_create_database.sql` e `02_sprint4_improvements.sql`.
+
+**Tipos personalizados (ENUMs):**
+- `tipo_interacao`: `'Clique'`, `'Acesso'`, `'TempoDeTela'`
+- `tipo_lista`: `'curtida'`, `'wishlist'`
+
+---
+
+### 7.1 usuarios
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único do usuário |
+| nome | VARCHAR(100) | NOT NULL | — | Nome completo do usuário |
+| email | VARCHAR(255) | NOT NULL, UNIQUE | — | Endereço de e-mail, usado como login |
+| senha_hash | TEXT | NOT NULL | — | Hash BCrypt da senha do usuário |
+| idade | INT | CHECK(idade >= 13) | — | Idade do usuário; mínimo 13 anos |
+| data_cadastro | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | — | Data e hora do registro do usuário |
+| data_nascimento | DATE | — | — | Data de nascimento do usuário, usada para cálculo e validação de idade |
+| cep | VARCHAR(9) | — | — | CEP do endereço (integração ViaCEP) |
+| logradouro | VARCHAR(255) | — | — | Rua/avenida do endereço |
+| numero | VARCHAR(10) | — | — | Número do imóvel |
+| complemento | VARCHAR(255) | — | — | Complemento do endereço |
+| bairro | VARCHAR(100) | — | — | Bairro do endereço |
+| cidade | VARCHAR(100) | — | — | Cidade do endereço |
+| consentimento_aceito | BOOLEAN | NOT NULL, DEFAULT FALSE | — | Indica se o usuário aceitou os termos de consentimento (LGPD) |
+| data_consentimento | TIMESTAMPTZ | — | — | Data e hora em que o consentimento foi registrado |
+| deleted_at | TIMESTAMPTZ | — | — | Marca lógica de exclusão do usuário (soft delete, LGPD) |
+| anonimizado | BOOLEAN | NOT NULL, DEFAULT FALSE | — | Indica se os dados pessoais do usuário foram anonimizados (LGPD) |
+| anonimizado_em | TIMESTAMPTZ | — | — | Data e hora em que a anonimização foi executada pela `sp_anonimizar_usuario` (LGPD) |
+| ml_id | SERIAL | UNIQUE (idx_usuarios_ml_id) | — | Identificador inteiro sequencial para mapeamento UUID ↔ índice do modelo de recomendação ML |
+
+---
+
+### 7.2 teatros
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único do teatro |
+| nome | VARCHAR(150) | NOT NULL, UNIQUE | — | Nome do teatro |
+| endereco | VARCHAR(255) | — | — | Endereço completo do teatro |
+| cidade | VARCHAR(100) | — | — | Cidade onde o teatro está localizado |
+| horario_funcionamento | VARCHAR(100) | — | — | Descrição dos horários de funcionamento |
+
+---
+
+### 7.3 espetaculos
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único do espetáculo |
+| nome | VARCHAR(150) | NOT NULL, UNIQUE | — | Nome do espetáculo |
+| tipo_evento | VARCHAR(80) | — | — | Categoria do evento (ex.: peça, musical, dança) |
+| descricao | TEXT | — | — | Descrição detalhada do espetáculo |
+| url_bilheteria | TEXT | — | — | URL para compra de ingressos |
+| data_inicio | TIMESTAMPTZ | NOT NULL | — | Data e hora de início do espetáculo |
+| data_fim | TIMESTAMPTZ | NOT NULL, CHECK(data_fim > data_inicio) | — | Data e hora de encerramento; deve ser posterior a `data_inicio` |
+| valor_ingresso | DECIMAL(10,2) | CHECK(valor_ingresso >= 0) | — | Preço do ingresso; não pode ser negativo |
+
+---
+
+### 7.4 generos
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único do gênero |
+| nome | VARCHAR(50) | NOT NULL, UNIQUE | — | Nome do gênero artístico (ex.: drama, comédia) |
+
+---
+
+### 7.5 interacoes
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único da interação |
+| usuario_id | UUID | NOT NULL, FK | → usuarios(id) ON DELETE CASCADE | Usuário que realizou a interação |
+| espetaculo_id | UUID | NOT NULL, FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo com o qual o usuário interagiu |
+| tipo | tipo_interacao | NOT NULL | — | Tipo da interação: `Clique`, `Acesso` ou `TempoDeTela` |
+| pontuacao | DECIMAL(4,2) | CHECK(pontuacao >= 0 AND pontuacao <= 10) | — | Pontuação atribuída à interação; escala de 0 a 10 |
+| data_registro | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | — | Data e hora em que a interação foi registrada |
+| data_expiracao | TIMESTAMPTZ | CHECK(data_expiracao > data_registro) | — | Data a partir da qual a interação deixa de ser considerada pelo motor de recomendação |
+
+---
+
+### 7.6 preferencias
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único do registro de preferências |
+| usuario_id | UUID | UNIQUE, FK | → usuarios(id) ON DELETE CASCADE | Usuário ao qual as preferências pertencem (relação 1:1) |
+| cidade | VARCHAR(100) | — | — | Cidade preferida para busca de espetáculos |
+| tags | TEXT[] | — | — | Array de tags de interesse do usuário |
+| faixa_preco_min | DECIMAL(10,2) | — | — | Valor mínimo da faixa de preço desejada |
+| faixa_preco_max | DECIMAL(10,2) | — | — | Valor máximo da faixa de preço desejada |
+| receber_notificacoes | BOOLEAN | DEFAULT TRUE | — | Indica se o usuário deseja receber notificações |
+| data_atualizacao | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | — | Data e hora da última atualização; mantida automaticamente pelo trigger `trg_preferencias_update` |
+
+---
+
+### 7.7 recomendacoes
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| id | UUID | PK, DEFAULT gen_random_uuid() | — | Identificador único da recomendação |
+| usuario_id | UUID | NOT NULL, FK | → usuarios(id) ON DELETE CASCADE | Usuário que recebeu a recomendação |
+| espetaculo_id | UUID | NOT NULL, FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo recomendado |
+| score | DECIMAL(4,2) | CHECK(score >= 0 AND score <= 1) | — | Relevância da recomendação; escala de 0 a 1 |
+| motivo | TEXT | — | — | Explicação textual gerada pelo motor de recomendação |
+| data_geracao | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | — | Data e hora em que a recomendação foi gerada |
+| visualizada_em | TIMESTAMPTZ | — | — | Data e hora em que o usuário visualizou a recomendação; preenchido pelo backend; `NULL` indica não visualizada |
+
+> **Constraint Sprint 4:** `UNIQUE(usuario_id, espetaculo_id)` — impede recomendações duplicadas para o mesmo par usuário/espetáculo.
+
+---
+
+### 7.8 usuario_genero_favorito
+
+Tabela associativa N:N entre usuários e gêneros favoritos.
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| usuario_id | UUID | PK (composta), FK | → usuarios(id) ON DELETE CASCADE | Usuário que marcou o gênero como favorito |
+| genero_id | UUID | PK (composta), FK | → generos(id) ON DELETE CASCADE | Gênero marcado como favorito pelo usuário |
+
+---
+
+### 7.9 espetaculo_genero
+
+Tabela associativa N:N entre espetáculos e gêneros.
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| espetaculo_id | UUID | PK (composta), FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo ao qual o gênero está vinculado |
+| genero_id | UUID | PK (composta), FK | → generos(id) ON DELETE CASCADE | Gênero vinculado ao espetáculo |
+
+---
+
+### 7.10 teatro_espetaculo
+
+Tabela associativa N:N entre teatros e espetáculos.
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| teatro_id | UUID | PK (composta), FK | → teatros(id) ON DELETE RESTRICT | Teatro onde o espetáculo é exibido; exclusão bloqueada se houver espetáculos vinculados |
+| espetaculo_id | UUID | PK (composta), FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo exibido no teatro |
+
+---
+
+### 7.11 wishlist_curtidas
+
+Tabela que unifica wishlist e curtidas do usuário em espetáculos.
+
+| Coluna | Tipo | Restrições | Relações | Descrição |
+|---|---|---|---|---|
+| usuario_id | UUID | PK (composta), FK | → usuarios(id) ON DELETE CASCADE | Usuário que realizou a ação |
+| espetaculo_id | UUID | PK (composta), FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo alvo da ação |
+| tipo | tipo_lista | PK (composta) | — | Tipo da ação: `curtida` ou `wishlist` |
+
+---
+
+### 7.12 Objetos de Banco — Sprint 4
+
+Objetos criados em `02_sprint4_improvements.sql`.
+
+#### Índices
+
+| Nome | Tipo | Tabela | Colunas | Finalidade |
+|---|---|---|---|---|
+| idx_interacoes_usuario_expiracao | B-tree | interacoes | (usuario_id, data_expiracao) | Filtragem de interações por usuário e janela temporal para o motor de recomendação; substitui `idx_interacoes_usuario` |
+| idx_teatros_cidade | B-tree | teatros | (cidade) | Suporte ao carrossel "Perto de você", que filtra espetáculos pela cidade do teatro |
+| idx_espetaculos_datas | B-tree | espetaculos | (data_inicio, data_fim) | Filtragem de espetáculos em cartaz por intervalo de datas |
+| idx_recomendacoes_usuario_score | B-tree | recomendacoes | (usuario_id, score DESC) | Recuperação das top recomendações de um usuário ordenadas por relevância; substitui `idx_recomendacao_usuario` |
+| idx_wishlist_usuario | B-tree | wishlist_curtidas | (usuario_id) | Carregamento da wishlist/curtidas na abertura da aba pelo usuário |
+| idx_usuarios_ml_id | B-tree (UNIQUE) | usuarios | (ml_id) | Garante unicidade do identificador inteiro para mapeamento UUID ↔ índice do modelo ML |
+
+#### Funções
+
+| Nome | Retorno | Tabela afetada | Finalidade |
+|---|---|---|---|
+| fn_atualizar_data_preferencias() | TRIGGER | preferencias | Atualiza automaticamente `data_atualizacao` para o timestamp corrente em todo UPDATE na tabela `preferencias` |
+| fn_bloquear_update_anonimizado() | TRIGGER | usuarios | Impede qualquer UPDATE em registros já anonimizados, levantando exceção em conformidade com a LGPD |
+| fn_sincronizar_data_consentimento() | TRIGGER | usuarios | Preenche automaticamente `data_consentimento` quando o consentimento passa de `FALSE` para `TRUE` e a data ainda não foi informada |
+
+#### Triggers
+
+| Nome | Evento | Tabela | Função associada | Finalidade |
+|---|---|---|---|---|
+| trg_preferencias_update | BEFORE UPDATE | preferencias | fn_atualizar_data_preferencias() | Mantém `data_atualizacao` sempre sincronizado com o momento real da alteração |
+| trg_bloquear_update_anonimizado | BEFORE UPDATE | usuarios | fn_bloquear_update_anonimizado() | Protege dados anonimizados de qualquer modificação posterior (LGPD) |
+| trg_sincronizar_data_consentimento | BEFORE UPDATE | usuarios | fn_sincronizar_data_consentimento() | Sincroniza automaticamente a data de consentimento quando o aceite LGPD é registrado |
+
+#### Procedures
+
+| Nome | Parâmetros | Tabela afetada | Finalidade |
+|---|---|---|---|
+| sp_anonimizar_usuario | p_id UUID | usuarios | Substitui dados pessoais (nome, e-mail, senha, endereço) por valores neutros e marca `anonimizado = TRUE`; executa somente em usuários com `deleted_at IS NOT NULL` ainda não anonimizados (LGPD) |
+
+---
+
+## 8. Evoluções — Sprint 4
+
+### 8.1 Contexto
+
+O schema definido na Sprint 3 (`01_create_database.sql`) foi auditado na Sprint 4 e identificou-se a necessidade de novos campos, correções de qualidade e objetos de banco para suportar integração com ViaCEP, conformidade com a LGPD e o motor de recomendação por ML. Todas as evoluções foram concentradas em `02_sprint4_improvements.sql` — um script idempotente e re-executável —, mantendo o script original sem modificações estruturais adicionais.
+
+---
+
+### 8.2 Novas colunas em tabelas existentes
+
+#### usuarios
+
+| Coluna | Tipo | Por que foi necessária |
+|---|---|---|
+| cep | VARCHAR(9) | Suportar integração com a API ViaCEP para preenchimento automático de endereço |
+| logradouro | VARCHAR(255) | Complementar os dados de endereço retornados pelo ViaCEP |
+| numero | VARCHAR(10) | Campo de endereço não fornecido pelo ViaCEP; preenchido manualmente pelo usuário |
+| complemento | VARCHAR(255) | Campo de endereço opcional, não fornecido pelo ViaCEP |
+| bairro | VARCHAR(100) | Complementar os dados de endereço retornados pelo ViaCEP |
+| cidade | VARCHAR(100) | Cidade do usuário, usada na lógica de recomendação "Perto de você" |
+| consentimento_aceito | BOOLEAN NOT NULL DEFAULT FALSE | Registrar se o usuário aceitou os termos de uso e privacidade (LGPD art. 7, I) |
+| data_consentimento | TIMESTAMPTZ | Registrar o momento exato em que o consentimento foi concedido (LGPD art. 8, §5) |
+| deleted_at | TIMESTAMPTZ | Implementar soft-delete: marca o usuário como excluído sem remover o registro, permitindo posterior anonimização (LGPD art. 18, IV) |
+| anonimizado | BOOLEAN NOT NULL DEFAULT FALSE | Sinalizar que os dados pessoais já foram substituídos por valores neutros pela `sp_anonimizar_usuario` |
+| anonimizado_em | TIMESTAMPTZ | Registrar o momento exato em que `sp_anonimizar_usuario` executou a substituição dos dados pessoais; gravado pela procedure no mesmo `UPDATE` (LGPD) |
+| ml_id | SERIAL UNIQUE | Prover um identificador inteiro sequencial para mapear o UUID do usuário ao índice do modelo de fatoração de matriz (SVD), que requer inteiros contíguos |
+
+#### recomendacoes
+
+| Coluna | Tipo | Por que foi necessária |
+|---|---|---|
+| visualizada_em | TIMESTAMPTZ | Registrar quando o usuário visualizou a recomendação, permitindo ao motor desconsiderar recomendações já exibidas e medir o tempo entre geração e exibição; preenchido pelo backend |
+
+#### interacoes
+
+A coluna `data_expiracao` já existia em `01_create_database.sql`, mas sem nenhuma restrição de integridade. A Sprint 4 adicionou a constraint `chk_data_expiracao CHECK(data_expiracao > data_registro)`, formalizando no banco a regra de negócio de que a data de expiração deve ser sempre posterior ao momento do registro da interação.
+
+---
+
+### 8.3 Mudança de tipo de dado
+
+Como parte da Sprint 4, colunas de data/hora que usavam `TIMESTAMP` (sem fuso) foram corrigidas para `TIMESTAMPTZ` no script base (`01_create_database.sql`). O banco roda na Oracle Cloud Infrastructure (UTC); colunas `TIMESTAMP` armazenam instantes sem informação de fuso, gerando ambiguidade na interpretação de horários entre clientes em timezones distintos. `TIMESTAMPTZ` armazena o instante em UTC e permite conversão correta no momento da leitura.
+
+| Coluna | Tabela | Situação após Sprint 4 |
+|---|---|---|
+| data_cadastro | usuarios | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
+| data_registro | interacoes | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
+| data_expiracao | interacoes | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
+| data_atualizacao | preferencias | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
+| data_geracao | recomendacoes | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
+| data_consentimento | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
+| deleted_at | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
+| data_inicio | espetaculos | TIMESTAMPTZ (corrigido em `01_create_database.sql` e migrado em `02_sprint4_improvements.sql`) |
+| data_fim | espetaculos | TIMESTAMPTZ (corrigido em `01_create_database.sql` e migrado em `02_sprint4_improvements.sql`) |
+| anonimizado_em | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
+| visualizada_em | recomendacoes | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
+
+---
+
+### 8.4 Nova constraint
+
+A Sprint 4 adicionou três constraints ausentes no script original:
+
+| Constraint | Tabela | Definição | Motivação |
+|---|---|---|---|
+| `uq_recomendacao_usuario_espetaculo` | recomendacoes | `UNIQUE(usuario_id, espetaculo_id)` | Impede que o motor de recomendação insira registros duplicados para o mesmo par usuário/espetáculo, o que inflaria artificialmente o ranking; a constraint habilita o padrão `INSERT ... ON CONFLICT DO UPDATE` para atualização atômica de score |
+| `chk_pontuacao` | interacoes | `CHECK(pontuacao >= 0 AND pontuacao <= 10)` | A coluna `pontuacao` existia sem limite superior definido no banco; a constraint formaliza a escala 0–10 das regras de negócio, impedindo valores inválidos de qualquer origem |
+| `chk_data_expiracao` | interacoes | `CHECK(data_expiracao > data_registro)` | Garante que a data de expiração seja sempre posterior ao momento do registro, evitando interações que expirem instantaneamente ou no passado |
+
+---
+
+### 8.5 Índices substituídos
+
+Dois índices simples do Sprint 3 foram removidos e substituídos por índices compostos que cobrem os padrões de busca reais usados pelos módulos de recomendação.
+
+| Índice removido | Índice criado | Ganho |
+|---|---|---|
+| `idx_interacoes_usuario` — `ON interacoes(usuario_id)` | `idx_interacoes_usuario_expiracao` — `ON interacoes(usuario_id, data_expiracao)` | O motor de recomendação filtra sempre por `usuario_id` **e** `data_expiracao`; o índice composto elimina a varredura extra na coluna de expiração e satisfaz ambos os predicados em um único Index Scan |
+| `idx_recomendacao_usuario` — `ON recomendacoes(usuario_id)` | `idx_recomendacoes_usuario_score` — `ON recomendacoes(usuario_id, score DESC)` | Recuperar as top-N recomendações de um usuário ordenadas por relevância passa a ser um Index Scan sem Sort Step adicional, pois o índice já entrega as linhas na ordem decrescente de `score` |
+
+Novos índices sem predecessor no Sprint 3:
+
+| Índice | Tabela | Colunas | Finalidade |
+|---|---|---|---|
+| `idx_teatros_cidade` | teatros | (cidade) | Filtragem do carrossel "Perto de você" pela cidade do teatro |
+| `idx_espetaculos_datas` | espetaculos | (data_inicio, data_fim) | Filtragem de espetáculos em cartaz por intervalo de datas |
+| `idx_wishlist_usuario` | wishlist_curtidas | (usuario_id) | Carregamento da aba de wishlist/curtidas por usuário |
+| `idx_usuarios_ml_id` | usuarios | (ml_id) UNIQUE | Lookup bidirecional UUID ↔ índice inteiro para o modelo ML; unicidade garante a bijeção necessária |
+
+---
+
+### 8.6 Objetos de banco — motivação
+
+#### fn_atualizar_data_preferencias / trg_preferencias_update
+
+- **Problema que resolve:** a coluna `preferencias.data_atualizacao` precisaria ser atualizada manualmente por cada camada da aplicação que executasse um `UPDATE` nessa tabela, tornando a manutenção do timestamp sujeita a esquecimento ou inconsistência.
+- **Por que implementado no banco e não na aplicação:** o trigger `BEFORE UPDATE` garante que qualquer cliente — API, script administrativo ou acesso direto via psql — atualize `data_atualizacao` automaticamente, sem depender de lógica de aplicação.
+
+#### fn_bloquear_update_anonimizado / trg_bloquear_update_anonimizado
+
+- **Problema que resolve:** após a anonimização de um usuário, qualquer `UPDATE` posterior poderia inadvertidamente reintroduzir dados pessoais ou reverter o estado `anonimizado = TRUE`.
+- **Por que implementado no banco e não na aplicação:** uma restrição implementada apenas na camada de aplicação pode ser contornada por acesso direto ao banco, scripts de migração ou ferramentas de administração. O trigger ao nível do banco bloqueia qualquer `UPDATE` independentemente da origem.
+- **Princípio LGPD:** art. 18, IV — direito à eliminação. Uma vez que o titular exerceu o direito de exclusão e os dados foram anonimizados, eles não podem ser recuperados ou reconstituídos. O trigger torna essa garantia estrutural, não apenas procedimental.
+
+#### sp_anonimizar_usuario
+
+- **Problema que resolve:** ao receber uma solicitação de exclusão (LGPD art. 18, IV), os dados pessoais precisam ser substituídos por valores neutros de forma atômica, preservando o UUID e o histórico de interações para análise estatística agregada (art. 7, IV — tratamento para pesquisa).
+- **Por que implementado no banco e não na aplicação:** a substituição de múltiplos campos sensíveis (nome, email, senha_hash, seis colunas de endereço) ocorre em uma única transação, eliminando janelas de inconsistência que existiriam se a aplicação fizesse os `UPDATE`s em passos separados.
+- **Princípio LGPD:** art. 5, XI (tratamento) e art. 18, IV (direito à eliminação/anonimização). A procedure exige `deleted_at IS NOT NULL AND anonimizado = FALSE` como guarda dupla, prevenindo dupla anonimização e garantindo que o soft-delete preceda a anonimização.
+
+#### fn_sincronizar_data_consentimento / trg_sincronizar_data_consentimento
+
+- **Problema que resolve:** `data_consentimento` poderia ficar `NULL` mesmo com `consentimento_aceito = TRUE` caso a aplicação omitisse o campo no `UPDATE` — quebra silenciosa de rastreabilidade LGPD sem nenhum erro visível.
+- **Por que implementado no banco e não na aplicação:** o banco atua como rede de segurança: se a aplicação enviar o aceite sem o timestamp, o trigger preenche `data_consentimento = CURRENT_TIMESTAMP` automaticamente antes de persistir. Se a aplicação enviar um valor explícito, o trigger respeita e não sobrescreve.
+- **Princípio LGPD:** art. 8, §5 — o consentimento deve ser registrado de forma que permita demonstrar que foi obtido. Garantir que `data_consentimento` nunca fique nulo quando `consentimento_aceito = TRUE` assegura essa demonstrabilidade independentemente da camada que executou o `UPDATE`.
+
+---
+
+### 8.7 Estado Sprint 3 → Sprint 4
+
+| Tabela | Sprint 3 (`01_create_database.sql`) | Sprint 4 (adições via `02_sprint4_improvements.sql`) |
+|---|---|---|
+| usuarios | id, nome, email, senha_hash, idade, data_cadastro | + cep, logradouro, numero, complemento, bairro, cidade; + consentimento_aceito, data_consentimento, deleted_at, anonimizado, anonimizado_em; + ml_id; + trigger `trg_bloquear_update_anonimizado` |
+| teatros | id, nome, endereco, cidade, horario_funcionamento | + índice `idx_teatros_cidade` |
+| espetaculos | id, nome, tipo_evento, descricao, url_bilheteria, data_inicio, data_fim, valor_ingresso | + TIMESTAMPTZ em data_inicio e data_fim; + índice `idx_espetaculos_datas` |
+| interacoes | id, usuario_id, espetaculo_id, tipo, pontuacao, data_registro, data_expiracao; índice `idx_interacoes_usuario` | + constraints `chk_pontuacao`, `chk_data_expiracao`; `idx_interacoes_usuario` → `idx_interacoes_usuario_expiracao` |
+| preferencias | id, usuario_id, cidade, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes, data_atualizacao | + trigger `trg_preferencias_update` |
+| recomendacoes | id, usuario_id, espetaculo_id, score, motivo, data_geracao; índice `idx_recomendacao_usuario` | + `UNIQUE(usuario_id, espetaculo_id)`; + visualizada_em; `idx_recomendacao_usuario` → `idx_recomendacoes_usuario_score` |
+| wishlist_curtidas | usuario_id, espetaculo_id, tipo | + índice `idx_wishlist_usuario` |
+| usuario_genero_favorito | usuario_id, genero_id | sem alterações |
+| espetaculo_genero | espetaculo_id, genero_id | sem alterações |
+| teatro_espetaculo | teatro_id, espetaculo_id | sem alterações |
+
+---
+
+### 8.9 Rastreabilidade das transações
+
+#### Mecanismos existentes no schema
+
+| Mecanismo | Onde | O que registra |
+|---|---|---|
+| `DEFAULT CURRENT_TIMESTAMP` | `usuarios.data_cadastro` | Momento da criação da conta; gravado no INSERT, nunca atualizado |
+| `DEFAULT CURRENT_TIMESTAMP` | `interacoes.data_registro` | Momento do registro da interação; gravado no INSERT, nunca atualizado |
+| `DEFAULT CURRENT_TIMESTAMP` | `preferencias.data_atualizacao` | Valor inicial na criação do registro de preferências |
+| `trg_preferencias_update` → `fn_atualizar_data_preferencias()` | `preferencias.data_atualizacao` | Reescrito com `CURRENT_TIMESTAMP` a cada `UPDATE` na tabela `preferencias`, independentemente da origem da alteração |
+| `DEFAULT CURRENT_TIMESTAMP` | `recomendacoes.data_geracao` | Momento em que o motor de recomendação gerou a linha; gravado no INSERT, nunca atualizado |
+| Aplicação (explícito) | `interacoes.data_expiracao` | Janela temporal definida pela camada de aplicação; determina até quando a interação é considerada pelo motor de recomendação |
+| Aplicação (explícito) | `usuarios.data_consentimento` | Momento em que o usuário concedeu consentimento LGPD; a aplicação é responsável por gravar o valor |
+| Aplicação (explícito) | `usuarios.deleted_at` | Momento do soft-delete; gravado pela aplicação; pré-requisito obrigatório para execução de `sp_anonimizar_usuario` |
+| `sp_anonimizar_usuario` | `usuarios.anonimizado_em` | Gravado pela procedure no mesmo `UPDATE` que substitui os dados pessoais; confirma o momento exato da anonimização (LGPD) |
+| Aplicação (explícito) | `recomendacoes.visualizada_em` | Gravado pelo backend quando a recomendação é exibida ao usuário; `NULL` enquanto não visualizada |
+
+#### Consideração futura
+
+- **`lgpd_audit` (tabela de auditoria)** — não implementada. Seria útil caso o sistema ganhe um painel de administração com operadores humanos disparando a anonimização manualmente. Enquanto `sp_anonimizar_usuario` for chamada exclusivamente pelo backend de forma automatizada, o log da aplicação já cobre a rastreabilidade de quem solicitou e quando.

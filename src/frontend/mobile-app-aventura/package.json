@@ -22,7 +22,6 @@
     "react-native-web": "^0.21.0"
   },
   "scripts": {
-    "test": "jest",
     "start": "expo start",
     "test": "jest",
     "android": "expo start --android",

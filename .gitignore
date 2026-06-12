@@ -21,3 +21,10 @@ DbRunner/obj/
 
 chave.key
 chave-back.key
+
+# Deploy do sistema de recomendação (ver docs/Deploy_Recomendacao.md)
+*.key
+.env.deploy
+deploy/deploy.config
+deploy/certs/
+inference-image.tar

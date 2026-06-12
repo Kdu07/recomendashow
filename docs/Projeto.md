@@ -3135,11 +3135,239 @@ Como evidência complementar da Sprint 4, será adicionado aqui o link para um v
 
 ### 19.3 Evolução do Backend
 
+Na Sprint 4, o backend evoluiu de uma camada de API planejada para uma aplicação ASP.NET Core mais completa, com autenticação, autorização, persistência em PostgreSQL, tratamento padronizado de erros, suporte aos fluxos do aplicativo mobile e integração indireta com o motor de recomendação. O código da aplicação está concentrado em `src/backend` e mantém uma organização em camadas, separando controllers, serviços de aplicação, repositórios, domínio, DTOs, infraestrutura e mapeamentos.
+
+#### 19.3.1 Estrutura técnica do backend
+
+A arquitetura implementada no backend segue uma separação simples e rastreável:
+
+- `controller/` — expõe os endpoints REST consumidos pelo aplicativo mobile e pelo Swagger.
+- `services/` — concentra regras de negócio, validações, fallback de recomendação, autenticação, wishlist, preferências e anonimização.
+- `repository/` — executa acesso ao PostgreSQL com `Npgsql`, usando consultas parametrizadas.
+- `domain/` — representa entidades e regras internas de consistência, como usuário, espetáculo, teatro, preferências e recomendação.
+- `dto/` — define contratos de entrada e saída da API.
+- `mappings/` — converte entidades de domínio para DTOs, evitando exposição direta do modelo interno.
+- `infrastructure/` — centraliza conexão com banco, middleware de exceções e persistência auxiliar.
+- `extensions/DependencyInjection.cs` — registra repositórios, serviços, middleware e jobs em injeção de dependência.
+
+Essa estrutura mantém os controllers finos: eles recebem a requisição, chamam o serviço correspondente e retornam o resultado. As regras de negócio ficam nos services, enquanto a leitura e escrita no banco ficam nos repositories.
+
+#### 19.3.2 Configuração da aplicação
+
+O arquivo `Program.cs` passou a concentrar as principais configurações de execução:
+
+- carregamento de variáveis de ambiente a partir de `.env`;
+- leitura de configurações por `builder.Configuration.AddEnvironmentVariables()`;
+- ativação de controllers com política global de autenticação;
+- configuração de JWT Bearer Authentication;
+- habilitação de Swagger em ambiente de desenvolvimento;
+- habilitação de CORS;
+- uso de `UseExceptionHandler()` com respostas `ProblemDetails`;
+- registro das camadas por `AddAventuraInfrastructure()` e `AddAventuraApplication()`.
+
+A autenticação é aplicada globalmente aos controllers por meio de uma `AuthorizationPolicy` que exige usuário autenticado. O `AuthController` é a exceção explícita, pois recebe `[AllowAnonymous]` para permitir cadastro e login.
+
+#### 19.3.3 Autenticação, usuário e LGPD
+
+O fluxo de autenticação foi estruturado no conjunto `AuthController`, `AuthService`, `UsuarioRepository` e DTOs de autenticação. O cadastro valida nome, e-mail, senha mínima, idade mínima e aceite de consentimento. A senha cadastrada é armazenada com hash BCrypt e o usuário recebe um token JWT com `sub`, `email` e `name`.
+
+Também foi adicionada evolução importante para LGPD:
+
+- campos de consentimento (`consentimento_aceito` e `data_consentimento`);
+- exclusão lógica por `deleted_at`;
+- flag `anonimizado`;
+- endpoint de exclusão de usuário em `DELETE /api/usuario/{id}`;
+- `AnonimizacaoJob`, executado a cada 24 horas, que anonimiza contas marcadas para exclusão há pelo menos 30 dias.
+
+Com isso, o backend deixa de tratar exclusão como remoção imediata e passa a manter um ciclo compatível com retenção temporária e anonimização posterior.
+
+#### 19.3.4 Endpoints REST implementados na Sprint 4
+
+A API utiliza o prefixo `api/[controller]`. Os principais endpoints disponíveis são:
+
+| Grupo | Método | Rota | Finalidade | Retorno esperado |
+|---|---|---|---|---|
+| Autenticação | POST | `/api/auth/register` | Cadastrar usuário com dados pessoais, endereço e consentimento | `201 Created` + `AuthResponse` |
+| Autenticação | POST | `/api/auth/login` | Autenticar usuário e emitir token JWT | `200 OK` + `AuthResponse` |
+| Usuário | GET | `/api/usuario/{id}` | Consultar perfil do usuário | `200 OK` + `UsuarioResponse` |
+| Usuário | PUT | `/api/usuario/{id}` | Atualizar dados pessoais e endereço | `200 OK` + `UsuarioResponse` |
+| Usuário | DELETE | `/api/usuario/{id}` | Solicitar exclusão lógica da conta | `204 No Content` |
+| Espetáculos | GET | `/api/espetaculo` | Listar espetáculos ordenados por data de início | `200 OK` + lista de `EspetaculoDto` |
+| Espetáculos | GET | `/api/espetaculo/{id}` | Consultar espetáculo por ID | `200 OK` + `EspetaculoDto` |
+| Espetáculos | GET | `/api/espetaculo/search?genero=&nome=` | Buscar espetáculos por gênero e/ou nome | `200 OK` + lista de `EspetaculoDto` |
+| Teatros | GET | `/api/teatro` | Listar teatros | `200 OK` + lista de `TeatroDto` |
+| Teatros | GET | `/api/teatro/{id}` | Consultar teatro por ID | `200 OK` + `TeatroDto` |
+| Teatros | GET | `/api/teatro/{id}/espetaculos` | Listar espetáculos vinculados ao teatro | `200 OK` + lista de `EspetaculoDto` |
+| Preferências | GET | `/api/preferencias/{usuarioId}` | Consultar preferências do usuário | `200 OK` + `PreferenciasDto` |
+| Preferências | PUT | `/api/preferencias/{usuarioId}` | Atualizar gêneros, tags, localização, faixa de preço e notificações | `200 OK` + `PreferenciasDto` |
+| Wishlist | GET | `/api/wishlist/{usuarioId}` | Listar espetáculos salvos | `200 OK` + lista de `EspetaculoDto` |
+| Wishlist | GET | `/api/wishlist/{usuarioId}/contains/{espetaculoId}` | Verificar se o espetáculo está salvo | `200 OK` + `bool` |
+| Wishlist | POST | `/api/wishlist/{usuarioId}/{espetaculoId}` | Adicionar espetáculo à wishlist | `201 Created` |
+| Wishlist | DELETE | `/api/wishlist/{usuarioId}/{espetaculoId}` | Remover espetáculo da wishlist | `204 No Content` |
+| Recomendações | GET | `/api/recomendacao/{usuarioId}?limit=` | Retornar recomendações persistidas ou fallback por gêneros favoritos | `200 OK` + lista de `RecomendacaoItemDto` |
+| Gêneros | GET | `/api/genero` | Listar gêneros cadastrados | `200 OK` + lista de strings |
+| Preferências auxiliares | GET | `/api/preference/{userId}` | Consultar preferências em memória para cold-start auxiliar | `200 OK` + lista de strings |
+| Preferências auxiliares | POST | `/api/preference/{userId}` | Salvar tipos de evento em memória para cold-start auxiliar | `204 No Content` |
+
+#### 19.3.5 Regras de negócio implementadas
+
+As regras implementadas no backend cobrem os principais fluxos do app:
+
+- cadastro exige consentimento de privacidade, e-mail válido, senha com no mínimo 6 caracteres e idade mínima de 13 anos;
+- e-mails são únicos e verificados de forma case-insensitive;
+- usuários excluídos logicamente não são retornados por consulta de ID;
+- atualização de perfil permite alterar nome, idade e endereço;
+- preferências são criadas automaticamente quando ainda não existem para o usuário;
+- atualização de preferências usa transação para salvar dados gerais e gêneros favoritos;
+- wishlist impede duplicidade por meio de `ON CONFLICT DO NOTHING` e retorna conflito quando o item já existe;
+- remoção de wishlist retorna erro quando o espetáculo não está salvo;
+- recomendação aceita `limit` entre 1 e 50;
+- se não houver recomendações persistidas para o usuário, o backend usa fallback por gêneros favoritos;
+- erros são convertidos em `ProblemDetails` com status HTTP padronizado.
+
+#### 19.3.6 Tratamento de erros e observabilidade
+
+O backend utiliza `GlobalExceptionHandler` para traduzir exceções em respostas HTTP consistentes:
+
+| Exceção | Status | Título |
+|---|---|---|
+| `ArgumentException` | 400 | Requisição inválida |
+| `UnauthorizedAccessException` | 401 | Não autorizado |
+| `KeyNotFoundException` | 404 | Recurso não encontrado |
+| `NotFoundException` | 404 | Recurso não encontrado |
+| `ConflictException` | 409 | Conflito |
+| Exceções não tratadas | 500 | Erro interno |
+
+Esse mecanismo reduz duplicação nos controllers e garante que o frontend receba erros em formato previsível.
+
 ### 19.4 Integração com Dados e Recomendação
+
+Na Sprint 4, a integração de dados foi fortalecida em três frentes: evolução do schema PostgreSQL, consumo real dos dados pelo backend e conexão indireta com o pipeline de recomendação.
+
+#### 19.4.1 Banco de dados PostgreSQL
+
+O backend se conecta ao PostgreSQL por meio de `DbConnectionFactory`, que aceita uma connection string `DefaultConnection` ou variáveis de ambiente (`POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, com fallback para nomes `DB_*`). Essa decisão permite alternar entre ambiente local, VM Oracle Cloud e demais ambientes sem alterar código.
+
+O script `src/database/02_sprint4_improvements.sql` adicionou melhorias importantes ao modelo:
+
+- constraints para pontuação de interações entre 0 e 10;
+- constraint para garantir `data_expiracao > data_registro`;
+- unicidade de recomendação por par `(usuario_id, espetaculo_id)`;
+- campos de endereço em `usuarios`, preparando o fluxo de cadastro e edição de perfil;
+- campos de consentimento, exclusão lógica e anonimização;
+- índices compostos para interações, recomendações, wishlist, teatros por cidade e espetáculos por datas;
+- coluna `ml_id` em `usuarios`, preparada para mapear usuários do banco ao identificador inteiro usado pelo modelo.
+
+Essas alterações aproximam a base de dados dos requisitos de produto, performance e LGPD descritos nas seções anteriores do projeto.
+
+#### 19.4.2 Fluxo de dados entre frontend, backend e banco
+
+O aplicativo mobile consome os endpoints do backend para substituir gradualmente os mocks locais. O fluxo esperado é:
+
+1. O usuário cria conta ou faz login em `/api/auth`.
+2. O backend retorna dados básicos e token JWT.
+3. O app consulta catálogo, teatros, gêneros, preferências, wishlist e recomendações pelos endpoints REST.
+4. As alterações feitas no app são persistidas no PostgreSQL por repositories específicos.
+5. O backend retorna DTOs preparados para a interface, evitando expor diretamente entidades de domínio.
+
+Essa organização sustenta telas como cadastro, perfil, edição de interesses, busca, home, detalhe de espetáculo, detalhe de teatro e wishlist.
+
+#### 19.4.3 Integração com o motor de recomendação
+
+O backend não executa o modelo de machine learning diretamente. A arquitetura definida em `docs/Modelo_Recomendacao.md` separa responsabilidades:
+
+- `src/ml` treina o modelo híbrido com Funk SVD e afinidade de categoria;
+- `src/inference-service` carrega os artefatos do modelo, gera recomendações em batch e grava resultados na tabela `recomendacoes`;
+- `src/backend` lê a tabela `recomendacoes` e expõe o resultado para o app por `/api/recomendacao/{usuarioId}`.
+
+Essa separação reduz acoplamento. O backend trata recomendação como dado persistido e não como inferência em tempo real. Caso o motor evolua, o contrato principal permanece a tabela `recomendacoes`, desde que sejam preservados `usuario_id`, `espetaculo_id`, `score` e `motivo`.
+
+Quando a tabela não possui recomendações para um usuário, `RecomendacaoService` monta um fallback consultando espetáculos associados aos gêneros favoritos do usuário. O fallback retorna itens com score decrescente e motivo "Baseado nos seus gêneros favoritos", garantindo que a experiência do app não fique vazia mesmo antes do batch de recomendação preencher a tabela.
+
+#### 19.4.4 Persistência de catálogo, teatros e preferências
+
+Os repositórios do backend consultam tabelas normalizadas e relacionamentos N:N:
+
+- `EspetaculoRepository` lê espetáculos, gêneros associados e busca por gênero ou nome;
+- `TeatroRepository` lista teatros e carrega espetáculos vinculados por `teatro_espetaculo`;
+- `GeneroRepository` retorna nomes de gêneros ordenados;
+- `PreferenciasRepository` usa `preferencias` e `usuario_genero_favorito` para persistir cidade, CEP, tags, faixa de preço, notificações e gêneros favoritos;
+- `WishlistRepository` usa `wishlist_curtidas` filtrando `tipo = 'wishlist'`;
+- `RecomendacaoRepository` combina `recomendacoes` e `espetaculos`, ordenando por `score DESC`.
+
+Essa estrutura permite que o app navegue tanto por conteúdo editorial/catálogo quanto por personalização e retenção.
 
 ### 19.5 Testes e Validação
 
+Na Sprint 4, a validação do backend foi apoiada por testes unitários em `src/backend/BackEnd.Aventura.Tests`. A suíte cobre controllers, services, domínio, mapeamentos, injeção de dependência, conexão com banco e tratamento global de exceções.
+
+#### 19.5.1 Cobertura funcional dos testes
+
+Os arquivos de teste indicam validação dos seguintes módulos:
+
+| Módulo | Arquivos de teste relacionados | Objetivo da validação |
+|---|---|---|
+| Autenticação | `AuthControllerTests.cs`, `AuthServiceTests.cs` | Cadastro, login, conflitos e validações de credenciais |
+| Usuário | `UsuarioControllerTests.cs`, `UsuarioServiceTests.cs`, `UsuarioTests.cs` | Consulta, atualização, regras de perfil e exclusão lógica |
+| Espetáculos | `EspetaculoControllerTests.cs`, `EspetaculoServiceTests.cs`, `EspetaculoTests.cs` | Listagem, busca, detalhe e regras de entidade |
+| Teatros | `TeatroControllerTests.cs`, `TeatroServiceTests.cs`, `TeatroTests.cs` | Listagem, detalhe e vínculo com espetáculos |
+| Preferências | `PreferenciasControllerTests.cs`, `PreferenciasServiceTests.cs`, `PreferenciasTests.cs` | Consulta, atualização e validações de preferências |
+| Wishlist | `WishlistControllerTests.cs`, `WishlistServiceTests.cs` | Adição, remoção, duplicidade e consulta de itens salvos |
+| Recomendações | `RecomendacaoControllerTests.cs`, `RecomendacaoServiceTests.cs`, `RecomendacaoTests.cs` | Limite de recomendações, retorno persistido e fallback |
+| Gêneros | `GeneroControllerTests.cs`, `GeneroServiceTests.cs` | Listagem dos gêneros disponíveis |
+| Infraestrutura | `DependencyInjectionTests.cs`, `DbConnectionFactoryTests.cs`, `GlobalExceptionHandlerTests.cs` | Registro de dependências, montagem de conexão e erros padronizados |
+| Mapeamento e domínio | `DtoMapperTests.cs`, `EntityGuardsTests.cs`, `ExceptionTests.cs` | Conversão para DTOs, guards e exceções customizadas |
+
+#### 19.5.2 Execução local dos testes
+
+O comando utilizado para validação foi:
+
+```bash
+dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
+```
+
+Durante a execução local, o restore inicialmente falhou por bloqueio de acesso ao NuGet no ambiente restrito. Após liberação de rede, os pacotes foram restaurados, porém a compilação da suíte apontou uma pendência de atualização nos testes:
+
+```text
+FakeUsuarioRepository não implementa membro de interface IUsuarioRepository.ObterMlIdAsync(Guid)
+```
+
+Isso indica que a interface `IUsuarioRepository` evoluiu com suporte ao identificador de ML, mas o fake usado nos testes ainda precisa ser atualizado para acompanhar o novo contrato. Portanto, a suíte documentada existe e cobre os principais módulos, mas a execução completa da Sprint 4 depende da correção desse fake.
+
+#### 19.5.3 Validação manual via Swagger
+
+Além dos testes automatizados, o Swagger continua habilitado em ambiente de desenvolvimento. Ele permite validar manualmente:
+
+- criação de conta e geração de token;
+- autenticação de usuário;
+- consulta e atualização de perfil;
+- listagem e busca de espetáculos;
+- consulta de teatros e seus espetáculos;
+- atualização de preferências;
+- operações de wishlist;
+- retorno de recomendações;
+- respostas de erro padronizadas.
+
+Como a API exige autenticação global, exceto em `/api/auth`, a validação manual dos demais endpoints deve incluir o token JWT emitido no login ou cadastro.
+
 ### 19.6 Evidências da Sprint
+
+As principais evidências técnicas da Sprint 4 no backend são:
+
+| Evidência | Local no repositório | Descrição |
+|---|---|---|
+| Configuração da API | `src/backend/Program.cs` | JWT, CORS, Swagger, autorização global, tratamento de exceções e registro das camadas |
+| Injeção de dependência | `src/backend/extensions/DependencyInjection.cs` | Registro de services, repositories, exception handler e job de anonimização |
+| Controllers REST | `src/backend/controller/` | Endpoints de auth, usuário, catálogo, teatro, preferências, wishlist, recomendação e gêneros |
+| Regras de negócio | `src/backend/services/` | Validações, fallback de recomendação, autenticação, wishlist, preferências e LGPD |
+| Persistência PostgreSQL | `src/backend/repository/` | Repositórios com consultas parametrizadas usando `Npgsql` |
+| DTOs e mapeamentos | `src/backend/dto/` e `src/backend/mappings/DtoMapper.cs` | Contratos de entrada/saída da API e conversão de domínio |
+| Tratamento global de erros | `src/backend/infrastructure/middleware/GlobalExceptionHandler.cs` | Respostas `ProblemDetails` para erros conhecidos e inesperados |
+| Evolução do banco | `src/database/02_sprint4_improvements.sql` | Campos de endereço, LGPD, índices, constraints e `ml_id` |
+| Integração com recomendação | `docs/Modelo_Recomendacao.md` e `src/inference-service/` | Pipeline que grava recomendações na tabela lida pelo backend |
+| Testes automatizados | `src/backend/BackEnd.Aventura.Tests/` | Suíte xUnit com fakes e testes por camada |
+
+Como próximos ajustes técnicos, recomenda-se atualizar `FakeUsuarioRepository` para implementar `ObterMlIdAsync(Guid)` e revisar o fluxo de login para garantir que a senha informada seja comparada com o hash BCrypt armazenado. Esses pontos não impedem a documentação da arquitetura entregue, mas devem ser tratados antes de considerar o backend plenamente validado para uma entrega integrada.
 
 ---
 

@@ -259,9 +259,19 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 </details>
 
 <details>
-<summary><a href="#21-termos-e-abreviações">21. Termos e Abreviações</a></summary>
+<summary><a href="#21-análise-de-impactos-éticos-ia4people">21. Análise de Impactos Éticos IA4People</a></summary>
 
-- [Termos e Abreviações](#21-termos-e-abreviações)
+- [21.1 Framework IA4People](#211-framework-ia4people)
+- [21.2 Correlação com o Projeto](#212-correlação-com-o-projeto)
+- [21.3 Riscos Éticos e Mitigações](#213-riscos-éticos-e-mitigações)
+- [21.4 Síntese de Aderência](#214-síntese-de-aderência)
+
+</details>
+
+<details>
+<summary><a href="#22-termos-e-abreviações">22. Termos e Abreviações</a></summary>
+
+- [Termos e Abreviações](#22-termos-e-abreviações)
 
 </details>
 
@@ -3978,7 +3988,65 @@ A consolidação considera as suítes automatizadas executadas (backend unitári
 
 ---
 
-## 21. Termos e Abreviações
+## 21. Análise de Impactos Éticos IA4People
+
+Esta seção analisa os impactos éticos do projeto a partir do framework IA4People, citado na literatura original como AI4People. O framework propõe que sistemas baseados em inteligência artificial sejam avaliados por cinco princípios: beneficência, não maleficência, autonomia, justiça e explicabilidade. No contexto da solução, essa análise é relevante porque a plataforma usa dados pessoais, preferências culturais, CEP, histórico de interação e recomendações automatizadas para influenciar a descoberta de espetáculos.
+
+Embora o sistema não tome decisões de alto risco, como crédito, saúde, emprego ou acesso a direitos públicos, ele interfere na visibilidade de conteúdos culturais, na experiência de navegação, na conversão para compra externa e no tratamento de dados pessoais. Por isso, a recomendação automatizada deve ser compreendida como uma funcionalidade com impacto social, cultural e informacional.
+
+### 21.1 Framework IA4People
+
+| Princípio | Significado no IA4People | Interpretação para o projeto |
+|---|---|---|
+| Beneficência | Promover bem-estar, utilidade e impacto positivo. | A solução deve facilitar o acesso a espetáculos, reduzir atrito na descoberta cultural e aproximar usuários de eventos compatíveis com seus interesses. |
+| Não maleficência | Evitar danos, abusos, exposição indevida e efeitos negativos previsíveis. | O sistema deve proteger dados pessoais, evitar recomendações manipulativas, tratar falhas de APIs externas e reduzir riscos de vazamento, discriminação ou hiperpersonalização. |
+| Autonomia | Preservar a capacidade de escolha e controle das pessoas afetadas. | O usuário deve conseguir buscar manualmente, editar preferências, ignorar recomendações, favoritar apenas se quiser e solicitar exclusão/anonimização dos dados. |
+| Justiça | Distribuir benefícios e riscos de forma justa, sem reforçar desigualdades. | A recomendação não deve favorecer apenas espetáculos populares, regiões mais representadas ou perfis historicamente mais ativos na base de compras. |
+| Explicabilidade | Tornar o funcionamento inteligível e responsabilizável. | A plataforma deve documentar como recomenda, registrar métricas, fornecer motivo da recomendação quando possível e permitir auditoria técnica do fluxo de dados. |
+
+### 21.2 Correlação com o Projeto
+
+| Componente analisado | Impacto ético | Salvaguardas existentes | Pontos de atenção |
+|---|---|---|---|
+| Cadastro, autenticação e consentimento | Coleta dados pessoais como nome, e-mail, senha, data de nascimento, CEP e endereço. | O backend exige aceite de consentimento, valida idade mínima de 13 anos, armazena senha com BCrypt e usa autenticação via JWT. | A política de privacidade deve explicar de forma direta quais dados são usados para personalização, segurança, localização aproximada e comunicação com serviços externos. |
+| Integração com ViaCEP | O CEP é usado para preencher endereço e pode revelar localização aproximada do usuário. | O app valida o formato do CEP, trata falhas de serviço, não depende de GPS e mantém o preenchimento como apoio ao cadastro. | O usuário deve entender que o CEP informado é consultado em uma API externa e usado para facilitar o cadastro e experiências de localização. |
+| Preferências e onboarding | Preferências culturais influenciam recomendações, seções personalizadas e experiência de descoberta. | O app permite ajustar interesses e cidade, além de manter navegação por busca, categorias e conteúdos não personalizados. | O sistema deve evitar pressão indevida para personalização e garantir que a experiência continue funcional mesmo com poucos dados de preferência. |
+| Modelo de recomendação | O modelo usa histórico implícito de compras e afinidade por categorias, podendo direcionar atenção e descoberta cultural. | A documentação técnica descreve o modelo híbrido, suas métricas, limitações, dados utilizados e estratégia de fallback por gêneros favoritos. | Compras passadas não significam satisfação; dados históricos podem conter viés de popularidade, preço, região, renda e disponibilidade de eventos. |
+| Backend de recomendações | Recomendações são servidas por endpoint dedicado e podem usar estratégias diferentes conforme disponibilidade de dados. | Há limite de quantidade solicitada, validação de usuário, campo de motivo da recomendação e separação entre inferência/modelo e API operacional. | É necessário monitorar recomendações desatualizadas, repetitivas ou concentradas em poucos tipos de espetáculo. |
+| Banco de dados e LGPD | O sistema armazena dados pessoais, consentimento, exclusão lógica e estado de anonimização. | Existem campos de consentimento, data de consentimento, exclusão, anonimização, procedure de anonimização e job periódico para anonimizar usuários excluídos após o prazo definido. | Recomenda-se manter trilhas de auditoria, documentação de retenção de dados e testes recorrentes do fluxo de exclusão/anonimização. |
+| Compra externa e ticketeiras | O usuário é direcionado a serviços externos para concluir compra. | A solução mantém a compra fora do aplicativo e reduz responsabilidade direta sobre processamento financeiro. | Deve ficar claro quando o usuário sai do ambiente da plataforma e passa a estar sujeito aos termos da ticketeira externa. |
+
+### 21.3 Riscos Éticos e Mitigações
+
+| Risco ético | Como pode ocorrer | Mitigações atuais ou recomendadas |
+|---|---|---|
+| Exposição de dados pessoais | Combinação de e-mail, data de nascimento, CEP, preferências e histórico pode criar perfil sensível do usuário. | Aplicar minimização de dados, manter consentimento explícito, criptografar senhas, restringir acesso, executar anonimização e revisar a política de privacidade. |
+| Inferência de localização | O CEP pode indicar bairro ou região, permitindo personalização geográfica e possíveis inferências socioeconômicas. | Usar localização apenas na granularidade necessária, não coletar GPS sem necessidade e declarar a finalidade do uso de CEP. |
+| Bolha de filtro cultural | Recomendações muito semelhantes podem reduzir diversidade cultural e limitar descoberta de novos gêneros. | Manter busca livre, categorias, seções editoriais e aplicar diversidade no ranqueamento em evoluções futuras. |
+| Viés de popularidade | Dados históricos de compra tendem a privilegiar espetáculos com maior volume, maior orçamento ou maior presença em plataformas de venda. | Monitorar distribuição das recomendações por categoria, cidade, preço, teatro e produção; considerar reordenação com diversidade e exposição mínima. |
+| Representatividade insuficiente | Usuários, cidades, gêneros ou espetáculos com poucos dados podem receber recomendações menos relevantes. | Usar fallback por preferências declaradas, registrar limitações de cold-start e coletar feedback explícito para melhorar personalização. |
+| Uso inadequado de proxy | Compra ou clique não equivale necessariamente a satisfação, interesse real ou qualidade percebida. | Complementar sinais implícitos com feedback direto, como "não tenho interesse", "ver menos deste tipo" e avaliações opcionais. |
+| Opacidade do modelo | Técnicas de fatoração matricial, como Funk SVD, usam fatores latentes difíceis de explicar diretamente ao usuário final. | Exibir motivos compreensíveis, documentar o modelo, versionar métricas, criar model card e manter logs de geração de recomendações. |
+| Indução comercial excessiva | A personalização pode ser usada para maximizar conversão em detrimento de descoberta, diversidade ou bem-estar do usuário. | Tratar recomendações como apoio à descoberta, não como única rota de navegação; preservar controle do usuário e transparência sobre critérios gerais. |
+| Dependência de serviços externos | Falhas no ViaCEP ou nas ticketeiras podem comprometer cadastro, endereço ou compra. | Testar integrações com mocks, tratar erros de forma amigável, permitir correção manual e informar transições para ambientes externos. |
+
+### 21.4 Síntese de Aderência
+
+| Princípio IA4People | Nível de aderência | Justificativa |
+|---|---|---|
+| Beneficência | Alto | A solução atende ao objetivo de facilitar descoberta cultural, recomenda espetáculos de acordo com preferências e reduz atrito na navegação. |
+| Não maleficência | Médio-alto | O projeto já contempla consentimento, hashing de senha, autenticação, tratamento de falhas e anonimização, mas ainda depende de governança contínua de dados e auditoria de integrações. |
+| Autonomia | Alto | O usuário mantém busca manual, favoritos opcionais, edição de interesses e solicitação de exclusão, evitando dependência exclusiva do recomendador. |
+| Justiça | Médio | Há risco de viés por popularidade, disponibilidade regional, preço e histórico de compras; a mitigação exige métricas e auditorias de distribuição ainda mais explícitas. |
+| Explicabilidade | Médio-alto | A arquitetura documenta o modelo e inclui motivo da recomendação, mas a interpretabilidade de fatores latentes do SVD continua limitada para usuários não técnicos. |
+
+Como encaminhamento ético, recomenda-se que o projeto mantenha uma documentação viva do modelo de recomendação, incluindo origem dos dados, versão do algoritmo, métricas, limitações conhecidas, critérios de exclusão de dados, riscos de viés e resultados de auditorias. Também é recomendável criar uma explicação visível no aplicativo para cada recomendação, preservar caminhos de navegação não personalizados e implementar controles de feedback como "ver menos deste tipo", "não tenho interesse" e "por que estou vendo isto?".
+
+Com base no IA4People, a plataforma apresenta boa aderência inicial aos princípios de autonomia, beneficência e não maleficência, especialmente pelos mecanismos de consentimento, edição de preferências, busca livre e anonimização. Os principais pontos de evolução estão em justiça e explicabilidade, pois o recomendador deve ser monitorado para não concentrar visibilidade em poucos espetáculos, categorias ou regiões, e deve comunicar seus critérios de forma compreensível para usuários e avaliadores.
+
+---
+
+## 22. Termos e Abreviações
 
 | Termo / Abreviação | Definição |
 |---|---|
@@ -4006,6 +4074,8 @@ A consolidação considera as suítes automatizadas executadas (backend unitári
 
 
 ## Referências
+
+FLORIDI, Luciano et al. AI4People - An Ethical Framework for a Good AI Society: Opportunities, Risks, Principles, and Recommendations. Minds and Machines, v. 28, p. 689-707, 2018. Disponível em: https://link.springer.com/article/10.1007/s11023-018-9482-5. Acesso em: 12 jun. 2026.
 
 ASSOCIAÇÃO DOS PRODUTORES DE ESPETÁCULOS TEATRAIS DO ESTADO DE SÃO PAULO (APETESP). Wikipédia, a enciclopédia livre. Disponível em: https://pt.wikipedia.org/wiki/Associa%C3%A7%C3%A3o_dos_Produtores_de_Espet%C3%A1culos_Teatrais_do_Estado_de_S%C3%A3o_Paulo. Acesso em: 23 abr. 2026.
 

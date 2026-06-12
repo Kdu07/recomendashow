@@ -25,7 +25,7 @@ Este documento registra a gestão do projeto ao longo das sprints, reunindo retr
  - [Sprint 2](#2-sprint-2)
  - [Sprint 3](#3-sprint-3)
  - [Sprint 4 - Gestão Evolutiva](#4-sprint-4---gestão-evolutiva)
- - [Planejamento da Sprint 5](#5-planejamento-da-sprint-5)
+ - [Planejamento e Fechamento da Sprint 5](#5-planejamento-e-fechamento-da-sprint-5)
  - [Atendimento aos Critérios do Escritório de Projetos](#6-atendimento-aos-critérios-do-escritório-de-projetos)
  - [Uso das Políticas de Gestão de Configuração](#7-uso-das-políticas-de-gestão-de-configuração)
  - [Referências](#8-referências)
@@ -293,10 +293,10 @@ A Sprint 4 teve como foco consolidar entregas, revisar artefatos já produzidos,
 
 | Ponto forte | Evidência concreta | Impacto no projeto |
 |---|---|---|
-| Comunicação mais constante entre integrantes | Observado nas dailies e alinhamentos da sprint; pendência: anexar registro do board ou ata de acompanhamento. | Melhorou a visibilidade sobre impedimentos, prioridades e andamento das tasks. |
+| Comunicação mais constante entre integrantes | Observado nas dailies e alinhamentos da sprint; registro do board ou ata de acompanhamento será revisado na Sprint 5 final. | Melhorou a visibilidade sobre impedimentos, prioridades e andamento das tasks. |
 | Revisão documental mais cuidadosa | Arquivos como `docs/GestaoProjeto.md`, `docs/Projeto.md`, `docs/Index.md`, `docs/Gestao_Projeto_Configuracao.md` e `docs/projeto_visual.md` passaram por revisão de estrutura, cabeçalho, sumário e padronização. | Reduziu inconsistências entre documentos e deixou a entrega mais alinhada aos critérios de avaliação. |
 | Colaboração entre frentes de trabalho | A sprint envolveu ajustes em gestão do projeto, documentação técnica, documentação visual e organização de referências internas. | Diminuiu a dependência de uma única frente e ajudou na continuidade das entregas mesmo com ajustes acumulados. |
-| Uso do Kanban para acompanhamento | O andamento das tasks foi acompanhado no Kanban; pendência: registrar evidência exportada ou link público do board. | Facilitou a identificação de pendências, tarefas em andamento e itens que precisavam de revisão. |
+| Uso do Kanban para acompanhamento | O andamento das tasks foi acompanhado no Kanban; a evidência exportada ou link público do board será revisado na Sprint 5 final. | Facilitou a identificação de pendências, tarefas em andamento e itens que precisavam de revisão. |
 | Preparação para o refinamento final | A seção de planejamento da Sprint 5 foi estruturada com métrica t-shirt e campos para priorização, dependências e critérios de aceite. | Criou uma base objetiva para transformar os problemas da Sprint 4 em ações planejadas na Sprint 5. |
 
 ### 4.3 Pontos Fracos
@@ -304,29 +304,29 @@ A Sprint 4 teve como foco consolidar entregas, revisar artefatos já produzidos,
 | Ponto fraco | Evidência concreta | Consequência |
 |---|---|---|
 | Revisões acumuladas de sprints anteriores | A Sprint 4 precisou corrigir e padronizar documentos já existentes, incluindo sumários, cabeçalhos e organização de conteúdo. | Reduziu o tempo disponível para novas entregas e aumentou o volume de retrabalho documental. |
-| Demora para concluir tasks | Observado no acompanhamento do Kanban e nas dailies; pendência: registrar quais cards permaneceram mais tempo em andamento. | Reduziu a previsibilidade da sprint e concentrou ajustes perto do fechamento. |
+| Demora para concluir tasks | Observado no acompanhamento do Kanban e nas dailies; o registro dos cards que permaneceram mais tempo em andamento será revisado na Sprint 5 final. | Reduziu a previsibilidade da sprint e concentrou ajustes perto do fechamento. |
 | Granularidade irregular das tasks | A necessidade de refinamento na Sprint 4 indica que parte das atividades anteriores ainda estava ampla ou pouco detalhada. | Dificultou medir progresso real, estimar esforço e identificar bloqueios rapidamente. |
-| Redução de tempo útil por feriado | O calendário da sprint teve menos dias úteis; pendência: registrar no planejamento a data do feriado considerado. | Diminuiu a janela disponível para desenvolvimento, revisão e validação das entregas. |
+| Redução de tempo útil por feriado | O calendário da sprint teve menos dias úteis; o registro da data do feriado considerado será revisado na Sprint 5 final. | Diminuiu a janela disponível para desenvolvimento, revisão e validação das entregas. |
 | Validação final concentrada | Correções finais de documentação e links foram feitas próximas ao fechamento da sprint. | Aumentou o risco de retrabalho e reduziu o tempo para revisão cruzada pela equipe. |
 
 ### 4.4 Ações de Melhoria para a Sprint 5
 
 | Problema identificado | Ação de melhoria | Indicador de sucesso | Issue relacionada | Status esperado |
 |---|---|---|---|---|
-| Revisões acumuladas de sprints anteriores | Priorizar a Sprint 5 como refinamento final dos artefatos principais. | 100% dos documentos principais revisados antes da entrega final. | A definir no board da Sprint 5. | Planejada |
-| Demora para concluir tasks | Reduzir o escopo de cada task e acompanhar o avanço diariamente no Kanban. | Pelo menos 80% das tasks concluídas no prazo definido para a sprint. | A definir no board da Sprint 5. | Planejada |
-| Granularidade irregular das tasks | Quebrar atividades grandes em tasks menores antes do início da execução. | Pelo menos 70% das tasks classificadas como P ou M pela métrica t-shirt. | A definir no board da Sprint 5. | Planejada |
-| Redução de tempo útil por feriado | Considerar a capacidade reduzida no planejamento e priorizar primeiro as tarefas críticas. | 100% das tarefas críticas priorizadas antes das tarefas complementares. | A definir no board da Sprint 5. | Planejada |
-| Validação final concentrada | Antecipar revisão documental, build e testes ao longo da sprint. | 100% dos merges para a branch principal com build/testes executados antes do merge, quando aplicável. | A definir no board da Sprint 5. | Planejada |
-| Evidências incompletas de acompanhamento | Registrar evidências objetivas do board, dailies e fechamento da sprint. | 100% dos pontos fortes e fracos da Sprint 5 acompanhados por evidência, justificativa ou pendência explícita. | A definir no board da Sprint 5. | Planejada |
+| Revisões acumuladas de sprints anteriores | Priorizar a Sprint 5 como refinamento final dos artefatos principais. | 100% dos documentos principais revisados antes da entrega final. | #265, #268, #273, #277, #279 e #282. | Planejada |
+| Demora para concluir tasks | Reduzir o escopo de cada task e acompanhar o avanço diariamente no Kanban. | Pelo menos 80% das tasks concluídas no prazo definido para a sprint. | #266, #270 e #278. | Planejada |
+| Granularidade irregular das tasks | Quebrar atividades grandes em tasks menores antes do início da execução. | Pelo menos 70% das tasks classificadas como P ou M pela métrica t-shirt. | #259, #262, #263, #272, #274, #275, #276, #280 e #281. | Planejada |
+| Redução de tempo útil por feriado | Considerar a capacidade reduzida no planejamento e priorizar primeiro as tarefas críticas. | 100% das tarefas críticas priorizadas antes das tarefas complementares. | #257, #261, #269, #271, #273, #275, #276 e #277. | Planejada |
+| Validação final concentrada | Antecipar revisão documental, build e testes ao longo da sprint. | 100% dos merges para a branch principal com build/testes executados antes do merge, quando aplicável. | #257, #258, #261, #262, #263, #275, #276, #280 e #281. | Planejada |
+| Evidências incompletas de acompanhamento | Registrar evidências objetivas do board, dailies e fechamento da sprint. | 100% dos pontos fortes e fracos da Sprint 5 acompanhados por evidência, justificativa ou pendência explícita. | #264, #265, #266, #267, #271, #272, #278 e #282. | Planejada |
 
 ### 4.5 Status das Ações da Sprint Anterior
 
 | Ação planejada na sprint anterior | Resultado na Sprint 4 | Status | Evidência ou justificativa |
 |---|---|---|---|
-| Melhor divisão das tasks | Houve maior atenção à granularidade, mas ainda foram identificadas atividades amplas que precisam ser quebradas na Sprint 5. | Parcialmente concluída | Evidência observada no Kanban; pendência: registrar cards específicos. |
+| Melhor divisão das tasks | Houve maior atenção à granularidade, mas ainda foram identificadas atividades amplas que precisam ser quebradas na Sprint 5. | Parcialmente concluída | Evidência observada no Kanban; o registro dos cards específicos será revisado na Sprint 5 final. |
 | Revisão das estimativas de esforço | A equipe identificou a necessidade de considerar capacidade reduzida e impacto de calendário no planejamento. | Parcialmente concluída | A Sprint 5 já prevê uso da métrica t-shirt P, M e G para estimativa. |
-| Checkpoints frequentes | Dailies e alinhamentos apoiaram a comunicação e o acompanhamento de pendências. | Concluída | Evidência observada nas rotinas de acompanhamento; pendência: anexar registro formal. |
+| Checkpoints frequentes | Dailies e alinhamentos apoiaram a comunicação e o acompanhamento de pendências. | Concluída | Evidência observada nas rotinas de acompanhamento; o registro formal será revisado na Sprint 5 final. |
 | Refinamento técnico prévio | Parte das revisões técnicas e documentais ainda ocorreu perto do fechamento. | Parcialmente concluída | A Sprint 5 deve antecipar revisão documental, build e testes antes do fechamento. |
 | Mapeamento de dependências | As dependências foram discutidas, mas ainda houve impacto de tasks demoradas e ajustes acumulados. | Parcialmente concluída | A Sprint 5 deve registrar dependências diretamente nas tasks planejadas. |
 
@@ -336,7 +336,7 @@ Em relação à Sprint 3, a Sprint 4 evoluiu na comunicação da equipe, na revi
 
 ---
 
-## 5. Planejamento da Sprint 5
+## 5. Planejamento e Fechamento da Sprint 5
 
 ### 5.1 Objetivo da Sprint 5
 
@@ -344,7 +344,7 @@ A Sprint 5 terá como objetivo realizar o refinamento final do projeto, revisand
 
 ### 5.2 Critério de Priorização
 
-O detalhamento das tasks da Sprint 5 será definido no board da equipe. A priorização deverá considerar dependência técnica, impacto na nota, risco de entrega, capacidade do time, tempo útil disponível e necessidade de corrigir lacunas apontadas no feedback. A métrica t-shirt adotada para estimativa será:
+O detalhamento das tasks da Sprint 5 foi definido no board da equipe. A priorização considerou dependência técnica, impacto na nota, risco de entrega, capacidade do time, tempo útil disponível e necessidade de corrigir lacunas apontadas no feedback. A métrica t-shirt adotada para estimativa foi:
 
 | Tamanho | Estimativa |
 |---|---|
@@ -354,15 +354,100 @@ O detalhamento das tasks da Sprint 5 será definido no board da equipe. A priori
 
 ### 5.3 Lista de Tasks da Sprint 5
 
-A Sprint 5 será voltada ao refinamento final do projeto. As tasks abaixo foram organizadas em uma sequência lógica, priorizando primeiro a correção de lacunas críticas, depois a validação técnica e, por fim, a revisão final da entrega.
+A Sprint 5 foi voltada ao refinamento final do projeto. As tasks abaixo foram organizadas em uma sequência lógica, priorizando primeiro validações críticas de backend, integração, deploy e documentação principal; depois testes, refinamentos finais, conformidade com critérios do Escritório de Projetos e fechamento reflexivo do projeto. Todas as tasks listadas já estão presentes no GitLab e são rastreadas pelos IDs de issue apresentados na tabela.
 
-| Ordem | Task | Descrição | Prioridade | Tamanho t-shirt | Estimativa | Dependências | Critério de aceite |
-|---|---|---|---|---|---|---|---|
-| 1 | A preencher | A preencher | Alta / Média / Baixa | P / M / G | Até 30 min / 30-60 min / 60-120 min | A preencher | A preencher |
-| 2 | A preencher | A preencher | Alta / Média / Baixa | P / M / G | Até 30 min / 30-60 min / 60-120 min | A preencher | A preencher |
-| 3 | A preencher | A preencher | Alta / Média / Baixa | P / M / G | Até 30 min / 30-60 min / 60-120 min | A preencher | A preencher |
-| 4 | A preencher | A preencher | Alta / Média / Baixa | P / M / G | Até 30 min / 30-60 min / 60-120 min | A preencher | A preencher |
-| 5 | A preencher | A preencher | Alta / Média / Baixa | P / M / G | Até 30 min / 30-60 min / 60-120 min | A preencher | A preencher |
+| Ordem | Issue relacionada | Task | Descrição | Prioridade | Tamanho t-shirt | Estimativa | Dependências | Critério de aceite |
+|---|---|---|---|---|---|---|---|---|
+| 1 | #257 | Validar execução final do backend | Garantir que o backend compile, execute e responda aos endpoints principais sem erro. | Crítica | M | 30-60 min | Banco configurado; variáveis de ambiente definidas | Backend compila, sobe e endpoints principais respondem corretamente. |
+| 2 | #258 | Validar Swagger funcional no ambiente final | Conferir se o Swagger está acessível e coerente com os endpoints implementados. | Alta | P | Até 30 min | Backend em execução | Swagger acessível, com link registrado no `Projeto.md`. |
+| 3 | #259 | Atualizar diagrama e documentação da arquitetura final | Atualizar a arquitetura final da solução, incluindo backend, frontend, banco, Docker e integrações. | Alta | G | 60-120 min | Estrutura final do sistema definida | Diagrama e explicação da arquitetura atualizados e coerentes com a implementação. |
+| 4 | #260 | Consolidar status final das features | Registrar o status final das funcionalidades planejadas, com evidências ou justificativas. | Alta | M | 30-60 min | Features mapeadas; evidências disponíveis | Tabela de features concluída, com status e evidências. |
+| 5 | #261 | Executar testes unitários finais do backend | Rodar a suíte final de testes unitários do backend, com foco nos Services. | Crítica | M | 30-60 min | Backend compilando; projeto de testes configurado | Testes executados e resultados documentados no `Projeto.md`. |
+| 6 | #262 | Executar testes funcionais finais | Validar os requisitos funcionais principais da aplicação na versão final. | Alta | G | 60-120 min | Aplicação em execução; RFs definidos | Testes funcionais executados, com resultados e evidências registradas. |
+| 7 | #263 | Executar testes de integração finais | Validar a comunicação entre backend, frontend, banco, recomendação e APIs externas ou mocks. | Alta | G | 60-120 min | Backend, frontend e banco disponíveis | Integrações críticas testadas e limitações documentadas. |
+| 8 | #264 | Consolidar testes de usabilidade finais | Documentar participantes, fluxos, taxa de sucesso, SUS, dificuldades e melhorias. | Média | G | 60-120 min | Resultados dos testes de usabilidade disponíveis | Usabilidade documentada com participantes, resultados e melhorias. |
+| 9 | #265 | Atualizar GestaoProjeto.md com retrospectiva da Sprint 5 | Registrar pontos fortes, pontos fracos, evidências e ações de melhoria da Sprint 5. | Alta | G | 60-120 min | Dados da Sprint 5; issues e MRs identificados | Retrospectiva da Sprint 5 adicionada ao `GestaoProjeto.md`. |
+| 10 | #266 | Levantar métricas de gestão de todas as sprints | Consolidar métricas como velocity, lead time, issues planejadas/concluídas e distribuição por tamanho. | Alta | M | 30-60 min | Board do GitLab atualizado; histórico das sprints disponível | Métricas registradas por sprint, com fonte e análise. |
+| 11 | #267 | Revisar e documentar incorporação dos feedbacks | Mapear feedbacks anteriores e registrar correções incorporadas ou pendências justificadas. | Alta | G | 60-120 min | Feedbacks das sprints anteriores disponíveis | Tabela de feedbacks criada com status, correção e evidência. |
+| 12 | #268 | Atualizar README.md final | Atualizar a visão geral, instruções de execução, links, estrutura, licença e documentação do projeto. | Alta | M | 30-60 min | Estrutura final e documentos principais definidos | `README.md` completo, atualizado e sem links quebrados. |
+| 13 | #269 | Criar manual_deploy.md para o parceiro | Criar manual de implantação com pré-requisitos, variáveis, Docker, backend, frontend e validação. | Crítica | G | 60-120 min | Ambiente de deploy definido; comandos conhecidos | `manual_deploy.md` criado com passo a passo claro e sem credenciais reais. |
+| 14 | #270 | Revisar organização final do repositório | Conferir estrutura de pastas, arquivos obrigatórios, `.gitignore` e remoção de arquivos indevidos. | Alta | M | 30-60 min | Branch base atualizada; critérios do EP disponíveis | Repositório organizado conforme padrão esperado. |
+| 15 | #271 | Produzir vídeo demonstrativo final | Gravar vídeo com aplicação funcionando e console/terminal visível. | Crítica | G | 60-120 min | Aplicação funcional; ambiente disponível | Vídeo gravado e link registrado no `Projeto.md`. |
+| 16 | #272 | Estruturar apresentação final da Sprint 5 | Preparar roteiro ou slides da apresentação final com técnica definida pelo grupo. | Alta | G | 60-120 min | Entregas finais mapeadas; evidências disponíveis | Apresentação estruturada, cobrindo solução, testes, gestão, deploy e aprendizados. |
+| 17 | #273 | Revisar Projeto.md final | Revisar a documentação principal do projeto, garantindo coerência com código, testes e evidências. | Crítica | G | 60-120 min | Conteúdos principais adicionados; evidências disponíveis | `Projeto.md` completo, coerente e sem placeholders. |
+| 18 | #274 | Aplicar refinamentos finais no frontend | Ajustar telas, navegação, mensagens, fluxos e inconsistências visuais da interface. | Alta | G | 60-120 min | Frontend executando; feedbacks de usabilidade disponíveis | Fluxos principais revisados e frontend sem erros críticos. |
+| 19 | #275 | Revisar e refinar integração do sistema | Validar e ajustar integração entre frontend, backend, banco, recomendação e APIs/mocks. | Crítica | G | 60-120 min | Backend, frontend e banco executando | Fluxos integrados principais funcionando e contratos alinhados. |
+| 20 | #276 | Configurar ambiente dockerizado e realizar deploy final | Preparar Docker, variáveis e ambiente final, executando o deploy da solução. | Crítica | G | 60-120 min | Dockerfiles revisados; servidor/ambiente acessível | Aplicação disponível no ambiente final, com evidências documentadas. |
+| 21 | #277 | Documentar desenvolvimento final da solução | Consolidar no `Projeto.md` a versão final do desenvolvimento, incluindo arquitetura, features, testes e evidências. | Crítica | G | 60-120 min | Backend/frontend estabilizados; evidências disponíveis | Desenvolvimento final documentado de forma completa e rastreável. |
+| 22 | #278 | Analisar cumprimento dos critérios do Escritório de Projetos | Verificar se repositório, README, documentos, links e arquivos obrigatórios atendem ao padrão do EP. | Alta | M | 30-60 min | Critérios do EP disponíveis; documentação finalizada | Checklist de conformidade preenchido e pendências corrigidas ou justificadas. |
+| 23 | #279 | Atualizar GuiaPadroesDesenvolvimento.md e padrões de projeto | Consolidar padrões de código, branches, commits, testes, arquitetura e padrões criacional/comportamental. | Alta | M | 30-60 min | Guia existente ou pronto para criação; padrões reais mapeados | Guia atualizado, com Factory e Strategy documentados corretamente. |
+| 24 | #280 | Executar e documentar testes finais do frontend | Rodar e documentar testes de telas, componentes, services e fluxos principais do frontend. | Alta | M | 30-60 min | Frontend executando; dependências instaladas | Testes de frontend executados e resultados registrados no `Projeto.md`. |
+| 25 | #281 | Executar e documentar testes de RNFs finais | Validar desempenho, segurança e usabilidade conforme os RNFs planejados. | Alta | G | 60-120 min | Sistema executável; RNFs definidos; ferramentas escolhidas | RNFs testados, métricas registradas e limitações documentadas. |
+| 26 | #282 | Elaborar análise post-mortem final do projeto | Consolidar aprendizados, pontos positivos, problemas recorrentes e recomendações para projetos futuros. | Alta | M | 30-60 min | Retrospectivas e métricas disponíveis | Post-mortem incluído no `GestaoProjeto.md` com análise reflexiva e evidências. |
+
+### 5.4 Métricas Planejadas da Sprint 5
+
+| Indicador | Valor planejado | Interpretação |
+|---|---:|---|
+| Total de tasks planejadas | 26 | Escopo final definido para fechamento do projeto. |
+| Tasks críticas | 8 | Itens com impacto direto em execução, deploy, documentação final e demonstração. |
+| Tasks altas | 17 | Itens importantes para testes, conformidade, refinamento e documentação. |
+| Tasks médias | 1 | Item de consolidação de usabilidade, dependente de evidências já coletadas. |
+| Tasks P | 1 | Atividade curta, ligada à validação do Swagger após backend ativo. |
+| Tasks M | 10 | Atividades de documentação, revisão, consolidação e checklist. |
+| Tasks G | 15 | Atividades com maior esforço por envolverem testes, deploy, integração, frontend, vídeo, apresentação ou revisão ampla. |
+
+### 5.5 Retrospectiva da Sprint 5
+
+#### 5.5.1 Pontos Fortes
+
+| Ponto forte | Evidência observada | Impacto no projeto |
+|---|---|---|
+| Planejamento final mais objetivo | A sprint foi aberta com 26 tasks explícitas, cada uma com prioridade, dependência e critério de aceite. | Aumentou a rastreabilidade entre planejamento, execução e entrega final. |
+| Priorização das atividades críticas | O board destacou tarefas críticas de backend, deploy, integração, vídeo e documentação principal. | Reduziu o risco de finalizar documentos sem validar o funcionamento real da solução. |
+| Integração entre gestão e documentação técnica | Tasks de `GestaoProjeto.md`, `Projeto.md`, README, guia de padrões e manual de deploy foram planejadas em conjunto. | Deixou a entrega mais coerente entre código, operação, testes e narrativa do projeto. |
+| Critérios de aceite claros | Todas as tasks possuem definição objetiva de conclusão. | Facilitou revisão, fechamento de pendências e validação cruzada pela equipe. |
+
+#### 5.5.2 Pontos Fracos
+
+| Ponto fraco | Evidência observada | Consequência |
+|---|---|---|
+| Alto volume de tasks grandes | 15 das 26 tasks foram classificadas como G. | Aumentou o risco de concentração de entregas complexas no fechamento da sprint. |
+| Forte dependência de ambiente funcional | Várias tasks dependiam de backend, frontend, banco, Docker e ambiente final em execução. | Problemas de infraestrutura poderiam bloquear testes, vídeo, deploy e validações finais. |
+| Muitas entregas documentais dependentes de evidências | Projeto, gestão, README, guia, manual de deploy e apresentação dependiam de resultados técnicos já validados. | Qualquer atraso nas validações técnicas poderia gerar retrabalho documental. |
+| Validações finais concentradas na mesma sprint | Testes unitários, funcionais, integração, frontend, RNFs e usabilidade foram planejados para a sprint final. | A equipe precisou controlar bem prioridades para evitar execução superficial ou documentação incompleta. |
+
+#### 5.5.3 Ações de Melhoria e Aprendizados
+
+As ações de melhoria da Sprint 5 foram definidas para responder diretamente aos problemas observados na Sprint 4 e aos riscos do fechamento final. A tabela abaixo consolida o plano de ação adotado pela equipe, incluindo causa, frente responsável, prazo de execução dentro da sprint e indicador de sucesso.
+
+| Problema identificado | Issues relacionadas | Causa provável | Ação de melhoria | Frente responsável | Prazo na sprint | Indicador de sucesso |
+|---|---|---|---|---|---|---|
+| Concentração de tarefas grandes no encerramento | #259, #262, #263, #271, #272, #273, #274, #275, #276, #277 e #281 | Parte das validações técnicas e documentais dependia da versão final integrada. | Quebrar as tasks grandes em checkpoints menores: validação de ambiente, execução, registro de evidência e revisão documental. | Gestão do projeto e líderes técnicos | Início e meio da Sprint 5 | Tasks G acompanhadas por subtarefas ou checkpoints claros no board. |
+| Dependências técnicas fortes entre backend, frontend, banco e deploy | #257, #258, #263, #269, #275 e #276 | A solução final depende de múltiplos serviços funcionando em conjunto. | Registrar dependências no board e priorizar primeiro backend, banco, variáveis de ambiente, Swagger e Docker. | Backend, infraestrutura e integração | Primeiros dias da Sprint 5 | Validações críticas de ambiente concluídas antes de vídeo, testes finais e documentação final. |
+| Evidências espalhadas entre documentos e artefatos | #260, #264, #266, #267, #273, #277, #278 e #282 | Testes, vídeos, prints, links e resultados estavam distribuídos entre diferentes frentes. | Centralizar evidências principais no `Projeto.md` e referenciar documentos específicos, como README, guia de padrões e manual de deploy. | Documentação e QA | Durante toda a Sprint 5 | Evidências localizáveis por seção e sem dependência de explicação oral. |
+| Validações finais acumuladas | #261, #262, #263, #264, #280 e #281 | Testes unitários, funcionais, integração, frontend, RNFs e usabilidade foram planejados para o fechamento. | Definir ordem de execução dos testes e registrar resultado logo após cada rodada, evitando documentação retroativa. | QA, backend e frontend | Meio e fim da Sprint 5 | Resultados de testes registrados com comando, escopo, resultado e limitação. |
+| Risco de inconsistência entre código, documentação e apresentação | #268, #272, #273, #277, #278 e #279 | README, `Projeto.md`, guia de padrões, deploy e apresentação dependem da mesma versão final da solução. | Fazer revisão cruzada final entre documentos, repositório e apresentação antes do fechamento. | Documentação, gestão e apresentação | Fim da Sprint 5 | Documentos principais coerentes entre si e sem placeholders críticos. |
+| Feedbacks anteriores sem rastreabilidade explícita | #264, #267, #274 e #278 | Melhorias incorporadas podiam ficar implícitas na entrega final. | Criar ou atualizar tabela de feedbacks, indicando o que foi incorporado, o que ficou pendente e a justificativa. | Gestão do projeto e documentação | Meio da Sprint 5 | Feedbacks anteriores rastreados com status, evidência e justificativa. |
+| Risco de deploy ou execução final falhar perto da entrega | #257, #258, #269, #271, #275 e #276 | Ambiente final exige configuração correta de Docker, variáveis e serviços. | Criar manual de deploy para o parceiro e validar o passo a passo com a configuração final disponível. | Infraestrutura e backend | Fim da Sprint 5 | Manual sem credenciais reais, com pré-requisitos, comandos, validação e troubleshooting. |
+| Necessidade de aprendizado para projetos futuros | #265, #266 e #282 | As retrospectivas anteriores apontaram padrões recorrentes de atraso, retrabalho e dependência. | Elaborar análise post-mortem final com aprendizados técnicos, de gestão e recomendações práticas. | Gestão do projeto | Fim da Sprint 5 | Post-mortem incluído no `GestaoProjeto.md` com problemas recorrentes e ações preventivas. |
+
+#### 5.5.4 Status das Ações Planejadas para a Sprint 5
+
+| Ação planejada a partir da Sprint 4 | Como foi tratada na Sprint 5 | Status | Evidência ou resultado esperado |
+|---|---|---|---|
+| Priorizar a Sprint 5 como refinamento final dos artefatos principais. | Foram planejadas tasks específicas para `Projeto.md`, README, `GestaoProjeto.md`, guia de padrões, manual de deploy e apresentação final. | Concluída no planejamento | #265, #268, #269, #272, #273, #277, #279 e #282. |
+| Reduzir escopo de cada task e acompanhar avanço diariamente no Kanban. | As 26 tasks foram descritas com dependência e critério de aceite, permitindo acompanhamento mais objetivo. | Parcialmente concluída | Ainda há tasks G que exigem checkpoints internos para controle de avanço. |
+| Quebrar atividades grandes antes da execução. | A lista separou validação, testes, documentação, deploy, vídeo, apresentação e post-mortem em itens próprios. | Parcialmente concluída | 15 issues ainda foram classificadas como G, exigindo atenção ao lead time. |
+| Considerar capacidade reduzida e priorizar tarefas críticas. | As tarefas críticas foram marcadas explicitamente, com foco em backend, testes, deploy, vídeo, integração e documentação final. | Concluída | 8 tasks críticas priorizadas no planejamento. |
+| Antecipar revisão documental, build e testes ao longo da sprint. | O planejamento colocou validações técnicas antes das tarefas dependentes de evidência final. | Concluída no planejamento | #257, #258, #261, #262, #263, #275, #276, #280 e #281 sustentam as evidências finais. |
+| Registrar evidências objetivas do board, dailies e fechamento da sprint. | A retrospectiva da Sprint 5 passou a registrar pontos fortes, fracos, métricas, ações de melhoria e post-mortem. | Concluída em documentação | Seções 5.4, 5.5 e 5.6 deste documento. |
+
+### 5.6 Análise Post-Mortem Final
+
+A análise final indica que o projeto evoluiu de uma fase inicial de descoberta e estruturação para uma entrega integrada, com backend, frontend, banco de dados, recomendação, testes, documentação e preparação de deploy. O principal ganho de gestão ao longo das sprints foi o aumento progressivo da granularidade das tarefas, da rastreabilidade dos critérios de aceite e da relação entre documentação e evidência técnica.
+
+Os problemas recorrentes estiveram ligados à concentração de validações perto do fechamento, dependências entre frentes técnicas e necessidade de revisar artefatos de sprints anteriores. Para projetos futuros, recomenda-se antecipar a validação de ambiente, manter testes e documentação evoluindo junto com o código e reservar a última sprint prioritariamente para estabilização, evidências e apresentação final, e não para descobertas técnicas de grande porte.
 
 ---
 
@@ -377,9 +462,9 @@ A Sprint 5 será voltada ao refinamento final do projeto. As tasks abaixo foram 
 | 3 | Integrantes descritos? | Seção `Equipe` do `README.md` lista os sete integrantes. | Atendido | Nenhum ajuste identificado. |
 | 4 | Links presentes ou corretos dos integrantes? | Cada integrante está listado com link de LinkedIn no formato `- [Nome](link)`. | Atendido | Nenhum ajuste identificado |
 | 5 | Apresenta descrição curta do projeto? | `README.md` apresenta `Recomendação de Espetáculos no Portal Aventura` e a seção `Descrição do Projeto`. | Atendido | Nenhum ajuste identificado. |
-| 6 | Apresenta estrutura de pastas conforme o modelo? | `README.md` possui a seção `Estrutura do Repositório`, com `docs/` e `src/`. | Parcialmente atendido | Avaliar se a estrutura deve citar explicitamente contrato/front-end/documentação conforme o modelo da disciplina. |
+| 6 | Apresenta estrutura de pastas conforme o modelo? | `README.md` possui a seção `Estrutura do Repositório`, com `docs/`, `src/` e os principais módulos da solução. | Atendido | Nenhum ajuste identificado. |
 | 8 | Apresenta histórico de lançamentos? | `README.md` possui a seção `Histórico de Versões`. | Atendido | Nenhum ajuste identificado. |
-| 9 | Histórico de lançamentos adequado? | Histórico apresenta versões `0.1.0`, `0.2.0` e `0.3.0-dev`, com datas e descrições. | Atendido | Atualizar caso exista uma nova versão de entrega. |
+| 9 | Histórico de lançamentos adequado? | Histórico apresenta versões `0.1.0`, `0.2.0`, `0.3.0` e `0.4.0`, com datas e descrições. | Atendido | Nenhum ajuste identificado. |
 | 10 | Apresenta licença? | `README.md` possui seção `Licença` com Creative Commons Attribution 4.0. | Atendido | Nenhum ajuste identificado. |
 | 11 | Inteli consta na licença? | A licença menciona e linka `Inteli`. | Atendido | Nenhum ajuste identificado. |
 | 12 | Nome do grupo ou integrantes presentes na licença? | A licença menciona explicitamente `Grupo 2 - Aventureiros` e lista os integrantes. | Atendido | Nenhum ajuste identificado. |
@@ -394,15 +479,15 @@ A Sprint 5 será voltada ao refinamento final do projeto. As tasks abaixo foram 
 | 1 | Apresenta pasta `documentos`, `docs` ou `documents` na raiz do projeto? | Existe pasta `docs` na raiz. | Atendido | Nenhum ajuste identificado. |
 | 2 | Apresenta arquivo `Index.md` preenchido que indexa todos os documentos da pasta `docs`? | Existe `docs/Index.md`, indexando os documentos principais encontrados na pasta `docs`. | Atendido | Nenhum ajuste identificado. |
 | 3 | Documentação encontrada? | A pasta `docs` contém `Projeto.md`, `GestaoProjeto.md`, `Gestao_Projeto_Configuracao.md`, `Modelo_Recomendacao.md` e `projeto_visual.md`. | Atendido | Nenhum ajuste identificado. |
-| 4 | Sumário de todos os documentos `.md` navegáveis? | Documentos principais em `docs` possuem seção `Sumário`. | Atendido | Conferir manualmente se todos os links internos funcionam corretamente. |
-| 5 | Instruções e observações dos documentos removidas? | Não foram identificadas instruções iniciais de template nos documentos principais; há templates `A preencher` em seções planejadas. | Parcialmente atendido | Preencher ou remover campos `A preencher` antes da entrega final. |
-| 6 | Links acessíveis? | Links locais principais do `docs/Index.md` apontam para documentos existentes na pasta `docs`. | Atendido | Validar manualmente links externos, quando houver. |
-| 7 | Não compartilha dados sensíveis? | Documentação não expõe credenciais; o README orienta uso de `.env` e alerta que não deve ser versionado. | Parcialmente atendido | Avaliar a presença do arquivo `.env` versionado/local antes da entrega. |
+| 4 | Sumário de todos os documentos `.md` navegáveis? | Documentos principais em `docs` possuem seção `Sumário`. | Atendido | A conferência manual dos links internos será revisada na Sprint 5 final. |
+| 5 | Instruções e observações dos documentos removidas? | Não foram identificadas instruções iniciais de template nos documentos principais. A seção de planejamento da Sprint 5 em `GestaoProjeto.md` foi preenchida com as 26 tasks finais. | Atendido | Nenhum ajuste identificado em `GestaoProjeto.md`. |
+| 6 | Links acessíveis? | Links locais principais do `docs/Index.md` apontam para documentos existentes na pasta `docs`. | Atendido | A validação manual de links externos, quando houver, será revisada na Sprint 5 final. |
+| 7 | Não compartilha dados sensíveis? | Documentação não expõe senhas, tokens ou chaves reais; o README orienta uso de `.env`, o `.gitignore` impede versionamento de `.env` e apenas templates como `.env.example` e `.env.deploy.example` estão versionados. | Atendido | Nenhum ajuste identificado. |
 | 8 | Possui referências bibliográficas, se for o caso? | `docs/Projeto.md` contém seção de referências bibliográficas. | Atendido | Nenhum ajuste identificado. |
-| 9 | Formatação adequada? | Documentos principais usam Markdown com títulos, tabelas e sumários. | Atendido | Fazer revisão final de links e quebras de linha antes da entrega. |
-| 10 | Apresenta todas as seções preenchidas? | Há campos `A preencher` em `GestaoProjeto.md` e em partes de `Projeto.md`. | Parcialmente atendido | Completar os campos pendentes antes da entrega final. |
-| 11 | Arquivos de instrução `.txt` ou não relevantes para o projeto foram removidos? | Não há arquivos `.txt` relevantes na raiz ou em `docs`; há arquivos gerados em ambientes/dependências. | Parcialmente atendido | Ignorar dependências geradas ou garantir que pastas como `.venv311` e `node_modules` não entrem na entrega final. |
-| 12 | Links acessíveis sem solicitação de permissão? | Links de documentos locais são relativos; links externos dependem de acesso público. | Parcialmente atendido | Validar links externos e remover links que exijam permissão. |
+| 9 | Formatação adequada? | Documentos principais usam Markdown com títulos, tabelas e sumários. | Atendido | A revisão final de links e quebras de linha será realizada na Sprint 5 final antes da entrega. |
+| 10 | Apresenta todas as seções preenchidas? | `GestaoProjeto.md` não possui mais placeholders de tasks; ainda há campos de consolidação final de testes em `Projeto.md`. | Parcialmente atendido | A análise consolidada dos testes em `Projeto.md` será revisada e completada na Sprint 5 final antes da entrega. |
+| 11 | Arquivos de instrução `.txt` ou não relevantes para o projeto foram removidos? | Não há arquivos `.txt` relevantes na raiz ou em `docs`; há arquivos gerados em ambientes/dependências. | Parcialmente atendido | A verificação de dependências geradas e pastas como `.venv311` e `node_modules` será revisada na Sprint 5 final. |
+| 12 | Links acessíveis sem solicitação de permissão? | Links de documentos locais são relativos; links externos dependem de acesso público. | Parcialmente atendido | A validação de links externos e remoção de links que exijam permissão será revisada na Sprint 5 final. |
 
 ### 6.3 Aplicação
 
@@ -410,7 +495,7 @@ A Sprint 5 será voltada ao refinamento final do projeto. As tasks abaixo foram 
 |---|---|---|---|---|
 | 1 | Possui pasta `src`? | Existe pasta `src` na raiz do projeto. | Atendido | Nenhum ajuste identificado. |
 | 2 | Possui pasta para a lógica/codificação da aplicação? | `src` contém `backend`, `frontend`, `inference-service`, `ml`, `recommendation-service` e `training-service`. | Atendido | Nenhum ajuste identificado. |
-| 3 | Possui arquivo `README.md` com informações sobre como executar a aplicação? | `README.md` possui seção `Configuração e Execução`, com comandos para banco, frontend, backend, ML e inferência. | Atendido | Conferir se os comandos estão atualizados com o estado atual do código. |
+| 3 | Possui arquivo `README.md` com informações sobre como executar a aplicação? | `README.md` possui seções `Configuração` e `Execução Local`, com comandos para banco, frontend, backend, ML e inferência. | Atendido | A conferência dos comandos com o estado atual do código será revisada na Sprint 5 final. |
 
 ---
 
@@ -424,10 +509,10 @@ As regras de gestão de configuração utilizadas pelo grupo foram descritas no 
 | Padrão de branches | As branches seguem prefixos por tipo de atividade, como `feature/`, `fix/` e `docs/`, conforme convenção definida no documento de gestão de configuração. | Branch atual `docs/standardize-project-management` e histórico com branches `fix/reorganizacao-modelo`, `feat/docker-mongodb`, `feat/front-back-login-integration` e `feat/recommendation-unit-tests`. | Aplicada |
 | Fluxo de criação e atualização de branches | Alterações de documentação e desenvolvimento são realizadas em branches específicas antes da integração. | A branch atual concentra ajustes de documentação de gestão; o histórico mostra merges de branches de feature e fix para `develop`. | Aplicada |
 | Conventional Commits | Os commits seguem a estrutura `tipo: descrição`, com tipos como `docs`, `feat` e `fix`. | Histórico Git contém commits como `docs: add sprint 4 management and sprint 5 planning #248`, `docs: consolidate project management documentation #248`, `feat: mongodb docker #239` e `fix: trim aplicado no ItemId e TipoEvento #238`. | Aplicada |
-| Pull Requests e revisão | As alterações devem ser integradas por Pull Request e revisão antes do merge, conforme política definida no documento de gestão de configuração. | O histórico local registra merges de branches para `develop`; pendência: registrar links ou IDs dos Pull Requests para evidência direta da revisão. | Aplicada |
+| Pull Requests e revisão | As alterações devem ser integradas por Pull Request e revisão antes do merge, conforme política definida no documento de gestão de configuração. | O histórico local registra merges de branches para `develop`; os links ou IDs dos Pull Requests serão revisados na Sprint 5 final para evidência direta da revisão. | Aplicada |
 | Relação com issues | Commits, branches e Pull Requests devem estar relacionados ao escopo das issues sempre que possível. | Histórico Git registra commits vinculados a issues, como `#248`, `#238`, `#239`, `#223` e `#234`. | Aplicada |
-| Exclusão de branches finalizadas | Branches finalizadas devem ser removidas após merge para manter o repositório organizado. | A política está definida em [Gestao_Projeto_Configuracao.md](Gestao_Projeto_Configuracao.md); pendência: validar no repositório remoto se branches já mergeadas foram excluídas. | Aplicada |
-| Versionamento SemVer | O projeto adota versionamento semântico no formato `MAJOR.MINOR.PATCH`. | O `README.md` possui histórico de versões `0.1.0`, `0.2.0` e `0.3.0-dev`, com descrição das entregas. | Aplicada |
+| Exclusão de branches finalizadas | Branches finalizadas devem ser removidas após merge para manter o repositório organizado. | A política está definida em [Gestao_Projeto_Configuracao.md](Gestao_Projeto_Configuracao.md); a validação no repositório remoto sobre branches já mergeadas será revisada na Sprint 5 final. | Aplicada |
+| Versionamento SemVer | O projeto adota versionamento semântico no formato `MAJOR.MINOR.PATCH`. | O `README.md` possui histórico de versões `0.1.0`, `0.2.0`, `0.3.0` e `0.4.0`, com descrição das entregas. | Aplicada |
 | Aplicação prática no projeto | O fluxo recomendado inclui criação de branch, commits, envio ao remoto, abertura de Pull Request, revisão, merge e exclusão da branch. | O histórico Git apresenta commits e merges compatíveis com o fluxo definido. | Aplicada  |
 
 ---

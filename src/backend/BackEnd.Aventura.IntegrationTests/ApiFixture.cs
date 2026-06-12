@@ -57,7 +57,6 @@ public class ApiFixture : IAsyncLifetime
                         ["Jwt:Issuer"]        = JwtIssuer,
                         ["Jwt:Audience"]      = JwtAudience,
                         ["Jwt:ExpiryMinutes"] = "60",
-                        ["ViaCep:BaseUrl"]    = "https://viacep.com.br/",
                     }));
 
                 host.ConfigureServices(services =>

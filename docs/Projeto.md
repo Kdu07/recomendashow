@@ -3077,9 +3077,12 @@ Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositó
 
 ---
 
-#### Link do vídeo demonstrativo
+#### Link do vídeo demonstrativo backend
 
 [Vídeo demonstrativo](https://drive.google.com/file/d/1VCDSsW-dxjwJJM6786tu-Pd1RauL3sNp/view?usp=sharing)
+
+#### Línk do vídeo demonstrativo front integrado com o back
+[Vídeo demonstrativo](https://drive.google.com/file/d/1EcSC9ybqNQ1LKotA9xdpr2rvZfvmRAxN/view?usp=sharing)
 
 ---
 

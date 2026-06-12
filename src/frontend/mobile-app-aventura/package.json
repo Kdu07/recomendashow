@@ -23,6 +23,7 @@
   },
   "scripts": {
     "start": "expo start",
+    "test": "jest",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
@@ -41,6 +42,9 @@
   "jest": {
     "testEnvironment": "jsdom",
     "rootDir": ".",
+    "setupFiles": [
+      "<rootDir>/jest.setup.js"
+    ],
     "modulePaths": [
       "<rootDir>"
     ],

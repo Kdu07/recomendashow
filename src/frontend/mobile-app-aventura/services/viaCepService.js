@@ -1,3 +1,5 @@
+import { cachedFetch } from './vhsService';
+
 const VIACEP_BASE_URL = 'https://viacep.com.br/ws';
 
 export function onlyCepDigits(value) {
@@ -21,13 +23,9 @@ export async function lookupAddressByCep(value) {
     throw new Error('Informe um CEP válido com 8 dígitos.');
   }
 
-  const response = await fetch(`${VIACEP_BASE_URL}/${cep}/json/`);
-
-  if (!response.ok) {
-    throw new Error('Não foi possível consultar o CEP agora.');
-  }
-
-  const data = await response.json();
+  const data = await cachedFetch(
+    `${VIACEP_BASE_URL}/${cep}/json/`
+  );
 
   if (data?.erro) {
     throw new Error('CEP não encontrado.');

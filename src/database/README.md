@@ -284,6 +284,7 @@ Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventu
 | anonimizado | BOOLEAN | NOT NULL, DEFAULT FALSE | — | Indica se os dados pessoais do usuário foram anonimizados (LGPD) |
 | anonimizado_em | TIMESTAMPTZ | — | — | Data e hora em que a anonimização foi executada pela `sp_anonimizar_usuario` (LGPD) |
 | ml_id | SERIAL | UNIQUE (idx_usuarios_ml_id) | — | Identificador inteiro sequencial para mapeamento UUID ↔ índice do modelo de recomendação ML |
+| data_atualizacao | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | — | Data e hora da última modificação do perfil; mantida automaticamente pelo trigger `trg_usuarios_update` |
 
 ---
 
@@ -410,6 +411,7 @@ Tabela que unifica wishlist e curtidas do usuário em espetáculos.
 | usuario_id | UUID | PK (composta), FK | → usuarios(id) ON DELETE CASCADE | Usuário que realizou a ação |
 | espetaculo_id | UUID | PK (composta), FK | → espetaculos(id) ON DELETE CASCADE | Espetáculo alvo da ação |
 | tipo | tipo_lista | PK (composta) | — | Tipo da ação: `curtida` ou `wishlist` |
+| adicionado_em | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | — | Data e hora em que o item foi adicionado à wishlist ou curtido pelo usuário |
 
 ---
 
@@ -433,6 +435,7 @@ Objetos criados em `02_sprint4_improvements.sql`.
 | Nome | Retorno | Tabela afetada | Finalidade |
 |---|---|---|---|
 | fn_atualizar_data_preferencias() | TRIGGER | preferencias | Atualiza automaticamente `data_atualizacao` para o timestamp corrente em todo UPDATE na tabela `preferencias` |
+| fn_atualizar_data_usuario() | TRIGGER | usuarios | Atualiza automaticamente `data_atualizacao` para o timestamp corrente em todo UPDATE na tabela `usuarios` |
 | fn_bloquear_update_anonimizado() | TRIGGER | usuarios | Impede qualquer UPDATE em registros já anonimizados, levantando exceção em conformidade com a LGPD |
 | fn_sincronizar_data_consentimento() | TRIGGER | usuarios | Preenche automaticamente `data_consentimento` quando o consentimento passa de `FALSE` para `TRUE` e a data ainda não foi informada |
 
@@ -441,6 +444,7 @@ Objetos criados em `02_sprint4_improvements.sql`.
 | Nome | Evento | Tabela | Função associada | Finalidade |
 |---|---|---|---|---|
 | trg_preferencias_update | BEFORE UPDATE | preferencias | fn_atualizar_data_preferencias() | Mantém `data_atualizacao` sempre sincronizado com o momento real da alteração |
+| trg_usuarios_update | BEFORE UPDATE | usuarios | fn_atualizar_data_usuario() | Mantém `data_atualizacao` sempre sincronizado com o momento real da alteração do perfil |
 | trg_bloquear_update_anonimizado | BEFORE UPDATE | usuarios | fn_bloquear_update_anonimizado() | Protege dados anonimizados de qualquer modificação posterior (LGPD) |
 | trg_sincronizar_data_consentimento | BEFORE UPDATE | usuarios | fn_sincronizar_data_consentimento() | Sincroniza automaticamente a data de consentimento quando o aceite LGPD é registrado |
 
@@ -574,11 +578,12 @@ Novos índices sem predecessor no Sprint 3:
 
 | Tabela | Sprint 3 (`01_create_database.sql`) | Sprint 4 (adições via `02_sprint4_improvements.sql`) |
 |---|---|---|
-| usuarios | id, nome, email, senha_hash, idade, data_cadastro | + cep, logradouro, numero, complemento, bairro, cidade; + consentimento_aceito, data_consentimento, deleted_at, anonimizado, anonimizado_em; + ml_id; + trigger `trg_bloquear_update_anonimizado` |
+| usuarios | id, nome, email, senha_hash, idade, data_cadastro | + cep, logradouro, numero, complemento, bairro, cidade; + consentimento_aceito, data_consentimento, deleted_at, anonimizado, anonimizado_em; + ml_id; + data_atualizacao; + triggers `trg_bloquear_update_anonimizado`, `trg_usuarios_update`, `trg_sincronizar_data_consentimento` |
 | teatros | id, nome, endereco, cidade, horario_funcionamento | + índice `idx_teatros_cidade` |
 | espetaculos | id, nome, tipo_evento, descricao, url_bilheteria, data_inicio, data_fim, valor_ingresso | + TIMESTAMPTZ em data_inicio e data_fim; + índice `idx_espetaculos_datas` |
 | interacoes | id, usuario_id, espetaculo_id, tipo, pontuacao, data_registro, data_expiracao; índice `idx_interacoes_usuario` | + constraints `chk_pontuacao`, `chk_data_expiracao`; `idx_interacoes_usuario` → `idx_interacoes_usuario_expiracao` |
 | preferencias | id, usuario_id, cidade, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes, data_atualizacao | + trigger `trg_preferencias_update` |
+| wishlist_curtidas | usuario_id, espetaculo_id, tipo | + `adicionado_em` |
 | recomendacoes | id, usuario_id, espetaculo_id, score, motivo, data_geracao; índice `idx_recomendacao_usuario` | + `UNIQUE(usuario_id, espetaculo_id)`; + visualizada_em; `idx_recomendacao_usuario` → `idx_recomendacoes_usuario_score` |
 | wishlist_curtidas | usuario_id, espetaculo_id, tipo | + índice `idx_wishlist_usuario` |
 | usuario_genero_favorito | usuario_id, genero_id | sem alterações |
@@ -603,6 +608,8 @@ Novos índices sem predecessor no Sprint 3:
 | Aplicação (explícito) | `usuarios.deleted_at` | Momento do soft-delete; gravado pela aplicação; pré-requisito obrigatório para execução de `sp_anonimizar_usuario` |
 | `sp_anonimizar_usuario` | `usuarios.anonimizado_em` | Gravado pela procedure no mesmo `UPDATE` que substitui os dados pessoais; confirma o momento exato da anonimização (LGPD) |
 | Aplicação (explícito) | `recomendacoes.visualizada_em` | Gravado pelo backend quando a recomendação é exibida ao usuário; `NULL` enquanto não visualizada |
+| `trg_usuarios_update` → `fn_atualizar_data_usuario()` | `usuarios.data_atualizacao` | Reescrito com `CURRENT_TIMESTAMP` a cada `UPDATE` no perfil do usuário, independentemente da origem da alteração |
+| `DEFAULT CURRENT_TIMESTAMP` | `wishlist_curtidas.adicionado_em` | Gravado automaticamente no INSERT; registra quando o usuário adicionou o item à wishlist ou curtiu |
 
 #### Consideração futura
 

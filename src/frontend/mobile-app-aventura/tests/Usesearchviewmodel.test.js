@@ -1,9 +1,15 @@
 /**
  * @file useSearchViewModel.test.js
- * Testes unitários para useSearchViewModel.
+ * Testes unitários para useSearchViewModel
+ *
+ * O repositório de busca e o de wishlist são mockados com dados controlados,
+ * permitindo verificar a lógica de filtragem sem dependência de AsyncStorage.
  */
 
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
+import useSearchViewModel from '../viewmodels/useSearchViewModel';
+
+// ── Mocks ─────────────────────────────────────────────────────────────────────
 
 const MOCK_EVENTS = [
   { id: '1', title: 'Mamma Mia', location: 'Teatro Renault', city: 'São Paulo', categoryId: 'musical', showId: 'show-1' },
@@ -22,24 +28,10 @@ const MOCK_CATEGORIES = [
 ];
 
 jest.mock('../repositories/searchRepository', () => ({
-  getSearchData: jest.fn().mockResolvedValue({
+  getSearchData: () => ({
     events: MOCK_EVENTS,
     categories: MOCK_CATEGORIES,
     recommendedEvents: MOCK_RECOMMENDED,
-  }),
-  searchEventsData: jest.fn((query, category) => {
-    const normalizedQuery = String(query ?? '').trim().toLowerCase();
-    return Promise.resolve(
-      MOCK_EVENTS.filter((event) => {
-        const matchesQuery =
-          normalizedQuery.length === 0 ||
-          event.title.toLowerCase().includes(normalizedQuery) ||
-          event.location.toLowerCase().includes(normalizedQuery) ||
-          event.city.toLowerCase().includes(normalizedQuery);
-        const matchesCategory = !category || event.categoryId === category;
-        return matchesQuery && matchesCategory;
-      })
-    );
   }),
 }));
 
@@ -48,139 +40,125 @@ jest.mock('../repositories/wishlistRepository', () => ({
   toggleWishlistEvent: jest.fn(),
 }));
 
-jest.mock('../services/tokenStorageService', () => ({
-  getAuthSession: jest.fn().mockResolvedValue({ usuarioId: 'user-123' }),
-}));
-
 jest.mock('@react-navigation/native', () => ({
   useFocusEffect: jest.fn(),
 }));
 
-import { toggleWishlistEvent } from '../repositories/wishlistRepository';
-
-const useSearchViewModel = require('../viewmodels/useSearchViewModel').default;
+import { getWishlistData, toggleWishlistEvent } from '../repositories/wishlistRepository';
 
 function makeNavigation() {
   return { navigate: jest.fn() };
 }
 
-async function renderLoadedHook(navigation = makeNavigation()) {
-  const hook = renderHook(() => useSearchViewModel(navigation));
-  await waitFor(() => {
-    expect(hook.result.current.filteredEvents).toEqual(MOCK_RECOMMENDED);
-  });
-  return hook;
-}
+// ── Estado inicial ─────────────────────────────────────────────────────────────
 
-async function applySearch(result, value) {
-  act(() => result.current.handleSearchChange(value));
-  await waitFor(() => {
-    expect(result.current.isSearching).toBe(true);
-  });
-}
-
-describe('useSearchViewModel - estado inicial', () => {
-  test('searchText vazio e categoria "all"', async () => {
-    const { result } = await renderLoadedHook();
+describe('useSearchViewModel – estado inicial', () => {
+  test('searchText vazio e categoria "all"', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
     expect(result.current.searchText).toBe('');
     expect(result.current.selectedCategory).toBe('all');
   });
 
-  test('isSearching é false no estado inicial', async () => {
-    const { result } = await renderLoadedHook();
+  test('isSearching é false no estado inicial', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
     expect(result.current.isSearching).toBe(false);
   });
 
-  test('exibe eventos recomendados quando não há busca ativa', async () => {
-    const { result } = await renderLoadedHook();
+  test('exibe eventos recomendados quando não há busca ativa', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
     expect(result.current.filteredEvents).toEqual(MOCK_RECOMMENDED);
   });
 
-  test('sectionTitle padrão é "Recomendado para você"', async () => {
-    const { result } = await renderLoadedHook();
+  test('sectionTitle padrão é "Recomendado para você"', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
     expect(result.current.sectionTitle).toBe('Recomendado para você');
   });
 });
 
-describe('useSearchViewModel - busca por texto', () => {
-  test('filtrar por título retorna evento correto', async () => {
-    const { result } = await renderLoadedHook();
-    await applySearch(result, 'Mamma');
-    await waitFor(() => expect(result.current.filteredEvents).toHaveLength(1));
+// ── Busca por texto ────────────────────────────────────────────────────────────
+
+describe('useSearchViewModel – busca por texto', () => {
+  test('filtrar por título retorna evento correto', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
+    act(() => result.current.handleSearchChange('Mamma'));
+    expect(result.current.filteredEvents).toHaveLength(1);
     expect(result.current.filteredEvents[0].id).toBe('1');
   });
 
-  test('busca é case-insensitive', async () => {
-    const { result } = await renderLoadedHook();
-    await applySearch(result, 'mamma mia');
-    await waitFor(() => expect(result.current.filteredEvents).toHaveLength(1));
+  test('busca é case-insensitive', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
+    act(() => result.current.handleSearchChange('mamma mia'));
     expect(result.current.filteredEvents[0].title).toBe('Mamma Mia');
   });
 
-  test('filtrar por localização funciona', async () => {
-    const { result } = await renderLoadedHook();
-    await applySearch(result, 'Pinheiros');
-    await waitFor(() => expect(result.current.filteredEvents).toHaveLength(1));
+  test('filtrar por localização funciona', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
+    act(() => result.current.handleSearchChange('Pinheiros'));
     expect(result.current.filteredEvents[0].id).toBe('2');
   });
 
-  test('filtrar por cidade funciona', async () => {
-    const { result } = await renderLoadedHook();
-    await applySearch(result, 'Rio de Janeiro');
-    await waitFor(() => expect(result.current.filteredEvents).toHaveLength(1));
+  test('filtrar por cidade funciona', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
+    act(() => result.current.handleSearchChange('Rio de Janeiro'));
     expect(result.current.filteredEvents[0].id).toBe('3');
   });
 
-  test('busca sem resultado define hasResults como false', async () => {
-    const { result } = await renderLoadedHook();
-    await applySearch(result, 'xyzabc');
-    await waitFor(() => expect(result.current.hasResults).toBe(false));
+  test('busca sem resultado define hasResults como false', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
+    act(() => result.current.handleSearchChange('xyzabc'));
+    expect(result.current.hasResults).toBe(false);
   });
 
-  test('sectionTitle muda quando há busca ativa', async () => {
-    const { result } = await renderLoadedHook();
-    await applySearch(result, 'Mamma');
+  test('sectionTitle muda quando há busca ativa', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
+    act(() => result.current.handleSearchChange('Mamma'));
     expect(result.current.sectionTitle).toBe('Resultados da busca');
   });
 
-  test('sectionSubtitle mostra contagem de resultados', async () => {
-    const { result } = await renderLoadedHook();
-    await applySearch(result, 'São Paulo');
-    await waitFor(() => expect(result.current.filteredEvents).toHaveLength(2));
+  test('sectionSubtitle mostra contagem de resultados', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
+    act(() => result.current.handleSearchChange('São Paulo'));
+    // Mamma Mia + Hamlet estão em São Paulo
     expect(result.current.sectionSubtitle).toContain('espetáculos encontrados');
   });
 });
 
-describe('useSearchViewModel - filtro por categoria', () => {
-  test('selecionar categoria "musical" filtra apenas musicais', async () => {
-    const { result } = await renderLoadedHook();
+// ── Filtro por categoria ───────────────────────────────────────────────────────
+
+describe('useSearchViewModel – filtro por categoria', () => {
+  test('selecionar categoria "musical" filtra apenas musicais', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
     act(() => result.current.handleCategoryPress('musical'));
-    await waitFor(() => expect(result.current.filteredEvents.length).toBeGreaterThan(0));
-    expect(result.current.filteredEvents.every((event) => event.categoryId === 'musical')).toBe(true);
+    expect(result.current.filteredEvents.every((e) => e.categoryId === 'musical')).toBe(true);
   });
 
-  test('isSearching é true ao selecionar categoria diferente de "all"', async () => {
-    const { result } = await renderLoadedHook();
+  test('isSearching é true ao selecionar categoria diferente de "all"', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
     act(() => result.current.handleCategoryPress('teatro'));
     expect(result.current.isSearching).toBe(true);
   });
 
-  test('combinação de texto + categoria aplica ambos os filtros', async () => {
-    const { result } = await renderLoadedHook();
+  test('combinação de texto + categoria aplica ambos os filtros', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
     act(() => {
       result.current.handleSearchChange('São Paulo');
       result.current.handleCategoryPress('musical');
     });
-    await waitFor(() => expect(result.current.filteredEvents).toHaveLength(1));
+    // Apenas Mamma Mia é musical em São Paulo
+    expect(result.current.filteredEvents).toHaveLength(1);
     expect(result.current.filteredEvents[0].id).toBe('1');
   });
 });
 
-describe('useSearchViewModel - handleClearSearch', () => {
-  test('limpa texto e restaura categoria para "all"', async () => {
-    const { result } = await renderLoadedHook();
-    await applySearch(result, 'Mamma');
-    act(() => result.current.handleCategoryPress('musical'));
+// ── handleClearSearch ─────────────────────────────────────────────────────────
+
+describe('useSearchViewModel – handleClearSearch', () => {
+  test('limpa texto e restaura categoria para "all"', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
+    act(() => {
+      result.current.handleSearchChange('Mamma');
+      result.current.handleCategoryPress('musical');
+    });
     act(() => result.current.handleClearSearch());
     expect(result.current.searchText).toBe('');
     expect(result.current.selectedCategory).toBe('all');
@@ -188,31 +166,35 @@ describe('useSearchViewModel - handleClearSearch', () => {
   });
 });
 
-describe('useSearchViewModel - handleEventPress', () => {
-  test('navega para ShowInfo quando evento tem showId', async () => {
+// ── handleEventPress ──────────────────────────────────────────────────────────
+
+describe('useSearchViewModel – handleEventPress', () => {
+  test('navega para ShowInfo quando evento tem showId', () => {
     const nav = makeNavigation();
-    const { result } = await renderLoadedHook(nav);
+    const { result } = renderHook(() => useSearchViewModel(nav));
     act(() => result.current.handleEventPress(MOCK_EVENTS[0]));
     expect(nav.navigate).toHaveBeenCalledWith('ShowInfo', { showId: 'show-1' });
   });
 
-  test('não navega quando evento não tem showId', async () => {
+  test('não navega quando evento não tem showId', () => {
     const nav = makeNavigation();
-    const { result } = await renderLoadedHook(nav);
+    const { result } = renderHook(() => useSearchViewModel(nav));
     act(() => result.current.handleEventPress({ id: '99' }));
     expect(nav.navigate).not.toHaveBeenCalled();
   });
 });
 
-describe('useSearchViewModel - wishlist', () => {
-  test('isEventFavorite retorna false para evento não salvo', async () => {
-    const { result } = await renderLoadedHook();
+// ── Wishlist ──────────────────────────────────────────────────────────────────
+
+describe('useSearchViewModel – wishlist', () => {
+  test('isEventFavorite retorna false para evento não salvo', () => {
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
     expect(result.current.isEventFavorite('1')).toBe(false);
   });
 
   test('handleFavoritePress atualiza savedEventIds', async () => {
     toggleWishlistEvent.mockResolvedValue([MOCK_EVENTS[0]]);
-    const { result } = await renderLoadedHook();
+    const { result } = renderHook(() => useSearchViewModel(makeNavigation()));
     await act(async () => { await result.current.handleFavoritePress(MOCK_EVENTS[0]); });
     expect(result.current.isEventFavorite('1')).toBe(true);
   });

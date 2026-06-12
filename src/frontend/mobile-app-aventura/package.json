@@ -42,9 +42,6 @@
   "jest": {
     "testEnvironment": "jsdom",
     "rootDir": ".",
-    "setupFiles": [
-      "<rootDir>/jest.setup.js"
-    ],
     "modulePaths": [
       "<rootDir>"
     ],

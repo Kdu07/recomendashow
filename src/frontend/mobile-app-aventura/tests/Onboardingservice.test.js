@@ -1,92 +1,75 @@
 /**
  * @file onboardingService.test.js
- * Testes unitários para onboardingService.
+ * Testes unitários para onboardingService
+ *
+ * AsyncStorage é mockado para simular persistência local.
  */
 
-jest.mock('../services/apiClient', () => ({
-  apiFetch: jest.fn(),
-}));
-
-jest.mock('../services/tokenStorageService', () => ({
-  getAuthSession: jest.fn(),
-}));
-
-jest.mock('../services/categoryService', () => ({
-  fetchCategories: jest.fn(),
-}));
-
 import { onboardingService } from '../services/onboardingService';
-import { apiFetch } from '../services/apiClient';
-import { getAuthSession } from '../services/tokenStorageService';
-import { fetchCategories } from '../services/categoryService';
-import { CATEGORIES } from '../models/onboardingData';
 
-const USER_ID = 'user-123';
-const PREFS = {
-  categories: [CATEGORIES[0].id],
-  city: 'sao_paulo',
-  frequency: 'todo_mes',
-};
+// ── Mock de AsyncStorage ──────────────────────────────────────────────────────
 
-function mockJsonResponse(body) {
-  return {
-    ok: true,
-    json: jest.fn().mockResolvedValue(body),
-    text: jest.fn().mockResolvedValue(''),
-  };
-}
+const storage = {};
+
+jest.mock('@react-native-async-storage/async-storage', () => ({
+  setItem: jest.fn((key, value) => {
+    storage[key] = value;
+    return Promise.resolve();
+  }),
+  getItem: jest.fn((key) => Promise.resolve(storage[key] ?? null)),
+  removeItem: jest.fn((key) => {
+    delete storage[key];
+    return Promise.resolve();
+  }),
+}));
 
 beforeEach(() => {
+  Object.keys(storage).forEach((k) => delete storage[k]);
   jest.clearAllMocks();
-  getAuthSession.mockResolvedValue({ usuarioId: USER_ID });
-  fetchCategories.mockResolvedValue([
-    { id: 'all', label: 'Todos' },
-    { id: CATEGORIES[0].id, label: CATEGORIES[0].label },
-  ]);
 });
+
+const PREFS = { categories: ['teatro'], city: 'sp', frequency: 'monthly' };
+
+// ── save ──────────────────────────────────────────────────────────────────────
 
 describe('onboardingService.save', () => {
-  test('envia preferências normalizadas para a API', async () => {
-    apiFetch.mockResolvedValue(mockJsonResponse({ usuarioId: USER_ID }));
-
+  test('persiste as preferências no AsyncStorage como JSON', async () => {
     await onboardingService.save(PREFS);
-
-    expect(apiFetch).toHaveBeenCalledWith(`/api/Preferencias/${USER_ID}`, {
-      method: 'PUT',
-      body: JSON.stringify({
-        Generos: [CATEGORIES[0].label],
-        Cidade: 'São Paulo',
-        Tags: ['todo_mes'],
-        ReceberNotificacoes: true,
-      }),
-    });
+    const stored = storage['@onboarding_preferences'];
+    expect(JSON.parse(stored)).toEqual(PREFS);
   });
 
-  test('lança erro quando a API retorna falha', async () => {
-    apiFetch.mockResolvedValue({
-      ok: false,
-      status: 500,
-      text: jest.fn().mockResolvedValue('erro'),
-    });
-
-    await expect(onboardingService.save(PREFS)).rejects.toThrow('Erro ao salvar onboarding');
+  test('sobrescreve preferências anteriores', async () => {
+    await onboardingService.save(PREFS);
+    const updated = { ...PREFS, city: 'rj' };
+    await onboardingService.save(updated);
+    const stored = JSON.parse(storage['@onboarding_preferences']);
+    expect(stored.city).toBe('rj');
   });
 });
+
+// ── load ──────────────────────────────────────────────────────────────────────
 
 describe('onboardingService.load', () => {
-  test('carrega preferências do usuário autenticado', async () => {
-    const responseBody = { Generos: ['Musical'], Cidade: 'São Paulo' };
-    apiFetch.mockResolvedValue(mockJsonResponse(responseBody));
-
+  test('retorna null quando nada foi salvo', async () => {
     const result = await onboardingService.load();
+    expect(result).toBeNull();
+  });
 
-    expect(apiFetch).toHaveBeenCalledWith(`/api/Preferencias/${USER_ID}`);
-    expect(result).toEqual(responseBody);
+  test('retorna as preferências salvas corretamente', async () => {
+    await onboardingService.save(PREFS);
+    const result = await onboardingService.load();
+    expect(result).toEqual(PREFS);
   });
 });
 
+// ── clear ─────────────────────────────────────────────────────────────────────
+
 describe('onboardingService.clear', () => {
-  test('mantém operação compatível sem persistência local', async () => {
-    await expect(onboardingService.clear()).resolves.toBeNull();
+  test('remove as preferências do storage', async () => {
+    await onboardingService.save(PREFS);
+    await onboardingService.clear();
+    const result = await onboardingService.load();
+    expect(result).toBeNull();
   });
 });

@@ -15,16 +15,7 @@ namespace BackEnd.Aventura.Tests
         {
             _recomendacaoRepository = new FakeRecomendacaoRepository();
             _espetaculoRepository = new FakeEspetaculoRepository();
-            _service = CreateService();
-        }
-
-        private RecomendacaoService CreateService()
-        {
-            return new RecomendacaoService(new IRecommendationStrategy[]
-            {
-                new StoredRecommendationStrategy(_recomendacaoRepository),
-                new FavoriteGenresRecommendationStrategy(_espetaculoRepository)
-            });
+            _service = new RecomendacaoService(_recomendacaoRepository, _espetaculoRepository);
         }
 
         [Fact]

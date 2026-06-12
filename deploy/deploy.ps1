@@ -1,4 +1,4 @@
-# Deploy manual do sistema de recomendação para a VM OCI (Windows -> Linux x64).
+﻿# Deploy manual do sistema de recomendação para a VM OCI (Windows -> Linux x64).
 # Pré-requisitos: Docker Desktop (modo Linux), OpenSSH (ssh/scp), deploy/deploy.config
 # e .env.deploy preenchidos, chave-back.key na raiz do repo.
 # Uso: powershell -File deploy\deploy.ps1

@@ -8,7 +8,26 @@
     <RootNamespace>InferenceService.Tests</RootNamespace>
   </PropertyGroup>
 
+  <!-- Gate de cobertura (RNF08): ativo quando rodando com /p:CollectCoverage=true.
+       Cobertura medida em 40,1% (12/06/2026) — abaixo da meta de 70% do RNF08.
+       Gate inicial em 35% (valor real − 5 p.p.) para
+       evitar regressão; elevar gradualmente até 70% (backlog). -->
+  <PropertyGroup Condition="'$(CollectCoverage)' == 'true'">
+    <Threshold>35</Threshold>
+    <ThresholdType>line</ThresholdType>
+    <ThresholdStat>total</ThresholdStat>
+    <CoverletOutputFormat>cobertura</CoverletOutputFormat>
+  </PropertyGroup>
+
   <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.msbuild" Version="10.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">

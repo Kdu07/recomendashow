@@ -1,0 +1,44 @@
+# CI mínimo — testes + gate de cobertura (RNF08, cenário negativo 2 de 17.4)
+#
+# Os thresholds do gate ficam nos próprios projetos:
+#   - src/backend/BackEnd.Aventura.Tests/*.csproj  → 70% linha (módulos críticos;
+#     repositories excluídos — cobertos pela suíte de integração TI-02)
+#   - src/inference-service/InferenceService.Tests/*.csproj → 35% linha (valor
+#     medido 40,1% em 12/06/2026; elevar até 70% — backlog)
+#   - src/frontend/.../package.json (jest coverageThreshold) → 70% statements/lines
+# Qualquer queda abaixo do threshold falha o job (exit code != 0) e bloqueia o MR.
+
+stages:
+  - test
+
+backend-tests:
+  stage: test
+  image: mcr.microsoft.com/dotnet/sdk:9.0
+  script:
+    - dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
+      /p:CollectCoverage=true
+      --logger "trx;LogFileName=backend-unit.trx"
+    - dotnet test src/inference-service/InferenceService.Tests/InferenceService.Tests.csproj
+      /p:CollectCoverage=true
+      --logger "trx;LogFileName=inference.trx"
+  coverage: '/Total\s*\|\s*(\d+\.?\d*)%/'
+  artifacts:
+    when: always
+    paths:
+      - "**/coverage.cobertura.xml"
+      - "**/TestResults/*.trx"
+    expire_in: 30 days
+
+frontend-tests:
+  stage: test
+  image: node:20
+  script:
+    - cd src/frontend/mobile-app-aventura
+    - npm ci
+    - npm test -- --coverage
+  coverage: '/All files\s*\|\s*(\d+\.?\d*)/'
+  artifacts:
+    when: always
+    paths:
+      - src/frontend/mobile-app-aventura/coverage/
+    expire_in: 30 days

@@ -13,6 +13,9 @@ chave-back.key
 secrets.json
 appsettings.*.local.json
 
+# Deploy config (VM host/user/key path — keep local)
+deploy/deploy.config
+
 # ============================================================
 #  Node / npm / Expo / React Native  (src/frontend)
 # ============================================================
@@ -49,6 +52,7 @@ __pycache__/
 **/obj/
 **/.build-check/
 **/TestResults/
+**/publish/
 *.user
 *.suo
 .vs/
@@ -74,3 +78,5 @@ dataset.csv
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+# Relatorios coverlet gerados na raiz dos projetos de teste
+**/coverage.cobertura.xml

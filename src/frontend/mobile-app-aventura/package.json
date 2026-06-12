@@ -41,6 +41,18 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
+    "coverageThreshold": {
+      "global": {
+        "statements": 70,
+        "lines": 70
+      }
+    },
+    "globals": {
+      "__DEV__": true
+    },
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web"
+    },
     "rootDir": ".",
     "setupFiles": [
       "<rootDir>/jest.setup.js"

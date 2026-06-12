@@ -11,6 +11,9 @@ Este índice organiza os documentos do projeto **G2 - Recomendação de Espetác
 | [Gestão do Projeto](./GestaoProjeto.md) | Consolida retrospectivas, gestão evolutiva, ações de melhoria, evolução das sprints e planejamento revisado da Sprint 5. | Referência para acompanhamento da gestão das sprints. |
 | [Gestão e Configuração](./Gestao_Projeto_Configuracao.md) | Define práticas de versionamento, Gitflow, organização de branches, commits e Pull Requests. | Referência para gestão de configuração e colaboração do grupo. |
 | [Projeto Visual](./projeto_visual.md) | Documenta decisões visuais, identidade, telas, fluxos e referências de interface do produto. | Apoio para avaliação da experiência do usuário e consistência visual. |
+| [Modelo de Recomendação](./Modelo_Recomendacao.md) | Detalha o motor de recomendação híbrido (Funk SVD + afinidade de categoria): pipeline de treino, hiperparâmetros, métricas e contrato com o backend. | Referência técnica do modelo de ML. |
+| [Deploy do Motor de Recomendação](./Deploy_Recomendacao.md) | Documenta a implantação do serviço de inferência em Docker na Oracle Cloud: diagrama de implantação, decisões, procedimento, operação e troubleshooting. | Referência de infraestrutura e runbook de operação. |
+| [Marketing e Captação de Prospects](./Marketing_Captacao_Prospects.md) | Plano de ações de Inbound, Outbound e Omnichannel, roteiro de vendas outbound B2B com matriz de objeções e simulação de ligação, e estratégia de CRM integrada ao app. | Referência de negócio para captação de prospects e vendas corporativas. |
 
 ## Navegação Recomendada
 

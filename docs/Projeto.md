@@ -3336,17 +3336,102 @@ O cálculo da média SUS foi feito pela soma das pontuações individuais dividi
 
 ### 20.8 Testes de APIs externas
 
-Os testes de APIs externas foram executados para validar integrações previstas no sistema, especialmente a comunicação com o ViaCEP e eventuais serviços de ticketera. A execução considerou cenários de sucesso, erro, timeout, indisponibilidade e fallback, verificando se o sistema manteve uma experiência controlada mesmo diante de falhas externas.
+Os testes de APIs externas foram executados com foco na integração com a API **ViaCEP**, utilizada no fluxo de cadastro para validação, normalização e preenchimento automático dos dados de endereço do usuário a partir do CEP informado. A integração foi testada de forma isolada, sem chamadas reais para a internet durante a execução automatizada, utilizando mocks de `fetch` para garantir reprodutibilidade, controle dos cenários e independência da disponibilidade do serviço externo.
 
-**APIs avaliadas:** Foram avaliadas as APIs [informar APIs testadas].
+#### 20.8.1 API externa avaliada
 
-**Cenários executados:** Os cenários executados incluíram [descrever cenários de sucesso, erro, timeout, indisponibilidade, dados inválidos e fallback].
+| API externa | Uso no sistema | Ponto de integração | Estratégia de teste |
+|---|---|---|---|
+| ViaCEP | Consulta de endereço por CEP para preencher rua, bairro, cidade e UF no cadastro | `src/frontend/mobile-app-aventura/services/viaCepService.js` | Testes unitários com Jest e mock de `fetch` |
+| ViaCEP + cache VHS | Redução de chamadas repetidas ao ViaCEP e tratamento de HIT/MISS | `src/frontend/mobile-app-aventura/services/vhsService.js` | Testes unitários de cache, TTL, falhas e expiração |
+| Fluxo de cadastro | Disparo automático da busca de CEP e preenchimento do formulário | `src/frontend/mobile-app-aventura/viewmodels/useAuthViewModel.js` | Testes de ViewModel com mock de `lookupAddressByCep` |
 
-**Resultados observados:** As respostas apresentaram [registrar códigos HTTP, estrutura das respostas, tempos observados, comportamento do sistema e tratamento de erros].
+Embora o backend possua DTO e campos de endereço preparados para receber dados enriquecidos, a chamada direta ao ViaCEP está implementada no frontend mobile. Por isso, a execução desta seção concentrou-se nos serviços do aplicativo responsáveis pela comunicação externa e pela experiência do usuário no cadastro.
 
-**Evidências:** As evidências da execução estão disponíveis em [inserir links para prints de Postman/Insomnia/cURL, logs, mocks/stubs, respostas JSON ou relatórios].
+#### 20.8.2 Cenários executados
 
-**Análise:** A integração demonstrou [registrar confiabilidade, dependências externas, limitações e melhorias necessárias].
+Os testes cobriram cenários positivos, negativos e de resiliência:
+
+| Grupo | Cenários validados | Resultado |
+|---|---|---|
+| Normalização de CEP | Remoção de caracteres não numéricos, limitação a 8 dígitos e formatação `00000-000` | Aprovado |
+| Consulta bem-sucedida | Chamada para `https://viacep.com.br/ws/{cep}/json/` com CEP sanitizado | Aprovado |
+| Mapeamento de resposta | Conversão de `logradouro`, `bairro`, `localidade` e `uf` para `street`, `neighborhood`, `city` e `state` | Aprovado |
+| Payload incompleto | Preenchimento com strings vazias quando campos opcionais não são retornados | Aprovado |
+| CEP inválido | Rejeição de CEP com menos de 8 dígitos antes de chamar a API externa | Aprovado |
+| CEP inexistente | Tratamento de resposta ViaCEP com `erro: true` | Aprovado |
+| Falha HTTP | Tratamento de resposta `ok: false` sem armazenamento indevido em cache | Aprovado |
+| Falha de rede | Tratamento de rejeição do `fetch` com mensagem amigável | Aprovado |
+| JSON inválido | Tratamento de falha ao converter a resposta em JSON | Aprovado |
+| Cache MISS/HIT | Primeira chamada consulta a API simulada; segunda chamada usa cache | Aprovado |
+| TTL e expiração | Respostas válidas e respostas de CEP inexistente expiram conforme TTL configurado | Aprovado |
+| Isolamento do cache | `flushCache()` limpa entradas e reinicia o último status de cache | Aprovado |
+| Cadastro | Busca automática ao completar 8 dígitos, limpeza de endereço em CEP incompleto e ignorar resposta atrasada | Aprovado |
+
+#### 20.8.3 Comandos executados
+
+A execução focada nos testes de API externa foi realizada no diretório `src/frontend/mobile-app-aventura` com o comando:
+
+```bash
+npm.cmd test -- --runTestsByPath tests/viaCepService.test.js tests/vhsService.test.js tests/viaCepIntegration.test.js tests/Useauthviewmodel.test.js --coverage --collectCoverageFrom=services/viaCepService.js --collectCoverageFrom=services/vhsService.js --collectCoverageFrom=viewmodels/useAuthViewModel.js
+```
+
+#### 20.8.4 Resultados observados
+
+A execução apresentou resultado integralmente positivo:
+
+| Métrica | Resultado |
+|---|---|
+| Suítes executadas | 4 |
+| Suítes aprovadas | 4 |
+| Testes executados | 55 |
+| Testes aprovados | 55 |
+| Testes reprovados | 0 |
+| Snapshots | 0 |
+| Tempo de execução | 26,303 s |
+
+Resultado do runner Jest:
+
+```text
+Test Suites: 4 passed, 4 total
+Tests:       55 passed, 55 total
+Snapshots:   0 total
+```
+
+#### 20.8.5 Cobertura dos testes
+
+A cobertura dos serviços diretamente responsáveis pela integração externa atingiu 100% em todas as métricas:
+
+| Arquivo | Statements | Branches | Functions | Lines | Status |
+|---|---:|---:|---:|---:|---|
+| `services/viaCepService.js` | 100% | 100% | 100% | 100% | Aprovado |
+| `services/vhsService.js` | 100% | 100% | 100% | 100% | Aprovado |
+
+Considerando também o ViewModel de cadastro, que contém outras regras além da integração com ViaCEP, o recorte completo apresentou:
+
+| Escopo | Statements | Branches | Functions | Lines |
+|---|---:|---:|---:|---:|
+| ViaCEP + VHS + cadastro | 90,9% | 85,8% | 96,29% | 90,69% |
+
+O arquivo `useAuthViewModel.js` não atingiu 100% porque também contém fluxos de login, autenticação com Google, validações gerais e envio de cadastro, que extrapolam a integração com API externa. Ainda assim, os pontos específicos relacionados ao ViaCEP foram validados com sucesso.
+
+#### 20.8.6 Evidências
+
+As evidências da execução estão nos arquivos de teste e no relatório de cobertura gerado pelo Jest:
+
+- `src/frontend/mobile-app-aventura/tests/viaCepService.test.js`
+- `src/frontend/mobile-app-aventura/tests/vhsService.test.js`
+- `src/frontend/mobile-app-aventura/tests/viaCepIntegration.test.js`
+- `src/frontend/mobile-app-aventura/tests/Useauthviewmodel.test.js`
+- `src/frontend/mobile-app-aventura/coverage/`
+
+Os testes garantem que nenhuma chamada real ao ViaCEP seja feita durante a suíte automatizada. Todas as respostas são simuladas por mocks controlados, permitindo validar cenários de sucesso, erro e indisponibilidade de forma determinística.
+
+#### 20.8.7 Análise
+
+A execução confirmou que a integração com ViaCEP está robusta para o escopo implementado. O sistema consulta a URL correta com CEP sanitizado, mapeia a resposta para o formato usado pelo aplicativo, evita chamadas externas para CEPs malformados, trata CEP inexistente, falhas HTTP, falhas de rede e respostas JSON inválidas com mensagens controladas. A camada VHS também demonstrou funcionamento correto, com cache HIT/MISS, TTL diferenciado para sucesso e não encontrado, expiração e limpeza de estado entre testes.
+
+Com 55 testes aprovados e 100% de cobertura nos serviços responsáveis pela integração externa, conclui-se que a comunicação com ViaCEP e sua camada de cache estão validadas com alto nível de confiança para a Sprint. O resultado atende ao planejamento de testes de APIs externas e reduz o risco de falhas perceptíveis ao usuário durante o preenchimento automático de endereço no cadastro.
 
 ### 20.9 Análise consolidada dos resultados
 

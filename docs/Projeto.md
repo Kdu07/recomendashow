@@ -1504,216 +1504,232 @@ O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visual
 | RF10 — Recomendação Inteligente | UC09 — Receber recomendações personalizadas |
 
 ## 16. Diagrama de Implantação
-
+ 
 O diagrama de implantação abaixo apresenta a arquitetura física do Portal Aventura, destacando os ambientes de execução, os componentes implantados e suas comunicações. A solução é composta pelo aplicativo móvel, API Gateway, Backend ASP.NET Core, Training Job, Sistema de Recomendação, banco de dados PostgreSQL, banco de dados MongoDB e serviços externos. As conexões entre os componentes utilizam protocolos como HTTPS e TCP, garantindo a comunicação entre os serviços da plataforma.
-
+ 
 <div align="center">
-  <sub>Imagem 10 - Diagrama de Componentes UML</sub><br>
-  <img src="../assets/diagrama-de-componentes.drawio.png" width="100%" alt="Diagrama de Componentes UML"><br>
+  <sub>Imagem 10 - Diagrama de Implantação UML</sub><br>
+  <img src="../assets/Diagrama-de-implantacao_drawio.png" width="100%" alt="Diagrama de Implantação UML"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
-
 ### Ambientes
-
+ 
 #### Aplicação Mobile
-
+ 
 Representa o aplicativo executado em dispositivos Android.
-
+ 
 **Componentes Implantados:**
-
+ 
 | Componente | Descrição |
 |------------|------------|
 | App Bundle (.apk) | Pacote distribuído para instalação do aplicativo móvel |
 | AsyncStorage | Armazenamento local utilizado para persistência de dados temporários e configurações do usuário |
-
+ 
 **Tecnologias:**
-
+ 
 - Android
 - React Native Runtime
-
 **Comunicação:**
-
+ 
 | Destino | Protocolo |
 |----------|-----------|
 | API Gateway | HTTPS (TCP 443) |
 | Deep Links | HTTPS (TCP 443) |
-
+ 
 ---
-
+ 
 #### Ambiente de Servidor
-
+ 
 Responsável pelo processamento das regras de negócio, autenticação, gerenciamento de usuários, recomendação de eventos e integração com serviços externos.
-
+ 
 **Componentes:**
-
+ 
 - API Gateway
 - Backend ASP.NET Core
 - Sistema de Recomendação
 - Training Job
-
 ---
-
+ 
 **API Gateway:**
-
+ 
 O API Gateway funciona como ponto único de entrada para as requisições realizadas pelo aplicativo móvel.
-
+ 
 Artefato Implantado:
-
+ 
 | Artefato | Descrição |
 |-----------|------------|
 | Gateway Service | Serviço responsável pelo roteamento das requisições para os serviços internos |
-
+ 
 Responsabilidades:
-
+ 
 - Receber requisições do aplicativo móvel
 - Encaminhar chamadas para o backend
 - Centralizar o acesso aos serviços internos
 - Aplicar políticas de segurança e controle de acesso
-
 Comunicação:
-
+ 
 | Origem | Destino | Protocolo |
 |---------|---------|------------|
 | Mobile App | API Gateway | HTTPS (TCP 443) |
 | API Gateway | Backend ASP.NET Core | TCP 8080 |
-
+ 
+---
+ 
 **Backend ASP.NET Core:**
-
+ 
 Representa o núcleo da aplicação, responsável pelas regras de negócio e gerenciamento das funcionalidades disponibilizadas ao usuário.
-
+ 
 Módulos Implantados:
-- Autenticação: Responsável pelo gerenciamento de login, registro e validação de credenciais.
-- Usuários: Responsável pelo gerenciamento dos dados dos usuários da plataforma.
-- Espetáculos: Responsável pela consulta, cadastro e gerenciamento dos eventos e espetáculos disponíveis.
-- Interações: Responsável pelo registro das ações realizadas pelos usuários, utilizadas posteriormente pelo sistema de recomendação.
-- Geolocalização: Responsável pelo tratamento de dados geográficos e busca de eventos com base na localização do usuário.
-
+- **Autenticação:** Responsável pelo gerenciamento de login, registro e validação de credenciais.
+- **Usuários:** Responsável pelo gerenciamento dos dados dos usuários da plataforma.
+- **Espetáculos:** Responsável pela consulta, cadastro e gerenciamento dos eventos e espetáculos disponíveis.
+- **Interações:** Responsável pelo registro das ações realizadas pelos usuários, utilizadas posteriormente pelo sistema de recomendação.
+- **Geolocalização:** Responsável pelo tratamento de dados geográficos e busca de eventos com base na localização do usuário.
 Comunicação do Backend:
-
+ 
 | Destino | Protocolo |
 |----------|-----------|
 | PostgreSQL | TCP 5432 |
+| MongoDB | TCP 27017 |
 | Object Storage | HTTPS (TCP 443) |
 | ViaCEP | HTTPS (TCP 443) |
 | Ticketeira (Sympla) | HTTPS (TCP 443) |
-
+ 
+---
+ 
 **Sistema de Recomendação:**
-
+ 
 Componente especializado na geração de recomendações personalizadas para os usuários.
-
+ 
 Artefato Implantado:
-
+ 
 | Artefato | Descrição |
 |-----------|------------|
 | Recommendation Engine | Motor responsável pela geração de recomendações com base nas interações dos usuários |
-
+ 
 Responsabilidades:
-
+ 
 - Processar histórico de interações
 - Gerar recomendações personalizadas
 - Disponibilizar recomendações para o backend
-- Consumir modelos treinados
-
+- Consumir modelos treinados pelo Training Job
 Comunicação:
-
-| Destino | Protocolo |
-|----------|-----------|
-| PostgreSQL | TCP 5432 |
-| Backend ASP.NET Core | HTTP REST (TCP 8081) |
-
+ 
+| Origem | Destino | Protocolo |
+|--------|----------|-----------|
+| Training Job | Sistema de Recomendação | HTTP REST (TCP 8081) |
+| Sistema de Recomendação | PostgreSQL | TCP 5432 |
+ 
 ---
-
+ 
 **Training Job:**
-
+ 
 Serviço responsável pelo treinamento dos modelos utilizados pelo sistema de recomendação.
-
+ 
 Artefato Implantado:
-
+ 
 | Artefato | Descrição |
 |-----------|------------|
 | Training Pipeline | Pipeline de treinamento e atualização dos modelos de recomendação |
-
+ 
 Responsabilidades:
-
+ 
 - Processar dados históricos
 - Treinar modelos de recomendação
 - Atualizar modelos utilizados pelo Recommendation Engine
 - Consumir dados armazenados na infraestrutura de dados
-
 Comunicação:
-
+ 
 | Destino | Protocolo |
 |----------|-----------|
 | PostgreSQL | TCP 5432 |
+| Sistema de Recomendação | HTTP REST (TCP 8081) |
 | Object Storage | HTTPS (TCP 443) |
-
+ 
+---
+ 
 #### Infraestrutura de Dados
-
+ 
 Camada responsável pelo armazenamento persistente das informações do sistema.
-
+ 
 **PostgreSQL:**
-
+ 
 Banco de dados relacional utilizado pela aplicação.
-
+ 
 Funções:
-
+ 
 - Armazenamento de usuários
 - Armazenamento de eventos
 - Armazenamento de interações
 - Persistência das informações de autenticação
 - Base para geração de recomendações
-
 Porta Utilizada:
-
+ 
 | Serviço | Porta |
 |----------|--------|
 | PostgreSQL | TCP 5432 |
-
+ 
+---
+ 
+**MongoDB:**
+ 
+Banco de dados não relacional utilizado pela aplicação.
+ 
+Funções:
+ 
+- Armazenamento de dados não estruturados ou semiestruturados da plataforma
+Porta Utilizada:
+ 
+| Serviço | Porta |
+|----------|--------|
+| MongoDB | TCP 27017 |
+ 
+---
+ 
 **Object Storage:**
-
+ 
 Armazenamento de objetos utilizado para persistência de arquivos e dados de treinamento.
-
-Artefato Armazenado:
-
+ 
+Artefatos Armazenados:
+ 
 | Artefato |
 |-----------|
 | Bucket S3 |
 | Eventos brutos (JSON) |
 | Modelos treinados (ZIP) |
-
+ 
 Responsabilidades:
-
+ 
 - Armazenamento de datasets
 - Armazenamento de modelos treinados
 - Disponibilização de arquivos para o pipeline de treinamento
-
 Comunicação:
-
+ 
 | Origem | Protocolo |
 |---------|-----------|
 | Backend ASP.NET Core | HTTPS (TCP 443) |
 | Training Job | HTTPS (TCP 443) |
-
+ 
+---
+ 
 #### Serviços Externos
-
+ 
 Serviços de terceiros consumidos pela plataforma.
-
+ 
 **ViaCEP:**
-
+ 
 Serviço utilizado para consulta de informações de endereço a partir do CEP informado pelo usuário.
-
+ 
 Comunicação:
-
+ 
 - HTTPS (TCP 443)
-
 **Ticketeira (Sympla):**
-
+ 
 Serviço externo responsável pelo fornecimento de informações relacionadas a eventos e venda de ingressos.
-
+ 
 Comunicação:
-
+ 
 - HTTPS (TCP 443)
-
 
 ## 17. Linguagens e Tecnologias Utilizadas
 

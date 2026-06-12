@@ -193,3 +193,27 @@ CREATE TRIGGER trg_sincronizar_data_consentimento
     BEFORE UPDATE ON usuarios
     FOR EACH ROW
     EXECUTE FUNCTION fn_sincronizar_data_consentimento();
+
+-- Rastreabilidade: data de atualização do perfil do usuário
+
+ALTER TABLE usuarios
+    ADD COLUMN IF NOT EXISTS data_atualizacao TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;
+
+CREATE OR REPLACE FUNCTION fn_atualizar_data_usuario()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.data_atualizacao = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_usuarios_update ON usuarios;
+CREATE TRIGGER trg_usuarios_update
+    BEFORE UPDATE ON usuarios
+    FOR EACH ROW
+    EXECUTE FUNCTION fn_atualizar_data_usuario();
+
+-- Rastreabilidade: momento de adição à wishlist/curtidas
+
+ALTER TABLE wishlist_curtidas
+    ADD COLUMN IF NOT EXISTS adicionado_em TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;

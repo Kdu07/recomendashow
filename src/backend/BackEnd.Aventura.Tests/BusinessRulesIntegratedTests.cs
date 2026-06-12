@@ -235,33 +235,41 @@ namespace BackEnd.Aventura.Tests
 
         [Fact]
         [Trait("Category", "BusinessRules")]
-        public void TRN10_UserAnonymization_ShouldRemovePersonalDataAfterDeletionRequest()
+        public void TRN10_DeletionRequest_ShouldSetDeletedAtAndBlockLogin()
         {
+            // A anonimização em si é responsabilidade de sp_anonimizar_usuario (testada em testes de banco).
+            // Aqui validamos que SolicitarExclusao marca DeletedAt e que o usuário não consegue logar após isso.
             var usuarios = new FakeUsuarioRepository();
-            var usuario = usuarios.Create(Usuario.Create(
-                "Cliente LGPD",
-                "lgpd@email.com",
-                "hash",
-                32,
-                cep: "01310-100",
-                logradouro: "Av. Paulista",
-                numero: "1000",
-                bairro: "Bela Vista",
-                cidade: "São Paulo"));
+            var preferencias = new FakePreferenciasRepository();
+            var service = CreateAuthService(usuarios, preferencias);
 
-            Assert.False(usuarios.Anonimizar(usuario.Id));
+            var registered = service.Register(new RegisterRequest
+            {
+                Nome = "Cliente LGPD",
+                Email = "lgpd@email.com",
+                Senha = "senha123",
+                Idade = 32,
+                Cep = "01310-100",
+                Logradouro = "Av. Paulista",
+                Numero = "1000",
+                Bairro = "Bela Vista",
+                Cidade = "São Paulo",
+                ConsentimentoAceito = true
+            });
 
-            usuarios.SolicitarExclusao(usuario.Id);
-            var anonymized = usuarios.Anonimizar(usuario.Id);
-            var result = usuarios.GetById(usuario.Id)!;
+            var antes = usuarios.GetById(registered.UsuarioId)!;
+            Assert.Null(antes.DeletedAt);
 
-            Assert.True(anonymized);
-            Assert.True(result.Anonimizado);
-            Assert.Equal("Usuário Removido", result.Nome);
-            Assert.EndsWith("@anonimizado.invalid", result.Email);
-            Assert.Null(result.Cep);
-            Assert.Null(result.Cidade);
-            Assert.Empty(result.SenhaHash);
+            usuarios.SolicitarExclusao(registered.UsuarioId);
+
+            var depois = usuarios.GetById(registered.UsuarioId)!;
+            Assert.NotNull(depois.DeletedAt);
+
+            Assert.Throws<UnauthorizedAccessException>(() => service.Login(new LoginRequest
+            {
+                Email = "lgpd@email.com",
+                Senha = "senha123"
+            }));
         }
 
         private static AuthService CreateAuthService(

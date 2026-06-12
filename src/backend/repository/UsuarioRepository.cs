@@ -161,36 +161,6 @@ WHERE id = @Id
             return command.ExecuteNonQuery() > 0;
         }
 
-        public bool Anonimizar(Guid id)
-        {
-            EntityGuards.NotEmpty(id, nameof(id));
-
-            using var connection = _connectionFactory.CreateConnection();
-            connection.Open();
-
-            const string sql = @"
-UPDATE usuarios
-SET nome        = 'Usuário Removido',
-    email       = id::text || '@anonimizado.invalid',
-    senha_hash  = '',
-    data_nascimento = NULL,
-    cep         = NULL,
-    logradouro  = NULL,
-    numero      = NULL,
-    complemento = NULL,
-    bairro      = NULL,
-    cidade      = NULL,
-    anonimizado = TRUE
-WHERE id = @Id
-  AND deleted_at IS NOT NULL
-  AND anonimizado = FALSE";
-
-            using var command = new NpgsqlCommand(sql, connection);
-            command.Parameters.AddWithValue("@Id", id);
-
-            return command.ExecuteNonQuery() > 0;
-        }
-
         public async Task<int?> ObterMlIdAsync(Guid usuarioId)
         {
             using var connection = _connectionFactory.CreateConnection();

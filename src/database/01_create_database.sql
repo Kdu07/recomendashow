@@ -48,9 +48,7 @@ CREATE TABLE IF NOT EXISTS usuarios(
     idade INT
     CHECK(idade >=13),
 
-    data_nascimento DATE,
-
-    data_cadastro TIMESTAMP
+    data_cadastro TIMESTAMPTZ
     DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -84,9 +82,9 @@ CREATE TABLE IF NOT EXISTS espetaculos(
 
     url_bilheteria TEXT,
 
-    data_inicio TIMESTAMP NOT NULL,
+    data_inicio TIMESTAMPTZ NOT NULL,
 
-    data_fim TIMESTAMP NOT NULL,
+    data_fim TIMESTAMPTZ NOT NULL,
 
     valor_ingresso DECIMAL(10,2)
     CHECK(valor_ingresso >=0),
@@ -118,10 +116,10 @@ CREATE TABLE IF NOT EXISTS interacoes(
 
     pontuacao DECIMAL(4,2),
 
-    data_registro TIMESTAMP
+    data_registro TIMESTAMPTZ
     DEFAULT CURRENT_TIMESTAMP,
 
-    data_expiracao TIMESTAMP,
+    data_expiracao TIMESTAMPTZ,
 
     CONSTRAINT fk_usuario_interacao
     FOREIGN KEY(usuario_id)
@@ -152,7 +150,7 @@ CREATE TABLE IF NOT EXISTS preferencias(
     faixa_preco_max DECIMAL(10,2),
     receber_notificacoes BOOLEAN DEFAULT TRUE,
 
-    data_atualizacao TIMESTAMP
+    data_atualizacao TIMESTAMPTZ
     DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_preferencia_usuario
@@ -160,13 +158,6 @@ CREATE TABLE IF NOT EXISTS preferencias(
     REFERENCES usuarios(id)
     ON DELETE CASCADE
 );
-
-ALTER TABLE preferencias
-    ADD COLUMN IF NOT EXISTS tags TEXT[],
-    ADD COLUMN IF NOT EXISTS faixa_preco_min DECIMAL(10,2),
-    ADD COLUMN IF NOT EXISTS faixa_preco_max DECIMAL(10,2),
-    ADD COLUMN IF NOT EXISTS receber_notificacoes BOOLEAN DEFAULT TRUE,
-    ADD COLUMN IF NOT EXISTS cep VARCHAR(9);
 
 
 CREATE TABLE IF NOT EXISTS recomendacoes(
@@ -182,7 +173,7 @@ CREATE TABLE IF NOT EXISTS recomendacoes(
 
     motivo TEXT,
 
-    data_geracao TIMESTAMP
+    data_geracao TIMESTAMPTZ
     DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY(usuario_id)

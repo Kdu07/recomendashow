@@ -8,6 +8,10 @@
 
 import { renderHook, act } from '@testing-library/react';
 import { useOnboardingViewModel } from '../viewmodels/useOnboardingViewModel';
+import { CATEGORIES } from '../models/onboardingData';
+
+// A finalização só envia ids que existem no catálogo (GUIDs de onboardingData)
+const TEATRO_ID = CATEGORIES[1].id; // Drama
 
 // ── Mocks ────────────────────────────────────────────────────────────────────
 
@@ -148,7 +152,7 @@ describe('useOnboardingViewModel – selectFrequency', () => {
 describe('useOnboardingViewModel – finalização', () => {
   async function fillAndFinish(onFinish) {
     const { result } = setup(onFinish);
-    act(() => result.current.toggleCategory('teatro'));
+    act(() => result.current.toggleCategory(TEATRO_ID));
     await act(async () => { await result.current.goNext(); });
     act(() => result.current.selectCity('sp'));
     await act(async () => { await result.current.goNext(); });
@@ -161,7 +165,7 @@ describe('useOnboardingViewModel – finalização', () => {
     const onFinish = jest.fn();
     await fillAndFinish(onFinish);
     expect(onboardingService.save).toHaveBeenCalledWith({
-      categories: ['teatro'],
+      categories: [TEATRO_ID],
       city: 'sp',
       frequency: 'monthly',
     });

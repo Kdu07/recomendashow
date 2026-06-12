@@ -22,6 +22,7 @@
     "react-native-web": "^0.21.0"
   },
   "scripts": {
+    "test": "jest",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
@@ -40,6 +41,18 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
+    "coverageThreshold": {
+      "global": {
+        "statements": 70,
+        "lines": 70
+      }
+    },
+    "globals": {
+      "__DEV__": true
+    },
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web"
+    },
     "rootDir": ".",
     "modulePaths": [
       "<rootDir>"

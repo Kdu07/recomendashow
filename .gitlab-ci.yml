@@ -18,6 +18,18 @@ backend-tests:
     - dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
       /p:CollectCoverage=true
       --logger "trx;LogFileName=backend-unit.trx"
+  coverage: '/Total\s*\|\s*(\d+\.?\d*)%/'
+  artifacts:
+    when: always
+    paths:
+      - "**/coverage.cobertura.xml"
+      - "**/TestResults/*.trx"
+    expire_in: 30 days
+
+inference-tests:
+  stage: test
+  image: mcr.microsoft.com/dotnet/sdk:9.0
+  script:
     - dotnet test src/inference-service/InferenceService.Tests/InferenceService.Tests.csproj
       /p:CollectCoverage=true
       --logger "trx;LogFileName=inference.trx"

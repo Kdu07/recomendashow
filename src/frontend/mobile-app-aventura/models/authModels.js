@@ -6,14 +6,40 @@ export const AUTH_MODES = {
 export const initialAuthValues = {
   name: '',
   email: '',
+  birthDate: '',
+  cep: '',
+  street: '',
+  number: '',
+  complement: '',
+  neighborhood: '',
+  city: '',
   password: '',
   confirmPassword: '',
+  consentimentoAceito: false,
 };
 
-export function createAuthUser({ id, name, email }) {
+export function createAuthUser({
+  id,
+  name,
+  email,
+  birthDate,
+  cep,
+  street,
+  number,
+  complement,
+  neighborhood,
+  city,
+}) {
   return {
     id,
     name,
     email,
+    birthDate,
+    cep,
+    street,
+    number,
+    complement,
+    neighborhood,
+    city,
   };
 }

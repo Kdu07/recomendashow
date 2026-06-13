@@ -1,18 +1,74 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Linking } from 'react-native';
-import { MOCK_SHOWS } from '../models/showInfoData';
+import { checkEventIsSaved, toggleWishlistEvent } from '../repositories/wishlistRepository';
+import { fetchShowById, mapDtoToShowInfo } from '../services/showService';
 
 export function useShowInfoViewModel(showId = '1') {
-  if (!MOCK_SHOWS[showId]) {
-    return { show: null, error: true, subtitle: null, toggleFavorite: () => {}, onPressTickets: () => {} };
-  }
+  const [show, setShow] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  const [show, setShow] = useState(MOCK_SHOWS[showId]);
+  useEffect(() => {
+    let isMounted = true;
 
-  const subtitle = show.date.status;
+    async function loadShow() {
+      try {
+        const dto = await fetchShowById(showId);
+        const isFavorited = await checkEventIsSaved(showId).catch(() => false);
+        if (isMounted) {
+          setShow({
+            ...mapDtoToShowInfo(dto),
+            isFavorited,
+          });
+        }
+      } catch (loadError) {
+        console.error('Failed to load show details:', loadError);
+        if (isMounted) {
+          setError(true);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
 
-  function toggleFavorite() {
-    setShow((prev) => ({ ...prev, isFavorited: !prev.isFavorited }));
+    loadShow();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [showId]);
+
+  const subtitle = show?.date?.status ?? '';
+
+  async function toggleFavorite() {
+    if (!show) {
+      return { added: false, eventTitle: '' };
+    }
+
+    const wasFavorited = show.isFavorited;
+    const updatedShow = {
+      ...show,
+      isFavorited: !wasFavorited,
+    };
+
+    setShow(updatedShow);
+
+    await toggleWishlistEvent({
+      id: show.id,
+      showId: show.id,
+      title: show.title,
+      location: show.location?.venue,
+      city: show.location?.city,
+      categoryId: 'musical',
+      image: show.heroImage,
+    });
+
+    return {
+      added: !wasFavorited,
+      eventTitle: show.title,
+    };
   }
 
   function onPressTickets() {
@@ -29,6 +85,8 @@ export function useShowInfoViewModel(showId = '1') {
 
   return {
     show,
+    loading,
+    error,
     subtitle,
     toggleFavorite,
     onPressTickets,

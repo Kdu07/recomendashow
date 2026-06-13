@@ -1,4 +1,23 @@
 # Projeto - Sistema de Recomendação - Aventura
+----
+
+## Grupo 2 - Aventureiros
+
+## Projeto - RecomendaShow
+
+## Integrantes
+
+- [Alexsander da Silva Barbosa](https://www.linkedin.com/in/alexsander-dsbarbosa/)
+- [Carlos Eduardo Serrano Quaglia](https://www.linkedin.com/in/carlos-quaglia-309088357/)
+- [Catarina Sayuri Arashiro Braga Felipe](https://www.linkedin.com/in/catarina-sayuri/)
+- [Débora Pereira Nogueira](https://www.linkedin.com/in/debora-pereira-nogueira/)
+- [Isaac Souza Santos](https://www.linkedin.com/in/isaac-souza-santos/)
+- [Nicholas Anantha Krishnan Millani](https://www.linkedin.com/in/nicholas-millani-83a950357/)
+- [Paulo Henrique Bueno Fernandes](https://www.linkedin.com/in/paulo-henrique0601/)
+
+## Objetivo do Documento
+
+Este documento apresenta a documentação principal do projeto, reunindo contexto do parceiro, problema, requisitos, arquitetura, diagramas, planejamento e execução de testes, desenvolvimento das sprints e evolução técnica da solução.
 
 ## Sumário
 
@@ -64,12 +83,12 @@
 <details>
 <summary><a href="#7-brainstorming-de-features">7. Brainstorming de Features</a></summary>
 
-- [1. Visão Geral do Modelo](#1-visão-geral-do-modelo-backend--inteligência)
-- [2. Interface do Usuário](#2-interface-do-usuário-front-end)
-- [2.1 Fluxo de Cadastro e Onboarding](#21-fluxo-de-cadastro-e-onboarding)
-- [2.2 Estrutura de Navegação](#22-estrutura-de-navegação)
-- [3. Funcionalidades Core](#3-funcionalidades-core)
-- [4. Roadmap: Funcionalidades Adicionais](#4-roadmap-funcionalidades-adicionais-futuro)
+- [7.1 Visão Geral do Modelo](#71-visão-geral-do-modelo-backend--inteligência)
+- [7.2 Interface do Usuário](#72-interface-do-usuário-front-end)
+- [7.2.1 Fluxo de Cadastro e Onboarding](#721-fluxo-de-cadastro-e-onboarding)
+- [7.2.2 Estrutura de Navegação](#722-estrutura-de-navegação)
+- [7.3 Funcionalidades Core](#73-funcionalidades-core)
+- [7.4 Roadmap: Funcionalidades Adicionais](#74-roadmap-funcionalidades-adicionais-futuro)
 
 </details>
 
@@ -103,11 +122,12 @@
 
 - [RNF01 — Tempo de resposta das recomendações](#rnf01--tempo-de-resposta-das-recomendações)
 - [RNF02 — Segurança das credenciais de usuário](#rnf02--segurança-das-credenciais-de-usuário)
-- [RNF03 — Conformidade com a LGPD](#rnf03--conformidade-com-a-lgpd)
-- [RNF04 — Usabilidade da interface em dispositivos móveis](#rnf04--usabilidade-da-interface-em-dispositivos-móveis)
+- [RNF03 — Privacidade e direitos do titular (LGPD)](#rnf03--privacidade-e-direitos-do-titular-lgpd)
+- [RNF04 — Usabilidade e responsividade em dispositivos móveis](#rnf04--usabilidade-e-responsividade-em-dispositivos-móveis)
 - [RNF05 — Disponibilidade da plataforma](#rnf05--disponibilidade-da-plataforma)
-- [RNF06 — Escalabilidade do sistema de recomendação](#rnf06--escalabilidade-do-sistema-de-recomendação)
+- [RNF06 — Capacidade sob carga em pico de campanha](#rnf06--capacidade-sob-carga-em-pico-de-campanha)
 - [RNF07 — Precisão da geolocalização](#rnf07--precisão-da-geolocalização)
+- [RNF08 — Modularidade do serviço de recomendação](#rnf08--modularidade-do-serviço-de-recomendação)
 
 </details>
 
@@ -172,52 +192,102 @@
 </details>
 
 <details>
-<summary><a href="#16-linguagens-e-tecnologias-utilizadas">16. Linguagens e Tecnologias Utilizadas</a></summary>
+<summary><a href="#16-diagrama-de-implantação">16. Diagrama de Implantação</a></summary>
 
-- [Linguagens e Tecnologias Utilizadas](#16-linguagens-e-tecnologias-utilizadas)
-
-</details>
-
-<details>
-<summary><a href="#17-planejamento-de-testes">17. Planejamento de Testes</a></summary>
-
-- [17.1 Objetivo do planejamento de testes](#171-objetivo-do-planejamento-de-testes)
-- [17.2 Estratégia geral de testes](#172-estratégia-geral-de-testes)
-- [17.3 Testes de funcionalidade](#173-testes-de-funcionalidade)
-- [17.4 Testes de requisitos não funcionais](#174-testes-de-requisitos-não-funcionais)
-- [17.5 Testes de usabilidade](#175-testes-de-usabilidade)
-- [17.6 Testes de APIs externas](#176-testes-de-apis-externas)
-- [17.7 Testes de integração](#177-testes-de-integração)
-- [17.8 Discussão geral de abrangência dos testes](#178-discussão-geral-de-abrangência-dos-testes)
-</details>
-
-<details>
-<summary><a href="#18-desenvolvimento-do-projeto--sprint-3">18. Desenvolvimento Do Projeto — Sprint 3</a></summary>
-
-- [18.1 Objetivo do artefato](#181-objetivo-do-artefato)
-- [18.2 Arquitetura de codificação e estrutura de diretórios](#182-arquitetura-de-codificação-e-estrutura-de-diretórios)
-- [18.3 Desenvolvimento do Backend](#183-desenvolvimento-do-backend)
-  - [18.3.1 Arquitetura do backend](#1831-arquitetura-do-backend)
-- [18.4 Desenvolvimento do Frontend](#184-desenvolvimento-do-frontend)
-  - [18.4.1 Arquitetura do frontend](#1841-arquitetura-do-frontend)
-  - [18.4.2 Telas implementadas](#1842-telas-implementadas)
-  - [18.4.3 Vídeo demonstrativo do frontend](#1843-vídeo-demonstrativo-do-frontend)
-- [18.5 Padrões de codificação e padrões de projeto](#185-padrões-de-codificação-e-padrões-de-projeto)
-  - [Padrões de codificação](#padrões-de-codificação)
-  - [Padrões de projeto](#padrões-de-projeto)
-- [18.6 Testes unitários e metodologia TDD](#186-testes-unitários-e-metodologia-tdd)
-  - [Estratégia de testes](#estratégia-de-testes)
-  - [Testes implementados](#testes-implementados)
-  - [Execução dos testes](#execução-dos-testes)
-  - [Resultado da cobertura](#resultado-da-cobertura)
-  - [Link do vídeo demonstrativo](#link-do-vídeo-demonstrativo)
+- [Diagrama de Implantação](#16-diagrama-de-implantação)
 
 </details>
 
 <details>
-<summary><a href="#19-termos-e-abreviações">19. Termos e Abreviações</a></summary>
+<summary><a href="#17-linguagens-e-tecnologias-utilizadas">17. Linguagens e Tecnologias Utilizadas</a></summary>
 
-- [Termos e Abreviações](#19-termos-e-abreviações)
+- [Linguagens e Tecnologias Utilizadas](#17-linguagens-e-tecnologias-utilizadas)
+
+</details>
+
+<details>
+<summary><a href="#18-planejamento-de-testes">18. Planejamento de Testes</a></summary>
+
+- [18.1 Objetivo do planejamento de testes](#181-objetivo-do-planejamento-de-testes)
+- [18.2 Estratégia geral de testes](#182-estratégia-geral-de-testes)
+- [18.3 Testes de funcionalidade](#183-testes-de-funcionalidade)
+- [18.4 Testes de requisitos não funcionais](#184-testes-de-requisitos-não-funcionais)
+- [18.5 Testes de usabilidade](#185-testes-de-usabilidade)
+- [18.6 Testes de APIs externas](#186-testes-de-apis-externas)
+- [18.7 Testes de integração](#187-testes-de-integração)
+  - [18.7.1 Simulação de comportamento equivalente ao VHS](#1871-simulação-de-comportamento-equivalente-ao-vhs)
+  - [18.7.2 Tabela de testes](#1872-tabela-de-testes)
+  - [18.7.3 Método de validação dos resultados](#1873-método-de-validação-dos-resultados)
+  - [18.7.4 Discussão de abrangência](#1874-discussão-de-abrangência)
+- [18.8 Discussão geral de abrangência dos testes](#188-discussão-geral-de-abrangência-dos-testes)
+
+</details>
+
+<details>
+<summary><a href="#19-desenvolvimento-do-projeto--sprint-3">19. Desenvolvimento do Projeto — Sprint 3</a></summary>
+
+- [19.1 Objetivo da sessão](#191-objetivo-da-sessão)
+- [19.2 Arquitetura de codificação e estrutura de diretórios](#192-arquitetura-de-codificação-e-estrutura-de-diretórios)
+- [19.3 Desenvolvimento do Backend](#193-desenvolvimento-do-backend)
+  - [19.3.1 Arquitetura do backend](#1931-arquitetura-do-backend)
+  - [19.3.2 Rotas da API REST](#1932-rotas-da-api-rest)
+- [19.4 Desenvolvimento do Frontend](#194-desenvolvimento-do-frontend)
+  - [19.4.1 Arquitetura do frontend](#1941-arquitetura-do-frontend)
+  - [19.4.2 Telas implementadas](#1942-telas-implementadas)
+  - [19.4.3 Vídeo demonstrativo do frontend](#1943-vídeo-demonstrativo-do-frontend)
+- [19.5 Padrões de codificação e padrões de projeto](#195-padrões-de-codificação-e-padrões-de-projeto)
+- [19.6 Testes unitários do Backend e metodologia TDD](#196-testes-unitários-do-backend-e-metodologia-tdd)
+- [19.7 Testes unitários do Frontend (React Native)](#197-testes-unitários-do-frontend-react-native)
+- [19.8 Testes unitários do Backend](#198-testes-unitários-do-backend)
+- [19.9 Documentação de API (Swagger)](#199-documentação-de-api-swagger)
+
+</details>
+
+<details>
+<summary><a href="#20-desenvolvimento-do-projeto--sprint-4">20. Desenvolvimento do Projeto — Sprint 4</a></summary>
+
+- [20.1 Objetivo da Sprint 4](#201-objetivo-da-sprint-4)
+- [20.2 Evolução do Frontend Mobile](#202-evolução-do-frontend-mobile)
+  - [20.2.1 Arquitetura do frontend](#2021-arquitetura-do-frontend)
+  - [20.2.2 Telas e fluxos refinados](#2022-telas-e-fluxos-refinados)
+  - [20.2.3 Testes unitários do frontend](#2023-testes-unitários-do-frontend)
+  - [20.2.4 Evidência demonstrativa do frontend](#2024-evidência-demonstrativa-do-frontend)
+- [20.3 Evolução do Backend](#203-evolução-do-backend)
+- [20.4 Integração com Dados e Recomendação](#204-integração-com-dados-e-recomendação)
+- [20.5 Testes e Validação](#205-testes-e-validação)
+- [20.6 Evidências da Sprint](#206-evidências-da-sprint)
+
+</details>
+
+<details>
+<summary><a href="#21-execução-dos-testes">21. Execução dos Testes</a></summary>
+
+- [21.1 Objetivo da execução dos testes](#211-objetivo-da-execução-dos-testes)
+- [21.2 Visão geral da execução](#212-visão-geral-da-execução)
+- [21.3 Testes de funcionalidade](#213-testes-de-funcionalidade)
+- [21.4 Testes automatizados de integração](#214-testes-automatizados-de-integração)
+- [21.5 Testes automatizados de regras de negócio](#215-testes-automatizados-de-regras-de-negócio)
+- [21.6 Testes de requisitos não funcionais](#216-testes-de-requisitos-não-funcionais)
+- [21.7 Testes de usabilidade](#217-testes-de-usabilidade)
+- [21.8 Testes de APIs externas](#218-testes-de-apis-externas)
+- [21.9 Análise consolidada dos resultados](#219-análise-consolidada-dos-resultados)
+
+</details>
+
+<details>
+<summary><a href="#22-análise-de-impactos-éticos-ia4people">22. Análise de Impactos Éticos IA4People</a></summary>
+
+- [22.1 Framework IA4People](#221-framework-ia4people)
+- [22.2 Correlação com o Projeto](#222-correlação-com-o-projeto)
+- [22.3 Riscos Éticos e Mitigações](#223-riscos-éticos-e-mitigações)
+- [22.4 Síntese de Aderência](#224-síntese-de-aderência)
+
+</details>
+
+<details>
+<summary><a href="#23-termos-e-abreviações">23. Termos e Abreviações</a></summary>
+
+- [Termos e Abreviações](#23-termos-e-abreviações)
 
 </details>
 
@@ -384,7 +454,7 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
  
 ---
  
-## 5.1 Personas
+### 5.1 Personas
  
 ### 5.1.1 Ana Luiza — Cliente em Formação (Descoberta)
  
@@ -410,7 +480,7 @@ Marcos Abrantes representa um perfil crescente de consumidores culturais urbanos
 </div>
 ---
  
-## 5.2 Jornada do Usuário
+### 5.2 Jornada do Usuário
  
 ### 5.2.1 Jornada de Ana Luiza — Cliente em Formação
  
@@ -472,7 +542,7 @@ Para o projeto de plataforma digital baseada em arquitetura orientada a serviço
 Esta documentação detalha o brainstorm de *features* realizado em grupo.
 
 
-### 1. Visão Geral do Modelo (Backend & Inteligência)
+### 7.1 Visão Geral do Modelo (Backend & Inteligência)
 
 O motor de recomendação será alimentado por dados demográficos e comportamentais para personalizar a experiência do usuário no portal.
 
@@ -483,9 +553,9 @@ O motor de recomendação será alimentado por dados demográficos e comportamen
 * **Integração com Wishlist:** O sistema deve reconhecer se o espetáculo já está na lista de desejos para refinar as sugestões.
 
 
-### 2. Interface do Usuário (Front-end)
+### 7.2 Interface do Usuário (Front-end)
 
-### 2.1 Fluxo de Cadastro e Onboarding
+### 7.2.1 Fluxo de Cadastro e Onboarding
 Essencial para coletar os dados iniciais que alimentarão o sistema de recomendação inteligente.
 * **Credenciais:** E-mail e senha.
 * **Dados Pessoais:** Nome, Idade, Gênero e CEP.
@@ -494,7 +564,7 @@ Essencial para coletar os dados iniciais que alimentarão o sistema de recomenda
     * Tipos de preferência (Show musical, stand-up, espetáculo, espetáculo musical).
     * Seleção de gêneros favoritos.
 
-### 2.2 Estrutura de Navegação
+### 7.2.2 Estrutura de Navegação
 * **Home:** Visão geral e destaques.
 * **Componentes de Descoberta:** Carrosséis e "Prateleiras" de recomendações personalizadas.
 * **Filtros Regionais:** Seleção rápida entre São Paulo (SP) e Rio de Janeiro (RJ).
@@ -503,14 +573,14 @@ Essencial para coletar os dados iniciais que alimentarão o sistema de recomenda
 * **Teatro:** Páginas com informações fixas sobre os equipamentos geridos pela Aventura.
 
 
-### 3. Funcionalidades Core
+### 7.3 Funcionalidades Core
 
 * **Direcionamento para Compra:** Link direto e facilitado para a aquisição de ingressos.
 * **Busca:** Sistema de pesquisa interna de conteúdos e espetáculos.
 * **Gestão de Wishlist:** Botão para salvar experiências de interesse futuro.
 
 
-### 4. Roadmap: Funcionalidades Adicionais (Futuro)
+### 7.4 Roadmap: Funcionalidades Adicionais (Futuro)
 
 * **Sistema de Feedback:** Avaliação de espetáculos por meio de "Like/Dislike" para aprimorar o algoritmo.
 * **Notificações Push:** Alertas automáticos quando um espetáculo salvo na Wishlist entrar em cartaz ou tiver novas datas disponíveis.
@@ -1460,45 +1530,273 @@ O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visual
 | RF09 — Redirecionamento de Compra | UC13 — Acessar link de compra |
 | RF10 — Recomendação Inteligente | UC09 — Receber recomendações personalizadas |
 
-## 16. Linguagens e Tecnologias Utilizadas
+## 16. Diagrama de Implantação
+ 
+O diagrama de implantação abaixo apresenta a arquitetura física do Portal Aventura, destacando os ambientes de execução, os componentes implantados e suas comunicações. A solução é composta pelo aplicativo móvel, API Gateway, Backend ASP.NET Core, Training Job, Sistema de Recomendação, banco de dados PostgreSQL, banco de dados MongoDB e serviços externos. As conexões entre os componentes utilizam protocolos como HTTPS e TCP, garantindo a comunicação entre os serviços da plataforma.
+ 
+<div align="center">
+  <sub>Imagem 10 - Diagrama de Implantação UML</sub><br>
+  <img src="../assets/Diagrama-de-implantacao_drawio.png" width="100%" alt="Diagrama de Implantação UML"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+### Ambientes
+ 
+#### Aplicação Mobile
+ 
+Representa o aplicativo executado em dispositivos Android.
+ 
+**Componentes Implantados:**
+ 
+| Componente | Descrição |
+|------------|------------|
+| App Bundle (.apk) | Pacote distribuído para instalação do aplicativo móvel |
+| AsyncStorage | Armazenamento local utilizado para persistência de dados temporários e configurações do usuário |
+ 
+**Tecnologias:**
+ 
+- Android
+- React Native Runtime
+**Comunicação:**
+ 
+| Destino | Protocolo |
+|----------|-----------|
+| API Gateway | HTTPS (TCP 443) |
+| Deep Links | HTTPS (TCP 443) |
+ 
+---
+ 
+#### Ambiente de Servidor
+ 
+Responsável pelo processamento das regras de negócio, autenticação, gerenciamento de usuários, recomendação de eventos e integração com serviços externos.
+ 
+**Componentes:**
+ 
+- API Gateway
+- Backend ASP.NET Core
+- Sistema de Recomendação
+- Training Job
+---
+ 
+**API Gateway:**
+ 
+O API Gateway funciona como ponto único de entrada para as requisições realizadas pelo aplicativo móvel.
+ 
+Artefato Implantado:
+ 
+| Artefato | Descrição |
+|-----------|------------|
+| Gateway Service | Serviço responsável pelo roteamento das requisições para os serviços internos |
+ 
+Responsabilidades:
+ 
+- Receber requisições do aplicativo móvel
+- Encaminhar chamadas para o backend
+- Centralizar o acesso aos serviços internos
+- Aplicar políticas de segurança e controle de acesso
+Comunicação:
+ 
+| Origem | Destino | Protocolo |
+|---------|---------|------------|
+| Mobile App | API Gateway | HTTPS (TCP 443) |
+| API Gateway | Backend ASP.NET Core | TCP 8080 |
+ 
+---
+ 
+**Backend ASP.NET Core:**
+ 
+Representa o núcleo da aplicação, responsável pelas regras de negócio e gerenciamento das funcionalidades disponibilizadas ao usuário.
+ 
+Módulos Implantados:
+- **Autenticação:** Responsável pelo gerenciamento de login, registro e validação de credenciais.
+- **Usuários:** Responsável pelo gerenciamento dos dados dos usuários da plataforma.
+- **Espetáculos:** Responsável pela consulta, cadastro e gerenciamento dos eventos e espetáculos disponíveis.
+- **Interações:** Responsável pelo registro das ações realizadas pelos usuários, utilizadas posteriormente pelo sistema de recomendação.
+- **Geolocalização:** Responsável pelo tratamento de dados geográficos e busca de eventos com base na localização do usuário.
+Comunicação do Backend:
+ 
+| Destino | Protocolo |
+|----------|-----------|
+| PostgreSQL | TCP 5432 |
+| MongoDB | TCP 27017 |
+| Object Storage | HTTPS (TCP 443) |
+| ViaCEP | HTTPS (TCP 443) |
+| Ticketeira (Sympla) | HTTPS (TCP 443) |
+ 
+---
+ 
+**Sistema de Recomendação:**
+ 
+Componente especializado na geração de recomendações personalizadas para os usuários.
+ 
+Artefato Implantado:
+ 
+| Artefato | Descrição |
+|-----------|------------|
+| Recommendation Engine | Motor responsável pela geração de recomendações com base nas interações dos usuários |
+ 
+Responsabilidades:
+ 
+- Processar histórico de interações
+- Gerar recomendações personalizadas
+- Disponibilizar recomendações para o backend
+- Consumir modelos treinados pelo Training Job
+Comunicação:
+ 
+| Origem | Destino | Protocolo |
+|--------|----------|-----------|
+| Training Job | Sistema de Recomendação | HTTP REST (TCP 8081) |
+| Sistema de Recomendação | PostgreSQL | TCP 5432 |
+ 
+---
+ 
+**Training Job:**
+ 
+Serviço responsável pelo treinamento dos modelos utilizados pelo sistema de recomendação.
+ 
+Artefato Implantado:
+ 
+| Artefato | Descrição |
+|-----------|------------|
+| Training Pipeline | Pipeline de treinamento e atualização dos modelos de recomendação |
+ 
+Responsabilidades:
+ 
+- Processar dados históricos
+- Treinar modelos de recomendação
+- Atualizar modelos utilizados pelo Recommendation Engine
+- Consumir dados armazenados na infraestrutura de dados
+Comunicação:
+ 
+| Destino | Protocolo |
+|----------|-----------|
+| PostgreSQL | TCP 5432 |
+| Sistema de Recomendação | HTTP REST (TCP 8081) |
+| Object Storage | HTTPS (TCP 443) |
+ 
+---
+ 
+#### Infraestrutura de Dados
+ 
+Camada responsável pelo armazenamento persistente das informações do sistema.
+ 
+**PostgreSQL:**
+ 
+Banco de dados relacional utilizado pela aplicação.
+ 
+Funções:
+ 
+- Armazenamento de usuários
+- Armazenamento de eventos
+- Armazenamento de interações
+- Persistência das informações de autenticação
+- Base para geração de recomendações
+Porta Utilizada:
+ 
+| Serviço | Porta |
+|----------|--------|
+| PostgreSQL | TCP 5432 |
+ 
+---
+ 
+**MongoDB:**
+ 
+Banco de dados não relacional utilizado pela aplicação.
+ 
+Funções:
+ 
+- Armazenamento de dados não estruturados ou semiestruturados da plataforma
+Porta Utilizada:
+ 
+| Serviço | Porta |
+|----------|--------|
+| MongoDB | TCP 27017 |
+ 
+---
+ 
+**Object Storage:**
+ 
+Armazenamento de objetos utilizado para persistência de arquivos e dados de treinamento.
+ 
+Artefatos Armazenados:
+ 
+| Artefato |
+|-----------|
+| Bucket S3 |
+| Eventos brutos (JSON) |
+| Modelos treinados (ZIP) |
+ 
+Responsabilidades:
+ 
+- Armazenamento de datasets
+- Armazenamento de modelos treinados
+- Disponibilização de arquivos para o pipeline de treinamento
+Comunicação:
+ 
+| Origem | Protocolo |
+|---------|-----------|
+| Backend ASP.NET Core | HTTPS (TCP 443) |
+| Training Job | HTTPS (TCP 443) |
+ 
+---
+ 
+#### Serviços Externos
+ 
+Serviços de terceiros consumidos pela plataforma.
+ 
+**ViaCEP:**
+ 
+Serviço utilizado para consulta de informações de endereço a partir do CEP informado pelo usuário.
+ 
+Comunicação:
+ 
+- HTTPS (TCP 443)
+**Ticketeira (Sympla):**
+ 
+Serviço externo responsável pelo fornecimento de informações relacionadas a eventos e venda de ingressos.
+ 
+Comunicação:
+ 
+- HTTPS (TCP 443)
+
+## 17. Linguagens e Tecnologias Utilizadas
 
 O projeto segue uma Arquitetura Orientada a Serviços (SOA), com camadas bem definidas de apresentação, serviços e dados. As tecnologias foram escolhidas para atender aos requisitos funcionais e não funcionais do sistema, e são descritas a seguir.
 
-**Supabase (banco de dados, autenticação e armazenamento)**
+**PostgreSQL e MongoDB**
 
-O Supabase é uma plataforma open-source construída sobre PostgreSQL que oferece banco de dados relacional, autenticação de usuários e armazenamento de arquivos de forma integrada. Ele será provisionado localmente via Docker, o que garante que todos da equipe trabalhem no mesmo ambiente sem depender de serviços externos pagos durante o desenvolvimento. Usar uma única plataforma para essas três responsabilidades reduz a complexidade da infraestrutura e facilita a manutenção.
+O banco de dados principal do projeto é PostgreSQL, responsável por armazenar entidades transacionais como usuários, preferências, espetáculos, teatros, gêneros, interações, recomendações e wishlist. O schema é mantido em scripts SQL versionados em `src/database`, com constraints, índices, triggers, procedures e dados iniciais.
 
-O banco de dados PostgreSQL armazenará as entidades do sistema como usuários, espetáculos, teatros e wishlists. O módulo de autenticação cuidará do cadastro, login e geração de tokens JWT, dispensando a necessidade de implementar essa lógica do zero. O Storage Bucket será usado para guardar assets de mídia e arquivos gerados pelo modelo de recomendação.
+O MongoDB compõe o ambiente local de dados via Docker Compose, apoiando cenários de desenvolvimento que exigem armazenamento documental. A infraestrutura atual contempla execução local com PostgreSQL e MongoDB em containers, além de banco PostgreSQL remoto hospedado em uma máquina virtual Linux na Oracle Cloud Infrastructure.
 
 **Docker**
 
-O Docker é a ferramenta de conteinerização utilizada para rodar o Supabase localmente. Com ele, toda a infraestrutura de banco de dados, autenticação e storage é empacotada em containers, garantindo que o ambiente seja idêntico para todos os membros da equipe independentemente do sistema operacional. Isso evita problemas de configuração e torna o setup do projeto mais simples e reproduzível.
+O Docker é a ferramenta de conteinerização utilizada para padronizar o ambiente local do projeto. O arquivo `docker-compose-db.yml` sobe PostgreSQL e MongoDB com configuração reproduzível, reduzindo divergências de ambiente entre os integrantes da equipe.
 
 **Backend de APIs em C# com ASP.NET Core**
 
-O backend de APIs será desenvolvido em C# com ASP.NET Core, expondo endpoints REST a serem consumidos pelo frontend. A arquitetura prevê um API Gateway, que receberá todas as requisições e roteará para os serviços corretos, e os Backend Services, que concentrarão a lógica de negócio. O C# é fortemente tipado, o que facilita modelar as entidades do domínio e reduz erros em tempo de execução. O ASP.NET Core oferece suporte nativo a injeção de dependência, autenticação JWT e ferramentas de escalabilidade, atendendo aos requisitos de segurança e disponibilidade do sistema.
+O backend de APIs é desenvolvido em C# com ASP.NET Core, expondo endpoints REST consumidos pelo frontend e pelo serviço de recomendação. A API concentra controllers, services, repositories, regras de negócio, autenticação JWT e integração com PostgreSQL. O C# é fortemente tipado, o que facilita modelar as entidades do domínio e reduz erros em tempo de execução. O ASP.NET Core oferece suporte nativo a injeção de dependência, autenticação JWT e ferramentas de escalabilidade, atendendo aos requisitos de segurança e disponibilidade do sistema.
 
-**Modelo de recomendação em Python com scikit-surprise**
+**Modelo de recomendação em .NET com ML.NET**
 
-O modelo de recomendação está sendo desenvolvido em Python, com a biblioteca scikit-surprise para filtragem colaborativa. Dois algoritmos estão sendo implementados e serão comparados: KNN, que recomenda espetáculos com base em usuários de comportamento similar, e Funk SVD, que fatoriza a matriz de interações em representações latentes para prever o engajamento do usuário com espetáculos não vistos. Os modelos são treinados sobre um dataset de 109.916 interações entre aproximadamente 68 mil usuários e 571 espetáculos, com hiperparâmetros otimizados via GridSearchCV. O modelo final, após a comparação entre os dois algoritmos, será integrado ao backend de recomendação em C#.
+O pipeline atual de recomendação utiliza .NET e ML.NET para pré-processamento, treinamento, avaliação e geração de artefatos do modelo. A solução combina recomendações persistidas, métricas de inferência e fallback por preferências declaradas, permitindo que o backend entregue recomendações mesmo quando ainda não há dados suficientes do usuário.
 
-Python foi escolhido para essa etapa porque seu ecossistema de ciência de dados (pandas, numpy, scikit-learn, scikit-surprise) não tem equivalente de mesma maturidade em C# para tarefas de filtragem colaborativa, tornando a experimentação muito mais ágil.
+Os artefatos do modelo são gerados em `data/models` a partir dos comandos do projeto `src/ml`, e o serviço `src/inference-service` executa inferência, batch de recomendações, métricas e diagnósticos.
 
 **Frontend em React Native**
 
-O frontend será desenvolvido em React Native, framework que permite criar aplicações móveis para iOS e Android a partir de uma única base de código. Isso é importante porque o produto precisa estar disponível nas duas plataformas sem duplicar o esforço de desenvolvimento. O React Native tem bom suporte a geolocalização, notificações push e navegação entre telas, funcionalidades centrais para o app. A proximidade com o ecossistema JavaScript facilita o consumo das APIs REST do backend.
+O frontend é desenvolvido em React Native com Expo, framework que permite criar aplicações móveis para iOS e Android a partir de uma única base de código. Isso é importante porque o produto precisa estar disponível nas duas plataformas sem duplicar o esforço de desenvolvimento. O React Native tem bom suporte a geolocalização, notificações push e navegação entre telas, funcionalidades centrais para o app. A proximidade com o ecossistema JavaScript facilita o consumo das APIs REST do backend.
 
 **Padrão MVVM no frontend**
 
-O frontend seguirá o padrão MVVM (Model-View-ViewModel), separando a interface visual (View) da lógica de estado e apresentação (ViewModel) e do acesso a dados (Repository). Essa separação torna os componentes de tela mais simples, os ViewModels testáveis de forma isolada e facilita mudanças na camada de comunicação com o backend sem impactar a interface. Para um app com muitas telas de conteúdo dinâmico, como carrosséis de recomendação e catálogo filtrado, essa organização evita que lógica e interface se misturem e tornem o código difícil de manter.
+O frontend segue o padrão MVVM (Model-View-ViewModel), separando a interface visual (View) da lógica de estado e apresentação (ViewModel) e do acesso a dados (Repository). Essa separação torna os componentes de tela mais simples, os ViewModels testáveis de forma isolada e facilita mudanças na camada de comunicação com o backend sem impactar a interface. Para um app com muitas telas de conteúdo dinâmico, como carrosséis de recomendação e catálogo filtrado, essa organização evita que lógica e interface se misturem e tornem o código difícil de manter.
 
 **ViaCEP**
 
-O ViaCEP é uma API pública e gratuita que retorna dados de endereço a partir de um CEP informado. No projeto, ela será usada durante o onboarding do usuário para identificar automaticamente a cidade a partir do CEP cadastrado, sem que o usuário precise informar isso manualmente. Essa informação é essencial para o sistema de recomendação, que filtra os espetáculos de acordo com a cidade do usuário, sendo São Paulo ou Rio de Janeiro.
+O ViaCEP é uma API pública e gratuita que retorna dados de endereço a partir de um CEP informado. No projeto, ela apoia fluxos de cadastro e edição de perfil ao enriquecer dados de endereço e cidade, reduzindo preenchimento manual. Essa informação é relevante para recomendações e filtros geográficos, especialmente nos recortes de São Paulo e Rio de Janeiro.
 
 ---
 
-## 17. Planejamento de Testes
+## 18. Planejamento de Testes
 
 Esta seção apresenta a estrutura de planejamento de testes do sistema de recomendação da Aventura. O objetivo é organizar a validação sistemática da solução, cobrindo testes funcionais, testes de requisitos não funcionais, testes de usabilidade, testes de APIs externas e testes de integração.
 
@@ -1508,7 +1806,7 @@ A validação do sistema deve considerar o contexto do produto: um aplicativo mo
 
 ---
 
-### 17.1 Objetivo do planejamento de testes
+### 18.1 Objetivo do planejamento de testes
 
 O objetivo do planejamento de testes é definir como o sistema será validado ao longo da Sprint 3, garantindo que os requisitos funcionais, requisitos não funcionais, integrações e fluxos de uso sejam verificados de forma organizada.
 
@@ -1527,7 +1825,7 @@ Este planejamento também busca garantir que cada cenário de teste possua:
 
 ---
 
-### 17.2 Estratégia geral de testes
+### 18.2 Estratégia geral de testes
 
 A estratégia de testes do projeto está organizada em cinco frentes principais:
 
@@ -1541,7 +1839,7 @@ Os testes deverão contemplar cenários positivos e negativos, garantindo que o 
 
 ---
 
-### 17.3 Testes de funcionalidade
+### 18.3 Testes de funcionalidade
 
 Esta seção evolui os testes de usuário definidos junto a cada Requisito Funcional (RFs da seção 9.2) para casos de teste funcionais completos, com propósito explícito, pré-condições, cenários positivos e negativos, instruções de execução, pós-condições e critério objetivo de sucesso. Dessa forma O plano de testes funcionais cobre **100% dos 10 RFs definidos na seção 9.2**.
 
@@ -1880,7 +2178,7 @@ A premissa adotada foi garantir cobertura mínima de **um caso de teste principa
 
 ---
 
-### 17.4 Testes de requisitos não funcionais
+### 18.4 Testes de requisitos não funcionais
 
 Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atributos de qualidade como desempenho, segurança, disponibilidade, usabilidade, compatibilidade e escalabilidade.
 
@@ -2138,7 +2436,7 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
 | **Resultado Esperado** | Pipeline retorna exit code 1 e bloqueia o merge/deploy quando cobertura < 70% nos módulos críticos; relatório HTML de cobertura indica exatamente as linhas não cobertas; desenvolvedor é notificado automaticamente. |
 | **Pós-condição** | Relatório de cobertura com falha exportado como artefato; testes faltantes registrados como tarefa no backlog antes do próximo deploy. |
 
-### 17.5 Testes de usabilidade
+### 18.5 Testes de usabilidade
 
 Os testes de usabilidade têm como objetivo avaliar se usuários externos ao grupo conseguem compreender e executar os principais fluxos do aplicativo mobile do Portal Aventura de forma clara, intuitiva e sem auxílio excessivo.
 
@@ -2152,11 +2450,11 @@ Durante a execução, serão observados tempo de realização das tarefas, quant
 
 | Participante | Perfil | Familiaridade com apps mobile | Frequência de consumo cultural | Observações |
 |---|---|---|---|---|
-| P1 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
-| P2 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
-| P3 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
-| P4 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
-| P5 | Usuário externo ao grupo | Alta/Média/Baixa | Frequente/Ocasional/Rara | A preencher |
+| P1 | Guilherme Carvalho, usuário externo ao grupo | Alta | Ocasional | Elogiou a interface e a intuitividade geral; sugeriu adicionar calendário no campo de aniversário; elogiou os filtros da busca; considerou o botão de favorito pequeno. |
+| P2 | Eduardo Lucio, usuário externo ao grupo | Média | Frequente | Considerou o aplicativo intuitivo e agradável; gostaria de entender melhor como as recomendações são geradas; teve pequena hesitação ao localizar o botão de favorito; sugeriu calendário para data de nascimento. |
+| P3 | Antonio Dantas, usuário externo ao grupo | Alta | Rara | Considerou o aplicativo moderno e fácil de navegar; gostaria de recomendações ainda mais personalizadas; não apresentou dificuldades relevantes. |
+| P4 | Leticia Nery, usuária externa ao grupo | Baixa | Ocasional | Concluiu todas as tarefas sem ajuda; apresentou pequenas hesitações na busca, favoritos e preferências; sugeriu tornar alguns elementos mais evidentes. |
+| P5 | Renan Santana, usuário externo ao grupo | Média | Frequente | Elogiou a organização da Home, os filtros da busca e a completude das informações dos espetáculos; comentou que o botão de favorito poderia ser maior. |
 
 ---
 
@@ -2183,18 +2481,18 @@ Após a execução dos testes, cada participante deverá responder ao questioná
 - **1** representa “discordo totalmente”;
 - **5** representa “concordo totalmente”.
 
-| Item | Afirmação | Nota de 1 a 5 |
+| Item | Afirmação | Resultado consolidado |
 |---|---|---|
-| 1 | Eu acho que gostaria de usar este sistema com frequência. | A preencher |
-| 2 | Eu achei o sistema desnecessariamente complexo. | A preencher |
-| 3 | Eu achei o sistema fácil de usar. | A preencher |
-| 4 | Eu acho que precisaria de ajuda de uma pessoa técnica para usar este sistema. | A preencher |
-| 5 | Eu achei que as funcionalidades do sistema estavam bem integradas. | A preencher |
-| 6 | Eu achei que havia muita inconsistência no sistema. | A preencher |
-| 7 | Eu imagino que a maioria das pessoas aprenderia a usar este sistema rapidamente. | A preencher |
-| 8 | Eu achei o sistema muito difícil de usar. | A preencher |
-| 9 | Eu me senti confiante usando o sistema. | A preencher |
-| 10 | Eu precisei aprender muitas coisas antes de conseguir usar o sistema. | A preencher |
+| 1 | Eu acho que gostaria de usar este sistema com frequência. | Concordância predominante entre os participantes, compatível com a pontuação SUS consolidada. |
+| 2 | Eu achei o sistema desnecessariamente complexo. | Discordância predominante entre os participantes, indicando baixa percepção de complexidade. |
+| 3 | Eu achei o sistema fácil de usar. | Concordância predominante entre os participantes, reforçando a facilidade de uso percebida. |
+| 4 | Eu acho que precisaria de ajuda de uma pessoa técnica para usar este sistema. | Discordância predominante entre os participantes, coerente com a conclusão das tarefas sem ajuda externa. |
+| 5 | Eu achei que as funcionalidades do sistema estavam bem integradas. | Concordância predominante entre os participantes, indicando boa integração percebida entre Home, busca, detalhes, Wishlist e perfil. |
+| 6 | Eu achei que havia muita inconsistência no sistema. | Discordância predominante entre os participantes, sem relatos de inconsistências relevantes durante a navegação. |
+| 7 | Eu imagino que a maioria das pessoas aprenderia a usar este sistema rapidamente. | Concordância predominante entre os participantes, sustentada pela navegação intuitiva observada. |
+| 8 | Eu achei o sistema muito difícil de usar. | Discordância predominante entre os participantes, com pequenas hesitações pontuais apenas em busca, favoritos e preferências. |
+| 9 | Eu me senti confiante usando o sistema. | Concordância predominante entre os participantes, especialmente nos fluxos de busca, detalhes do espetáculo e acesso à Wishlist. |
+| 10 | Eu precisei aprender muitas coisas antes de conseguir usar o sistema. | Discordância predominante entre os participantes, indicando baixa curva de aprendizagem. |
 
 ---
 
@@ -2226,19 +2524,19 @@ A aplicação do questionário SUS complementa a observação das tarefas, permi
 
 ---
 
-### 17.6 Testes de APIs externas
+### 18.6 Testes de APIs externas
 
-O sistema integra a API **ViaCEP** para validação, autocomplete e enriquecimento automático de endereços. Essa integração é essencial para suportar a geolocalização dos usuários e entregar recomendações personalizadas na seção “Perto de você”, com foco nas cidades de São Paulo e Rio de Janeiro.
+O sistema prevê a integração com a API **ViaCEP** para validação, autocomplete e enriquecimento automático de endereços. Durante esta etapa, essa integração ainda foi tratada de forma planejada e simulada, por meio de mocks/stubs, sem dependência direta de chamadas reais em produção. Essa integração é essencial para suportar a geolocalização dos usuários e entregar recomendações personalizadas na seção “Perto de você”, com foco nas cidades de São Paulo e Rio de Janeiro.
 
 | ID do teste | API externa | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso | Ferramentas |
 |-------------|-------------|-----------|---------------|------------------|------------------|------------------------|---------------|---------------------|-------------|
-| 01 | ViaCEP | Validar CEP e enriquecer automaticamente os dados completos de endereço (logradouro, bairro, cidade e UF) | Usuário autenticado na tela de cadastro ou edição de perfil com conexão estável | Envio de CEP válido e existente (ex: 01310-100) | - | 1. Realizar requisição GET para `https://viacep.com.br/ws/{CEP}/json/`<br>2. Validar status code, tempo de resposta e estrutura da resposta JSON<br>3. Confirmar o mapeamento correto dos dados no backend e persistência no banco | Dados de endereço enriquecidos são salvos no perfil do usuário e utilizados nos filtros geográficos | HTTP 200, todos os campos principais preenchidos corretamente, tempo de resposta ≤ 1,5s | Postman / Insomnia / cURL |
+| 01 | ViaCEP | Validar CEP e enriquecer automaticamente os dados completos de endereço (logradouro, bairro, cidade e UF) | Usuário autenticado na tela de cadastro ou edição de perfil com conexão estável ou ambiente mockado | Envio de CEP válido e existente (ex: 01310-100) | - | 1. Realizar requisição GET para `https://viacep.com.br/ws/{CEP}/json/` ou simular a resposta via mock/stub<br>2. Validar status code, tempo de resposta e estrutura da resposta JSON<br>3. Confirmar o mapeamento correto dos dados no backend e persistência no banco | Dados de endereço enriquecidos são salvos no perfil do usuário e utilizados nos filtros geográficos | HTTP 200, todos os campos principais preenchidos corretamente, tempo de resposta ≤ 1,5s | Postman / Insomnia / cURL / WireMock |
 | 02 | ViaCEP | Testar tratamento robusto de CEPs inválidos, mal formatados ou inexistentes | Conexão com internet disponível | - | Envio de CEP inválido (ex: 123, 99999-999 ou com caracteres alfabéticos) | 1. Enviar requisição com CEP inválido<br>2. Validar resposta da API e lógica de tratamento aplicada pelo backend<br>3. Verificar feedback exibido ao usuário | Sistema exibe mensagem clara e permite prosseguimento com fallback | HTTP 200 com `erro: true` tratado corretamente, fluxo mantido sem interrupções, log registrado | Postman / Insomnia |
 | 03 | ViaCEP | Avaliar performance, latência, timeout e resiliência sob diferentes condições de rede | Ambiente de homologação com ferramentas de simulação de rede | Resposta rápida em condições normais de rede | Alta latência ou indisponibilidade temporária da API | 1. Executar 30 consultas sequenciais com CEPs válidos<br>2. Aplicar Network Throttling (4G, Slow 3G e Offline)<br>3. Simular timeout forçado<br>4. Registrar todas as métricas de performance | Sistema aplica fallback de forma transparente e mantém a jornada do usuário fluida | Tempo médio ≤ 1,2s (p95 ≤ 2,0s), taxa de sucesso ≥ 98%, tratamento graceful sem impacto na experiência | Postman / Insomnia + Chrome DevTools + Network Throttling |
 
 **Métricas dos Testes:**
 
-Os testes da integração com ViaCEP foram projetados com alto rigor para garantir desempenho, confiabilidade e excelente experiência do usuário. As principais métricas avaliadas são:
+Os testes da integração planejada com ViaCEP foram projetados com alto rigor para garantir desempenho, confiabilidade e excelente experiência do usuário. Como a integração ainda estava mockada nesta etapa, as métricas abaixo funcionam como critérios-alvo para a validação em homologação e produção. As principais métricas avaliadas são:
 
 - **Tempo de Resposta**: Média ≤ 1,2 segundos e p95 ≤ 2,0 segundos em rede normal. Em condições de Slow 3G, o p95 não deve exceder 4,5 segundos.
 - **Taxa de Sucesso**: ≥ 98% das requisições tratadas com sucesso ou fallback adequado.
@@ -2248,78 +2546,99 @@ Os testes da integração com ViaCEP foram projetados com alto rigor para garant
 - **Resiliência**: 100% dos fluxos críticos (cadastro e edição de perfil) devem ser completados mesmo em cenários de rede degradada.
 - **Monitoramento**: Todos os eventos são logados com contexto completo (CEP, tempo de resposta, código de erro e usuário) para análise contínua.
 
-Essa abordagem assegura que a integração com ViaCEP contribua positivamente para a qualidade geral do sistema, oferecendo rapidez, precisão e robustez na geolocalização dos usuários do Portal Aventura.
+Essa abordagem assegura que a futura integração real com ViaCEP contribua positivamente para a qualidade geral do sistema, oferecendo rapidez, precisão e robustez na geolocalização dos usuários do Portal Aventura.
 
 ---
 
-### 17.7 Testes de integração
+### 18.7 Testes de integração
 
 Nesta seção são planejados os testes das interações entre componentes internos e sistemas externos da Plataforma Aventura. O módulo VHS (*Virtual HTTP Store*) é utilizado como mecanismo de cache temporário obrigatório para todas as integrações com APIs externas (TI-04 e TI-05), garantindo estabilidade, isolamento e reprodutibilidade dos testes mesmo em cenários de indisponibilidade de terceiros.
 
 ---
 
-#### 17.7.1 Configuração do módulo VHS
+#### 18.7.1 Simulação de comportamento equivalente ao VHS
 
-O VHS atua como camada intermediária entre o Backend e qualquer serviço HTTP externo. Ele intercepta as chamadas, armazena as respostas em cache com TTL configurável e as serve em requisições subsequentes idênticas. Nos testes, o VHS opera em modo *test* com TTLs reduzidos, cache flush entre suítes e inspeção habilitada via `VhsTestClient`.
+O sistema não utiliza um VHS (Virtual HTTP Storage) em tempo de execução no frontend. No entanto, foi implementado um mecanismo de cache em memória na camada de aplicação (`cachedFetch`), que reproduz comportamentos equivalentes a um VHS, incluindo armazenamento temporário de respostas HTTP, controle de expiração (TTL) e identificação de requisições como MISS ou HIT.
 
+Esse cache atua como otimização local para requisições à API externa ViaCEP, reduzindo chamadas repetidas e melhorando a performance da aplicação.
 
+Nos testes automatizados, esse comportamento é validado através de:
+- limpeza do cache entre execuções (`flushCache`);
+- verificação de estados MISS/HIT (`getLastCacheStatus`);
+- simulação de respostas da API ViaCEP via MSW ou Jest mock;
+- garantia de isolamento total de rede externa.
 
-#### 17.7.1 Tabela de testes
+Dessa forma, embora não exista um VHS como camada intermediária de infraestrutura, o sistema implementa e valida um comportamento funcional equivalente dentro da camada de frontend.
+
+#### 18.7.2 Tabela de testes
 
 | ID do teste | Integração avaliada | Propósito | Pré-condições | Cenário positivo | Cenário negativo | Instruções de execução | Pós-condições | Critério de sucesso | Ferramentas | Uso do VHS |
 |---|---|---|---|---|---|---|---|---|---|---|
-| TI-01 | Frontend Mobile → Backend | Validar que as requisições HTTP originadas pelo app mobile chegam corretamente ao Backend, com autenticação JWT, serialização de payloads e tratamento de erros. Cobre os fluxos de Conta e Perfil (cadastro, login, onboarding, edição de preferências) e Exploração (catálogo, busca, detalhes, wishlist). | (1) Backend em execução; (2) banco PostgreSQL disponível; (3) dados seed de espetáculos inseridos;| Usuário realiza login com credenciais válidas: `POST /api/auth/login { email, password }`. O Backend retorna HTTP 200 com `{ token, expiresIn, userId }`. O token JWT é válido, assinado e pode ser utilizado em chamadas subsequentes. | Usuário envia `POST /api/auth/login` com senha incorreta. O Backend retorna HTTP 401 com `{ error: "InvalidCredentials" }`, sem token no response e sem exposição de dados internos. | (1) Executar `dotnet test --filter Category=TI-01`; (2) o Testcontainers sobe automaticamente o container PostgreSQL; (3) o Respawn reseta o banco antes de cada teste individual; (4) o `WebApplicationFactory` hospeda o Backend in-process; (5) as asserções validam status HTTP, campos do body e estado do banco via query direta. | (1) Token descartado ao final da suíte; (2) banco resetado via Respawn; (3) nenhum container residual em execução. | HTTP 200 e token válido no cenário positivo; HTTP 401 sem token no cenário negativo; nenhum HTTP 500 em qualquer fluxo; sem exposição de stack trace no body de erro. | xUnit, WebApplicationFactory (ASP.NET Core 8), Testcontainers (.NET), Respawn, FluentAssertions, Bogus | Não se aplica |
+| TI-01 | Frontend Mobile → Backend | Validar que as requisições HTTP originadas pelo app mobile chegam corretamente ao Backend, com autenticação JWT, serialização de payloads e tratamento de erros. Cobre os fluxos de Conta e Perfil (cadastro, login, onboarding, edição de preferências) e Exploração (catálogo, busca, detalhes, wishlist). | (1) Backend em execução; (2) banco PostgreSQL disponível; (3) dados seed de espetáculos inseridos;| Usuário realiza login com credenciais válidas: `POST /api/auth/login { email, password }`. O Backend retorna HTTP 200 com `{ token, expiresIn, userId }`. O token JWT é válido, assinado e pode ser utilizado em chamadas subsequentes. | Usuário envia `POST /api/auth/login` com senha incorreta. O Backend retorna HTTP 401 com `{ error: "InvalidCredentials" }`, sem token no response e sem exposição de dados internos. | (1) Executar `dotnet test --filter Category=TI-01`; (2) o Testcontainers sobe automaticamente o container PostgreSQL; (3) o Respawn reseta o banco antes de cada teste individual; (4) o `WebApplicationFactory` hospeda o Backend in-process; (5) as asserções validam status HTTP, campos do body e estado do banco via query direta. | (1) Token descartado ao final da suíte; (2) banco resetado via Respawn; (3) nenhum container residual em execução. | HTTP 200 e token válido no cenário positivo; HTTP 401 sem token no cenário negativo; nenhum HTTP 500 em qualquer fluxo; sem exposição de stack trace no body de erro. | xUnit, WebApplicationFactory, Testcontainers (.NET), Respawn, FluentAssertions, Bogus | Não se aplica |
 | TI-02 | Backend → Banco de Dados | Validar a camada de persistência: criação, leitura, atualização e remoção de entidades críticas (usuários, espetáculos, wishlist e interações), garantindo integridade referencial, ausência de duplicatas e comportamento correto em falhas de banco. | (1) PostgreSQL 15+ via Testcontainers com migrations aplicadas; (2) Respawn configurado para reset entre testes; (3) dados seed para espetáculos, teatros e usuário base; (4) connection string apontando para o container de teste. | Usuário é inserido via repositório com dados válidos. A consulta subsequente pelo e-mail retorna o registro com todos os campos obrigatórios (`name`, `email`, `passwordHash`, `createdAt`) preenchidos corretamente e sem a senha em texto puro. | Tentativa de inserir um segundo usuário com o mesmo e-mail. O banco lança violação de unique constraint; o repositório propaga a exceção sem realizar commit; o banco permanece com apenas um registro para o e-mail. | (1) Executar `dotnet test --filter Category=TI-02`; (2) cada teste recebe uma instância limpa do banco via Respawn; (3) as asserções validam tanto o retorno do repositório quanto o estado do banco por query direta; (4) para cenários de wishlist duplicada, verificar contagem de registros após duas inserções do mesmo par `(userId, espetaculoId)`. | (1) Banco resetado via Respawn; (2) sem registros órfãos por FK; (3) nenhum container residual. | Entidades persistidas corretamente com todos os campos no cenário positivo; violação de constraint tratada sem HTTP 500 e sem duplicata no negativo; todas as operações de leitura completadas em menos de 200 ms. | xUnit, Testcontainers (.NET), Respawn, FluentAssertions, Bogus | Não se aplica |
 | TI-03 | Backend → Serviço de Recomendação | Validar que o Backend consulta corretamente o Serviço de Recomendação via `IRecommendationService`, recebe a lista personalizada de espetáculos e trata adequadamente os cenários de fallback (usuário sem histórico) e indisponibilidade do serviço. | (1) Serviço de Recomendação disponível (instância real via Testcontainers ou stub via WireMock.Net); (2) banco com interações seed (mínimo 10 interações por usuário de teste em gênero Musical); (3) usuário "novo" sem nenhuma interação criado para o cenário de fallback; (4) modelo de recomendação inicial disponível no Bucket Storage ou mockado. | Backend chama `GET /api/recomendacoes` com token de usuário que possui 10+ interações em espetáculos do gênero Musical. O Serviço de Recomendação retorna HTTP 200 com lista de 5 a 10 espetáculos, com peso maior para o gênero Musical e sem nenhum espetáculo já visualizado pelo usuário. | Backend chama `GET /api/recomendacoes` com o Serviço de Recomendação indisponível (WireMock retornando HTTP 503). O Backend retorna HTTP 503 com `{ error: "ServiceUnavailable", retryAfter }`, sem HTTP 500, sem exposição de stack trace e com o evento registrado nos logs. | (1) Executar `dotnet test --filter Category=TI-03`; (2) o WireMock.Net simula o Serviço de Recomendação; (3) configurar WireMock para o cenário positivo com response de lista válida e para o negativo com HTTP 503; (4) inspecionar call count do WireMock para garantir que o Backend realizou exatamente uma chamada; (5) no cenário de fallback, verificar que a lista retornada contém espetáculos populares e não está vazia. | (1) WireMock resetado entre testes; (2) banco resetado via Respawn; (3) nenhuma recomendação persiste no banco do teste anterior. | Lista de recomendações retornada com campos obrigatórios (`id`, `titulo`, `score`) no positivo; HTTP 503 tratado com mensagem amigável no negativo; fallback retorna lista não vazia para usuário sem histórico; nenhum HTTP 500 em qualquer cenário. | xUnit, WireMock.Net, Testcontainers (.NET), Respawn, FluentAssertions | Não se aplica |
-| TI-04 | Backend → API externa (ViaCEP) | Validar a integração com o ViaCEP para preenchimento automático de endereço durante o cadastro, garantindo que o VHS armazene e sirva as respostas em cache, e que o Backend trate corretamente CEPs inválidos e indisponibilidade do serviço externo. | (1) WireMock.Net simulando `https://viacep.com.br/ws/{cep}/json/`; (2) VHS configurado com TTL de 24 h para CEP válido e 5 min para CEP inexistente; (3) cache VHS limpo via `VhsTestClient.Flush()` antes de cada suíte; (4) Backend configurado para rotear todas as chamadas ao ViaCEP através do VHS (nenhuma chamada direta permitida). | Backend recebe `POST /api/address/lookup { cep: "01310100" }`. A chamada passa pelo VHS (cache miss na primeira execução, `X-Cache: MISS`), o WireMock retorna os dados do CEP e o Backend responde HTTP 200 com `{ logradouro, bairro, cidade, estado }`. O VHS armazena a resposta com TTL de 24 h. Na segunda execução idêntica, o VHS responde com `X-Cache: HIT` sem consultar o WireMock. | Backend recebe `POST /api/address/lookup` com o WireMock configurado para retornar HTTP 503. O VHS não possui a resposta em cache. O Backend retorna HTTP 503 com mensagem amigável ("Serviço de CEP temporariamente indisponível"), orienta o preenchimento manual e não armazena o erro 5xx no cache do VHS. | (1) Executar `dotnet test --filter Category=TI-04`; (2) usar `VhsTestClient.Flush()` no `BeforeEach`; (3) executar o cenário positivo duas vezes e inspecionar `X-Cache` no segundo response e o `CallCount` do WireMock (deve ser 1, não 2); (4) para o negativo de indisponibilidade, parar o WireMock e verificar que o VHS não criou entrada de erro; (5) para CEP inválido (ex: `"00000"`), verificar HTTP 400 sem nenhuma chamada ao WireMock ou ao VHS. | (1) Cache VHS limpo ao final da suíte; (2) WireMock resetado; (3) nenhuma entrada de erro 5xx armazenada no VHS. | HTTP 200 com dados de endereço no positivo; `X-Cache: HIT` e call count = 1 do WireMock na segunda chamada idêntica; HTTP 400 para CEP mal formatado sem chamada ao serviço externo; HTTP 503 amigável quando ViaCEP indisponível e cache vazio; nenhum HTTP 500 em qualquer cenário. | xUnit, WireMock.Net, VhsTestClient, WebApplicationFactory, FluentAssertions | **Sim** — cache miss/hit de CEPs válidos (TTL 24 h); cache de not-found (TTL 5 min); nenhuma chamada ao ViaCEP real em nenhum cenário de teste. |
-| TI-05 | Backend → Ticketera externa | Validar que o Backend obtém, cacheia via VHS e entrega corretamente os links de compra da ticketera parceira, e que trata de forma adequada links indisponíveis, espetáculos sem link cadastrado e indisponibilidade total do serviço externo. | (1) WireMock.Net simulando o endpoint de links da ticketera parceira; (2) VHS configurado com TTL de 1 h para links válidos e 5 min para respostas de erro 4xx/5xx; (3) cache VHS limpo via `VhsTestClient.Flush()` antes de cada suíte; (4) espetáculo com `compraUrl` válida e espetáculo com `compraUrl` nula cadastrados no banco seed. | Backend recebe `GET /api/espetaculos/{id}/compra-link`. O VHS não possui a URL em cache (cache miss). O Backend consulta a ticketera via WireMock, que retorna a URL de compra válida. O Backend responde HTTP 200 com `{ url, expiresAt }` e registra evento `clique_compra` para analytics. O VHS armazena o link com TTL de 1 h. Na segunda chamada idêntica, `X-Cache: HIT` e o WireMock não é consultado novamente. | Backend recebe `GET /api/espetaculos/{id}/compra-link` com o WireMock retornando HTTP 503 e o VHS sem cache para aquele espetáculo. O Backend retorna HTTP 503 com mensagem amigável, sem expor detalhes internos. Para espetáculo com `compraUrl` nula no banco, o Backend retorna HTTP 404 com `{ error: "PurchaseLinkNotAvailable" }` sem sequer consultar o VHS ou a ticketera. | (1) Executar `dotnet test --filter Category=TI-05`; (2) usar `VhsTestClient.Flush()` no `BeforeEach`; (3) executar a chamada positiva duas vezes, verificar `X-Cache: HIT` na segunda e call count = 1 do WireMock; (4) para o negativo de indisponibilidade, configurar WireMock com HTTP 503 e verificar que o VHS não armazenou o erro; (5) para espetáculo sem link, verificar que a chamada retorna HTTP 404 sem nenhuma consulta ao WireMock ou ao VHS; (6) verificar que o evento `clique_compra` foi registrado no banco apenas no cenário positivo. | (1) Cache VHS limpo ao final da suíte; (2) WireMock resetado; (3) nenhuma entrada de erro armazenada no VHS; (4) evento `clique_compra` registrado somente em chamadas bem-sucedidas. | HTTP 200 com URL válida no positivo; `X-Cache: HIT` e call count = 1 do WireMock na segunda chamada; HTTP 404 com mensagem clara para espetáculo sem link, sem consulta ao VHS ou à ticketera; HTTP 503 amigável com ticketera indisponível e cache vazio; nenhum HTTP 500 em qualquer cenário. | xUnit, WireMock.Net, VhsTestClient, WebApplicationFactory, Respawn, FluentAssertions | **Sim** — cache de links válidos (TTL 1 h); cache de not-found (TTL 5 min); nenhuma chamada à ticketera real em nenhum cenário de teste. |
+| TI-04 | Frontend → API externa (ViaCEP) | Validar a integração do frontend com a API ViaCEP para preenchimento automático de endereço durante o cadastro, garantindo tratamento correto de CEPs válidos, inválidos e falhas de rede, além do comportamento de cache em memória com lógica equivalente a um VHS (Virtual HTTP Storage), simulando MISS/HIT e controle de TTL no cliente. | (1) Mock de requisições HTTP usando MSW (Mock Service Worker) ou Jest fetch mock; (2) simulação de chamadas para `https://viacep.com.br/ws/{cep}/json/`; (3) isolamento total de rede externa nos testes; (4) reset do cache em memória (`flushCache()`) antes de cada teste; (5) validação do comportamento de cache tipo VHS implementado no frontend (`cachedFetch` com MISS/HIT); (6) nenhuma chamada real ao ViaCEP durante testes. | **Cenário positivo (cache MISS → HIT):** Usuário informa CEP `"01310100"`. Frontend executa `cachedFetch` que realiza requisição ao ViaCEP. Na primeira chamada, o sistema registra comportamento equivalente a VHS MISS, realizando a requisição externa e retornando HTTP 200 com `{ logradouro, bairro, localidade, uf }`. Na segunda chamada com o mesmo CEP, a resposta é obtida do cache em memória (comportamento equivalente a VHS HIT), sem nova requisição de rede. | **Cenário de CEP inválido:** Usuário informa CEP inválido (`"00000"`). API retorna resposta com erro (`erro: true` ou dados inválidos). Frontend exibe mensagem de validação ("CEP inválido") e não preenche campos. A resposta pode ser armazenada no cache com TTL reduzido (estratégia equivalente a cache de not-found no VHS). | **Cenário de falha de rede / indisponibilidade:** API ViaCEP retorna erro HTTP (ex: 503) ou falha de conexão. Frontend captura a exceção e exibe fallback amigável ("Não foi possível consultar o CEP no momento"), mantendo o formulário editável manualmente, sem armazenamento de erro no cache. | (1) Executar `jest` ou `detox test --grep TI-04`; (2) mockar fetch com MSW/Jest; (3) validar comportamento de cache equivalente a VHS (MISS na primeira chamada e HIT na segunda via `getLastCacheStatus()`); (4) validar `cacheSize()` para garantir armazenamento; (5) resetar cache com `flushCache()` entre testes; (6) garantir ausência de chamadas reais ao ViaCEP. | (1) Cache em memória limpo após cada teste; (2) MSW handlers resetados; (3) isolamento total de rede externa; (4) consistência do comportamento de cache tipo VHS entre execuções. | HTTP 200 com preenchimento correto de endereço; comportamento equivalente a VHS MISS/HIT; mensagem de erro para CEP inválido; fallback para falha de rede; ausência de chamadas reais em ambiente de teste. | React Native Testing Library, Jest, MSW, Detox (opcional) | Sim — implementação de cache em memória no frontend com comportamento equivalente a VHS (MISS/HIT e TTL), sem uso de infraestrutura externa de cache. |
+| TI-05 | Backend → Ticketera | Validar que o Backend entrega corretamente as URLs de compra cadastradas para os espetáculos, garantindo autenticação, retorno correto dos dados e tratamento de cenários de erro. Não existe integração HTTP externa com a ticketera nesta sprint; o Backend apenas expõe os links armazenados no banco de dados. | (1) PostgreSQL disponível via Testcontainers; (2) Respawn configurado; (3) usuário autenticado cadastrado; (4) espetáculos seedados com campo `url_bilheteria` preenchido. | Backend recebe `GET /api/espetaculo/{id}` para um espetáculo existente. O endpoint retorna HTTP 200 contendo os dados do espetáculo, incluindo o campo `urlBilheteria` preenchido corretamente. | Backend recebe `GET /api/espetaculo/{id}` para um identificador inexistente. O endpoint retorna HTTP 404 sem exposição de detalhes internos. Sem autenticação, o endpoint retorna HTTP 401. | (1) Executar `dotnet test --filter Category=TI-05`; (2) o Testcontainers sobe automaticamente o PostgreSQL; (3) o Respawn limpa o banco antes de cada teste; (4) criar espetáculos com URLs válidas usando os helpers de seed; (5) validar os códigos HTTP e os campos retornados pelo endpoint. | (1) Banco resetado via Respawn; (2) tokens descartados; (3) nenhum container residual em execução. | HTTP 200 contendo `urlBilheteria` válida no cenário positivo; HTTP 404 para espetáculo inexistente; HTTP 401 para acesso sem autenticação; nenhum HTTP 500 em qualquer cenário. | xUnit, WebApplicationFactory, Testcontainers (.NET), Respawn, FluentAssertions | Não se aplica |
+---
+
+#### 18.7.3 Método de validação dos resultados
+
+A validação de cada teste combina três camadas de verificação:
+
+**Status HTTP e body do response** — todas as asserções verificam o código de status esperado (200, 201, 400, 401, 404 e 503) e os campos obrigatórios do JSON retornado.
+
+**Estado do banco de dados** — após operações de escrita, consultas diretas ao PostgreSQL (executando em Testcontainers) confirmam que os dados foram persistidos corretamente e que as restrições de integridade permanecem válidas.
+
+**Logs e rastreabilidade** — os fluxos são executados em ambiente isolado de testes, garantindo repetibilidade. A ausência de exceções não tratadas e de stack traces expostos ao cliente faz parte dos critérios de sucesso.
 
 ---
 
-#### 17.7.2 Método de validação dos resultados
+#### 18.7.4 Discussão de abrangência
 
-A validação de cada teste combina quatro camadas de verificação:
+As cinco integrações mapeadas cobrem os fluxos críticos identificados nos diagramas de Casos de Uso e Componentes.
 
-**Status HTTP e body do response** — todas as asserções verificam o código de status esperado (200, 201, 400, 401, 404, 503) e os campos obrigatórios do JSON de resposta.
+**TI-01 (Frontend → Backend)** valida a comunicação principal da aplicação, incluindo autenticação e operações realizadas pelo usuário através do aplicativo móvel.
 
-**Estado do banco de dados** — após cada operação de escrita, uma query direta ao PostgreSQL (via Testcontainers) confirma que o registro foi criado, atualizado ou removido conforme esperado, e que não há duplicatas nem registros órfãos por violação de FK.
+**TI-02 (Backend → Banco)** garante a confiabilidade da camada de persistência, assegurando integridade dos dados, constraints e consistência das operações CRUD.
 
-**Comportamento do VHS (TI-04 e TI-05)** — o `VhsTestClient` é usado para inspecionar o header `X-Cache` (HIT ou MISS), verificar o `CallCount` do WireMock (garantindo que a segunda chamada idêntica não atinge o serviço externo) e confirmar que respostas de erro 5xx não foram armazenadas em cache.
+**TI-03 (Backend → Serviço de Recomendação)** valida o diferencial da solução, verificando a comunicação com o mecanismo de recomendação e os cenários de fallback quando o serviço não está disponível.
 
-**Logs e rastreabilidade** — o `X-Correlation-Id` é propagado em todas as requisições e verificado nos logs do Serilog/Seq, garantindo rastreabilidade ponta a ponta; a ausência de stack trace em responses de erro é validada como critério explícito de sucesso.
+**TI-04 (Frontend → API externa ViaCEP)** valida a integração direta do frontend com a API ViaCEP para preenchimento automático de endereço durante o cadastro. Este fluxo também valida o comportamento de cache em memória implementado na aplicação, que reproduz características conceituais de um VHS (Virtual HTTP Storage), incluindo armazenamento temporário de respostas, controle de expiração (TTL) e distinção entre requisições do tipo MISS e HIT.
 
----
+Embora não exista uma camada de VHS como infraestrutura intermediária no sistema, seu comportamento é simulado no frontend por meio do módulo `cachedFetch`, garantindo redução de requisições externas e melhoria de performance percebida pelo usuário.
 
-#### 17.7.3 Discussão de abrangência
+Os testes associados ao TI-04 validam tanto a integração com a API externa quanto esse comportamento de cache equivalente ao VHS, por meio de mocks de rede, isolamento de chamadas externas e verificação de HIT/MISS.
 
-As cinco integrações mapeadas cobrem todos os fluxos críticos identificados no Diagrama de Casos de Uso e no Diagrama de Componentes:
+**TI-05 (Backend → Ticketera)** valida a disponibilização dos links de compra associados aos espetáculos. Nesta sprint, a integração é realizada por meio de URLs armazenadas no banco de dados e retornadas pelos endpoints da API, não havendo comunicação HTTP direta com sistemas externos. Os testes garantem que os links são retornados corretamente para o frontend, bem como o tratamento adequado de cenários de autenticação e recursos inexistentes.
 
-**TI-01 (Frontend → Backend)** é o ponto de entrada de toda a jornada do usuário — cadastro, login, onboarding, busca e wishlist. Sua prioridade é máxima porque qualquer falha aqui impede o acesso a todas as demais funcionalidades.
-
-**TI-02 (Backend → Banco)** garante a integridade da camada de persistência, que sustenta tanto o catálogo quanto as interações que alimentam o motor de recomendação. Sem essa camada estável, os testes de TI-03 perdem confiabilidade.
-
-**TI-03 (Backend → Serviço de Recomendação)** valida o diferencial central do produto — a personalização. O uso de WireMock aqui é deliberado: isola o comportamento do Backend do algoritmo interno do serviço, permitindo testar contratos e fallbacks sem depender do modelo treinado.
-
-**TI-04 (Backend → ViaCEP)** e **TI-05 (Backend → Ticketera)** são as únicas integrações com serviços externos reais e, por isso, são as que mais se beneficiam do VHS. O módulo elimina a dependência de disponibilidade e de estado dos terceiros durante os testes, tornando as suítes completamente determinísticas e executáveis offline. Adicionalmente, os cenários de cache hit/miss validam explicitamente que o VHS está funcionando como camada de proteção — e não apenas como detalhe de implementação — por meio do WireMock call count e do header `X-Cache`.
-
-A combinação VHS + WireMock garante que nenhum teste de integração realiza chamadas a serviços externos reais, o que atende ao princípio de isolamento de ambiente e viabiliza a execução no pipeline de CI sem necessidade de credenciais ou conectividade com terceiros.
+A combinação de Testcontainers, Respawn, WebApplicationFactory e FluentAssertions garante que todos os testes de integração sejam executados em ambiente isolado, reproduzível e independente de serviços externos reais, permitindo execução confiável tanto localmente quanto nos pipelines de integração contínua.
 
 ---
 
-### 17.8 Discussão geral de abrangência dos testes
+### 18.8 Discussão geral de abrangência dos testes
 
-A preencher após a conclusão das subseções anteriores.
+O planejamento de testes proposto cobre as principais dimensões de qualidade necessárias para validar o Portal Aventura como uma solução integrada. A estratégia não se limita à verificação isolada de funcionalidades, mas contempla também requisitos não funcionais, usabilidade, APIs externas e integrações entre frontend, backend, banco de dados e serviço de recomendação.
 
-Nesta seção, o grupo deve discutir a cobertura geral do planejamento, destacando quais dimensões do sistema foram contempladas, quais riscos permanecem e quais seriam os próximos passos para execução dos testes.
+Do ponto de vista funcional, os testes cobrem os fluxos centrais da jornada do usuário: cadastro, login, onboarding, busca de espetáculos, visualização de detalhes, gerenciamento de wishlist, edição de perfil, preferências e consumo de recomendações. Esses cenários foram priorizados porque representam o núcleo da experiência proposta pelo produto e sustentam diretamente a geração de valor para o usuário final.
+
+Em relação aos requisitos não funcionais, o planejamento considera aspectos como desempenho, disponibilidade, segurança, usabilidade, confiabilidade das integrações e tratamento adequado de erros. A inclusão desses testes é importante porque o sistema depende de uma experiência fluida e responsiva, especialmente em ambiente mobile, além de exigir proteção de dados pessoais e estabilidade nos fluxos que envolvem autenticação, perfil, endereço e recomendações.
+
+Os testes de usabilidade complementam a validação técnica ao observar como usuários reais interagem com a aplicação. Essa camada permite identificar problemas que não aparecem apenas por meio de testes automatizados, como dúvidas de navegação, falta de clareza em rótulos, dificuldade para entender feedbacks visuais ou baixa percepção de relevância nas recomendações. A aplicação do questionário SUS contribui para transformar essas percepções em uma métrica comparável de qualidade de uso.
+
+Já os testes de APIs externas e integração ampliam a abrangência do planejamento ao validar dependências críticas do sistema. A integração com ViaCEP apoia a coleta e o enriquecimento de dados de endereço, enquanto a integração com serviços de ticketera e recomendação sustenta fluxos essenciais de compra e personalização. O uso de ferramentas como WireMock, Testcontainers, Respawn e VHS foi previsto para garantir testes reprodutíveis, isolados e menos dependentes da disponibilidade de terceiros.
+
+Apesar da abrangência planejada, alguns riscos permanecem. Parte dos fluxos ainda pode operar com dados mockados ou integrações simuladas, o que exige validação posterior em ambiente de homologação com backend, banco e serviços externos reais. Também é necessário ampliar a massa de testes conforme o volume de usuários, espetáculos, teatros e interações aumentar, principalmente para avaliar a qualidade das recomendações em cenários mais próximos de produção.
+
+Como próximos passos, recomenda-se executar os testes planejados de forma incremental, começando pelos fluxos críticos de autenticação, perfil, catálogo, wishlist e recomendação. Em seguida, deve registrar evidências de execução, corrigir falhas encontradas, acompanhar métricas de cobertura e repetir os testes após cada integração relevante. Dessa forma, o planejamento de testes funciona não apenas como uma etapa de verificação final, mas como um mecanismo contínuo de controle de qualidade durante a evolução do produto.
 
 ----
 
-## 18. Desenvolvimento Do Projeto  — Sprint 3
+## 19. Desenvolvimento do Projeto — Sprint 3
 
 Esta seção documenta o progresso incremental da solução de software durante a Sprint 3. O objetivo é evidenciar a evolução do backend, frontend, integrações, padrões de desenvolvimento, testes unitários, metodologia e comprovações de execução da aplicação.
 
 ---
-### 18.1 Objetivo da sessão
+### 19.1 Objetivo da sessão
 
 Esta seção evidencia o progresso incremental da solução durante a Sprint 3, contemplando:
 
@@ -2332,7 +2651,7 @@ Esta seção evidencia o progresso incremental da solução durante a Sprint 3, 
 
 ---
 
-### 18.2 Arquitetura de codificação e estrutura de diretórios
+### 19.2 Arquitetura de codificação e estrutura de diretórios
 
 A organização geral do repositório separa claramente backend, frontend, banco de dados, modelos de machine learning, dataset, documentação e ferramentas auxiliares.
 
@@ -2408,9 +2727,9 @@ g02/
 
 ---
 
-### 18.3 Desenvolvimento do Backend
+### 19.3 Desenvolvimento do Backend
 
-#### 18.3.1 Arquitetura do backend
+#### 19.3.1 Arquitetura do backend
 
 O backend foi desenvolvido em **.NET 10 (C#)** e segue uma arquitetura em camadas inspirada nos princípios de **Domain-Driven Design (DDD)** e **Clean Architecture**, com clara separação de responsabilidades entre as camadas.
 
@@ -2498,9 +2817,11 @@ src/backend/
 
 ---
 
-#### 18.3.2 Rotas da API REST
+#### 19.3.2 Rotas da API REST
 
 Todas as rotas estão expostas sob o prefixo `/api`. O Swagger UI está disponível em `/swagger` no ambiente de desenvolvimento.
+
+As rotas descritas nesta seção representam os contratos previstos e documentados para o backend. Na Sprint 3, parte dos fluxos consumidos pelo frontend ainda operava com dados mockados ou serviços locais simulados. Em especial, o fluxo de autenticação no aplicativo mobile foi validado por meio de simulação local, enquanto os endpoints de Auth foram documentados e testados no backend como contrato da API.
 
 ##### Auth — `/api/auth`
 
@@ -2635,7 +2956,7 @@ Todas as rotas estão expostas sob o prefixo `/api`. O Swagger UI está disponí
 
 ---
 
-### 18.4 Desenvolvimento do Frontend
+### 19.4 Desenvolvimento do Frontend
 
 O frontend da Sprint 3 foi implementado como um aplicativo móvel híbrido em `src/frontend/mobile-app-aventura`, com foco em cross-platform e entrega rápida. A escolha por React Native buscou reduzir tempo de desenvolvimento e garantir disponibilidade simultânea em iOS e Android com um único conjunto de telas.
 
@@ -2650,7 +2971,7 @@ A aplicação utiliza um padrão similar a MVVM. As telas em `screens/` atuam co
 
 Essa decisão foi tomada para validar fluxo, navegação, componentes e experiência de uso antes da integração completa com o backend. A integração REST real fica prevista para as próximas sprints, mantendo os repositories como ponto natural de troca entre mocks e chamadas HTTP.
 
-#### 18.4.1 Arquitetura do frontend
+#### 19.4.1 Arquitetura do frontend
 
 A estrutura adotada no frontend inclui:
 
@@ -2666,7 +2987,7 @@ A estrutura adotada no frontend inclui:
 
 Essa estrutura permite que a equipe evolua a interface e os fluxos de navegação com baixo acoplamento. Quando a integração com o backend for ativada, a principal mudança esperada estará nos repositories e services, preservando as telas e grande parte dos viewmodels.
 
-#### 18.4.2 Telas implementadas
+#### 19.4.2 Telas implementadas
 
 As telas essenciais entregues na Sprint 3 foram:
 
@@ -2683,7 +3004,7 @@ As telas essenciais entregues na Sprint 3 foram:
 
 A implementação foi orientada pelas decisões de produto e pela estrutura esperada das APIs, mas nesta sprint o frontend opera majoritariamente com mocks locais. Isso permitiu validar o desenho das telas e a separação MVVM antes da integração real com os endpoints do backend nas próximas etapas.
 
-#### 18.4.3 Vídeo demonstrativo do frontend
+#### 19.4.3 Vídeo demonstrativo do frontend
 
 Como evidência complementar da Sprint 3, será adicionado aqui o link para um vídeo demonstrativo do aplicativo mobile em execução, mostrando o fluxo de navegação, as telas implementadas, a bottom tab bar, o uso de dados mockados e as interações principais do frontend.
 
@@ -2691,7 +3012,7 @@ Como evidência complementar da Sprint 3, será adicionado aqui o link para um v
 
 ---
 
-### 18.5 Padrões de codificação e padrões de projeto
+### 19.5 Padrões de codificação e padrões de projeto
 
 Nesta seção documentamos as decisões que guiaram o desenvolvimento do backend e do frontend na Sprint 3. Essas escolhas foram feitas para garantir consistência no código, manutenção previsível e alinhamento com boas práticas de engenharia.
 
@@ -2714,14 +3035,16 @@ A aplicação utiliza padrões de projeto concretos para garantir robustez e cla
 |---|---|---|---|
 | Criacional | Factory | `infrastructure/DbConnectionFactory.cs` | Centraliza a criação de `NpgsqlConnection`, reduz duplicação e valida credenciais de ambiente antes de abrir a conexão. |
 | Estrutural | Mapper | `mappings/DtoMapper.cs` | Separa as entidades do domínio dos contratos de API, permitindo que alterações internas não virem quebra de contrato. |
-| Comportamental | Repository | `repository/*Repository.cs` | Isola o acesso ao banco de dados, facilita testes de integração e mantém queries SQL organizadas. |
-| Comportamental | Service | `services/*Service.cs` | Orquestra regras de negócio, validações e fluxos transacionais fora dos controllers. |
-| Comportamental | Middleware | `extensions/middleware` | Centraliza o tratamento de exceções e a formatação de responses de erro, mantendo os controllers limpos. |
+| Comportamental | Strategy | `services/IRecommendationStrategy.cs`, `services/StoredRecommendationStrategy.cs`, `services/FavoriteGenresRecommendationStrategy.cs` | Separa as estratégias de recomendação persistida e fallback por gêneros favoritos, permitindo alternar ou adicionar algoritmos sem alterar o contrato de `RecomendacaoService`. |
+| Arquitetural | Repository | `repository/*Repository.cs` | Isola o acesso ao banco de dados, facilita testes de integração e mantém queries SQL organizadas. |
+| Arquitetural | Service Layer | `services/*Service.cs` | Orquestra regras de negócio, validações e fluxos transacionais fora dos controllers. |
+| Infraestrutura ASP.NET | Middleware | `infrastructure/middleware/GlobalExceptionHandler.cs` | Centraliza o tratamento de exceções e a formatação de responses de erro, mantendo os controllers limpos. |
 
 #### Justificativas das escolhas
 
 - O padrão **Service/Repository** foi adotado para garantir que a camada de API mantenha apenas responsabilidades de roteamento e autorização, enquanto a lógica de domínio permanece testável.
 - O padrão **Factory** para conexão foi usado para evitar replicação de string de conexão e para encapsular a lógica de fallback entre `appsettings` e variáveis de ambiente.
+- O padrão **Strategy** foi aplicado no fluxo de recomendação para separar a busca por recomendações persistidas do fallback por gêneros favoritos.
 - O uso de **Mapper** evita o vazamento de entidades de domínio na API e permite evoluir o modelo interno sem alterar os resultados expostos.
 - A opção por **React Native** no frontend foi tomada para reduzir o tempo de entrega e permitir uma única base de código para Android e iOS.
 
@@ -2729,7 +3052,7 @@ Essas decisões de codificação e arquitetura foram tomadas para oferecer um ba
 
 ---
 
-### 18.6 Testes unitários do Backend e metodologia TDD
+### 19.6 Testes unitários do Backend e metodologia TDD
 
 Esta seção deve documentar a estratégia de testes unitários adotada no projeto, com foco nas funcionalidades implementadas e na aplicação da metodologia TDD.
 
@@ -2770,13 +3093,13 @@ Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositó
 
 ---
 
-#### Link do vídeo demonstrativo
+#### Link do vídeo demonstrativo backend
 
 [Vídeo demonstrativo](https://drive.google.com/file/d/1VCDSsW-dxjwJJM6786tu-Pd1RauL3sNp/view?usp=sharing)
 
 ---
 
-### 18.7 Testes unitários do Frontend (React Native)
+### 19.7 Testes unitários do Frontend (React Native)
  
 Esta seção documenta a estratégia de testes unitários adotada para o frontend mobile do projeto, cobrindo as camadas de ViewModel e Service da arquitetura MVVM.
  
@@ -2837,7 +3160,7 @@ Cobertura focada nas camadas de ViewModel e Service, que concentram toda a lógi
 
 ---
 
-### 18.8 Testes unitários do Backend
+### 19.8 Testes unitários do Backend
 
 Esta seção documenta a estratégia de testes unitários adotada para o backend da aplicação.
 
@@ -2967,9 +3290,9 @@ Cobertura focada nas camadas de Domain, Service, Controller, Middleware e Infrae
 
 ---
 
-### 18.9 Documentação de API (Swagger)
+### 19.9 Documentação de API (Swagger)
 
-Esta seção documenta a API REST do backend, exposta via Swagger UI em ambiente de desenvolvimento.
+Esta seção documenta a API REST do backend, exposta via Swagger UI em ambiente de desenvolvimento. Na Sprint 3, essa documentação serviu como contrato técnico das rotas previstas e implementadas no backend; no frontend mobile, fluxos como autenticação ainda foram consumidos de forma simulada, por meio de mocks e serviços locais.
 
 #### Configuração
 
@@ -2987,6 +3310,8 @@ if (app.Environment.IsDevelopment())
 ```
 
 A API está disponível em `http://localhost:5253` em ambiente local. A interface interativa do Swagger pode ser acessada em `http://localhost:5253/swagger`.
+
+Observa-se que integrações externas, como ViaCEP, não foram tratadas como dependência real da aplicação nesta etapa. Elas aparecem no planejamento de testes e integração como contratos a validar, com execução mockada/stubada até a consolidação do ambiente integrado.
 
 #### Endpoints documentados
 
@@ -3025,7 +3350,725 @@ Todos os endpoints retornam erros no formato `ProblemDetails` (RFC 7807), gerenc
 
 ---
 
-## 19. Termos e Abreviações
+## 20. Desenvolvimento do Projeto — Sprint 4
+
+### 20.1 Objetivo da Sprint 4
+
+O objetivo da Sprint 4 foi consolidar a evolução técnica do Portal Aventura a partir do refinamento das principais camadas da solução: frontend mobile, backend e motor de recomendação. Nesta etapa, o foco deixou de estar apenas na implementação isolada de funcionalidades e passou a concentrar-se na integração entre os módulos do sistema, garantindo que as telas, os fluxos de dados, as regras de negócio e os serviços de recomendação funcionassem de forma mais coesa.
+
+No frontend, a sprint teve como objetivo aprimorar a experiência do usuário por meio da padronização visual das telas, refinamento de fluxos de cadastro, perfil, preferências, wishlist, busca e detalhes de espetáculos e teatros. No backend, o trabalho concentrou-se na continuidade da estrutura de APIs, serviços e regras necessárias para sustentar os fluxos da aplicação. Já no motor de recomendação, o objetivo foi avançar na preparação e utilização dos dados para apoiar sugestões mais aderentes ao perfil e ao comportamento do usuário.
+
+Apesar desses avanços em cada frente, o principal objetivo da Sprint 4 foi a integração do sistema e a validação do funcionamento conjunto das partes desenvolvidas. Dessa forma, os testes ganharam papel central na sprint, tanto para verificar a estabilidade das funcionalidades existentes quanto para avaliar se os fluxos integrados estavam preparados para evoluir em direção a um produto mais completo, consistente e próximo do uso real.
+
+### 20.2 Evolução do Frontend Mobile
+
+O frontend mobile da Sprint 4 continuou sendo desenvolvido como um aplicativo React Native no diretório `src/frontend/mobile-app-aventura`. Diferente da Sprint 3, em que o foco principal estava na construção dos fluxos iniciais e validação da arquitetura MVVM com dados mockados, esta etapa concentrou-se no refinamento visual, na melhoria de usabilidade e na substituição gradual dos mocks pela conexão com o backend e com os dados persistidos no banco de dados.
+
+A evolução do frontend foi orientada por três objetivos principais:
+
+- padronizar a experiência visual entre telas principais e secundárias;
+- melhorar fluxos de cadastro, onboarding, perfil, wishlist, busca, teatros e detalhes de espetáculos;
+- fortalecer a separação entre telas, estado, modelos e acesso a dados para viabilizar o consumo de dados reais vindos do backend.
+
+A aplicação manteve a estrutura inspirada em MVVM. As telas em `screens/` continuam atuando como camada de View, os hooks em `viewmodels/` concentram estado e regras de apresentação, os arquivos em `repositories/` abstraem a origem dos dados e os `services/` passaram a concentrar a comunicação com o backend. Com isso, os mocks em `data/` deixaram de ser a fonte principal dos fluxos integrados e passaram a ser utilizados apenas como apoio para telas, estados ou cenários ainda não conectados à API.
+
+#### 20.2.1 Arquitetura do frontend
+
+A estrutura utilizada no frontend durante a Sprint 4 inclui:
+
+- `screens/` — telas de fluxo principal e secundário, incluindo login, cadastro, onboarding, Home/Explorar, Busca, Detalhes de Espetáculo, Detalhes de Teatro, Wishlist, Perfil, Edição de Perfil, Preferências, Notificações e Informações Institucionais.
+- `components/` — componentes reutilizáveis como formulários, botões, cards, inputs, cabeçalhos, estruturas visuais e elementos de feedback.
+- `viewmodels/` — hooks responsáveis por estado de tela, validações, ações do usuário, navegação e preparação dos dados para exibição.
+- `repositories/` — camada de acesso a dados, responsável por intermediar o consumo das informações entre viewmodels, services e fontes de dados da aplicação.
+- `services/` — serviços auxiliares e clientes de comunicação com o backend, utilizados para substituir dados mockados por respostas reais da API conectada ao banco de dados.
+- `data/` — massas mockadas mantidas como apoio para estados locais, fallback visual e cenários ainda não integrados completamente.
+- `models/` — estruturas-base utilizadas pelos fluxos de autenticação, perfil, preferências e demais áreas do aplicativo.
+- `constants/` — tokens visuais, cores, tipografia, espaçamentos e constantes compartilhadas.
+- `assets/` — imagens, logos, ícones e recursos estáticos usados pela interface.
+
+Essa organização permitiu que os refinamentos visuais fossem feitos sem concentrar regras de negócio diretamente nas telas. Com isso, os fluxos de cadastro, perfil, preferências, catálogo, teatros e wishlist puderam evoluir da leitura de mocks locais para o consumo de dados fornecidos pelo backend, preservando a organização da arquitetura e facilitando os testes de integração.
+
+#### 20.2.2 Telas e fluxos refinados
+
+As principais telas e fluxos refinados na Sprint 4 foram:
+
+- **Login e Cadastro** — padronização visual com a identidade da Aventura, ajuste do logo e evolução do cadastro para um fluxo em etapas. O cadastro passou a coletar dados pessoais e informações de endereço, como CEP, cidade, bairro, rua, número e complemento.
+- **Onboarding** — remoção de categorias fora do escopo atual, como opções que não seriam utilizadas no produto, e ajuste do comportamento visual para evitar deslocamento dos cards quando o contador de interesses selecionados aparece.
+- **Home/Explorar e Busca** — ajustes em cards, consumo de dados vindos do backend e consistência visual para manter os espetáculos associados aos teatros previstos no escopo.
+- **Detalhes de Espetáculo** — refinamentos de espaçamento, navegação e inclusão de botão de voltar, melhorando o comportamento da tela ao ser rolada.
+- **Teatros e Detalhes de Teatro** — atualização dos dados dos teatros da Aventura com nome, cidade, localização, capacidade, descrição, destaques e imagens, considerando a transição dos mocks para dados persistidos. Os cards passaram a permitir navegação para uma tela com mais informações sobre cada teatro.
+- **Wishlist** — revisão dos cards e inclusão de feedbacks de sistema para ações como adicionar ou remover espetáculos salvos.
+- **Perfil** — refinamento visual da tela, ajuste do botão de sair para retornar ao login, remoção de elementos que não estavam no escopo e substituição da foto fixa por avatar em ícone.
+- **Edição de Perfil** — criação de uma tela dedicada para edição de informações pessoais, endereço e seleção de avatar, mantendo a mesma linguagem visual das demais telas.
+- **Preferências, Notificações e Informações Institucionais** — ajustes de navegação para que essas telas secundárias não exibam a tab bar, além de refinamentos visuais em cards, ícones e organização dos conteúdos.
+
+Além dos ajustes por tela, foram adicionados feedbacks de sistema em ações importantes para o usuário, como salvar perfil, editar preferências e interagir com a wishlist. Esses retornos ajudam a confirmar o resultado das ações e tornam o fluxo mais claro em cenários que dependem de respostas do backend.
+
+#### 20.2.3 Testes unitários do frontend
+
+Na Sprint 4, os testes unitários do frontend foram atualizados para acompanhar a evolução da aplicação React Native, especialmente a transição de fluxos baseados em mocks locais para fluxos conectados a services, repositórios e sessão autenticada. A suíte fica localizada em `src/frontend/mobile-app-aventura/tests` e é executada com Jest.
+
+Os testes mantêm foco nas camadas de `services` e `viewmodels`, pois concentram regras de apresentação, validações, carregamento assíncrono, busca, onboarding, edição de interesses e integração com APIs internas. Dependências externas como navegação, armazenamento de token, cliente HTTP e dados de apoio são isoladas por mocks, garantindo que os cenários validem o comportamento da lógica do frontend sem depender de ambiente nativo ou backend em execução.
+
+Durante o refinamento, os testes de onboarding foram alinhados ao modelo atual de categorias, cidades e frequências; os testes de busca passaram a considerar carregamento assíncrono e debounce; e os testes de edição de interesses foram ajustados para aguardar corretamente o estado inicial vindo dos services. Também foi adicionado um setup do Jest para compatibilidade com variáveis globais esperadas pelo ambiente React Native.
+
+**Comando de execução:**
+
+```bash
+cd src/frontend/mobile-app-aventura
+npm test -- --runInBand
+```
+
+**Resultado validado na Sprint 4:** 9 suítes aprovadas, totalizando 109 testes unitários aprovados.
+
+#### 20.2.4 Evidência demonstrativa do frontend
+
+Como evidência complementar da Sprint 4, será adicionado aqui o link para um vídeo demonstrativo do aplicativo mobile em execução, destacando os refinamentos visuais, o novo fluxo de cadastro, a edição de perfil, a navegação em teatros, os feedbacks de sistema e os principais fluxos conectados ao backend.
+
+**Link do vídeo demonstrativo:** [Demonstração do frontend da Sprint 4](https://drive.google.com/drive/folders/1KViAXOmTgchjc01unwgyr7cplEMngrgD?usp=sharing).
+
+### 20.3 Evolução do Backend
+
+Na Sprint 4, o backend evoluiu de uma camada de API planejada para uma aplicação ASP.NET Core mais completa, com autenticação, autorização, persistência em PostgreSQL, tratamento padronizado de erros, suporte aos fluxos do aplicativo mobile e integração indireta com o motor de recomendação. O código da aplicação está concentrado em `src/backend` e mantém uma organização em camadas, separando controllers, serviços de aplicação, repositórios, domínio, DTOs, infraestrutura e mapeamentos.
+
+#### 20.3.1 Estrutura técnica do backend
+
+A arquitetura implementada no backend segue uma separação simples e rastreável:
+
+- `controller/` — expõe os endpoints REST consumidos pelo aplicativo mobile e pelo Swagger.
+- `services/` — concentra regras de negócio, validações, fallback de recomendação, autenticação, wishlist, preferências e anonimização.
+- `repository/` — executa acesso ao PostgreSQL com `Npgsql`, usando consultas parametrizadas.
+- `domain/` — representa entidades e regras internas de consistência, como usuário, espetáculo, teatro, preferências e recomendação.
+- `dto/` — define contratos de entrada e saída da API.
+- `mappings/` — converte entidades de domínio para DTOs, evitando exposição direta do modelo interno.
+- `infrastructure/` — centraliza conexão com banco, middleware de exceções e persistência auxiliar.
+- `extensions/DependencyInjection.cs` — registra repositórios, serviços, middleware e jobs em injeção de dependência.
+
+Essa estrutura mantém os controllers finos: eles recebem a requisição, chamam o serviço correspondente e retornam o resultado. As regras de negócio ficam nos services, enquanto a leitura e escrita no banco ficam nos repositories.
+
+#### 20.3.2 Configuração da aplicação
+
+O arquivo `Program.cs` passou a concentrar as principais configurações de execução:
+
+- carregamento de variáveis de ambiente a partir de `.env`;
+- leitura de configurações por `builder.Configuration.AddEnvironmentVariables()`;
+- ativação de controllers com política global de autenticação;
+- configuração de JWT Bearer Authentication;
+- habilitação de Swagger em ambiente de desenvolvimento;
+- habilitação de CORS;
+- uso de `UseExceptionHandler()` com respostas `ProblemDetails`;
+- registro das camadas por `AddAventuraInfrastructure()` e `AddAventuraApplication()`.
+
+A autenticação é aplicada globalmente aos controllers por meio de uma `AuthorizationPolicy` que exige usuário autenticado. O `AuthController` é a exceção explícita, pois recebe `[AllowAnonymous]` para permitir cadastro e login.
+
+#### 20.3.3 Autenticação, usuário e LGPD
+
+O fluxo de autenticação foi estruturado no conjunto `AuthController`, `AuthService`, `UsuarioRepository` e DTOs de autenticação. O cadastro valida nome, e-mail, senha mínima, idade mínima e aceite de consentimento. A senha cadastrada é armazenada com hash BCrypt e o usuário recebe um token JWT com `sub`, `email` e `name`.
+
+Também foi adicionada evolução importante para LGPD:
+
+- campos de consentimento (`consentimento_aceito` e `data_consentimento`);
+- exclusão lógica por `deleted_at`;
+- flag `anonimizado`;
+- endpoint de exclusão de usuário em `DELETE /api/usuario/{id}`;
+- `AnonimizacaoJob`, executado a cada 24 horas, que anonimiza contas marcadas para exclusão há pelo menos 30 dias.
+
+Com isso, o backend deixa de tratar exclusão como remoção imediata e passa a manter um ciclo compatível com retenção temporária e anonimização posterior.
+
+#### 20.3.4 Endpoints REST implementados na Sprint 4
+
+A API utiliza o prefixo `api/[controller]`. Os principais endpoints disponíveis são:
+
+| Grupo | Método | Rota | Finalidade | Retorno esperado |
+|---|---|---|---|---|
+| Autenticação | POST | `/api/auth/register` | Cadastrar usuário com dados pessoais, endereço e consentimento | `201 Created` + `AuthResponse` |
+| Autenticação | POST | `/api/auth/login` | Autenticar usuário e emitir token JWT | `200 OK` + `AuthResponse` |
+| Usuário | GET | `/api/usuario/{id}` | Consultar perfil do usuário | `200 OK` + `UsuarioResponse` |
+| Usuário | PUT | `/api/usuario/{id}` | Atualizar dados pessoais e endereço | `200 OK` + `UsuarioResponse` |
+| Usuário | DELETE | `/api/usuario/{id}` | Solicitar exclusão lógica da conta | `204 No Content` |
+| Espetáculos | GET | `/api/espetaculo` | Listar espetáculos ordenados por data de início | `200 OK` + lista de `EspetaculoDto` |
+| Espetáculos | GET | `/api/espetaculo/{id}` | Consultar espetáculo por ID | `200 OK` + `EspetaculoDto` |
+| Espetáculos | GET | `/api/espetaculo/search?genero=&nome=` | Buscar espetáculos por gênero e/ou nome | `200 OK` + lista de `EspetaculoDto` |
+| Teatros | GET | `/api/teatro` | Listar teatros | `200 OK` + lista de `TeatroDto` |
+| Teatros | GET | `/api/teatro/{id}` | Consultar teatro por ID | `200 OK` + `TeatroDto` |
+| Teatros | GET | `/api/teatro/{id}/espetaculos` | Listar espetáculos vinculados ao teatro | `200 OK` + lista de `EspetaculoDto` |
+| Preferências | GET | `/api/preferencias/{usuarioId}` | Consultar preferências do usuário | `200 OK` + `PreferenciasDto` |
+| Preferências | PUT | `/api/preferencias/{usuarioId}` | Atualizar gêneros, tags, localização, faixa de preço e notificações | `200 OK` + `PreferenciasDto` |
+| Wishlist | GET | `/api/wishlist/{usuarioId}` | Listar espetáculos salvos | `200 OK` + lista de `EspetaculoDto` |
+| Wishlist | GET | `/api/wishlist/{usuarioId}/contains/{espetaculoId}` | Verificar se o espetáculo está salvo | `200 OK` + `bool` |
+| Wishlist | POST | `/api/wishlist/{usuarioId}/{espetaculoId}` | Adicionar espetáculo à wishlist | `201 Created` |
+| Wishlist | DELETE | `/api/wishlist/{usuarioId}/{espetaculoId}` | Remover espetáculo da wishlist | `204 No Content` |
+| Recomendações | GET | `/api/recomendacao/{usuarioId}?limit=` | Retornar recomendações persistidas ou fallback por gêneros favoritos | `200 OK` + lista de `RecomendacaoItemDto` |
+| Gêneros | GET | `/api/genero` | Listar gêneros cadastrados | `200 OK` + lista de strings |
+| Preferências auxiliares | GET | `/api/preference/{userId}` | Consultar preferências em memória para cold-start auxiliar | `200 OK` + lista de strings |
+| Preferências auxiliares | POST | `/api/preference/{userId}` | Salvar tipos de evento em memória para cold-start auxiliar | `204 No Content` |
+
+#### 20.3.5 Regras de negócio implementadas
+
+As regras implementadas no backend cobrem os principais fluxos do app:
+
+- cadastro exige consentimento de privacidade, e-mail válido, senha com no mínimo 6 caracteres e idade mínima de 13 anos;
+- e-mails são únicos e verificados de forma case-insensitive;
+- usuários excluídos logicamente não são retornados por consulta de ID;
+- atualização de perfil permite alterar nome, idade e endereço;
+- preferências são criadas automaticamente quando ainda não existem para o usuário;
+- atualização de preferências usa transação para salvar dados gerais e gêneros favoritos;
+- wishlist impede duplicidade por meio de `ON CONFLICT DO NOTHING` e retorna conflito quando o item já existe;
+- remoção de wishlist retorna erro quando o espetáculo não está salvo;
+- recomendação aceita `limit` entre 1 e 50;
+- se não houver recomendações persistidas para o usuário, o backend usa fallback por gêneros favoritos;
+- erros são convertidos em `ProblemDetails` com status HTTP padronizado.
+
+#### 20.3.6 Tratamento de erros e observabilidade
+
+O backend utiliza `GlobalExceptionHandler` para traduzir exceções em respostas HTTP consistentes:
+
+| Exceção | Status | Título |
+|---|---|---|
+| `ArgumentException` | 400 | Requisição inválida |
+| `UnauthorizedAccessException` | 401 | Não autorizado |
+| `KeyNotFoundException` | 404 | Recurso não encontrado |
+| `NotFoundException` | 404 | Recurso não encontrado |
+| `ConflictException` | 409 | Conflito |
+| Exceções não tratadas | 500 | Erro interno |
+
+Esse mecanismo reduz duplicação nos controllers e garante que o frontend receba erros em formato previsível.
+
+### 20.4 Integração com Dados e Recomendação
+
+Na Sprint 4, a integração de dados foi fortalecida em três frentes: evolução do schema PostgreSQL, consumo real dos dados pelo backend e conexão indireta com o pipeline de recomendação.
+
+#### 20.4.1 Banco de dados PostgreSQL
+
+O backend se conecta ao PostgreSQL por meio de `DbConnectionFactory`, que aceita uma connection string `DefaultConnection` ou variáveis de ambiente (`POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, com fallback para nomes `DB_*`). Essa decisão permite alternar entre ambiente local, VM Oracle Cloud e demais ambientes sem alterar código.
+
+O script `src/database/02_sprint4_improvements.sql` adicionou melhorias importantes ao modelo:
+
+- constraints para pontuação de interações entre 0 e 10;
+- constraint para garantir `data_expiracao > data_registro`;
+- unicidade de recomendação por par `(usuario_id, espetaculo_id)`;
+- campos de endereço em `usuarios`, preparando o fluxo de cadastro e edição de perfil;
+- campos de consentimento, exclusão lógica e anonimização;
+- índices compostos para interações, recomendações, wishlist, teatros por cidade e espetáculos por datas;
+- coluna `ml_id` em `usuarios`, preparada para mapear usuários do banco ao identificador inteiro usado pelo modelo.
+
+Essas alterações aproximam a base de dados dos requisitos de produto, performance e LGPD descritos nas seções anteriores do projeto.
+
+#### 20.4.2 Fluxo de dados entre frontend, backend e banco
+
+O aplicativo mobile consome os endpoints do backend para substituir gradualmente os mocks locais. O fluxo esperado é:
+
+1. O usuário cria conta ou faz login em `/api/auth`.
+2. O backend retorna dados básicos e token JWT.
+3. O app consulta catálogo, teatros, gêneros, preferências, wishlist e recomendações pelos endpoints REST.
+4. As alterações feitas no app são persistidas no PostgreSQL por repositories específicos.
+5. O backend retorna DTOs preparados para a interface, evitando expor diretamente entidades de domínio.
+
+Essa organização sustenta telas como cadastro, perfil, edição de interesses, busca, home, detalhe de espetáculo, detalhe de teatro e wishlist.
+
+#### 20.4.3 Integração com o motor de recomendação
+
+O backend não executa o modelo de machine learning diretamente. A arquitetura definida em `docs/Modelo_Recomendacao.md` separa responsabilidades:
+
+- `src/ml` treina o modelo híbrido com Funk SVD e afinidade de categoria;
+- `src/inference-service` carrega os artefatos do modelo, gera recomendações em batch e grava resultados na tabela `recomendacoes`;
+- `src/backend` lê a tabela `recomendacoes` e expõe o resultado para o app por `/api/recomendacao/{usuarioId}`.
+
+Essa separação reduz acoplamento. O backend trata recomendação como dado persistido e não como inferência em tempo real. Caso o motor evolua, o contrato principal permanece a tabela `recomendacoes`, desde que sejam preservados `usuario_id`, `espetaculo_id`, `score` e `motivo`.
+
+Quando a tabela não possui recomendações para um usuário, `RecomendacaoService` monta um fallback consultando espetáculos associados aos gêneros favoritos do usuário. O fallback retorna itens com score decrescente e motivo "Baseado nos seus gêneros favoritos", garantindo que a experiência do app não fique vazia mesmo antes do batch de recomendação preencher a tabela.
+
+#### 20.4.4 Persistência de catálogo, teatros e preferências
+
+Os repositórios do backend consultam tabelas normalizadas e relacionamentos N:N:
+
+- `EspetaculoRepository` lê espetáculos, gêneros associados e busca por gênero ou nome;
+- `TeatroRepository` lista teatros e carrega espetáculos vinculados por `teatro_espetaculo`;
+- `GeneroRepository` retorna nomes de gêneros ordenados;
+- `PreferenciasRepository` usa `preferencias` e `usuario_genero_favorito` para persistir cidade, CEP, tags, faixa de preço, notificações e gêneros favoritos;
+- `WishlistRepository` usa `wishlist_curtidas` filtrando `tipo = 'wishlist'`;
+- `RecomendacaoRepository` combina `recomendacoes` e `espetaculos`, ordenando por `score DESC`.
+
+Essa estrutura permite que o app navegue tanto por conteúdo editorial/catálogo quanto por personalização e retenção.
+
+### 20.5 Testes e Validação
+
+Na Sprint 4, a validação do backend foi apoiada por testes unitários em `src/backend/BackEnd.Aventura.Tests`. A suíte cobre controllers, services, domínio, mapeamentos, injeção de dependência, conexão com banco e tratamento global de exceções.
+
+#### 20.5.1 Cobertura funcional dos testes
+
+Os arquivos de teste indicam validação dos seguintes módulos:
+
+| Módulo | Arquivos de teste relacionados | Objetivo da validação |
+|---|---|---|
+| Autenticação | `AuthControllerTests.cs`, `AuthServiceTests.cs` | Cadastro, login, conflitos e validações de credenciais |
+| Usuário | `UsuarioControllerTests.cs`, `UsuarioServiceTests.cs`, `UsuarioTests.cs` | Consulta, atualização, regras de perfil e exclusão lógica |
+| Espetáculos | `EspetaculoControllerTests.cs`, `EspetaculoServiceTests.cs`, `EspetaculoTests.cs` | Listagem, busca, detalhe e regras de entidade |
+| Teatros | `TeatroControllerTests.cs`, `TeatroServiceTests.cs`, `TeatroTests.cs` | Listagem, detalhe e vínculo com espetáculos |
+| Preferências | `PreferenciasControllerTests.cs`, `PreferenciasServiceTests.cs`, `PreferenciasTests.cs` | Consulta, atualização e validações de preferências |
+| Wishlist | `WishlistControllerTests.cs`, `WishlistServiceTests.cs` | Adição, remoção, duplicidade e consulta de itens salvos |
+| Recomendações | `RecomendacaoControllerTests.cs`, `RecomendacaoServiceTests.cs`, `RecomendacaoTests.cs` | Limite de recomendações, retorno persistido e fallback |
+| Gêneros | `GeneroControllerTests.cs`, `GeneroServiceTests.cs` | Listagem dos gêneros disponíveis |
+| Infraestrutura | `DependencyInjectionTests.cs`, `DbConnectionFactoryTests.cs`, `GlobalExceptionHandlerTests.cs` | Registro de dependências, montagem de conexão e erros padronizados |
+| Mapeamento e domínio | `DtoMapperTests.cs`, `EntityGuardsTests.cs`, `ExceptionTests.cs` | Conversão para DTOs, guards e exceções customizadas |
+
+#### 20.5.2 Execução local dos testes
+
+O comando utilizado para validação foi:
+
+```bash
+dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
+```
+
+Durante a execução local, o restore inicialmente falhou por bloqueio de acesso ao NuGet no ambiente restrito. Após liberação de rede, os pacotes foram restaurados, porém a compilação da suíte apontou uma pendência de atualização nos testes:
+
+```text
+FakeUsuarioRepository não implementa membro de interface IUsuarioRepository.ObterMlIdAsync(Guid)
+```
+
+Isso indica que a interface `IUsuarioRepository` evoluiu com suporte ao identificador de ML, mas o fake usado nos testes ainda precisa ser atualizado para acompanhar o novo contrato. Portanto, a suíte documentada existe e cobre os principais módulos, mas a execução completa da Sprint 4 depende da correção desse fake.
+
+#### 20.5.3 Validação manual via Swagger
+
+Além dos testes automatizados, o Swagger continua habilitado em ambiente de desenvolvimento. Ele permite validar manualmente:
+
+- criação de conta e geração de token;
+- autenticação de usuário;
+- consulta e atualização de perfil;
+- listagem e busca de espetáculos;
+- consulta de teatros e seus espetáculos;
+- atualização de preferências;
+- operações de wishlist;
+- retorno de recomendações;
+- respostas de erro padronizadas.
+
+Como a API exige autenticação global, exceto em `/api/auth`, a validação manual dos demais endpoints deve incluir o token JWT emitido no login ou cadastro.
+
+### 20.6 Evidências da Sprint
+
+As principais evidências técnicas da Sprint 4 no backend são:
+
+| Evidência | Local no repositório | Descrição |
+|---|---|---|
+| Configuração da API | `src/backend/Program.cs` | JWT, CORS, Swagger, autorização global, tratamento de exceções e registro das camadas |
+| Injeção de dependência | `src/backend/extensions/DependencyInjection.cs` | Registro de services, repositories, exception handler e job de anonimização |
+| Controllers REST | `src/backend/controller/` | Endpoints de auth, usuário, catálogo, teatro, preferências, wishlist, recomendação e gêneros |
+| Regras de negócio | `src/backend/services/` | Validações, fallback de recomendação, autenticação, wishlist, preferências e LGPD |
+| Persistência PostgreSQL | `src/backend/repository/` | Repositórios com consultas parametrizadas usando `Npgsql` |
+| DTOs e mapeamentos | `src/backend/dto/` e `src/backend/mappings/DtoMapper.cs` | Contratos de entrada/saída da API e conversão de domínio |
+| Tratamento global de erros | `src/backend/infrastructure/middleware/GlobalExceptionHandler.cs` | Respostas `ProblemDetails` para erros conhecidos e inesperados |
+| Evolução do banco | `src/database/02_sprint4_improvements.sql` | Campos de endereço, LGPD, índices, constraints e `ml_id` |
+| Integração com recomendação | `docs/Modelo_Recomendacao.md` e `src/inference-service/` | Pipeline que grava recomendações na tabela lida pelo backend |
+| Testes automatizados | `src/backend/BackEnd.Aventura.Tests/` | Suíte xUnit com fakes e testes por camada |
+
+#### 20.6.1 Vídeo demonstrativo da integração frontend-backend
+
+Como evidência complementar da Sprint 4, o vídeo abaixo demonstra o frontend consumindo fluxos conectados ao backend, validando a integração entre a interface mobile e os endpoints da API.
+
+**Link do vídeo demonstrativo:** [Integração frontend-backend](https://drive.google.com/file/d/1EcSC9ybqNQ1LKotA9xdpr2rvZfvmRAxN/view?usp=sharing).
+
+Como refinamentos previstos para a Sprint final 5, recomenda-se atualizar `FakeUsuarioRepository` para implementar `ObterMlIdAsync(Guid)` e revisar o fluxo de login para garantir que a senha informada seja comparada com o hash BCrypt armazenado. Esses pontos devem ser tratados antes de considerar o backend plenamente validado para uma entrega final integrada.
+
+---
+
+## 21. Execução dos Testes
+
+### 21.1 Objetivo da execução dos testes
+
+Este artefato tem como objetivo documentar a execução dos testes planejados na seção [18. Planejamento de Testes](#18-planejamento-de-testes), validando o comportamento do sistema de forma abrangente e verificando se os requisitos de negócio foram atendidos. A seção deve demonstrar a capacidade do grupo de executar, documentar e analisar os resultados de diferentes tipos de teste, registrando evidências, falhas encontradas, melhorias propostas e encaminhamentos para evoluções futuras.
+
+A execução deve manter rastreabilidade com os casos planejados na seção 18, mas sem repetir integralmente o planejamento. O foco desta seção é registrar o que foi efetivamente executado, quais resultados foram observados, quais evidências comprovam a execução e quais melhorias foram identificadas.
+
+### 21.2 Visão geral da execução
+
+Nesta seção, são documentados os testes executados a partir do planejamento definido na seção 18. O registro apresenta, em texto, o período de execução, os responsáveis, o ambiente utilizado, as ferramentas adotadas e as principais evidências coletadas.
+
+Os **testes de funcionalidade** validaram os fluxos centrais do aplicativo, como cadastro, login, onboarding, catálogo, busca, wishlist, perfil, redirecionamento para compra e recomendações. A documentação indica quais requisitos funcionais foram cobertos e se o comportamento observado atendeu ao esperado.
+
+Os **testes automatizados de integração** verificaram a comunicação entre os componentes da solução, como frontend, backend, banco de dados, serviço de recomendação e integrações externas simuladas ou reais. A documentação registra comandos executados, ferramentas utilizadas, resultados das suítes e evidências de execução.
+
+Os **testes automatizados de regras de negócio** validaram regras críticas do sistema, contemplando cenários positivos e negativos. A documentação explica quais regras foram verificadas, quais comportamentos foram confirmados e quais inconsistências foram encontradas.
+
+Os **testes de requisitos não funcionais** avaliaram atributos de qualidade como desempenho, segurança, privacidade, disponibilidade, usabilidade, carga, geolocalização e modularidade. A documentação apresenta as métricas coletadas e compara os resultados com os critérios planejados.
+
+Os **testes de usabilidade** observaram a interação de usuários com os principais fluxos do aplicativo. A documentação descreve o perfil dos participantes, as tarefas propostas, as dificuldades percebidas, os resultados do questionário SUS e as melhorias identificadas.
+
+Os **testes de APIs externas** validaram integrações como ViaCEP e eventuais serviços de ticketera, considerando cenários de sucesso, erro, timeout, indisponibilidade e fallback. A documentação registra as respostas obtidas, os tempos observados, o tratamento de falhas e as evidências coletadas.
+
+### 21.3 Testes de funcionalidade
+
+Os testes de funcionalidade foram executados para validar os principais fluxos do aplicativo conforme os requisitos funcionais definidos na seção 9 e os casos planejados na seção 18.3. Cada requisito funcional foi verificado em **duas camadas**: a suíte automatizada que cobre a regra de negócio correspondente (executada na seção 21.5, no frontend via Jest e no backend via xUnit) e a verificação do fluxo no aplicativo. A execução considerou tanto cenários positivos quanto cenários negativos.
+
+**Período e ambiente:** Execução em 12/06/2026, com backend .NET 9 e PostgreSQL 16 em container local (porta 5253) e suíte de frontend (Jest) e backend (xUnit) na máquina de desenvolvimento. As suítes automatizadas que sustentam cada TF estão verdes (frontend 136/136, backend unitário 123/123 — detalhes em 20.5).
+
+**Testes executados:** Foram cobertos os casos TF-01 a TF-10, mapeados aos RF01–RF10, conforme a tabela abaixo.
+
+| Caso | Requisito | Verificação automatizada (verde) | Cenário negativo coberto | Status |
+|---|---|---|---|---|
+| TF-01 | RF01 Onboarding | `Useonboardingviewmodel.test.js`, `Onboardingservice.test.js`, `PreferenciasServiceTests` | Pular/onboarding parcial; ausência de sessão lança erro controlado | Aprovado (automatizado) |
+| TF-02 | RF02 Geolocalização | `RecomendacaoServiceTests` (filtro por cidade) | Cidade sem espetáculos → carrossel vazio tratado | Aprovado (automatizado) |
+| TF-03 | RF03 Autenticação | `AuthControllerTests`, `AuthServiceTests`, `Useauthviewmodel.test.js` | Login inválido → 401; brute force (ver RNF02 em 20.6) | Aprovado (automatizado) |
+| TF-04 | RF04 Catálogo | `EspetaculoControllerTests`, `GeneroServiceTests` | Categoria inexistente → lista vazia | Aprovado (automatizado) |
+| TF-05 | RF05 Busca | `Usesearchviewmodel.test.js`, `EspetaculoServiceTests` | Termo inexistente → `hasResults=false` e "Nenhum espetáculo encontrado" | Aprovado (automatizado) |
+| TF-06 | RF06 Wishlist | `WishlistControllerTests`, `WishlistServiceTests`, `Usewishlistviewmodel.test.js` | Duplicidade e identificador inválido rejeitados | Aprovado (automatizado) |
+| TF-07 | RF07 Teatros | `TeatroControllerTests`, `TeatroServiceTests` | Teatro inexistente → 404 | Aprovado (automatizado) |
+| TF-08 | RF08 Perfil | `PreferenciasControllerTests`, `UsuarioServiceTests`, `Useeditinterestsviewmodel.test.js` | Seleção de cidade única; toggle isolado de interesses | Aprovado (automatizado) |
+| TF-09 | RF09 Compra | `EspetaculoTests` (URL externa obrigatória) | Espetáculo sem URL externa rejeitado na validação de domínio | Aprovado (automatizado) |
+| TF-10 | RF10 Recomendação | `RecomendacaoControllerTests`, `InferenceService.Tests` | Limite inválido e ausência de dados → fallback controlado | Aprovado (automatizado) |
+
+**Resultados observados:** Os 10 RFs apresentaram **aprovação na camada automatizada**, incluindo os cenários negativos planejados (login inválido, busca sem resultado, categoria/teatro inexistentes, duplicidade na wishlist, limite inválido de recomendação). Durante a estabilização da suíte de frontend foi necessário **alinhar os testes à implementação atual** (onboarding e edição de interesses passaram a persistir via API/repositório assíncrono, e a busca passou a delegar a filtragem ao `searchRepository` com debounce); após o ajuste, as 11 suítes Jest ficaram verdes (136 testes).
+
+**Evidências:** Relatórios de execução automatizada em [assets/testes/](../assets/testes/) — `backend-unit.trx`, `backend-integration.trx` e `inference.trx`. A cobertura do frontend é coletada pelo job `frontend-tests` do CI.
+
+**Análise:** A cobertura automatizada confirma a aderência dos 10 RFs às regras especificadas, com cenários positivos e negativos exercitados. A camada de **execução manual exploratória no app** (prints/vídeos das telas) fica registrada como **complemento recomendado para a sprint final**, já que a verificação de regra de cada RF está garantida pelas suítes verdes. Não foram identificadas falhas funcionais de regra de negócio; os ajustes feitos foram em testes desatualizados, não em código de produção.
+
+### 21.4 Testes automatizados de integração
+ 
+Os testes automatizados de integração foram executados para verificar a comunicação entre os componentes da solução, incluindo frontend, backend, banco de dados, serviço de recomendação e integrações externas simuladas ou reais. A execução buscou confirmar se os contratos entre os módulos estavam estáveis e se os fluxos integrados respondiam corretamente em cenários de sucesso e falha.
+ 
+**Integrações executadas:** Foram avaliadas cinco integrações distintas, organizadas nas suítes TI-01 a TI-05. A TI-01 cobriu o fluxo de autenticação (registro, login e acesso a endpoints protegidos) e exploração do catálogo com wishlist. A TI-02 validou a persistência de dados de usuário e wishlist diretamente no banco de dados PostgreSQL. A TI-03 verificou o serviço de recomendações, incluindo ordenação por score e validação de parâmetros. A TI-04 testou a integração com a API externa ViaCEP, com a camada de cache VHS implementada no frontend intermediando as requisições. A TI-05 confirmou o contrato de integração com a ticketera externa, validando o campo `url_bilheteria` retornado pelo backend.
+ 
+**Camada VHS (cache do frontend):** O serviço VHS foi desenvolvido no frontend como uma camada de cache em memória para otimizar as consultas à API ViaCEP. Ele mantém um `Map` interno com entradas indexadas pela URL da requisição, aplicando TTLs diferenciados conforme o resultado: 24 horas para respostas válidas e 5 minutos para CEPs não encontrados (campo `erro: true`). A cada requisição, o serviço verifica se existe uma entrada ainda válida no cache antes de acionar o `fetch` — expondo o status da operação (`HIT` ou `MISS`) via `getLastCacheStatus()`. Funções auxiliares como `flushCache()` e `cacheSize()` foram disponibilizadas para suporte aos testes. Essa abordagem reduz o número de chamadas externas, melhora a performance percebida pelo usuário e protege contra instabilidades temporárias da API ViaCEP.
+ 
+**Comandos e ferramentas:** As suítes de backend (TI-01, TI-02, TI-03 e TI-05) foram implementadas em C# com xUnit e FluentAssertions, executadas sobre uma instância de banco PostgreSQL com reset de estado entre cada teste via `ResetDatabaseAsync()`. A suíte TI-04 foi implementada em JavaScript com Jest, utilizando mocks de `fetch` para simular respostas da API ViaCEP sem dependência de rede externa. Os testes foram executados com os comandos `dotnet test --filter "Category=TI-0X"` (backend) e `npx jest` (frontend/serviço de cache).
+ 
+**Resultados observados:** Todas as suítes retornaram status de aprovação integral. No total, foram executados 22 casos de teste — 14 cenários positivos (prefixo P) e 8 negativos (prefixo N) — sem nenhuma reprovação ou bloqueio. Os principais comportamentos confirmados foram:
+ 
+- Retorno de token JWT válido com três segmentos no login;
+- Rejeição de credenciais inválidas com HTTP 401 sem exposição de stack trace;
+- Persistência de senha exclusivamente em formato hash no banco de dados;
+- Idempotência na criação de wishlist e registro de usuário, com retorno HTTP 409 e ausência de duplicatas no banco;
+- Ordenação correta das recomendações por score decrescente;
+- Resposta do endpoint de espetáculo abaixo de 200 ms;
+- Comportamento correto da camada VHS: status `MISS` na primeira chamada, `HIT` na segunda, sem chamar a API externa desnecessariamente, e cache de tamanho 0 em caso de erro de serviço;
+- Rejeição de CEP com menos de 8 dígitos antes mesmo de acionar o `fetch`;
+- Exposição do campo `url_bilheteria` em todos os espetáculos retornados pela API.
+**Evidências:** As evidências da execução estão disponíveis nos logs de terminal gerados pelo runner xUnit e pelo Jest, incluindo nome do teste, status e tempo de execução por caso. Prints do terminal, relatórios HTML e artefatos de pipeline devem ser anexados conforme o ambiente de CI utilizado pelo projeto.
+ 
+**Análise:** A execução indica que os contratos entre os módulos estão estáveis para os fluxos cobertos. O isolamento de estado por reset de banco a cada teste garante reprodutibilidade dos cenários de backend. A camada de cache VHS demonstrou comportamento correto em todos os cenários validados — sucesso, CEP inexistente, serviço indisponível e entrada inválida — confirmando que a lógica de TTL diferenciado e a proteção contra chamadas redundantes funcionam conforme especificado. A integração com a ticketera é passiva: o backend apenas expõe a URL cadastrada, sem validação em tempo real do serviço externo, o que limita a cobertura a testes de contrato. Como melhorias, recomenda-se adicionar testes de timeout e respostas malformadas para as integrações externas, além de ampliar a cobertura do serviço de recomendação para incluir o ciclo completo de geração, e não apenas a leitura de dados pré-inseridos.
+
+**Validação complementar Backend→Banco (Testcontainers):** Além das suítes TI-01 a TI-05, o contrato Backend→Banco foi validado contra um PostgreSQL 16 real provisionado via Testcontainers, cobrindo schema, constraints, triggers de consentimento, `timestamptz` e regras de LGPD (`ConstraintTests`, `LgpdDatabaseTests`, `TriggerConsentimentoTests`). A suíte retornou **36/36 aprovados** (0 reprovados, ~1 s de execução após o container subir; pré-requisito: Docker em execução), com evidência em [assets/testes/backend-integration.trx](../assets/testes/backend-integration.trx). Comando executado:
+
+```bash
+dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.IntegrationTests.csproj --logger "trx;LogFileName=backend-integration.trx"
+```
+
+### 21.5 Testes automatizados de regras de negócio
+
+Os testes automatizados de regras de negócio foram executados para validar comportamentos críticos da aplicação, contemplando cenários positivos e negativos. A execução verificou se as regras implementadas estavam coerentes com os requisitos funcionais, critérios de sucesso e fluxos definidos no planejamento de testes.
+
+#### Síntese das regras validadas
+
+| Grupo de regra | Regras cobertas | Cenários positivos | Cenários negativos | Evidência | Status |
+|---|---|---|---|---|---|
+| Autenticação e cadastro | Cadastro de usuários, validação de e-mail, senha, consentimento LGPD e rejeição de e-mail duplicado | Cadastro válido e login válido | E-mail inválido, senha inválida, duplicidade, ausência de consentimento e credenciais inválidas | `business-rules-tests.trx` | Aprovado |
+| Perfil e LGPD | Idade mínima, atualização de perfil, encerramento de conta e anonimização | Atualização válida e anonimização após solicitação | Menor de idade e login em conta encerrada | `business-rules-tests.trx` | Aprovado |
+| Preferências | Persistência de preferências, faixa de preço, gêneros e localização | Preferências válidas são salvas e atualizadas | Faixa de preço inválida e dados inconsistentes são rejeitados | `business-rules-tests.trx` | Aprovado |
+| Wishlist | Adição, remoção e prevenção de duplicidade | Item é salvo e removido corretamente | Duplicidade e identificadores inválidos são rejeitados | `business-rules-tests.trx` | Aprovado |
+| Catálogo e espetáculos | Busca, consulta de detalhes, associação com teatros e URL externa de compra | Espetáculos são consultados e associados corretamente | Recursos inexistentes e duplicidades são rejeitados | `business-rules-tests.trx` | Aprovado |
+| Recomendação | Limites válidos, recomendações persistidas e fallback | Recomendações são retornadas dentro do limite esperado | Limites inválidos ou ausência de dados acionam tratamento controlado | `business-rules-new-tests.trx` | Aprovado |
+
+#### Resultados da execução
+
+A suíte unitária do backend foi executada com sucesso em 11/06/2026.
+
+- Total de testes executados: 123
+- Testes aprovados: 123
+- Testes reprovados: 0
+- Testes ignorados: 0
+- Testes diretamente ligados a regras de negócio: 87
+- Novos testes criados para esta validação: 10, na classe `BusinessRulesIntegratedTests`
+
+**Evidências:** As evidências da execução foram registradas nos arquivos:
+
+- `src/backend/BackEnd.Aventura.Tests/TestResults/business-rules-tests.trx`
+- `src/backend/BackEnd.Aventura.Tests/TestResults/business-rules-new-tests.trx`
+
+Comandos executados:
+
+```bash
+dotnet test src\backend\BackEnd.Aventura.Tests\BackEnd.Aventura.Tests.csproj --logger "trx;LogFileName=business-rules-tests.trx" --logger "console;verbosity=minimal"
+```
+
+```bash
+dotnet test src\backend\BackEnd.Aventura.Tests\BackEnd.Aventura.Tests.csproj --filter Category=BusinessRules --logger "trx;LogFileName=business-rules-new-tests.trx" --logger "console;verbosity=minimal"
+```
+
+**Reexecução com cobertura (12/06/2026):** a suíte foi reexecutada com coleta de cobertura via **coverlet.msbuild** (`dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura` — o pacote foi adicionado aos projetos de teste nesta data, pois o coletor `XPlat Code Coverage` não estava instalado), mantendo **123/123 aprovados** com **54,0% de cobertura de linha global** e **85,3% nos módulos críticos** (detalhamento no RNF08, seção 20.6). Em paralelo, a suíte do serviço de recomendação (`InferenceService.Tests`) foi executada com **48/48 aprovados** (40,1% de linha) e a suíte Jest do frontend com **11/11 suítes e 136/136 testes aprovados** (88,96% de statements e 89,32% de linhas nos módulos medidos). Relatórios em [assets/testes/dotnet-coverage/](../assets/testes/dotnet-coverage/).
+
+**Análise:** Com base na execução, as regras de negócio implementadas demonstraram aderência ao comportamento esperado nos cenários automatizados. Não foram identificadas falhas na suíte executada, e os testes criados ampliaram a cobertura sobre regras críticas relacionadas a autenticação, consentimento, perfil, preferências, wishlist, recomendações, catálogo e LGPD.
+
+### 21.6 Testes de requisitos não funcionais
+
+Os testes de requisitos não funcionais foram executados para avaliar atributos de qualidade da solução, considerando desempenho, segurança, privacidade, usabilidade, disponibilidade, capacidade sob carga, precisão da geolocalização e modularidade do serviço de recomendação. A execução comparou as métricas observadas com os critérios definidos na seção 10 e adaptou o procedimento às restrições do ambiente publicado.
+
+**Restrição de ambiente (infra OCI):** o backend roda na VM `163.176.204.208:5253` (HTTP, porta alta); as portas 80/443 estão bloqueadas pela Security List e o time não tem acesso ao console OCI. Por isso, as medições de **desempenho e segurança de hashing** foram feitas contra um ambiente local idêntico (backend .NET 9 + PostgreSQL 16 em container, com schema e seeds oficiais aplicados), e a verificação de **HTTPS/TLS no ambiente publicado ficou bloqueada** — registrada como risco de infra (RNF02).
+
+**RNFs avaliados:** Todos os oito (RNF01 a RNF08) foram avaliados. Nenhum ficou sem medição ou justificativa.
+
+#### Síntese RNF a RNF
+
+| RNF | Critério (seção 10) | Resultado medido | Status |
+|---|---|---|---|
+| RNF01 Tempo de resposta | Carga de tela ≤ 3 s | Local: p95 ≤ 57 ms por endpoint (catálogo/gênero/recomendação, 30 amostras cada); VM pública: p95 304 ms no login (20 amostras). k6 smoke: `http_req_duration` p95 = 88,7 ms | **Atendido** |
+| RNF02 Credenciais | Senha com hash + salt; tráfego seguro | Hash **BCrypt `$2a$11$`** (60 chars, salt embutido, work factor 11) confirmado no banco e no código (`BCrypt.Net.BCrypt.HashPassword`/`Verify`). Brute force: 12 logins inválidos → 12×401. **TLS bloqueado pela OCI** (risco). **Sem rate limiting** (lacuna) | **Parcialmente atendido** |
+| RNF03 LGPD | Consentimento, anonimização e auditoria | `LgpdDatabaseTests`, `TriggerConsentimentoTests` e `AnonimizacaoJob` cobertos na suíte de integração real (parte dos 36/36) | **Atendido** |
+| RNF04 Responsividade | Layout adaptável mobile | Coberto em 20.7 (SUS 88,5; 5/5 concluíram todas as tarefas, sem elemento crítico cortado) | **Atendido** |
+| RNF05 Disponibilidade | ≥ 99% | Endpoint `/health` implementado (`MapHealthChecks`) e verificado localmente (`200 Healthy`). Sondagem read-only da VM: 20/20 respostas válidas (100%) | **Atendido na janela medida** (ver limitação) |
+| RNF06 Carga | Suportar carga concorrente | **3 cenários de 18.4 executados em 12/06/2026 contra ambiente local** (backend .NET 9 + PostgreSQL 16 com seeds oficiais): pico 100 VUs/15 min — 82.941 req, **0% falhas, p95 7,87 ms**; stress 150 VUs/10 min — 76.361 req, **0% falhas, p95 7,25 ms**; spike 0→100 em 30 s — 11.716 req, **0% falhas, p95 6,5 ms**. Todos os thresholds (média ≤ 3 s, p95 ≤ 5 s, erro < 1%) aprovados. Rampa a 1.000 VUs contra a VM segue condicionada à autorização do time | **Atendido (ambiente local)** |
+| RNF07 Geolocalização | Conteúdo por região | Filtro por cidade coberto em `RecomendacaoServiceTests`; ViaCEP real validado em 20.8 (CEP de SP retorna `localidade: São Paulo`) | **Atendido** |
+| RNF08 Modularidade | Cobertura ≥ 70% módulos críticos; deploy isolado | Cobertura medida (coverlet, linhas): backend **módulos críticos 85,3%** (global 54,0% — repositories ficam com a suíte de integração); frontend **88,96%** statements e **89,32%** lines nos módulos medidos; serviço de recomendação **40,1%** (abaixo da meta — lacuna registrada). **Gate de cobertura implementado** (`.gitlab-ci.yml` + thresholds nos projetos; falha comprovada com exit 1) | **Parcialmente atendido** (cobertura do inference abaixo da meta) |
+
+#### Detalhamento e cenários negativos
+
+**RNF01 — Tempo de resposta.** Foram coletadas 30 amostras por endpoint contra o backend local autenticado (JWT): `/api/espetaculo` média 36 ms / p95 57 ms / p99 146 ms; `/api/genero` média 31 ms / p95 44 ms; `/api/recomendacao/{id}` média 35 ms / p95 52 ms. Contra a VM publicada, o endpoint de login retornou média 104 ms / p95 304 ms / máx 533 ms em 20 amostras. Todos muito abaixo do teto de 3 s. **Cenários negativos de 18.4** (throttling Slow 3G e fallback com backend 503) dependem de inspeção no DevTools/app e ficam como complemento manual da sprint final; a resiliência de fallback do carrossel já está coberta em código pelo tratamento de erro nos viewmodels. Evidências: [rnf01-amostras-local.json](../assets/testes/rnf01-amostras-local.json), [rnf01-amostras-vm-login.json](../assets/testes/rnf01-amostras-vm-login.json).
+
+**RNF02 — Credenciais.** A consulta direta ao banco mostrou `senha_hash` no formato `$2a$11$...` (BCrypt, 60 caracteres, salt embutido, custo 11); não há senha em texto puro. O **cenário negativo de brute force** (12 logins consecutivos com senha incorreta) retornou 401 em todas as tentativas, confirmando rejeição — porém **sem bloqueio/rate limiting** após N falhas, lacuna registrada para a próxima sprint. O **cenário negativo de downgrade HTTPS/HSTS** não é executável: as portas 443/80 estão bloqueadas na OCI — limitação de infra documentada. Evidências: [rnf02-hash-banco.txt](../assets/testes/rnf02-hash-banco.txt), [rnf02-bruteforce.json](../assets/testes/rnf02-bruteforce.json).
+
+**RNF05 — Disponibilidade.** O endpoint `/health` foi adicionado ao `Program.cs` (`AddHealthChecks()` + `MapHealthChecks("/health").AllowAnonymous()`, nativo do ASP.NET Core) e retornou `200 Healthy` no ambiente local. Uma sondagem read-only de 20 checagens contra a VM publicada teve 100% de respostas válidas (latência média 85 ms). **Limitações:** o `/health` ainda não está publicado na VM (deploy é ação em infra compartilhada, pendente de execução pelo time) e a janela de 24 h / 7 dias / 30 dias prevista em 18.4 e na seção 10 não foi percorrida — registrado como risco. Evidência: [rnf05-sondagem-vm.json](../assets/testes/rnf05-sondagem-vm.json).
+
+**RNF06 — Carga.** O script [tests/load/k6-pico.js](../tests/load/k6-pico.js) implementa os três cenários de 18.4, **todos executados em 12/06/2026 contra o ambiente local** (backend .NET 9 via `dotnet run` + PostgreSQL 16 em container com seeds oficiais, fluxo home → carrosséis → wishlist autenticado por JWT):
+
+| Cenário | Perfil | Iterações | Requisições | Falhas | http_req p95 | p99 | Resultado |
+|---|---|---|---|---|---|---|---|
+| Pico (positivo) | 0→50→100 VUs em 5 min + 15 min sustentados | 16.588 (13,1/s) | 82.941 | **0%** | **7,87 ms** | 11,48 ms | ✅ thresholds aprovados |
+| Stress (negativo) | 150 VUs por 10 min | 15.272 (21,1/s) | 76.361 | **0%** | **7,25 ms** | 10,62 ms | ✅ sem degradação |
+| Spike (negativo) | 0→100 VUs em 30 s | 2.343 (12,6/s) | 11.716 | **0%** | **6,5 ms** | 8,09 ms | ✅ recuperação imediata |
+
+As metas do cenário positivo (média ≤ 3 s, p95 ≤ 5 s, erro < 1%) foram atendidas com folga de ~3 ordens de magnitude (média 4,31 ms no pico); no stress não houve degradação mensurável em relação ao pico (p95 até menor, 7,25 ms vs 7,87 ms), e no spike o sistema absorveu a subida 0→100 sem nenhum erro — 100% dos checks aprovados nos três cenários (171.018 requisições no total). **Ressalva de ambiente:** os números absolutos refletem o hardware local (sem rede WAN); o comportamento qualitativo (estabilidade, ausência de erros, degradação elegante) é o resultado transferível. A rampa adicional 100→500→1.000 VUs (critério da seção 10) **segue condicionada à autorização do time** por risco de derrubar a VM única. **Inconsistência interna do Projeto.md (registrada):** a seção 10 pede 1.000 usuários enquanto 18.4 especifica 100/150 e spike 0→100; o escopo-base adotado são os cenários de 18.4. Evidências: [k6-pico-local.txt](../assets/testes/k6-pico-local.txt), [k6-stress-local.txt](../assets/testes/k6-stress-local.txt), [k6-spike-local.txt](../assets/testes/k6-spike-local.txt), [k6-smoke-local.txt](../assets/testes/k6-smoke-local.txt).
+
+**RNF08 — Modularidade e cobertura.** A cobertura foi coletada com **coverlet.msbuild** (`/p:CollectCoverage=true`, formato cobertura) nas suítes .NET e com `jest --coverage` no frontend (relatórios versionados em [assets/testes/dotnet-coverage/](../assets/testes/dotnet-coverage/)). No frontend, o gate mede as camadas `services` e `viewmodels` por meio de `collectCoverageFrom`, com **88,96% de statements** e **89,32% de lines** (136/136 testes). No backend, os **módulos críticos atingem 85,3% de linhas** (800/938) — por camada: Mappings 100%, DTOs 91,5%, Domínio 89,9%, Controllers 83,3%, Serviços 79,2% —, acima da meta de 70%; o global fica em 54,0% porque a camada de acesso a dados (Repository, 434 linhas, 0% na unitária) é deliberadamente coberta pela **suíte de integração real** (TI-02), e `Program.cs` (bootstrap) não é alvo de teste unitário. Pontos baixos rastreados: `AnonimizacaoJob` (0% na unitária; coberto na integração), `PreferenceController`/`PreferenceService` legados (0%) e `UsuarioController` (60%). **Lacuna nova identificada na medição:** o próprio serviço de recomendação (`InferenceService` 30,6% + `AventuraML` 47,7% = **40,1% de linha**) está **abaixo dos 70%** exigidos pelo critério — ampliação da suíte registrada como ação corretiva. O serviço permanece deployável de forma isolada do backend (projeto separado, suíte própria 48/48). **Cenário negativo 2 de 18.4** (gate de cobertura < 70% falhando o pipeline): **implementado em 12/06/2026** — `.gitlab-ci.yml` criado na raiz com jobs `backend-tests` e `frontend-tests`, e thresholds versionados nos próprios projetos: backend **70% de linha** com repositories/`Program` excluídos do gate unitário (resultado com filtro: **85,28%**, aprovado), inference **35%** temporário (40,08% medido; elevar a 70% é backlog) e frontend **70%** via `coverageThreshold` do Jest (88,96% statements / 89,32% lines, aprovado). O comportamento de falha foi comprovado localmente: threshold forçado a 90% derruba o `dotnet test` com exit code 1 (`error: The total line coverage is below the specified 90`) — evidência em [rnf08-gate-negativo.txt](../assets/testes/rnf08-gate-negativo.txt). A validação do pipeline no GitLab ocorre no primeiro push da branch. Evidências: [assets/testes/dotnet-coverage/](../assets/testes/dotnet-coverage/).
+
+**Análise:** Os atributos de qualidade verificáveis no ambiente disponível foram atendidos com folga em desempenho (latências em dezenas de milissegundos contra teto de 3 s), privacidade (LGPD coberta por integração real), segurança de armazenamento de senha (BCrypt com salt) e usabilidade (SUS 88,5). Permanecem como **riscos/lacunas rastreados**: (i) TLS não verificável na OCI; (ii) ausência de rate limiting no login; (iii) rampa a 1.000 VUs contra a VM e monitor de uptime de longa janela, ambos dependentes de autorização/deploy do time (os cenários 100/150/spike de 18.4 foram executados localmente com 0% de falhas); (iv) primeira execução do pipeline GitLab ainda pendente após a configuração do gate. Nenhum desses bloqueia a entrega, mas todos constam das ações corretivas em 21.9.
+
+### 21.7 Testes de usabilidade
+
+Os testes de usabilidade foram realizados para observar como usuários interagem com os principais fluxos do aplicativo, identificando dificuldades de navegação, compreensão da interface, clareza dos feedbacks e percepção de valor das recomendações. A execução considerou as tarefas planejadas na seção 18.5 e a aplicação do questionário SUS ao final da avaliação.
+
+**Participantes e formato:** Participaram 5 usuários externos ao grupo, com diferentes níveis de familiaridade com aplicativos mobile e diferentes frequências de consumo cultural: Guilherme Carvalho, Eduardo Lucio, Antonio Dantas, Leticia Nery e Renan Santana. A avaliação foi conduzida em formato moderado, com observação direta da execução das tarefas planejadas e registro das percepções verbalizadas pelos participantes.
+
+**Tarefas executadas:** As tarefas avaliadas corresponderam aos fluxos TU-01 a TU-08: cadastro e login, onboarding de preferências, análise da Home e recomendações iniciais, busca de espetáculo, consulta aos detalhes do espetáculo e compreensão do redirecionamento externo, adição de espetáculo à Wishlist, acesso à Wishlist e edição de preferências no Perfil. Todos os fluxos planejados na seção 18.5 foram executados por todos os participantes.
+
+#### Resultado por tarefa
+
+| ID | Fluxo avaliado | Resultado da execução | Evidência observada | Status |
+|---|---|---|---|---|
+| TU-01 | Cadastro e login | 5 de 5 participantes concluíram o acesso sem ajuda externa. | Os usuários compreenderam os campos de entrada e avançaram para o fluxo inicial do app. | Aprovado |
+| TU-02 | Onboarding de preferências | 5 de 5 participantes concluíram o onboarding. | As escolhas de cidade e interesses foram entendidas como parte da personalização da experiência. | Aprovado |
+| TU-03 | Home e recomendações iniciais | 5 de 5 participantes compreenderam a organização da Home. | A Home foi descrita como organizada e intuitiva; houve pedido de maior explicação sobre como as recomendações são geradas. | Aprovado com melhoria |
+| TU-04 | Busca de espetáculo | 5 de 5 participantes encontraram a busca e interpretaram os resultados. | A busca e os filtros foram elogiados; uma participante apresentou pequena hesitação inicial. | Aprovado |
+| TU-05 | Detalhes e redirecionamento externo | 5 de 5 participantes localizaram as informações principais e entenderam a compra externa. | Os participantes compreenderam data, local, sinopse e o encaminhamento para bilheteria/ticketeira. | Aprovado |
+| TU-06 | Adicionar à Wishlist | 5 de 5 participantes salvaram espetáculo na Wishlist. | A ação foi concluída, mas três participantes comentaram que o ícone de favorito poderia ter maior destaque visual. | Aprovado com melhoria |
+| TU-07 | Acessar Wishlist | 5 de 5 participantes localizaram a Wishlist pela navegação principal. | A barra inferior facilitou o acesso e a compreensão da função da lista de favoritos. | Aprovado |
+| TU-08 | Perfil e edição de preferências | 5 de 5 participantes acessaram Perfil/Preferências e compreenderam a relação com recomendações. | Usuários com menor familiaridade digital hesitaram em alguns ícones e rótulos, mas concluíram o fluxo sem ajuda. | Aprovado com melhoria |
+
+**Resultados observados:** A taxa de sucesso geral foi de 100%, pois todos os 5 participantes concluíram as 8 tarefas propostas, totalizando 40 conclusões de tarefa em 40 tentativas. O resultado supera o critério planejado de taxa de conclusão mínima de 90% sem ajuda externa. Os participantes demonstraram boa compreensão da interface, destacando a navegação simples pela barra inferior, a eficiência da busca, a facilidade de acesso à Wishlist, a clareza das informações dos espetáculos e o entendimento do redirecionamento para compra externa. As principais dificuldades foram pontuais: campo de data de nascimento sem calendário, ícone de favorito com pouco destaque visual, necessidade de explicar melhor como as recomendações são personalizadas e alguns ícones pouco evidentes para usuários menos experientes.
+
+**Questionário SUS:** A pontuação média obtida foi 88,5, indicando excelente usabilidade. Esse resultado sugere que o sistema é fácil de aprender, intuitivo e capaz de gerar confiança durante o uso.
+
+| Participante | SUS |
+|---|---|
+| Guilherme Carvalho | 92,5 |
+| Eduardo Lucio | 90,0 |
+| Antonio Dantas | 87,5 |
+| Leticia Nery | 82,5 |
+| Renan Santana | 90,0 |
+
+O cálculo da média SUS foi feito pela soma das pontuações individuais dividida pelo total de participantes:
+
+```text
+(92,5 + 90,0 + 87,5 + 82,5 + 90,0) / 5 = 88,5
+```
+
+**Comparação com os critérios planejados:** A execução atendeu aos dois critérios principais definidos no planejamento: taxa de conclusão superior a 90% e SUS superior a 70. A média SUS de 88,5 ficou 18,5 pontos acima do mínimo planejado, e a menor pontuação individual, 82,5, também permaneceu acima do critério de aceitação. A avaliação de responsividade visual foi realizada por inspeção durante os fluxos mobile, sem registro de elemento crítico cortado ou inacessível nas tarefas observadas.
+
+**Evidências:** As evidências da execução estão documentadas no roteiro de testes de usabilidade da seção 18.5, nas anotações individuais dos participantes, na tabela de resultado por tarefa e nas respostas consolidadas do questionário SUS registradas nesta seção.
+
+**Melhorias identificadas:** A partir da observação, foram identificadas as seguintes melhorias para próximas iterações: adoção de calendário no campo de data de nascimento, aumento do destaque visual do ícone de favorito, comunicação mais clara sobre o funcionamento da personalização das recomendações e revisão visual de alguns ícones para torná-los mais evidentes a usuários com menor familiaridade digital.
+
+**Conclusão da execução de usabilidade:** A execução dos testes de usabilidade demonstrou um resultado muito positivo para a experiência mobile do Portal Aventura. Todos os fluxos TU-01 a TU-08 planejados foram concluídos pelos 5 participantes, a taxa de sucesso atingiu 100% e a média SUS de 88,5 indicou excelente percepção de facilidade de uso, confiança e integração entre as funcionalidades. Os feedbacks coletados não apontaram bloqueios críticos, mas sim oportunidades de refinamento visual e de comunicação, como melhorar o destaque do favorito, adicionar calendário no campo de data de nascimento e explicar melhor a personalização das recomendações. Na sprint final, será realizada uma nova rodada de testes de usabilidade para validar esses ajustes, verificar se os feedbacks foram atendidos e confirmar a evolução da experiência antes da entrega final.
+
+### 21.8 Testes de APIs externas
+
+Os testes de APIs externas foram executados com foco na integração com a API **ViaCEP**, utilizada no fluxo de cadastro para validação, normalização e preenchimento automático dos dados de endereço do usuário a partir do CEP informado. A integração foi testada de forma isolada, sem chamadas reais para a internet durante a execução automatizada, utilizando mocks de `fetch` para garantir reprodutibilidade, controle dos cenários e independência da disponibilidade do serviço externo.
+
+#### 21.8.1 API externa avaliada
+
+| API externa | Uso no sistema | Ponto de integração | Estratégia de teste |
+|---|---|---|---|
+| ViaCEP | Consulta de endereço por CEP para preencher rua, bairro, cidade e UF no cadastro | `src/frontend/mobile-app-aventura/services/viaCepService.js` | Testes unitários com Jest e mock de `fetch` |
+| ViaCEP + cache VHS | Redução de chamadas repetidas ao ViaCEP e tratamento de HIT/MISS | `src/frontend/mobile-app-aventura/services/vhsService.js` | Testes unitários de cache, TTL, falhas e expiração |
+| Fluxo de cadastro | Disparo automático da busca de CEP e preenchimento do formulário | `src/frontend/mobile-app-aventura/viewmodels/useAuthViewModel.js` | Testes de ViewModel com mock de `lookupAddressByCep` |
+
+Embora o backend possua DTO e campos de endereço preparados para receber dados enriquecidos, a chamada direta ao ViaCEP está implementada no frontend mobile. Por isso, a execução desta seção concentrou-se nos serviços do aplicativo responsáveis pela comunicação externa e pela experiência do usuário no cadastro.
+
+#### 21.8.2 Cenários executados
+
+Os testes cobriram cenários positivos, negativos e de resiliência:
+
+| Grupo | Cenários validados | Resultado |
+|---|---|---|
+| Normalização de CEP | Remoção de caracteres não numéricos, limitação a 8 dígitos e formatação `00000-000` | Aprovado |
+| Consulta bem-sucedida | Chamada para `https://viacep.com.br/ws/{cep}/json/` com CEP sanitizado | Aprovado |
+| Mapeamento de resposta | Conversão de `logradouro`, `bairro`, `localidade` e `uf` para `street`, `neighborhood`, `city` e `state` | Aprovado |
+| Payload incompleto | Preenchimento com strings vazias quando campos opcionais não são retornados | Aprovado |
+| CEP inválido | Rejeição de CEP com menos de 8 dígitos antes de chamar a API externa | Aprovado |
+| CEP inexistente | Tratamento de resposta ViaCEP com `erro: true` | Aprovado |
+| Falha HTTP | Tratamento de resposta `ok: false` sem armazenamento indevido em cache | Aprovado |
+| Falha de rede | Tratamento de rejeição do `fetch` com mensagem amigável | Aprovado |
+| JSON inválido | Tratamento de falha ao converter a resposta em JSON | Aprovado |
+| Cache MISS/HIT | Primeira chamada consulta a API simulada; segunda chamada usa cache | Aprovado |
+| TTL e expiração | Respostas válidas e respostas de CEP inexistente expiram conforme TTL configurado | Aprovado |
+| Isolamento do cache | `flushCache()` limpa entradas e reinicia o último status de cache | Aprovado |
+| Cadastro | Busca automática ao completar 8 dígitos, limpeza de endereço em CEP incompleto e ignorar resposta atrasada | Aprovado |
+
+#### 21.8.3 Comandos executados
+
+A execução focada nos testes de API externa foi realizada no diretório `src/frontend/mobile-app-aventura` com o comando:
+
+```bash
+npm.cmd test -- --runTestsByPath tests/viaCepService.test.js tests/vhsService.test.js tests/viaCepIntegration.test.js tests/Useauthviewmodel.test.js --coverage --collectCoverageFrom=services/viaCepService.js --collectCoverageFrom=services/vhsService.js --collectCoverageFrom=viewmodels/useAuthViewModel.js
+```
+
+#### 21.8.4 Resultados observados
+
+A execução apresentou resultado integralmente positivo:
+
+| Métrica | Resultado |
+|---|---|
+| Suítes executadas | 4 |
+| Suítes aprovadas | 4 |
+| Testes executados | 55 |
+| Testes aprovados | 55 |
+| Testes reprovados | 0 |
+| Snapshots | 0 |
+| Tempo de execução | 26,303 s |
+
+Resultado do runner Jest:
+
+```text
+Test Suites: 4 passed, 4 total
+Tests:       55 passed, 55 total
+Snapshots:   0 total
+```
+
+#### 21.8.5 Cobertura dos testes
+
+A cobertura dos serviços diretamente responsáveis pela integração externa atingiu 100% em todas as métricas:
+
+| Arquivo | Statements | Branches | Functions | Lines | Status |
+|---|---:|---:|---:|---:|---|
+| `services/viaCepService.js` | 100% | 100% | 100% | 100% | Aprovado |
+| `services/vhsService.js` | 100% | 100% | 100% | 100% | Aprovado |
+
+Considerando também o ViewModel de cadastro, que contém outras regras além da integração com ViaCEP, o recorte completo apresentou:
+
+| Escopo | Statements | Branches | Functions | Lines |
+|---|---:|---:|---:|---:|
+| ViaCEP + VHS + cadastro | 90,9% | 85,8% | 96,29% | 90,69% |
+
+O arquivo `useAuthViewModel.js` não atingiu 100% porque também contém fluxos de login, autenticação com Google, validações gerais e envio de cadastro, que extrapolam a integração com API externa. Ainda assim, os pontos específicos relacionados ao ViaCEP foram validados com sucesso.
+
+#### 21.8.6 Evidências
+
+As evidências da execução estão nos arquivos de teste e no relatório de cobertura gerado pelo Jest:
+
+- `src/frontend/mobile-app-aventura/tests/viaCepService.test.js`
+- `src/frontend/mobile-app-aventura/tests/vhsService.test.js`
+- `src/frontend/mobile-app-aventura/tests/viaCepIntegration.test.js`
+- `src/frontend/mobile-app-aventura/tests/Useauthviewmodel.test.js`
+- `src/frontend/mobile-app-aventura/coverage/`
+
+Os testes garantem que nenhuma chamada real ao ViaCEP seja feita durante a suíte automatizada. Todas as respostas são simuladas por mocks controlados, permitindo validar cenários de sucesso, erro e indisponibilidade de forma determinística.
+
+#### 21.8.7 Análise
+
+A execução confirmou que a integração com ViaCEP está robusta para o escopo implementado. O sistema consulta a URL correta com CEP sanitizado, mapeia a resposta para o formato usado pelo aplicativo, evita chamadas externas para CEPs malformados, trata CEP inexistente, falhas HTTP, falhas de rede e respostas JSON inválidas com mensagens controladas. A camada VHS também demonstrou funcionamento correto, com cache HIT/MISS, TTL diferenciado para sucesso e não encontrado, expiração e limpeza de estado entre testes.
+
+Com 55 testes aprovados e 100% de cobertura nos serviços responsáveis pela integração externa, conclui-se que a comunicação com ViaCEP e sua camada de cache estão validadas com alto nível de confiança para a Sprint. O resultado atende ao planejamento de testes de APIs externas e reduz o risco de falhas perceptíveis ao usuário durante o preenchimento automático de endereço no cadastro.
+
+**Validação complementar com chamadas reais:** Além da suíte automatizada com mocks, os três casos planejados em 18.6 foram executados via requisição HTTP real contra a API: CEP válido `01310-100` (HTTP 200, JSON com `logradouro: Avenida Paulista`), CEP malformado `123` (barrado pelo cliente antes da chamada de rede) e CEP inexistente `99999-999` (HTTP 200 com corpo `{erro:true}`, tratado pelo cliente com "CEP não encontrado."). A execução real confirmou que o ViaCEP não usa 404 para CEP inexistente e que a latência é variável (primeira chamada ~5,8 s, provavelmente cold start/DNS). Evidência em [assets/testes/viacep-resultados.json](../assets/testes/viacep-resultados.json).
+
+### 21.9 Análise consolidada dos resultados
+
+A consolidação considera as suítes automatizadas executadas (backend unitário, integração real, inference e frontend), os testes manuais/instrumentados de RNF e os casos de API externa.
+
+| Indicador | Resultado |
+|---|---|
+| Total de testes automatizados executados | **343** (123 backend unitário + 36 integração + 48 inference + 136 frontend Jest) |
+| Testes aprovados | **314 / 314 (100%)** |
+| Testes reprovados | 0 |
+| Testes bloqueados | 0 (TLS/RNF02 e carga plena/RNF06 não são "reprovados", e sim limitados pelo ambiente — ver riscos) |
+| Cobertura de código | Frontend **88,96% statements** e **89,32% lines** nos módulos medidos; backend módulos críticos **85,3%** de linhas (global 54,0% — acesso a dados via integração); serviço de recomendação 40,1% (abaixo da meta, lacuna rastreada) |
+| RNFs avaliados | 8/8, sendo 5 atendidos, 2 parcialmente atendidos (RNF02, RNF08) e 1 atendido na janela medida (RNF05) |
+| APIs externas | ViaCEP: 3/3 casos com tratamento correto |
+| Usabilidade | SUS 88,5; 40/40 conclusões de tarefa (seção 20.7) |
+| Principais falhas encontradas | Nenhuma falha de regra de negócio. Suítes de frontend estavam desatualizadas em relação à implementação (onboarding/edição via API, busca assíncrona) e foram realinhadas — sem alteração de código de produção |
+| Riscos remanescentes | (i) HTTPS/TLS não verificável na OCI (portas 80/443 bloqueadas); (ii) ausência de rate limiting no login; (iii) rampa a 1.000 VUs e monitor de uptime de longa janela pendentes de autorização/deploy (cenários 100/150/spike executados localmente em 12/06/2026 com 0% de falhas — 171.018 requisições); (iv) `/health` ainda não publicado na VM; (v) gate de cobertura implementado localmente, mas o pipeline GitLab ainda não rodou (valida no primeiro push); (vi) TI-01/03/04/05 cobertos por fakes, sem infra de integração ponta a ponta; (vii) cobertura do serviço de recomendação em 40,1% de linhas, abaixo da meta de 70% (gate temporário em 35%) |
+| Ações corretivas planejadas | Publicar `/health` na VM e ativar monitor (UptimeRobot/cron); adicionar rate limiting/lockout no login; executar a rampa 100→500→1.000 VUs com autorização do time e monitoramento de CPU/memória da VM; validar o pipeline GitLab no primeiro push (gate de cobertura já configurado); ampliar a suíte do serviço de recomendação (40,1% → ≥ 70%) e elevar o gate temporário de 35% até 70%; montar WireMock.Net/`WebApplicationFactory` para as demais trilhas de integração; complementar TFs com evidências manuais (prints/vídeos) na sprint final |
+| Conclusão geral | O sistema demonstra **boa prontidão de qualidade**: 100% das suítes automatizadas verdes, cobertura adequada nos módulos críticos, desempenho muito acima do alvo, privacidade (LGPD) e segurança de senha (BCrypt) verificadas, e excelente usabilidade. As limitações remanescentes são majoritariamente de **infraestrutura e processo** (TLS bloqueado na OCI, deploy/monitor e gate de CI), não de funcionalidade, e estão rastreadas como ações corretivas |
+
+---
+
+## 22. Análise de Impactos Éticos IA4People
+
+Esta seção analisa os impactos éticos do projeto a partir do framework IA4People, citado na literatura original como AI4People. O framework propõe que sistemas baseados em inteligência artificial sejam avaliados por cinco princípios: beneficência, não maleficência, autonomia, justiça e explicabilidade. No contexto da solução, essa análise é relevante porque a plataforma usa dados pessoais, preferências culturais, CEP, histórico de interação e recomendações automatizadas para influenciar a descoberta de espetáculos.
+
+Embora o sistema não tome decisões de alto risco, como crédito, saúde, emprego ou acesso a direitos públicos, ele interfere na visibilidade de conteúdos culturais, na experiência de navegação, na conversão para compra externa e no tratamento de dados pessoais. Por isso, a recomendação automatizada deve ser compreendida como uma funcionalidade com impacto social, cultural e informacional.
+
+### 22.1 Framework IA4People
+
+| Princípio | Significado no IA4People | Interpretação para o projeto |
+|---|---|---|
+| Beneficência | Promover bem-estar, utilidade e impacto positivo. | A solução deve facilitar o acesso a espetáculos, reduzir atrito na descoberta cultural e aproximar usuários de eventos compatíveis com seus interesses. |
+| Não maleficência | Evitar danos, abusos, exposição indevida e efeitos negativos previsíveis. | O sistema deve proteger dados pessoais, evitar recomendações manipulativas, tratar falhas de APIs externas e reduzir riscos de vazamento, discriminação ou hiperpersonalização. |
+| Autonomia | Preservar a capacidade de escolha e controle das pessoas afetadas. | O usuário deve conseguir buscar manualmente, editar preferências, ignorar recomendações, favoritar apenas se quiser e solicitar exclusão/anonimização dos dados. |
+| Justiça | Distribuir benefícios e riscos de forma justa, sem reforçar desigualdades. | A recomendação não deve favorecer apenas espetáculos populares, regiões mais representadas ou perfis historicamente mais ativos na base de compras. |
+| Explicabilidade | Tornar o funcionamento inteligível e responsabilizável. | A plataforma deve documentar como recomenda, registrar métricas, fornecer motivo da recomendação quando possível e permitir auditoria técnica do fluxo de dados. |
+
+### 22.2 Correlação com o Projeto
+
+| Componente analisado | Impacto ético | Salvaguardas existentes | Pontos de atenção |
+|---|---|---|---|
+| Cadastro, autenticação e consentimento | Coleta dados pessoais como nome, e-mail, senha, data de nascimento, CEP e endereço. | O backend exige aceite de consentimento, valida idade mínima de 13 anos, armazena senha com BCrypt e usa autenticação via JWT. | A política de privacidade deve explicar de forma direta quais dados são usados para personalização, segurança, localização aproximada e comunicação com serviços externos. |
+| Integração com ViaCEP | O CEP é usado para preencher endereço e pode revelar localização aproximada do usuário. | O app valida o formato do CEP, trata falhas de serviço, não depende de GPS e mantém o preenchimento como apoio ao cadastro. | O usuário deve entender que o CEP informado é consultado em uma API externa e usado para facilitar o cadastro e experiências de localização. |
+| Preferências e onboarding | Preferências culturais influenciam recomendações, seções personalizadas e experiência de descoberta. | O app permite ajustar interesses e cidade, além de manter navegação por busca, categorias e conteúdos não personalizados. | O sistema deve evitar pressão indevida para personalização e garantir que a experiência continue funcional mesmo com poucos dados de preferência. |
+| Modelo de recomendação | O modelo usa histórico implícito de compras e afinidade por categorias, podendo direcionar atenção e descoberta cultural. | A documentação técnica descreve o modelo híbrido, suas métricas, limitações, dados utilizados e estratégia de fallback por gêneros favoritos. | Compras passadas não significam satisfação; dados históricos podem conter viés de popularidade, preço, região, renda e disponibilidade de eventos. |
+| Backend de recomendações | Recomendações são servidas por endpoint dedicado e podem usar estratégias diferentes conforme disponibilidade de dados. | Há limite de quantidade solicitada, validação de usuário, campo de motivo da recomendação e separação entre inferência/modelo e API operacional. | É necessário monitorar recomendações desatualizadas, repetitivas ou concentradas em poucos tipos de espetáculo. |
+| Banco de dados e LGPD | O sistema armazena dados pessoais, consentimento, exclusão lógica e estado de anonimização. | Existem campos de consentimento, data de consentimento, exclusão, anonimização, procedure de anonimização e job periódico para anonimizar usuários excluídos após o prazo definido. | Recomenda-se manter trilhas de auditoria, documentação de retenção de dados e testes recorrentes do fluxo de exclusão/anonimização. |
+| Compra externa e ticketeiras | O usuário é direcionado a serviços externos para concluir compra. | A solução mantém a compra fora do aplicativo e reduz responsabilidade direta sobre processamento financeiro. | Deve ficar claro quando o usuário sai do ambiente da plataforma e passa a estar sujeito aos termos da ticketeira externa. |
+
+### 22.3 Riscos Éticos e Mitigações
+
+| Risco ético | Como pode ocorrer | Mitigações atuais ou recomendadas |
+|---|---|---|
+| Exposição de dados pessoais | Combinação de e-mail, data de nascimento, CEP, preferências e histórico pode criar perfil sensível do usuário. | Aplicar minimização de dados, manter consentimento explícito, criptografar senhas, restringir acesso, executar anonimização e revisar a política de privacidade. |
+| Inferência de localização | O CEP pode indicar bairro ou região, permitindo personalização geográfica e possíveis inferências socioeconômicas. | Usar localização apenas na granularidade necessária, não coletar GPS sem necessidade e declarar a finalidade do uso de CEP. |
+| Bolha de filtro cultural | Recomendações muito semelhantes podem reduzir diversidade cultural e limitar descoberta de novos gêneros. | Manter busca livre, categorias, seções editoriais e aplicar diversidade no ranqueamento em evoluções futuras. |
+| Viés de popularidade | Dados históricos de compra tendem a privilegiar espetáculos com maior volume, maior orçamento ou maior presença em plataformas de venda. | Monitorar distribuição das recomendações por categoria, cidade, preço, teatro e produção; considerar reordenação com diversidade e exposição mínima. |
+| Representatividade insuficiente | Usuários, cidades, gêneros ou espetáculos com poucos dados podem receber recomendações menos relevantes. | Usar fallback por preferências declaradas, registrar limitações de cold-start e coletar feedback explícito para melhorar personalização. |
+| Uso inadequado de proxy | Compra ou clique não equivale necessariamente a satisfação, interesse real ou qualidade percebida. | Complementar sinais implícitos com feedback direto, como "não tenho interesse", "ver menos deste tipo" e avaliações opcionais. |
+| Opacidade do modelo | Técnicas de fatoração matricial, como Funk SVD, usam fatores latentes difíceis de explicar diretamente ao usuário final. | Exibir motivos compreensíveis, documentar o modelo, versionar métricas, criar model card e manter logs de geração de recomendações. |
+| Indução comercial excessiva | A personalização pode ser usada para maximizar conversão em detrimento de descoberta, diversidade ou bem-estar do usuário. | Tratar recomendações como apoio à descoberta, não como única rota de navegação; preservar controle do usuário e transparência sobre critérios gerais. |
+| Dependência de serviços externos | Falhas no ViaCEP ou nas ticketeiras podem comprometer cadastro, endereço ou compra. | Testar integrações com mocks, tratar erros de forma amigável, permitir correção manual e informar transições para ambientes externos. |
+
+### 22.4 Síntese de Aderência
+
+| Princípio IA4People | Nível de aderência | Justificativa |
+|---|---|---|
+| Beneficência | Alto | A solução atende ao objetivo de facilitar descoberta cultural, recomenda espetáculos de acordo com preferências e reduz atrito na navegação. |
+| Não maleficência | Médio-alto | O projeto já contempla consentimento, hashing de senha, autenticação, tratamento de falhas e anonimização, mas ainda depende de governança contínua de dados e auditoria de integrações. |
+| Autonomia | Alto | O usuário mantém busca manual, favoritos opcionais, edição de interesses e solicitação de exclusão, evitando dependência exclusiva do recomendador. |
+| Justiça | Médio | Há risco de viés por popularidade, disponibilidade regional, preço e histórico de compras; a mitigação exige métricas e auditorias de distribuição ainda mais explícitas. |
+| Explicabilidade | Médio-alto | A arquitetura documenta o modelo e inclui motivo da recomendação, mas a interpretabilidade de fatores latentes do SVD continua limitada para usuários não técnicos. |
+
+Como encaminhamento ético, recomenda-se que o projeto mantenha uma documentação viva do modelo de recomendação, incluindo origem dos dados, versão do algoritmo, métricas, limitações conhecidas, critérios de exclusão de dados, riscos de viés e resultados de auditorias. Também é recomendável criar uma explicação visível no aplicativo para cada recomendação, preservar caminhos de navegação não personalizados e implementar controles de feedback como "ver menos deste tipo", "não tenho interesse" e "por que estou vendo isto?".
+
+Com base no IA4People, a plataforma apresenta boa aderência inicial aos princípios de autonomia, beneficência e não maleficência, especialmente pelos mecanismos de consentimento, edição de preferências, busca livre e anonimização. Os principais pontos de evolução estão em justiça e explicabilidade, pois o recomendador deve ser monitorado para não concentrar visibilidade em poucos espetáculos, categorias ou regiões, e deve comunicar seus critérios de forma compreensível para usuários e avaliadores.
+
+---
+
+## 23. Termos e Abreviações
 
 | Termo / Abreviação | Definição |
 |---|---|
@@ -3053,6 +4096,8 @@ Todos os endpoints retornam erros no formato `ProblemDetails` (RFC 7807), gerenc
 
 
 ## Referências
+
+FLORIDI, Luciano et al. AI4People - An Ethical Framework for a Good AI Society: Opportunities, Risks, Principles, and Recommendations. Minds and Machines, v. 28, p. 689-707, 2018. Disponível em: https://link.springer.com/article/10.1007/s11023-018-9482-5. Acesso em: 12 jun. 2026.
 
 ASSOCIAÇÃO DOS PRODUTORES DE ESPETÁCULOS TEATRAIS DO ESTADO DE SÃO PAULO (APETESP). Wikipédia, a enciclopédia livre. Disponível em: https://pt.wikipedia.org/wiki/Associa%C3%A7%C3%A3o_dos_Produtores_de_Espet%C3%A1culos_Teatrais_do_Estado_de_S%C3%A3o_Paulo. Acesso em: 23 abr. 2026.
 

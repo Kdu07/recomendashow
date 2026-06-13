@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from 'react';
-import { View, Text, Image, StyleSheet, SafeAreaView, Animated } from 'react-native';
+import React, { useRef, useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, SafeAreaView, Animated, Platform } from 'react-native';
 
 import { useWelcomeViewModel } from '../../viewmodels/useWelcomeViewModel';
+import { getAuthSession } from '../../services/tokenStorageService';
 import { colors } from '../../constants/colors';
 import { typography } from '../../constants/typography';
 import { spacing } from '../../constants/spacing';
@@ -12,7 +13,7 @@ const FADE_OUT_START = 3000;
 const FADE_OUT_DURATION = 400;
 
 export default function WelcomeScreen({ navigation, route }) {
-  const userName = route?.params?.userName ?? 'aventureiro(a)';
+  const [userName, setUserName] = useState(route?.params?.userName ?? '');
   const opacity = useRef(new Animated.Value(1)).current;
 
   useWelcomeViewModel(() => {
@@ -22,13 +23,36 @@ export default function WelcomeScreen({ navigation, route }) {
   const dotAnims = useRef(DOT_DELAYS.map(() => new Animated.Value(0))).current;
 
   useEffect(() => {
+    let mounted = true;
+
+    async function loadUserName() {
+      if (route?.params?.userName) {
+        return;
+      }
+
+      const session = await getAuthSession();
+      const savedName = session?.nome ?? session?.Nome ?? session?.name ?? '';
+
+      if (mounted) {
+        setUserName(savedName);
+      }
+    }
+
+    loadUserName();
+
+    return () => {
+      mounted = false;
+    };
+  }, [route?.params?.userName]);
+
+  useEffect(() => {
     const dotTimers = DOT_DELAYS.map((delay, i) =>
       setTimeout(() => {
         Animated.spring(dotAnims[i], {
           toValue: 1,
           friction: 5,
           tension: 80,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }).start();
       }, delay)
     );
@@ -37,7 +61,7 @@ export default function WelcomeScreen({ navigation, route }) {
       Animated.timing(opacity, {
         toValue: 0,
         duration: FADE_OUT_DURATION,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       }).start();
     }, FADE_OUT_START);
 
@@ -59,7 +83,7 @@ export default function WelcomeScreen({ navigation, route }) {
 
         <Text style={styles.title}>
           Bem-vindo(a),{' '}
-          <Text style={styles.name}>{userName}!</Text>
+          <Text style={styles.name}>{userName || 'aventureiro(a)'}!</Text>
         </Text>
 
         <Text style={styles.subtitle}>Pronto(a) para sua próxima aventura?</Text>

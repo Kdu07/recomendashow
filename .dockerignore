@@ -1,0 +1,19 @@
+# O build context é a raiz do repo, mas o Dockerfile só copia src/.
+# Sem isto, todo docker build empacota o repo inteiro (node_modules, bin/obj,
+# .git, data/ ~22 MB) e envia ao daemon. data/ NÃO vai na imagem: entra por
+# bind mount em runtime (./data:/app/data:ro).
+**/bin/
+**/obj/
+node_modules/
+.git/
+.vs/
+.vscode/
+data/
+deploy/
+docs/
+assets/
+tests/
+*.tar
+*.key
+.env*
+README.md

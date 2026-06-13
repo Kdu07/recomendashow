@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 
 import SearchBar from '../components/SearchBar';
@@ -6,6 +6,7 @@ import CategoryChip from '../components/CategoryChip';
 import SectionHeader from '../components/SectionHeader';
 import EmptyState from '../components/EmptyState';
 import SearchResultItem from '../components/SearchResultItem';
+import SystemStatus from '../components/SystemStatus';
 
 import useSearchViewModel from '../viewmodels/useSearchViewModel';
 
@@ -28,22 +29,38 @@ function getCategoryLabel(categoryId) {
 }
 
 export default function SearchScreen({ navigation }) {
+  const [systemStatus, setSystemStatus] = useState(null);
+
   const {
     searchText,
     selectedCategory,
+    selectedLocation,
     categories = [],
+    locations = [],
     filteredEvents = [],
     hasResults,
     sectionTitle,
     sectionSubtitle,
     handleSearchChange,
     handleCategoryPress,
+    handleLocationPress,
     handleClearSearch,
     handleEventPress,
     handleFavoritePress,
     isEventFavorite,
     handleTabPress,
   } = useSearchViewModel(navigation);
+
+  async function handleFavoriteWithStatus(event) {
+    const result = await handleFavoritePress(event);
+
+    setSystemStatus({
+      type: result?.added ? 'success' : 'info',
+      message: result?.added
+        ? 'Espetáculo adicionado à wishlist.'
+        : 'Espetáculo removido da wishlist.',
+    });
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -68,6 +85,7 @@ export default function SearchScreen({ navigation }) {
           </View>
 
           <View style={styles.filterContainer}>
+            <Text style={styles.filterLabel}>Gênero</Text>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -79,6 +97,24 @@ export default function SearchScreen({ navigation }) {
                   label={category.label}
                   selected={selectedCategory === category.id}
                   onPress={() => handleCategoryPress(category.id)}
+                />
+              ))}
+            </ScrollView>
+          </View>
+
+          <View style={styles.filterContainer}>
+            <Text style={styles.filterLabel}>Localidade</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.categoryRow}
+            >
+              {locations.map((location) => (
+                <CategoryChip
+                  key={location.id}
+                  label={location.label}
+                  selected={selectedLocation === location.id}
+                  onPress={() => handleLocationPress(location.id)}
                 />
               ))}
             </ScrollView>
@@ -101,7 +137,7 @@ export default function SearchScreen({ navigation }) {
                     image={event.image}
                     onPress={() => handleEventPress(event)}
                     isFavorite={isEventFavorite(event.id)}
-                    onFavoritePress={() => handleFavoritePress(event)}
+                    onFavoritePress={() => handleFavoriteWithStatus(event)}
                   />
                 ))}
               </View>
@@ -118,6 +154,11 @@ export default function SearchScreen({ navigation }) {
           </View>
         </ScrollView>
 
+        <SystemStatus
+          message={systemStatus?.message}
+          type={systemStatus?.type}
+          onDismiss={() => setSystemStatus(null)}
+        />
       </View>
     </SafeAreaView>
   );
@@ -179,6 +220,15 @@ const styles = StyleSheet.create({
   filterContainer: {
     paddingTop: spacing.lg,
     paddingBottom: spacing.sm,
+    gap: spacing.sm,
+  },
+
+  filterLabel: {
+    paddingHorizontal: spacing.md,
+    fontSize: typography.size.xs,
+    lineHeight: typography.lineHeight.xs,
+    fontWeight: typography.fontWeight.semiBold,
+    color: colors.grayText,
   },
 
   categoryRow: {

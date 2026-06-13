@@ -1,40 +1,78 @@
-import { useMemo } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
+import { removeUserAccount, signOut } from '../repositories/authRepository';
 import { getProfileData } from '../repositories/profileRepository';
+import { clearCurrentUserId } from '../services/userSession';
+import { getAuthSession } from '../services/tokenStorageService';
 
-export default function useProfileViewModel() {
-  const profileData = useMemo(
-    () => getProfileData(),
-    []
-  );
+export default function useProfileViewModel(navigation) {
+  const [user, setUser] = useState({});
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
-  const user = profileData.userProfile || {};
-  const menuItems =
-    profileData.profileMenuItems || [];
+  const refreshProfile = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getProfileData();
+      setUser(data.userProfile || {});
+      setMenuItems(data.profileMenuItems || []);
+    } catch (err) {
+      console.warn('Erro ao carregar perfil:', err);
+      setUser({});
+      setMenuItems([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshProfile();
+  }, [refreshProfile]);
 
   function handleMenuPress(item) {
     console.log('Abrir item:', item.title);
   }
 
   function handleEditProfile() {
-    console.log('Editar perfil');
+    navigation.navigate('EditProfile');
   }
 
-  function handleLogout() {
-    console.log('Logout');
+  async function handleLogout() {
+    await signOut();
+    clearCurrentUserId();
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Auth' }],
+    });
   }
 
-  function handleTabPress(tab) {
-    console.log('Navegar para:', tab);
+  async function handleDeleteAccount() {
+    const session = await getAuthSession();
+    const userId = session?.usuarioId;
+    if (!userId) {
+      throw new Error('Sessao invalida. Faca login novamente.');
+    }
+
+    setDeletingAccount(true);
+    try {
+      await removeUserAccount(userId);
+      await signOut();
+      clearCurrentUserId();
+    } finally {
+      setDeletingAccount(false);
+    }
   }
 
   return {
     user,
     menuItems,
-
+    deletingAccount,
+    isLoading: () => loading,
+    refreshProfile,
     handleMenuPress,
     handleEditProfile,
     handleLogout,
-    handleTabPress,
+    handleDeleteAccount,
   };
 }

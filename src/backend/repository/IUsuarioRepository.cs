@@ -9,5 +9,7 @@ namespace BackEnd.Aventura.Repository
         bool EmailExists(string email);
         Usuario Create(Usuario usuario);
         bool Update(Usuario usuario);
+        bool SolicitarExclusao(Guid id);
+        Task<int?> ObterMlIdAsync(Guid usuarioId);
     }
 }

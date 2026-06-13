@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   View,
@@ -9,10 +9,10 @@ import {
 } from 'react-native';
 
 import AppButton from '../components/AppButton';
-import BottomTabBar from '../components/BottomTabBar';
 import InfoCard from '../components/InfoCard';
 import SelectableChip from '../components/SelectableChip';
 import ScreenHeader from '../components/ScreenHeader';
+import SystemStatus from '../components/SystemStatus';
 
 import useEditInterestsViewModel from '../viewmodels/useEditInterestsViewModel';
 
@@ -23,6 +23,8 @@ import { radius, spacing } from '../constants/spacing';
 export default function EditInterestsScreen({
   navigation,
 }) {
+  const [systemStatus, setSystemStatus] = useState(null);
+
   const {
     interests,
     cities,
@@ -33,6 +35,15 @@ export default function EditInterestsScreen({
     handleSelectCity,
     handleSaveChanges,
   } = useEditInterestsViewModel();
+
+  async function handleSaveWithStatus() {
+    const result = await handleSaveChanges();
+
+    setSystemStatus({
+      type: result.savedOnServer ? 'success' : 'warning',
+      message: `${result.selectedInterestsCount} interesse(s) salvos para ${result.selectedCity || 'sua cidade'}.`,
+    });
+  }
 
   return (
     <View style={styles.page}>
@@ -104,7 +115,7 @@ export default function EditInterestsScreen({
           <View style={styles.buttonContainer}>
             <AppButton
               title="Salvar alterações"
-              onPress={handleSaveChanges}
+              onPress={handleSaveWithStatus}
             />
           </View>
 
@@ -120,21 +131,10 @@ export default function EditInterestsScreen({
         </ScrollView>
       </SafeAreaView>
 
-      <BottomTabBar
-        activeTab="profile"
-        onTabPress={(tab) => {
-          if (tab === 'explore') {
-            navigation.navigate('MainTabs', {
-              screen: 'Home',
-            });
-
-            return;
-          }
-
-          if (tab === 'profile') {
-            navigation.navigate('MainTabs', { screen: 'Profile' });
-          }
-        }}
+      <SystemStatus
+        message={systemStatus?.message}
+        type={systemStatus?.type}
+        onDismiss={() => setSystemStatus(null)}
       />
     </View>
   );
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: spacing.md,
     paddingTop: spacing.md,
-    paddingBottom: 140,
+    paddingBottom: spacing.xxxl,
     gap: spacing.lg,
   },
 

@@ -1,0 +1,542 @@
+﻿[
+    {
+        "ts":  "2026-06-12T11:30:08.0255946-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  146,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:08.0735941-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  39,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:08.1271682-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  52,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:08.3241590-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  30,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:08.3598773-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  35,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:08.4022980-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  41,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:08.6039950-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  45,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:08.6459803-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  42,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:08.6952405-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  48,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:08.8876589-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  33,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:08.9167083-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  29,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:08.9503125-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  32,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:09.1404619-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  36,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:09.1861875-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  45,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:09.2246253-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  37,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:09.4140876-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  33,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:09.4561520-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  42,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:09.4870461-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  30,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:09.6803296-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  35,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:09.7120584-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  31,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:09.7462400-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  33,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:09.9446885-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  35,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:09.9894249-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  44,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:10.0333068-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  43,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:10.2241595-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  33,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:10.2584388-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  34,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:10.2951592-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  36,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:10.4842090-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  29,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:10.5226659-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  38,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:10.5621119-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  39,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:10.7538134-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  32,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:10.7825005-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  28,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:10.8160096-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  33,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:10.9969029-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  29,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:11.0256594-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  27,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:11.0543795-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  28,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:11.2479046-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  29,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:11.2723123-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  23,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:11.3030914-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  31,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:11.4943433-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  27,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:11.5202571-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  25,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:11.5549644-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  34,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:11.7510053-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  32,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:11.7776190-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  26,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:11.8101377-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  32,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:11.9944561-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  27,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:12.0197125-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  25,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:12.0523838-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  32,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:12.2366882-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  19,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:12.2658501-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  28,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:12.3016867-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  35,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:12.5242794-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  57,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:12.5529793-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  28,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:12.5802024-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  27,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:12.7725118-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  23,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:12.8006145-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  27,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:12.8328876-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  32,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:13.0369910-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  38,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:13.0690250-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  31,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:13.1055715-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  37,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:13.2904717-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  27,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:13.3190003-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  27,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:13.3502410-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  31,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:13.5452570-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  32,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:13.5701528-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  25,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:13.6043216-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  33,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:13.7897889-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  29,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:13.8179653-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  27,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:13.8508998-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  32,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:14.0586764-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  48,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:14.0973501-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  38,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:14.1334324-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  35,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:14.3186016-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  26,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:14.3482892-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  28,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:14.3812897-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  33,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:14.5778464-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  36,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:14.6073356-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  29,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:14.6394395-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  31,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:14.8147063-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  24,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:14.8420147-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  27,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:14.8716789-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  29,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:15.0647753-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  40,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:15.1065026-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  41,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:15.1646347-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  57,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:15.3505343-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  30,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:15.3760973-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  24,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:15.4071633-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  31,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:15.5964119-03:00",
+        "endpoint":  "/api/espetaculo",
+        "ms":  25,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:15.6210303-03:00",
+        "endpoint":  "/api/genero",
+        "ms":  24,
+        "ok":  true
+    },
+    {
+        "ts":  "2026-06-12T11:30:15.6518669-03:00",
+        "endpoint":  "/api/recomendacao/4c0712da-c4f8-4996-a167-d2d75d96abf7",
+        "ms":  30,
+        "ok":  true
+    }
+]

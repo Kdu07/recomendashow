@@ -1,0 +1,5 @@
+# Copie para deploy/deploy.config (gitignored) quando o IP da VM for conhecido.
+VM_HOST=<ip_da_vm>
+VM_USER=ubuntu
+SSH_KEY=chave-back.key
+REMOTE_DIR=/home/ubuntu/aventura-recsys

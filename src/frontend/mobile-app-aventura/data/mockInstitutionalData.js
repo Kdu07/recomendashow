@@ -6,43 +6,26 @@ import {
 export const socialLinks = [
   {
     ...SocialLinkModel,
-
     id: 'facebook',
-
     platform: 'Facebook',
-
     username: '@aventurateatros',
-
-    icon: 'f',
-
+    icon: 'logo-facebook',
     url: 'https://facebook.com',
   },
-
   {
     ...SocialLinkModel,
-
     id: 'instagram',
-
     platform: 'Instagram',
-
     username: '@aventurateatros',
-
-    icon: '◎',
-
+    icon: 'logo-instagram',
     url: 'https://instagram.com',
   },
-
   {
     ...SocialLinkModel,
-
     id: 'linkedin',
-
     platform: 'LinkedIn',
-
     username: 'Aventura Teatros',
-
-    icon: 'in',
-
+    icon: 'logo-linkedin',
     url: 'https://linkedin.com',
   },
 ];
@@ -50,39 +33,25 @@ export const socialLinks = [
 export const contactInfo = [
   {
     ...ContactInfoModel,
-
     id: 'email',
-
-    label: 'Email de contato',
-
+    label: 'E-mail de contato',
     value: 'comercial@aventurateatros.com.br',
-
-    icon: '✉',
+    icon: 'mail-outline',
   },
-
   {
     ...ContactInfoModel,
-
     id: 'website',
-
     label: 'Site oficial',
-
     value: 'aventurateatros.com.br',
-
-    icon: '◉',
+    icon: 'globe-outline',
   },
-
   {
     ...ContactInfoModel,
-
     id: 'location',
-
     label: 'Localização',
-
     value:
-      'Rua México, nº 11 – 7º andar – Centro\nRio de Janeiro – RJ\nCEP: 20.031-144',
-
-    icon: '⌖',
+      'Rua México, nº 11 - 7º andar - Centro\nRio de Janeiro - RJ\nCEP: 20.031-144',
+    icon: 'location-outline',
   },
 ];
 

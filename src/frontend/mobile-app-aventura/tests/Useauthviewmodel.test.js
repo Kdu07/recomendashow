@@ -20,20 +20,52 @@ jest.mock('../repositories/authRepository', () => ({
 
 jest.mock('../models/authModels', () => ({
   AUTH_MODES: { login: 'login', register: 'register' },
-  initialAuthValues: { name: '', email: '', password: '', confirmPassword: '' },
+  initialAuthValues: {
+    name: '',
+    email: '',
+    birthDate: '',
+    cep: '',
+    street: '',
+    number: '',
+    complement: '',
+    neighborhood: '',
+    city: '',
+    password: '',
+    confirmPassword: '',
+    consentimentoAceito: false,
+  },
 }));
+
+jest.mock('../services/viaCepService', () => {
+  const actual = jest.requireActual('../services/viaCepService');
+
+  return {
+    ...actual,
+    lookupAddressByCep: jest.fn(),
+  };
+});
 
 import {
   authenticateUser,
   createUserAccount,
   authenticateWithGoogle,
 } from '../repositories/authRepository';
+import { lookupAddressByCep } from '../services/viaCepService';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function makeNavigation() {
   return { replace: jest.fn(), navigate: jest.fn() };
 }
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  jest.useRealTimers();
+});
+
+afterEach(() => {
+  jest.useRealTimers();
+});
 
 // ── Testes: modo e conteúdo ───────────────────────────────────────────────────
 
@@ -125,11 +157,124 @@ describe('useAuthViewModel – validação (register)', () => {
     act(() => {
       result.current.updateField('name', 'Ana');
       result.current.updateField('email', 'ana@email.com');
+      result.current.updateField('birthDate', '01/01/2000');
+      result.current.updateField('cep', '01310-100');
+      result.current.updateField('street', 'Avenida Paulista');
+      result.current.updateField('number', '1000');
+      result.current.updateField('neighborhood', 'Bela Vista');
+      result.current.updateField('city', 'São Paulo');
       result.current.updateField('password', '123456');
       result.current.updateField('confirmPassword', 'abcdef');
     });
     await act(async () => { await result.current.handleSubmit(); });
     expect(result.current.errors.confirmPassword).toBe('As senhas precisam ser iguais.');
+  });
+
+  test('data de nascimento vazia gera erro', async () => {
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+    act(() => result.current.setMode('register'));
+    act(() => {
+      result.current.updateField('name', 'Ana');
+      result.current.updateField('email', 'ana@email.com');
+      result.current.updateField('cep', '01310-100');
+      result.current.updateField('street', 'Avenida Paulista');
+      result.current.updateField('number', '1000');
+      result.current.updateField('neighborhood', 'Bela Vista');
+      result.current.updateField('city', 'São Paulo');
+      result.current.updateField('password', '123456');
+      result.current.updateField('confirmPassword', '123456');
+    });
+    await act(async () => { await result.current.handleSubmit(); });
+    expect(result.current.errors.birthDate).toBe('Informe sua data de nascimento.');
+  });
+
+  test('data de nascimento com menos de 13 anos gera erro', async () => {
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+    act(() => result.current.setMode('register'));
+    act(() => {
+      result.current.updateField('name', 'Ana');
+      result.current.updateField('email', 'ana@email.com');
+      result.current.updateField('birthDate', '01/01/2015');
+      result.current.updateField('cep', '01310-100');
+      result.current.updateField('street', 'Avenida Paulista');
+      result.current.updateField('number', '1000');
+      result.current.updateField('neighborhood', 'Bela Vista');
+      result.current.updateField('city', 'São Paulo');
+      result.current.updateField('password', '123456');
+      result.current.updateField('confirmPassword', '123456');
+    });
+    await act(async () => { await result.current.handleSubmit(); });
+    expect(result.current.errors.birthDate).toBe('Você precisa ter pelo menos 13 anos.');
+  });
+
+  test('CEP inválido gera erro', async () => {
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+    act(() => result.current.setMode('register'));
+    act(() => {
+      result.current.updateField('name', 'Ana');
+      result.current.updateField('email', 'ana@email.com');
+      result.current.updateField('birthDate', '01/01/2000');
+      result.current.updateField('cep', '123');
+      result.current.updateField('city', 'São Paulo');
+      result.current.updateField('password', '123456');
+      result.current.updateField('confirmPassword', '123456');
+    });
+    await act(async () => { await result.current.handleSubmit(); });
+    expect(result.current.errors.cep).toBe('Informe um CEP válido com 8 dígitos.');
+  });
+
+  test('rua vazia gera erro', async () => {
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+    act(() => result.current.setMode('register'));
+    act(() => {
+      result.current.updateField('name', 'Ana');
+      result.current.updateField('email', 'ana@email.com');
+      result.current.updateField('birthDate', '01/01/2000');
+      result.current.updateField('cep', '01310-100');
+      result.current.updateField('number', '1000');
+      result.current.updateField('neighborhood', 'Bela Vista');
+      result.current.updateField('city', 'São Paulo');
+      result.current.updateField('password', '123456');
+      result.current.updateField('confirmPassword', '123456');
+    });
+    await act(async () => { await result.current.handleSubmit(); });
+    expect(result.current.errors.street).toBe('Informe sua rua.');
+  });
+
+  test('bairro vazio gera erro', async () => {
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+    act(() => result.current.setMode('register'));
+    act(() => {
+      result.current.updateField('name', 'Ana');
+      result.current.updateField('email', 'ana@email.com');
+      result.current.updateField('birthDate', '01/01/2000');
+      result.current.updateField('cep', '01310-100');
+      result.current.updateField('street', 'Avenida Paulista');
+      result.current.updateField('number', '1000');
+      result.current.updateField('city', 'São Paulo');
+      result.current.updateField('password', '123456');
+      result.current.updateField('confirmPassword', '123456');
+    });
+    await act(async () => { await result.current.handleSubmit(); });
+    expect(result.current.errors.neighborhood).toBe('Informe seu bairro.');
+  });
+
+  test('cidade vazia gera erro', async () => {
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+    act(() => result.current.setMode('register'));
+    act(() => {
+      result.current.updateField('name', 'Ana');
+      result.current.updateField('email', 'ana@email.com');
+      result.current.updateField('birthDate', '01/01/2000');
+      result.current.updateField('cep', '01310-100');
+      result.current.updateField('street', 'Avenida Paulista');
+      result.current.updateField('number', '1000');
+      result.current.updateField('neighborhood', 'Bela Vista');
+      result.current.updateField('password', '123456');
+      result.current.updateField('confirmPassword', '123456');
+    });
+    await act(async () => { await result.current.handleSubmit(); });
+    expect(result.current.errors.city).toBe('Informe sua cidade.');
   });
 
   test('senhas iguais não geram erro', async () => {
@@ -141,11 +286,149 @@ describe('useAuthViewModel – validação (register)', () => {
     act(() => {
       result.current.updateField('name', 'Ana');
       result.current.updateField('email', 'ana@email.com');
+      result.current.updateField('birthDate', '01/01/2000');
+      result.current.updateField('cep', '01310-100');
+      result.current.updateField('street', 'Avenida Paulista');
+      result.current.updateField('number', '1000');
+      result.current.updateField('neighborhood', 'Bela Vista');
+      result.current.updateField('city', 'São Paulo');
       result.current.updateField('password', '123456');
       result.current.updateField('confirmPassword', '123456');
+      result.current.updateField('consentimentoAceito', true);
     });
     await act(async () => { await result.current.handleSubmit(); });
     expect(result.current.errors.confirmPassword).toBeUndefined();
+  });
+
+  test('ao completar CEP busca ViaCEP e preenche endereço automaticamente', async () => {
+    jest.useFakeTimers();
+    lookupAddressByCep.mockResolvedValue({
+      street: 'Avenida Paulista',
+      neighborhood: 'Bela Vista',
+      city: 'São Paulo',
+    });
+
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+
+    act(() => result.current.setMode('register'));
+    act(() => result.current.updateField('cep', '01310100'));
+
+    expect(result.current.values.cep).toBe('01310-100');
+
+    await act(async () => {
+      jest.advanceTimersByTime(350);
+      await Promise.resolve();
+    });
+
+    expect(lookupAddressByCep).toHaveBeenCalledWith('01310100');
+    expect(result.current.values.street).toBe('Avenida Paulista');
+    expect(result.current.values.neighborhood).toBe('Bela Vista');
+    expect(result.current.values.city).toBe('São Paulo');
+
+    jest.useRealTimers();
+  });
+
+  test('nao consulta ViaCEP enquanto esta no modo login', async () => {
+    jest.useFakeTimers();
+
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+
+    act(() => result.current.updateField('cep', '01310100'));
+
+    await act(async () => {
+      jest.advanceTimersByTime(500);
+      await Promise.resolve();
+    });
+
+    expect(lookupAddressByCep).not.toHaveBeenCalled();
+  });
+
+  test('limpa endereco preenchido quando o CEP fica incompleto', async () => {
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+
+    act(() => result.current.setMode('register'));
+    act(() => {
+      result.current.updateField('street', 'Avenida Paulista');
+      result.current.updateField('neighborhood', 'Bela Vista');
+      result.current.updateField('city', 'Sao Paulo');
+    });
+
+    await act(async () => {
+      result.current.updateField('cep', '123');
+      await Promise.resolve();
+    });
+
+    expect(result.current.values.cep).toBe('123');
+    expect(result.current.values.street).toBe('');
+    expect(result.current.values.neighborhood).toBe('');
+    expect(result.current.values.city).toBe('');
+    expect(result.current.cepLookupLoading).toBe(false);
+  });
+
+  test('quando ViaCEP falha, limpa endereco e registra erro no CEP', async () => {
+    jest.useFakeTimers();
+    lookupAddressByCep.mockRejectedValue(new Error('CEP indisponivel'));
+
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+
+    act(() => result.current.setMode('register'));
+    act(() => {
+      result.current.updateField('street', 'Rua antiga');
+      result.current.updateField('neighborhood', 'Bairro antigo');
+      result.current.updateField('city', 'Cidade antiga');
+      result.current.updateField('cep', '01310100');
+    });
+
+    await act(async () => {
+      jest.advanceTimersByTime(350);
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(lookupAddressByCep).toHaveBeenCalledWith('01310100');
+    expect(result.current.values.street).toBe('');
+    expect(result.current.values.neighborhood).toBe('');
+    expect(result.current.values.city).toBe('');
+    expect(result.current.errors.cep).toBe('CEP indisponivel');
+    expect(result.current.cepLookupLoading).toBe(false);
+  });
+
+  test('ignora resposta atrasada quando o usuario troca o CEP antes do retorno', async () => {
+    jest.useFakeTimers();
+    let resolveLookup;
+    lookupAddressByCep.mockReturnValue(
+      new Promise((resolve) => {
+        resolveLookup = resolve;
+      })
+    );
+
+    const { result } = renderHook(() => useAuthViewModel(makeNavigation()));
+
+    act(() => result.current.setMode('register'));
+    act(() => result.current.updateField('cep', '01310100'));
+
+    await act(async () => {
+      jest.advanceTimersByTime(350);
+      await Promise.resolve();
+    });
+
+    act(() => result.current.updateField('cep', '22041001'));
+
+    await act(async () => {
+      resolveLookup({
+        street: 'Avenida Paulista',
+        neighborhood: 'Bela Vista',
+        city: 'Sao Paulo',
+      });
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(lookupAddressByCep).toHaveBeenCalledTimes(1);
+    expect(result.current.values.cep).toBe('22041-001');
+    expect(result.current.values.street).toBe('');
+    expect(result.current.values.neighborhood).toBe('');
+    expect(result.current.values.city).toBe('');
   });
 });
 
@@ -157,7 +440,7 @@ describe('useAuthViewModel – handleSubmit', () => {
     createUserAccount.mockResolvedValue({ user: {}, token: 'tok' });
   });
 
-  test('login bem-sucedido chama navigation.replace("Onboarding")', async () => {
+  test('login bem-sucedido chama navigation.replace("MainTabs")', async () => {
     const nav = makeNavigation();
     const { result } = renderHook(() => useAuthViewModel(nav));
     act(() => {
@@ -166,25 +449,42 @@ describe('useAuthViewModel – handleSubmit', () => {
     });
     await act(async () => { await result.current.handleSubmit(); });
     expect(authenticateUser).toHaveBeenCalledWith({ email: 'a@b.com', password: '123' });
-    expect(nav.replace).toHaveBeenCalledWith('Onboarding');
+    expect(nav.replace).toHaveBeenCalledWith('MainTabs');
   });
 
-  test('register chama createUserAccount com name, email e password', async () => {
+  test('register chama createUserAccount com name, email, birthDate, endereco, password e consentimento', async () => {
     const nav = makeNavigation();
     const { result } = renderHook(() => useAuthViewModel(nav));
     act(() => result.current.setMode('register'));
     act(() => {
       result.current.updateField('name', 'Ana');
       result.current.updateField('email', 'ana@email.com');
+      result.current.updateField('birthDate', '01/01/2000');
+      result.current.updateField('cep', '01310-100');
+      result.current.updateField('street', 'Avenida Paulista');
+      result.current.updateField('number', '1000');
+      result.current.updateField('complement', 'Apto 12');
+      result.current.updateField('neighborhood', 'Bela Vista');
+      result.current.updateField('city', 'São Paulo');
       result.current.updateField('password', '123456');
       result.current.updateField('confirmPassword', '123456');
+      result.current.updateField('consentimentoAceito', true);
     });
     await act(async () => { await result.current.handleSubmit(); });
     expect(createUserAccount).toHaveBeenCalledWith({
       name: 'Ana',
       email: 'ana@email.com',
+      birthDate: '01/01/2000',
+      cep: '01310100',
+      street: 'Avenida Paulista',
+      number: undefined,
+      complement: 'Apto 12',
+      neighborhood: 'Bela Vista',
+      city: 'São Paulo',
       password: '123456',
+      consentimentoAceito: true,
     });
+    expect(nav.replace).toHaveBeenCalledWith('Onboarding');
   });
 
   test('loading é true durante a chamada e false ao final', async () => {

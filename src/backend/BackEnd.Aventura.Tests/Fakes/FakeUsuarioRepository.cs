@@ -52,9 +52,30 @@ namespace BackEnd.Aventura.Tests.Fakes
             if (!_usuarios.ContainsKey(usuario.Id))
                 return false;
 
+            var emailAntigo = _usuariosByEmail
+                .FirstOrDefault(entry => entry.Value.Id == usuario.Id)
+                .Key;
+
+            if (!string.IsNullOrWhiteSpace(emailAntigo) &&
+                !string.Equals(emailAntigo, usuario.Email, StringComparison.OrdinalIgnoreCase))
+            {
+                _usuariosByEmail.Remove(emailAntigo);
+            }
+
             _usuarios[usuario.Id] = usuario;
             _usuariosByEmail[usuario.Email.ToLowerInvariant()] = usuario;
             return true;
         }
+
+        public bool SolicitarExclusao(Guid id)
+        {
+            if (!_usuarios.TryGetValue(id, out var usuario))
+                return false;
+
+            usuario.SolicitarExclusao();
+            return true;
+        }
+
+        public Task<int?> ObterMlIdAsync(Guid usuarioId) => Task.FromResult<int?>(null);
     }
 }

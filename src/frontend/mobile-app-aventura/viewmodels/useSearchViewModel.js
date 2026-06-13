@@ -1,30 +1,78 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { getSearchData } from '../repositories/searchRepository';
+import { getSearchData, searchEventsData } from '../repositories/searchRepository';
 import {
   getWishlistData,
   toggleWishlistEvent,
 } from '../repositories/wishlistRepository';
+import { getAuthSession } from '../services/tokenStorageService';
 
 export default function useSearchViewModel(navigation) {
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedLocation, setSelectedLocation] = useState('all');
   const [savedEventIds, setSavedEventIds] = useState([]);
 
-  const searchData = useMemo(() => getSearchData() || {}, []);
-
-  const events = searchData.events || [];
-  const categories = searchData.categories || [];
-  const recommendedEvents = searchData.recommendedEvents || [];
+  const [categories, setCategories] = useState([{ id: 'all', label: 'Todos' }]);
+  const [locations, setLocations] = useState([{ id: 'all', label: 'Todas' }]);
+  const [recommendedEvents, setRecommendedEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
 
   const isSearching =
-    searchText.trim().length > 0 || selectedCategory !== 'all';
+    searchText.trim().length > 0 || selectedCategory !== 'all' || selectedLocation !== 'all';
+
+  // Load initial search data (categories and recommendations)
+  useEffect(() => {
+    let isMounted = true;
+    async function loadInitialData() {
+      try {
+        const session = await getAuthSession();
+        const data = await getSearchData(session?.usuarioId);
+        if (isMounted) {
+          setCategories(data.categories || []);
+          setLocations(data.locations || [{ id: 'all', label: 'Todas' }]);
+          setRecommendedEvents(data.recommendedEvents || []);
+        }
+      } catch (error) {
+        console.error('Failed to load initial search data', error);
+      }
+    }
+    loadInitialData();
+    return () => { isMounted = false; };
+  }, []);
+
+  // Perform search when searchText or selectedCategory changes
+  useEffect(() => {
+    let isMounted = true;
+    const timeoutId = setTimeout(async () => {
+      if (!isSearching) {
+        if (isMounted) setFilteredEvents([]);
+        return;
+      }
+      try {
+        const results = await searchEventsData(
+          searchText.trim(),
+          selectedCategory === 'all' ? null : selectedCategory,
+          selectedLocation === 'all' ? null : selectedLocation
+        );
+        if (isMounted) {
+          setFilteredEvents(results || []);
+        }
+      } catch (error) {
+        console.error('Failed to search events', error);
+      }
+    }, 300); // 300ms debounce
+
+    return () => {
+      isMounted = false;
+      clearTimeout(timeoutId);
+    };
+  }, [searchText, selectedCategory, selectedLocation, isSearching]);
 
   async function loadSavedEvents() {
     const wishlistData = await getWishlistData();
     const nextSavedEventIds = (wishlistData.events || []).map((event) => event.id);
-
     setSavedEventIds(nextSavedEventIds);
   }
 
@@ -42,9 +90,14 @@ export default function useSearchViewModel(navigation) {
     setSelectedCategory(categoryId);
   }
 
+  function handleLocationPress(locationId) {
+    setSelectedLocation(locationId);
+  }
+
   function handleClearSearch() {
     setSearchText('');
     setSelectedCategory('all');
+    setSelectedLocation('all');
   }
 
   function handleEventPress(event) {
@@ -54,8 +107,14 @@ export default function useSearchViewModel(navigation) {
   }
 
   async function handleFavoritePress(event) {
+    const wasSaved = savedEventIds.includes(event.id);
     const updatedWishlist = await toggleWishlistEvent(event);
     setSavedEventIds(updatedWishlist.map((savedEvent) => savedEvent.id));
+
+    return {
+      added: !wasSaved,
+      eventTitle: event.title,
+    };
   }
 
   function isEventFavorite(eventId) {
@@ -63,53 +122,29 @@ export default function useSearchViewModel(navigation) {
   }
 
   function handleTabPress(tab) {
-    console.log('Acao futura: navegar para aba:', tab);
+    console.log('Ação futura: navegar para aba:', tab);
   }
 
-  const filteredEvents = useMemo(() => {
-    const normalizedSearch = searchText.trim().toLowerCase();
-
-    if (!isSearching) {
-      return recommendedEvents;
-    }
-
-    return events.filter((event) => {
-      const title = event.title?.toLowerCase() || '';
-      const location = event.location?.toLowerCase() || '';
-      const city = event.city?.toLowerCase() || '';
-      const category = event.categoryId?.toLowerCase() || '';
-
-      const matchesText =
-        !normalizedSearch ||
-        title.includes(normalizedSearch) ||
-        location.includes(normalizedSearch) ||
-        city.includes(normalizedSearch) ||
-        category.includes(normalizedSearch);
-
-      const matchesCategory =
-        selectedCategory === 'all' || event.categoryId === selectedCategory;
-
-      return matchesText && matchesCategory;
-    });
-  }, [events, recommendedEvents, searchText, selectedCategory, isSearching]);
-
-  const hasResults = filteredEvents.length > 0;
+  const currentEvents = isSearching ? filteredEvents : recommendedEvents;
+  const hasResults = currentEvents.length > 0;
 
   const sectionTitle = isSearching
     ? 'Resultados da busca'
-    : 'Recomendado para voce';
+    : 'Recomendado para você';
 
   const sectionSubtitle = isSearching
     ? hasResults
-      ? `${filteredEvents.length} espetaculos encontrados`
-      : 'Nenhum espetaculo encontrado'
-    : 'Algumas sugestoes para comecar sua busca';
+      ? `${currentEvents.length} espetáculos encontrados`
+      : 'Nenhum espetáculo encontrado'
+    : 'Algumas sugestões para começar sua busca';
 
   return {
     searchText,
     selectedCategory,
+    selectedLocation,
     categories,
-    filteredEvents,
+    locations,
+    filteredEvents: currentEvents,
     hasResults,
     isSearching,
     sectionTitle,
@@ -118,6 +153,7 @@ export default function useSearchViewModel(navigation) {
 
     handleSearchChange,
     handleCategoryPress,
+    handleLocationPress,
     handleClearSearch,
     handleEventPress,
     handleFavoritePress,

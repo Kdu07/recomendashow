@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
 import { Heart } from 'lucide-react-native';
 
@@ -6,6 +6,7 @@ import SearchBar from '../components/SearchBar';
 import SectionHeader from '../components/SectionHeader';
 import EmptyState from '../components/EmptyState';
 import SearchResultItem from '../components/SearchResultItem';
+import SystemStatus from '../components/SystemStatus';
 
 import useWishlistViewModel from '../viewmodels/useWishlistViewModel';
 
@@ -28,6 +29,8 @@ function getCategoryLabel(categoryId) {
 }
 
 export default function WishlistScreen({ navigation }) {
+  const [systemStatus, setSystemStatus] = useState(null);
+
   const {
     searchText,
     filteredWishlistEvents = [],
@@ -41,6 +44,15 @@ export default function WishlistScreen({ navigation }) {
   const shouldShowList = hasSavedEvents && hasFilteredResults;
   const shouldShowEmptyState = !hasSavedEvents;
   const shouldShowNoSearchResults = hasSavedEvents && !hasFilteredResults;
+
+  async function handleRemoveWithStatus(eventId) {
+    await handleRemoveFromWishlist(eventId);
+
+    setSystemStatus({
+      type: 'info',
+      message: 'Espetáculo removido da wishlist.',
+    });
+  }
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -85,7 +97,7 @@ export default function WishlistScreen({ navigation }) {
                     image={event.image}
                     onPress={() => handleEventPress(event)}
                     isFavorite
-                    onFavoritePress={() => handleRemoveFromWishlist(event.id)}
+                    onFavoritePress={() => handleRemoveWithStatus(event.id)}
                   />
                 ))}
               </View>
@@ -128,6 +140,12 @@ export default function WishlistScreen({ navigation }) {
             )}
           </View>
         </ScrollView>
+
+        <SystemStatus
+          message={systemStatus?.message}
+          type={systemStatus?.type}
+          onDismiss={() => setSystemStatus(null)}
+        />
       </View>
     </SafeAreaView>
   );

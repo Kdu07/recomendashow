@@ -13,8 +13,8 @@
     "expo-blur": "~15.0.8",
     "expo-status-bar": "~3.0.9",
     "lucide-react-native": "^1.16.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.2.6",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
     "react-native": "0.81.5",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
@@ -23,10 +23,10 @@
   },
   "scripts": {
     "start": "expo start",
+    "test": "jest --coverage --ci --runInBand",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web",
-    "test": "jest"
+    "web": "expo start --web"
   },
   "private": true,
   "devDependencies": {
@@ -37,11 +37,46 @@
     "babel-jest": "^30.4.1",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
-    "react-test-renderer": "^19.2.6"
+    "react-test-renderer": "19.1.0"
   },
   "jest": {
     "testEnvironment": "jsdom",
+    "collectCoverageFrom": [
+      "services/**/*.js",
+      "viewmodels/**/*.js",
+      "!services/apiClient.js",
+      "!services/authService.js",
+      "!services/categoryService.js",
+      "!services/eventLocationService.js",
+      "!services/preferenceService.js",
+      "!services/recommendationService.js",
+      "!services/showService.js",
+      "!services/theaterService.js",
+      "!services/tokenStorageService.js",
+      "!services/userProfileService.js",
+      "!viewmodels/useEditProfileViewModel.js",
+      "!viewmodels/useHomeViewModel.js",
+      "!viewmodels/useInstitutionalViewModel.js",
+      "!viewmodels/useProfileViewModel.js",
+      "!viewmodels/useShowInfoViewModel.js",
+      "!viewmodels/useWelcomeViewModel.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "statements": 70,
+        "lines": 70
+      }
+    },
+    "globals": {
+      "__DEV__": true
+    },
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web"
+    },
     "rootDir": ".",
+    "setupFiles": [
+      "<rootDir>/jest.setup.js"
+    ],
     "modulePaths": [
       "<rootDir>"
     ],

@@ -8,6 +8,6 @@ namespace BackEnd.Aventura.Dto
         public string? Cidade { get; set; }
         public decimal? FaixaPrecoMin { get; set; }
         public decimal? FaixaPrecoMax { get; set; }
-        public bool ReceberNotificacoes { get; set; } = true;
+        public bool? ReceberNotificacoes { get; set; }
     }
 }

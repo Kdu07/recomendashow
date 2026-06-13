@@ -1,19 +1,21 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '../constants/colors';
 import { spacing } from '../constants/spacing';
 import { typography } from '../constants/typography';
+import aventuraLogo from '../assets/logo-preta-aventura-extenso.png';
 
-export default function AuthHeader({ subtitle, mode }) {
-  const isLogin = mode === 'login';
-
+export default function AuthHeader({ subtitle }) {
   return (
     <View style={styles.container}>
       <View style={styles.copy}>
-        <Text style={[styles.brand, !isLogin && styles.brandRegister]}>
-          AVENTURA
-        </Text>
+        <Image
+          source={aventuraLogo}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+
         <Text style={styles.subtitle}>{subtitle}</Text>
       </View>
     </View>
@@ -32,17 +34,10 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
 
-  brand: {
-    fontSize: typography.size.xl,
-    lineHeight: typography.lineHeight.xl,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.black,
-  },
-
-  brandRegister: {
-    fontSize: typography.size.xxl,
-    lineHeight: typography.lineHeight.xxl,
-    fontWeight: '900',
+  logo: {
+    width: '100%',
+    maxWidth: 280,
+    height: 58,
   },
 
   subtitle: {

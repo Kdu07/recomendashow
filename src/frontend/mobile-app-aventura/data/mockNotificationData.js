@@ -29,9 +29,9 @@ export const notificationSections = [
 
         id: 'email',
 
-        title: 'Notificações por Email',
+        title: 'Notificações por E-mail',
 
-        subtitle: 'Receber emails informativos',
+        subtitle: 'Receber e-mails informativos',
 
         enabled: true,
       },

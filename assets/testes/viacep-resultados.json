@@ -1,0 +1,20 @@
+﻿[
+    {
+        "caso":  "CEP valido",
+        "status":  200,
+        "ms":  5786,
+        "body":  "{ \"cep\": \"01310-100\", \"logradouro\": \"Avenida Paulista\", \"complemento\": \"de 612 a 1510 - lado par\", \"unidade\": \"\", \"bairro\": \"Bela Vista\", \"localidade\": \"São Paulo\", \"uf\": \"SP\", \"estado"
+    },
+    {
+        "caso":  "CEP malformado (123)",
+        "status":  400,
+        "ms":  362,
+        "body":  "The remote server returned an error: (400) Bad Request."
+    },
+    {
+        "caso":  "CEP inexistente (99999-999)",
+        "status":  200,
+        "ms":  1840,
+        "body":  "{ \"erro\": \"true\" }"
+    }
+]

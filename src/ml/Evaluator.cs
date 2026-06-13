@@ -1,5 +1,5 @@
-using System.Text.Json;
 using AventuraML.Models;
+using System.Text.Json;
 using Microsoft.ML;
 using Microsoft.ML.Trainers;
 
@@ -7,6 +7,10 @@ namespace AventuraML;
 
 public static class Evaluator
 {
+    /// <summary>
+    /// Avaliação offline pelo console: split 80/20 por usuário, treina um SVD
+    /// apenas no conjunto de treino e imprime SVD puro × híbrido.
+    /// </summary>
     public static void Evaluate(
         string datasetPath,
         string itemCategoriesPath,
@@ -20,25 +24,7 @@ public static class Evaluator
         var itemCats = JsonSerializer.Deserialize<Dictionary<string, string>>(
             File.ReadAllText(itemCategoriesPath)) ?? [];
 
-        // 80/20 split por usuário (mínimo 2 interações para entrar no teste)
-        var rng = new Random(seed);
-        var trainRows = new List<CsvRatingRow>();
-        var testByUser = new Dictionary<int, List<CsvRatingRow>>();
-
-        foreach (var group in rawRows.GroupBy(r => r.UserId))
-        {
-            var items = group.OrderBy(_ => rng.Next()).ToList();
-            int nTest = items.Count < 2 ? 0 : Math.Max(1, (int)(items.Count * 0.2f));
-
-            if (nTest == 0)
-            {
-                trainRows.AddRange(items);
-                continue;
-            }
-
-            testByUser[group.Key] = items.Take(nTest).ToList();
-            trainRows.AddRange(items.Skip(nTest));
-        }
+        var (trainRows, testByUser) = SplitByUser(rawRows, seed);
 
         Console.WriteLine($"  Treino: {trainRows.Count} interações | Teste: {testByUser.Sum(x => x.Value.Count)} interações em {testByUser.Count} usuários");
 
@@ -77,19 +63,116 @@ public static class Evaluator
         var engine = mlContext.Model.CreatePredictionEngine<RatingData, RatingPrediction>(model);
         Console.WriteLine("  Treino concluído.\n");
 
+        float? Predict(int userId, string itemId)
+        {
+            try
+            {
+                var pred = engine.Predict(new RatingData { UserId = (uint)userId, ItemId = itemId, Rating = 0f });
+                return float.IsNaN(pred.Score) || float.IsInfinity(pred.Score) ? null : pred.Score;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        Console.WriteLine($"Avaliando top-{topK} para {testByUser.Count} usuários...");
+
+        var report = EvaluateWithPredictor(
+            Predict, trainRows, testByUser, itemCats, categoryAffinity, topK, alpha);
+
+        PrintReport(report);
+    }
+
+    /// <summary>
+    /// Split 80/20 por usuário (mínimo 2 interações para entrar no teste),
+    /// embaralhado com seed fixa para reprodutibilidade.
+    /// </summary>
+    public static (List<CsvRatingRow> TrainRows, Dictionary<int, List<CsvRatingRow>> TestByUser) SplitByUser(
+        List<CsvRatingRow> rawRows,
+        int seed = 42)
+    {
+        var rng = new Random(seed);
+        var trainRows = new List<CsvRatingRow>();
+        var testByUser = new Dictionary<int, List<CsvRatingRow>>();
+
+        foreach (var group in rawRows.GroupBy(r => r.UserId))
+        {
+            var items = group.OrderBy(_ => rng.Next()).ToList();
+            int nTest = items.Count < 2 ? 0 : Math.Max(1, (int)(items.Count * 0.2f));
+
+            if (nTest == 0)
+            {
+                trainRows.AddRange(items);
+                continue;
+            }
+
+            testByUser[group.Key] = items.Take(nTest).ToList();
+            trainRows.AddRange(items.Skip(nTest));
+        }
+
+        return (trainRows, testByUser);
+    }
+
+    /// <summary>
+    /// Núcleo da avaliação — fonte única das métricas, usado pelo console e pelo
+    /// host de inferência. Recebe um preditor de rating (score SVD bruto) e calcula:
+    /// RMSE/MAE sobre os pares de teste, e métricas de ranking top-K (SVD puro ×
+    /// híbrido). <paramref name="maxRankingUsers"/> permite amostrar os usuários da
+    /// avaliação de ranking (cara: ~1 predict por item candidato por usuário);
+    /// RMSE/MAE sempre usam todos os pares de teste.
+    /// </summary>
+    public static EvaluationReport EvaluateWithPredictor(
+        Func<int, string, float?> predictRating,
+        List<CsvRatingRow> trainRows,
+        Dictionary<int, List<CsvRatingRow>> testByUser,
+        IReadOnlyDictionary<string, string> itemCats,
+        IReadOnlyDictionary<string, Dictionary<string, float>> categoryAffinity,
+        int topK = 10,
+        float alpha = 0.7f,
+        int? maxRankingUsers = null,
+        int seed = 42)
+    {
         var popularItems = trainRows
             .GroupBy(r => r.ItemId)
             .OrderByDescending(g => g.Count())
             .Select(g => g.Key)
             .ToList();
 
-        var userHistory = trainRows
+        var trainByUser = trainRows
             .GroupBy(r => r.UserId)
-            .ToDictionary(g => g.Key, g => g.Select(r => r.ItemId).ToHashSet());
+            .ToDictionary(g => g.Key, g => g.ToList());
 
-        // Acumuladores de métricas
-        double svdRmse = 0, svdMae = 0;
-        int ratingCount = 0;
+        // RMSE / MAE sobre todos os pares de teste (predição de rating, SVD bruto)
+        double rmseSum = 0, maeSum = 0;
+        var ratingPairs = new List<RatingPair>();
+
+        foreach (var (userId, testItems) in testByUser)
+        {
+            foreach (var ti in testItems)
+            {
+                if (predictRating(userId, ti.ItemId) is float predicted)
+                {
+                    var err = ti.Ranking - predicted;
+                    rmseSum += err * err;
+                    maeSum += Math.Abs(err);
+                    ratingPairs.Add(new RatingPair(ti.Ranking, predicted));
+                }
+            }
+        }
+
+        var rating = new RatingAccuracy(
+            Rmse: ratingPairs.Count > 0 ? Math.Sqrt(rmseSum / ratingPairs.Count) : 0,
+            Mae: ratingPairs.Count > 0 ? maeSum / ratingPairs.Count : 0,
+            PairCount: ratingPairs.Count);
+
+        // Ranking top-K — opcionalmente amostrado (custo: 1 predict por candidato)
+        var rankingUserIds = testByUser.Keys.ToList();
+        if (maxRankingUsers is int max && max < rankingUserIds.Count)
+        {
+            var rng = new Random(seed);
+            rankingUserIds = rankingUserIds.OrderBy(_ => rng.Next()).Take(max).ToList();
+        }
 
         int svdHits = 0, hybridHits = 0;
         double svdPrecSum = 0, hybridPrecSum = 0;
@@ -97,42 +180,19 @@ public static class Evaluator
         double svdCatAvg = 0, hybridCatAvg = 0;
         int evaluated = 0;
 
-        Console.WriteLine($"Avaliando top-{topK} para {testByUser.Count} usuários...");
-
-        foreach (var (userId, testItems) in testByUser)
+        foreach (var userId in rankingUserIds)
         {
-            var uid = (uint)userId;
-            var consumed = userHistory.GetValueOrDefault(userId) ?? [];
+            var testItems = testByUser[userId];
+            var userTrainRows = trainByUser.GetValueOrDefault(userId) ?? [];
+            var consumed = userTrainRows.Select(r => r.ItemId).ToHashSet();
             var testItemSet = testItems.Select(r => r.ItemId).ToHashSet();
-
-            // RMSE / MAE apenas sobre predições de rating (SVD puro)
-            foreach (var ti in testItems)
-            {
-                try
-                {
-                    var pred = engine.Predict(new RatingData { UserId = uid, ItemId = ti.ItemId, Rating = 0f });
-                    if (!float.IsNaN(pred.Score) && !float.IsInfinity(pred.Score))
-                    {
-                        var err = ti.Ranking - pred.Score;
-                        svdRmse += err * err;
-                        svdMae += Math.Abs(err);
-                        ratingCount++;
-                    }
-                }
-                catch { }
-            }
 
             // Candidatos: itens não consumidos no treino
             var rawScores = new List<(string Item, float SvdScore, string Category)>();
             foreach (var item in popularItems.Where(i => !consumed.Contains(i)))
             {
-                try
-                {
-                    var pred = engine.Predict(new RatingData { UserId = uid, ItemId = item, Rating = 0f });
-                    if (!float.IsNaN(pred.Score) && !float.IsInfinity(pred.Score))
-                        rawScores.Add((item, pred.Score, itemCats.GetValueOrDefault(item, "")));
-                }
-                catch { }
+                if (predictRating(userId, item) is float score)
+                    rawScores.Add((item, score, itemCats.GetValueOrDefault(item, "")));
             }
 
             if (rawScores.Count == 0) continue;
@@ -151,18 +211,17 @@ public static class Evaluator
             var svdRange = maxSvd - minSvd;
             var userAff = categoryAffinity.GetValueOrDefault(userId.ToString()) ?? [];
 
-            var hybridTopK = rawScores
+            var hybridTopKItems = rawScores
                 .Select(x =>
                 {
                     var normSvd = svdRange > 1e-6f ? (x.SvdScore - minSvd) / svdRange : 0.5f;
                     var aff = x.Category != "" ? userAff.GetValueOrDefault(x.Category, 0f) : 0f;
-                    return (Item: x.Item, Category: x.Category, Score: alpha * normSvd + (1f - alpha) * aff);
+                    return (Item: x.Item, Score: alpha * normSvd + (1f - alpha) * aff);
                 })
                 .OrderByDescending(x => x.Score)
                 .Take(topK)
-                .ToList();
-
-            var hybridTopKItems = hybridTopK.Select(x => x.Item).ToHashSet();
+                .Select(x => x.Item)
+                .ToHashSet();
 
             // Hit Rate
             if (svdTopK.Any(testItemSet.Contains)) svdHits++;
@@ -175,8 +234,7 @@ public static class Evaluator
             hybridRecSum += (double)hybridTopKItems.Count(testItemSet.Contains) / testItemSet.Count;
 
             // Category match: % dos top-K que pertencem às categorias preferidas do usuário
-            var userTopCats = trainRows
-                .Where(r => r.UserId == userId)
+            var userTopCats = userTrainRows
                 .GroupBy(r => r.TipoEvento)
                 .OrderByDescending(g => g.Sum(r => r.Ranking))
                 .Take(2)
@@ -191,39 +249,27 @@ public static class Evaluator
                 : 0;
         }
 
-        // --- Impressão dos resultados ---
-        Console.WriteLine("\n══════════════════════════════════════════════════════");
-        Console.WriteLine("  MÉTRICAS DE AVALIAÇÃO (split 80/20 por usuário)");
-        Console.WriteLine("══════════════════════════════════════════════════════\n");
+        var svdRanking = evaluated > 0
+            ? new RankingMetrics(
+                HitRateAtK: (double)svdHits / evaluated,
+                PrecisionAtK: svdPrecSum / evaluated,
+                RecallAtK: svdRecSum / evaluated,
+                CategoryPrecisionAtK: svdCatAvg / evaluated)
+            : new RankingMetrics(0, 0, 0, 0);
 
-        if (ratingCount > 0)
-        {
-            Console.WriteLine($"  Predição de rating (SVD puro, {ratingCount} pares):");
-            Console.WriteLine($"    RMSE : {Math.Sqrt(svdRmse / ratingCount):F4}");
-            Console.WriteLine($"    MAE  : {svdMae / ratingCount:F4}");
-        }
+        var hybridRanking = evaluated > 0
+            ? new RankingMetrics(
+                HitRateAtK: (double)hybridHits / evaluated,
+                PrecisionAtK: hybridPrecSum / evaluated,
+                RecallAtK: hybridRecSum / evaluated,
+                CategoryPrecisionAtK: hybridCatAvg / evaluated)
+            : new RankingMetrics(0, 0, 0, 0);
 
-        Console.WriteLine($"\n  Ranking (top-{topK}, {evaluated} usuários avaliados):\n");
-        Console.WriteLine($"  {"Métrica",-28} {"SVD puro",10} {"Híbrido",10}  {"Δ",8}");
-        Console.WriteLine($"  {new string('─', 60)}");
-
-        void Row(string label, double svd, double hybrid)
-        {
-            var delta = hybrid - svd;
-            var sign = delta >= 0 ? "+" : "";
-            Console.WriteLine($"  {label,-28} {svd,10:F4} {hybrid,10:F4}  {sign}{delta,7:F4}");
-        }
-
-        Row($"Hit Rate@{topK}",       (double)svdHits / evaluated,    (double)hybridHits / evaluated);
-        Row($"Precision@{topK}",      svdPrecSum / evaluated,          hybridPrecSum / evaluated);
-        Row($"Recall@{topK}",         svdRecSum / evaluated,           hybridRecSum / evaluated);
-        Row($"Category Precision@{topK}", svdCatAvg / evaluated,       hybridCatAvg / evaluated);
-
-        Console.WriteLine($"\n  α = {alpha:F1}  (SVD weight)");
-        Console.WriteLine("══════════════════════════════════════════════════════");
+        return new EvaluationReport(
+            rating, svdRanking, hybridRanking, evaluated, topK, alpha, ratingPairs);
     }
 
-    private static Dictionary<string, Dictionary<string, float>> BuildCategoryAffinity(
+    public static Dictionary<string, Dictionary<string, float>> BuildCategoryAffinity(
         List<CsvRatingRow> rows)
     {
         return rows
@@ -240,5 +286,39 @@ public static class Evaluator
                         kvp => kvp.Key,
                         kvp => total > 0f ? kvp.Value / total : 0f);
                 });
+    }
+
+    private static void PrintReport(EvaluationReport report)
+    {
+        Console.WriteLine("\n══════════════════════════════════════════════════════");
+        Console.WriteLine("  MÉTRICAS DE AVALIAÇÃO (split 80/20 por usuário)");
+        Console.WriteLine("══════════════════════════════════════════════════════\n");
+
+        if (report.Rating.PairCount > 0)
+        {
+            Console.WriteLine($"  Predição de rating (SVD puro, {report.Rating.PairCount} pares):");
+            Console.WriteLine($"    RMSE : {report.Rating.Rmse:F4}");
+            Console.WriteLine($"    MAE  : {report.Rating.Mae:F4}");
+        }
+
+        Console.WriteLine($"\n  Ranking (top-{report.TopK}, {report.UsersEvaluated} usuários avaliados):\n");
+        Console.WriteLine($"  {"Métrica",-28} {"SVD puro",10} {"Híbrido",10}  {"Δ",8}");
+        Console.WriteLine($"  {new string('─', 60)}");
+
+        void Row(string label, double svd, double hybrid)
+        {
+            var delta = hybrid - svd;
+            var sign = delta >= 0 ? "+" : "";
+            Console.WriteLine($"  {label,-28} {svd,10:F4} {hybrid,10:F4}  {sign}{delta,7:F4}");
+        }
+
+        var k = report.TopK;
+        Row($"Hit Rate@{k}", report.SvdRanking.HitRateAtK, report.HybridRanking.HitRateAtK);
+        Row($"Precision@{k}", report.SvdRanking.PrecisionAtK, report.HybridRanking.PrecisionAtK);
+        Row($"Recall@{k}", report.SvdRanking.RecallAtK, report.HybridRanking.RecallAtK);
+        Row($"Category Precision@{k}", report.SvdRanking.CategoryPrecisionAtK, report.HybridRanking.CategoryPrecisionAtK);
+
+        Console.WriteLine($"\n  α = {report.Alpha:F1}  (SVD weight)");
+        Console.WriteLine("══════════════════════════════════════════════════════");
     }
 }

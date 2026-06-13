@@ -1,79 +1,128 @@
-/**
- * @file useNotificationsViewModel.test.js
- * Testes unitários para useNotificationsViewModel
- */
+import { renderHook, act, waitFor } from '@testing-library/react';
 
-import { renderHook, act } from '@testing-library/react';
 import useNotificationsViewModel from '../viewmodels/useNotificationsViewModel';
-
-// ── Mocks ─────────────────────────────────────────────────────────────────────
 
 const MOCK_SECTIONS = [
   {
     id: 'sec-1',
-    title: 'Espetáculos',
+    title: 'Espetaculos',
     options: [
-      { id: 'opt-1', label: 'Novos espetáculos', enabled: true },
-      { id: 'opt-2', label: 'Promoções', enabled: false },
+      { id: 'opt-1', title: 'Novos espetaculos', enabled: true },
+      { id: 'opt-2', title: 'Promocoes', enabled: false },
     ],
   },
   {
     id: 'sec-2',
     title: 'Lembretes',
-    options: [{ id: 'opt-3', label: 'Antes do espetáculo', enabled: true }],
+    options: [{ id: 'opt-3', title: 'Antes do espetaculo', enabled: true }],
   },
 ];
 
+const mockUpdateNotificationPreference = jest.fn(() => true);
+
 jest.mock('../repositories/notificationRepository', () => ({
-  getNotificationData: () => ({ sections: MOCK_SECTIONS }),
+  getNotificationData: () => ({
+    sections: MOCK_SECTIONS.map((section) => ({
+      ...section,
+      options: section.options.map((option) => ({ ...option })),
+    })),
+  }),
+  updateNotificationPreference: (...args) => mockUpdateNotificationPreference(...args),
 }));
 
-// ── Testes ────────────────────────────────────────────────────────────────────
+async function renderLoadedHook() {
+  const { result } = renderHook(() => useNotificationsViewModel());
+  await waitFor(() => expect(result.current.sections).toHaveLength(2));
+  return result;
+}
 
 describe('useNotificationsViewModel', () => {
-  test('carrega as seções do repositório', () => {
-    const { result } = renderHook(() => useNotificationsViewModel());
+  beforeEach(() => {
+    mockUpdateNotificationPreference.mockClear();
+    mockUpdateNotificationPreference.mockReturnValue(true);
+  });
+
+  test('carrega as secoes do repositorio', async () => {
+    const result = await renderLoadedHook();
     expect(result.current.sections).toHaveLength(2);
   });
 
-  test('toggleOption inverte o estado enabled da opção', () => {
-    const { result } = renderHook(() => useNotificationsViewModel());
-    // opt-1 começa true
-    act(() => result.current.handleToggleOption('sec-1', 'opt-1'));
-    const sec1 = result.current.sections.find((s) => s.id === 'sec-1');
-    const opt1 = sec1.options.find((o) => o.id === 'opt-1');
+  test('toggleOption inverte o estado enabled da opcao e salva no repositorio', async () => {
+    const result = await renderLoadedHook();
+
+    await act(async () => {
+      await result.current.handleToggleOption('sec-1', 'opt-1');
+    });
+
+    const sec1 = result.current.sections.find((section) => section.id === 'sec-1');
+    const opt1 = sec1.options.find((option) => option.id === 'opt-1');
+
     expect(opt1.enabled).toBe(false);
+    expect(mockUpdateNotificationPreference).toHaveBeenCalledWith(false);
   });
 
-  test('toggleOption inverte opt desabilitada para habilitada', () => {
-    const { result } = renderHook(() => useNotificationsViewModel());
-    act(() => result.current.handleToggleOption('sec-1', 'opt-2'));
-    const sec1 = result.current.sections.find((s) => s.id === 'sec-1');
-    const opt2 = sec1.options.find((o) => o.id === 'opt-2');
+  test('toggleOption inverte opcao desabilitada para habilitada', async () => {
+    const result = await renderLoadedHook();
+
+    await act(async () => {
+      await result.current.handleToggleOption('sec-1', 'opt-2');
+    });
+
+    const sec1 = result.current.sections.find((section) => section.id === 'sec-1');
+    const opt2 = sec1.options.find((option) => option.id === 'opt-2');
+
     expect(opt2.enabled).toBe(true);
+    expect(mockUpdateNotificationPreference).toHaveBeenCalledWith(true);
   });
 
-  test('toggleOption não afeta outras seções', () => {
-    const { result } = renderHook(() => useNotificationsViewModel());
-    act(() => result.current.handleToggleOption('sec-1', 'opt-1'));
-    const sec2 = result.current.sections.find((s) => s.id === 'sec-2');
-    expect(sec2.options[0].enabled).toBe(true); // inalterado
+  test('toggleOption nao afeta outras secoes', async () => {
+    const result = await renderLoadedHook();
+
+    await act(async () => {
+      await result.current.handleToggleOption('sec-1', 'opt-1');
+    });
+
+    const sec2 = result.current.sections.find((section) => section.id === 'sec-2');
+    expect(sec2.options[0].enabled).toBe(true);
   });
 
-  test('toggleOption não afeta outras opções da mesma seção', () => {
-    const { result } = renderHook(() => useNotificationsViewModel());
-    act(() => result.current.handleToggleOption('sec-1', 'opt-1'));
-    const sec1 = result.current.sections.find((s) => s.id === 'sec-1');
-    const opt2 = sec1.options.find((o) => o.id === 'opt-2');
-    expect(opt2.enabled).toBe(false); // inalterado
+  test('toggleOption nao afeta outras opcoes da mesma secao', async () => {
+    const result = await renderLoadedHook();
+
+    await act(async () => {
+      await result.current.handleToggleOption('sec-1', 'opt-1');
+    });
+
+    const sec1 = result.current.sections.find((section) => section.id === 'sec-1');
+    const opt2 = sec1.options.find((option) => option.id === 'opt-2');
+    expect(opt2.enabled).toBe(false);
   });
 
-  test('toggle duplo restaura o estado original', () => {
-    const { result } = renderHook(() => useNotificationsViewModel());
-    act(() => result.current.handleToggleOption('sec-1', 'opt-1'));
-    act(() => result.current.handleToggleOption('sec-1', 'opt-1'));
-    const sec1 = result.current.sections.find((s) => s.id === 'sec-1');
-    const opt1 = sec1.options.find((o) => o.id === 'opt-1');
+  test('toggle duplo restaura o estado original', async () => {
+    const result = await renderLoadedHook();
+
+    await act(async () => {
+      await result.current.handleToggleOption('sec-1', 'opt-1');
+    });
+    await act(async () => {
+      await result.current.handleToggleOption('sec-1', 'opt-1');
+    });
+
+    const sec1 = result.current.sections.find((section) => section.id === 'sec-1');
+    const opt1 = sec1.options.find((option) => option.id === 'opt-1');
+    expect(opt1.enabled).toBe(true);
+  });
+
+  test('restaura estado anterior quando nao consegue salvar', async () => {
+    mockUpdateNotificationPreference.mockReturnValue(false);
+    const result = await renderLoadedHook();
+
+    await act(async () => {
+      await result.current.handleToggleOption('sec-1', 'opt-1');
+    });
+
+    const sec1 = result.current.sections.find((section) => section.id === 'sec-1');
+    const opt1 = sec1.options.find((option) => option.id === 'opt-1');
     expect(opt1.enabled).toBe(true);
   });
 });

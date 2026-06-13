@@ -2,7 +2,13 @@ export const UserProfileModel = {
   id: '',
   name: '',
   email: '',
-  avatar: null,
+  birthDate: '',
+  cep: '',
+  street: '',
+  number: '',
+  complement: '',
+  neighborhood: '',
+  city: '',
 };
 
 export const ProfileMenuItemModel = {

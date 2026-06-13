@@ -1,0 +1,79 @@
+import { apiFetch } from './apiClient';
+import { getAuthSession } from './tokenStorageService';
+
+function formatBirthDate(value) {
+  if (!value) {
+    return '';
+  }
+
+  const [datePart] = String(value).split('T');
+  const [year, month, day] = datePart.split('-');
+
+  if (!year || !month || !day) {
+    return '';
+  }
+
+  return `${day}/${month}/${year}`;
+}
+
+function normalizeProfileResponse(data) {
+  return {
+    id: data.id ?? data.Id ?? data.usuarioId ?? data.UsuarioId,
+    name: data.nome ?? data.Nome ?? data.name,
+    email: data.email ?? data.Email ?? data.emailAddress,
+    age: data.idade ?? data.Idade ?? null,
+    birthDate: formatBirthDate(data.dataNascimento ?? data.DataNascimento ?? data.birthDate),
+    cep: data.cep ?? data.Cep ?? '',
+    street: data.logradouro ?? data.Logradouro ?? '',
+    number: data.numero ?? data.Numero ?? '',
+    complement: data.complemento ?? data.Complemento ?? '',
+    neighborhood: data.bairro ?? data.Bairro ?? '',
+    city: data.cidade ?? data.Cidade ?? '',
+  };
+}
+
+export async function getUserInfo() {
+  try {
+    const session = await getAuthSession();
+
+    const userId = session?.usuarioId;
+    if (!userId) throw new Error('Sessão de usuário não encontrada.');
+    const response = await apiFetch(`/api/Usuario/${userId}`);
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Erro ${response.status}: ${text}`);
+    }
+
+    const json = await response.json();
+    return normalizeProfileResponse(json);
+  } catch (error) {
+    console.error('Erro ao buscar usuário:', error);
+    throw error;
+  }
+}
+
+export async function updateUserInfo(payload) {
+  try {
+    const session = await getAuthSession();
+    const userId = session?.usuarioId;
+    if (!userId) throw new Error('Sessão de usuário não encontrada.');
+
+    const response = await apiFetch(`/api/Usuario/${userId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Erro ao atualizar usuário: ${response.status} ${text}`);
+    }
+
+    const json = await response.json();
+    return normalizeProfileResponse(json);
+  } catch (error) {
+    console.error('Erro ao atualizar usuário:', error);
+    throw error;
+  }
+}

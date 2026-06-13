@@ -1,0 +1,62 @@
+﻿[
+    {
+        "tentativa":  1,
+        "status":  401,
+        "ms":  2752
+    },
+    {
+        "tentativa":  2,
+        "status":  401,
+        "ms":  391
+    },
+    {
+        "tentativa":  3,
+        "status":  401,
+        "ms":  358
+    },
+    {
+        "tentativa":  4,
+        "status":  401,
+        "ms":  372
+    },
+    {
+        "tentativa":  5,
+        "status":  401,
+        "ms":  379
+    },
+    {
+        "tentativa":  6,
+        "status":  401,
+        "ms":  387
+    },
+    {
+        "tentativa":  7,
+        "status":  401,
+        "ms":  386
+    },
+    {
+        "tentativa":  8,
+        "status":  401,
+        "ms":  376
+    },
+    {
+        "tentativa":  9,
+        "status":  401,
+        "ms":  363
+    },
+    {
+        "tentativa":  10,
+        "status":  401,
+        "ms":  356
+    },
+    {
+        "tentativa":  11,
+        "status":  401,
+        "ms":  364
+    },
+    {
+        "tentativa":  12,
+        "status":  401,
+        "ms":  391
+    }
+]

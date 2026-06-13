@@ -35,7 +35,7 @@ frontend-tests:
   script:
     - cd src/frontend/mobile-app-aventura
     - npm ci
-    - npm test -- --coverage
+    - npm test
   coverage: '/All files\s*\|\s*(\d+\.?\d*)/'
   artifacts:
     when: always

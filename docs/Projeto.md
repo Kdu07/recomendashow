@@ -3097,9 +3097,6 @@ Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositó
 
 [Vídeo demonstrativo](https://drive.google.com/file/d/1VCDSsW-dxjwJJM6786tu-Pd1RauL3sNp/view?usp=sharing)
 
-#### Línk do vídeo demonstrativo front integrado com o back
-[Vídeo demonstrativo](https://drive.google.com/file/d/1EcSC9ybqNQ1LKotA9xdpr2rvZfvmRAxN/view?usp=sharing)
-
 ---
 
 ### 19.7 Testes unitários do Frontend (React Native)
@@ -3664,7 +3661,13 @@ As principais evidências técnicas da Sprint 4 no backend são:
 | Integração com recomendação | `docs/Modelo_Recomendacao.md` e `src/inference-service/` | Pipeline que grava recomendações na tabela lida pelo backend |
 | Testes automatizados | `src/backend/BackEnd.Aventura.Tests/` | Suíte xUnit com fakes e testes por camada |
 
-Como próximos ajustes técnicos, recomenda-se atualizar `FakeUsuarioRepository` para implementar `ObterMlIdAsync(Guid)` e revisar o fluxo de login para garantir que a senha informada seja comparada com o hash BCrypt armazenado. Esses pontos não impedem a documentação da arquitetura entregue, mas devem ser tratados antes de considerar o backend plenamente validado para uma entrega integrada.
+#### 20.6.1 Vídeo demonstrativo da integração frontend-backend
+
+Como evidência complementar da Sprint 4, o vídeo abaixo demonstra o frontend consumindo fluxos conectados ao backend, validando a integração entre a interface mobile e os endpoints da API.
+
+**Link do vídeo demonstrativo:** [Integração frontend-backend](https://drive.google.com/file/d/1EcSC9ybqNQ1LKotA9xdpr2rvZfvmRAxN/view?usp=sharing).
+
+Como refinamentos previstos para a Sprint final 5, recomenda-se atualizar `FakeUsuarioRepository` para implementar `ObterMlIdAsync(Guid)` e revisar o fluxo de login para garantir que a senha informada seja comparada com o hash BCrypt armazenado. Esses pontos devem ser tratados antes de considerar o backend plenamente validado para uma entrega final integrada.
 
 ---
 

@@ -3072,6 +3072,8 @@ Abordagem adotada na Sprint 3:
 | UsuarioRepository_CRUD | Repository (integration) | Criação/Leitura/Update de usuário | Passed | `tests/BackEnd.Aventura.Integration/UsuarioRepositoryTests.cs` (Testcontainers + Respawn) |
 | PreferenciasRepository_SaveAndLoad | Repository (integration) | Persistir e recuperar preferências | Passed | `tests/.../PreferenciasRepositoryTests.cs` |
 | RecomendacaoService_Fallback | Service (integration) | Geração de fallback por gêneros favoritos | Passed | `tests/.../RecomendacaoServiceTests.cs` (WireMock stub) |
+| RecommendationWriteRepository_MlId | Repository (integration) | Tradução `user_id` do dataset → `usuario_id` (UUID) via `ml_id`; sem mapeamento não persiste; DELETE+INSERT idempotente | Passed | `src/inference-service/InferenceService.Tests/RecommendationWriteRepositoryTests.cs` (Testcontainers) |
+| MlIdMapping_SeedUsuarios | DB/Schema (integration) | Usuários do seed recebem o `ml_id` mapeado (63261/14888/55251) após os scripts | Passed | `src/backend/BackEnd.Aventura.IntegrationTests/MlIdMappingTests.cs` (Testcontainers) |
 
 #### Execução dos testes
 

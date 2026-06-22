@@ -180,3 +180,103 @@ public class EvaluatorSplitByUserTests
         test.Should().BeEmpty();
     }
 }
+
+public class EvaluatorBuildCategoryAffinityTests
+{
+    private static CsvRatingRow Row(int userId, string itemId, string category, float ranking) =>
+        new() { UserId = userId, ItemId = itemId, TipoEvento = category, Ranking = ranking };
+
+    [Fact]
+    public void UserWithSingleCategory_HasAffinity1()
+    {
+        var rows = new List<CsvRatingRow>
+        {
+            Row(1, "ItemA", "Teatro", 5f),
+            Row(1, "ItemB", "Teatro", 3f),
+        };
+
+        var affinity = Evaluator.BuildCategoryAffinity(rows);
+
+        affinity["1"]["Teatro"].Should().Be(1.0f);
+    }
+
+    [Fact]
+    public void AffinitySum_IsExactly1_ForAnyUser()
+    {
+        var rows = new List<CsvRatingRow>
+        {
+            Row(1, "ItemA", "Teatro",  5f),
+            Row(1, "ItemB", "Musical", 3f),
+            Row(1, "ItemC", "Danca",   2f),
+        };
+
+        var affinity = Evaluator.BuildCategoryAffinity(rows);
+
+        affinity["1"].Values.Sum().Should().BeApproximately(1.0f, precision: 1e-6f);
+    }
+
+    [Fact]
+    public void TwoCategories_WithEqualRankingSum_HaveAffinity05Each()
+    {
+        var rows = new List<CsvRatingRow>
+        {
+            Row(1, "ItemA", "Teatro",  3f),
+            Row(1, "ItemB", "Musical", 3f),
+        };
+
+        var affinity = Evaluator.BuildCategoryAffinity(rows);
+
+        affinity["1"]["Teatro"].Should().BeApproximately(0.5f, precision: 1e-6f);
+        affinity["1"]["Musical"].Should().BeApproximately(0.5f, precision: 1e-6f);
+    }
+
+    [Fact]
+    public void Affinity_IsWeightedByRankingSum_NotByCount()
+    {
+        var rows = new List<CsvRatingRow>
+        {
+            Row(1, "ItemA", "Teatro",  4f),
+            Row(1, "ItemB", "Musical", 1f),
+            Row(1, "ItemC", "Musical", 1f),
+        };
+
+        var affinity = Evaluator.BuildCategoryAffinity(rows);
+
+        affinity["1"]["Teatro"].Should().BeApproximately(4f / 6f, precision: 1e-6f);
+        affinity["1"]["Musical"].Should().BeApproximately(2f / 6f, precision: 1e-6f);
+    }
+
+    [Fact]
+    public void UserKey_IsStringRepresentationOfUserId()
+    {
+        var rows = new List<CsvRatingRow> { Row(42, "ItemA", "Teatro", 3f) };
+
+        var affinity = Evaluator.BuildCategoryAffinity(rows);
+
+        affinity.Should().ContainKey("42");
+        affinity.Should().NotContainKey("0");
+    }
+
+    [Fact]
+    public void MultipleUsers_HaveIndependentAffinities()
+    {
+        var rows = new List<CsvRatingRow>
+        {
+            Row(1, "ItemA", "Teatro",  5f),
+            Row(2, "ItemB", "Musical", 5f),
+        };
+
+        var affinity = Evaluator.BuildCategoryAffinity(rows);
+
+        affinity["1"].Should().ContainKey("Teatro").And.NotContainKey("Musical");
+        affinity["2"].Should().ContainKey("Musical").And.NotContainKey("Teatro");
+    }
+
+    [Fact]
+    public void EmptyDataset_ReturnsEmptyDictionary()
+    {
+        var affinity = Evaluator.BuildCategoryAffinity([]);
+
+        affinity.Should().BeEmpty();
+    }
+}

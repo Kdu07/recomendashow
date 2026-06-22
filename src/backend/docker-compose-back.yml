@@ -4,8 +4,16 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: aventura_backend
-    restart: always
+    restart: unless-stopped
     env_file:
       - ../../.env
     ports:
       - "5253:5253"
+    networks:
+      - aventura_net
+    # depends_on entre compose files separados não é suportado pelo Compose.
+    # Garantir que docker-compose-db.yml esteja up antes de subir este serviço.
+
+networks:
+  aventura_net:
+    external: true

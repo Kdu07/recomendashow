@@ -12,7 +12,11 @@ namespace InferenceService.Tests;
 /// Cobre o elo central da feature de mapeamento: a tradução do user_id inteiro
 /// do dataset para o usuarios.id (UUID) via coluna ml_id, feita no
 /// RecommendationWriteRepository quando persiste em recomendacoes.
+///
+/// Marcado como Category=Integration: exige Docker (Testcontainers) e é excluído
+/// do CI (sem Docker), como a suíte de integração do backend. Roda localmente.
 /// </summary>
+[Trait("Category", "Integration")]
 public sealed class RecommendationWriteRepositoryTests : IClassFixture<PostgresFixture>
 {
     private readonly PostgresFixture _db;

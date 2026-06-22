@@ -280,3 +280,117 @@ public class EvaluatorBuildCategoryAffinityTests
         affinity.Should().BeEmpty();
     }
 }
+
+public class EvaluatorEvaluateWithPredictorTests
+{
+    private static CsvRatingRow Row(int userId, string itemId, string category, float ranking) =>
+        new() { UserId = userId, ItemId = itemId, TipoEvento = category, Ranking = ranking };
+
+    // User 1 consumed ItemA/ItemB in train → ItemC and ItemD are candidates for user 1.
+    // Test set for user 1 contains ItemC.
+    private static List<CsvRatingRow> TrainRows() =>
+    [
+        Row(1, "ItemA", "Teatro",  3f),
+        Row(1, "ItemB", "Musical", 3f),
+        Row(2, "ItemC", "Opera",   3f),
+        Row(2, "ItemD", "Teatro",  3f),
+    ];
+
+    private static Dictionary<int, List<CsvRatingRow>> TestByUser() =>
+        new() { [1] = [Row(1, "ItemC", "Opera", 3f)] };
+
+    private static readonly IReadOnlyDictionary<string, string> ItemCats =
+        new Dictionary<string, string>
+        {
+            ["ItemA"] = "Teatro", ["ItemB"] = "Musical",
+            ["ItemC"] = "Opera",  ["ItemD"] = "Teatro",
+        };
+
+    // User 1 strongly prefers Teatro (0.9) over Opera (0.1).
+    private static readonly IReadOnlyDictionary<string, Dictionary<string, float>> CategoryAffinity =
+        new Dictionary<string, Dictionary<string, float>>
+        {
+            ["1"] = new() { ["Teatro"] = 0.9f, ["Opera"] = 0.1f },
+        };
+
+    [Fact]
+    public void PerfectPredictor_YieldsSvdHitRate1()
+    {
+        float? predict(int _, string item) => item == "ItemC" ? 5f : 1f;
+
+        var report = Evaluator.EvaluateWithPredictor(
+            predict, TrainRows(), TestByUser(), ItemCats, CategoryAffinity, topK: 1);
+
+        report.SvdRanking.HitRateAtK.Should().Be(1.0);
+    }
+
+    [Fact]
+    public void PredictorThatNeverHits_YieldsSvdHitRate0()
+    {
+        float? predict(int _, string item) => item == "ItemD" ? 5f : 1f;
+
+        var report = Evaluator.EvaluateWithPredictor(
+            predict, TrainRows(), TestByUser(), ItemCats, CategoryAffinity, topK: 1);
+
+        report.SvdRanking.HitRateAtK.Should().Be(0.0);
+    }
+
+    [Fact]
+    public void Alpha1_HybridFollowsSvd_Alpha0_HybridFollowsAffinity()
+    {
+        // SVD scores ItemC highest; affinity pushes ItemD (Teatro=0.9) above ItemC (Opera=0.1).
+        // alpha=1.0 → hybrid = SVD order → ItemC top-1 → hit
+        // alpha=0.0 → hybrid = affinity order → ItemD top-1 → miss
+        float? predict(int _, string item) => item == "ItemC" ? 5f : 1f;
+
+        var reportAlpha1 = Evaluator.EvaluateWithPredictor(
+            predict, TrainRows(), TestByUser(), ItemCats, CategoryAffinity, topK: 1, alpha: 1.0f);
+
+        var reportAlpha0 = Evaluator.EvaluateWithPredictor(
+            predict, TrainRows(), TestByUser(), ItemCats, CategoryAffinity, topK: 1, alpha: 0.0f);
+
+        reportAlpha1.HybridRanking.HitRateAtK.Should().Be(1.0);
+        reportAlpha0.HybridRanking.HitRateAtK.Should().Be(0.0);
+    }
+
+    [Fact]
+    public void Alpha_DoesNotAffect_SvdRanking()
+    {
+        float? predict(int _, string item) => item == "ItemC" ? 5f : 1f;
+
+        var reportAlpha1 = Evaluator.EvaluateWithPredictor(
+            predict, TrainRows(), TestByUser(), ItemCats, CategoryAffinity, topK: 1, alpha: 1.0f);
+
+        var reportAlpha0 = Evaluator.EvaluateWithPredictor(
+            predict, TrainRows(), TestByUser(), ItemCats, CategoryAffinity, topK: 1, alpha: 0.0f);
+
+        reportAlpha1.SvdRanking.HitRateAtK.Should().Be(reportAlpha0.SvdRanking.HitRateAtK);
+    }
+
+    [Fact]
+    public void PerfectRatingPredictor_YieldsRmseNearZero()
+    {
+        float? predict(int _, string __) => 3f;
+
+        var report = Evaluator.EvaluateWithPredictor(
+            predict, TrainRows(), TestByUser(), ItemCats, CategoryAffinity);
+
+        report.Rating.Rmse.Should().BeApproximately(0.0, precision: 1e-6);
+        report.Rating.PairCount.Should().Be(1);
+    }
+
+    [Fact]
+    public void EmptyTestSet_YieldsUsersEvaluated0_AndZeroMetrics()
+    {
+        float? predict(int _, string __) => 3f;
+
+        var report = Evaluator.EvaluateWithPredictor(
+            predict, TrainRows(), new Dictionary<int, List<CsvRatingRow>>(),
+            ItemCats, CategoryAffinity);
+
+        report.UsersEvaluated.Should().Be(0);
+        report.Rating.PairCount.Should().Be(0);
+        report.SvdRanking.HitRateAtK.Should().Be(0.0);
+        report.HybridRanking.HitRateAtK.Should().Be(0.0);
+    }
+}

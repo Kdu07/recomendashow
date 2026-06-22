@@ -3088,6 +3088,52 @@ A estratégia de testes busca validar as regras de negócio e os comportamentos 
 
 A metodologia TDD (*Test-Driven Development*) foi aplicada de forma pragmática nas funcionalidades críticas. Nesse processo, os cenários de teste orientam a implementação das regras, seguindo o ciclo de criar um teste que inicialmente falha, desenvolver o código mínimo necessário para fazê-lo passar e refatorar a solução sem alterar o comportamento validado.
 
+#### Estratégia de testes
+
+- Metodologia: TDD aplicada nas camadas de `Service` e `Repository`; testes unitários escritos antes ou junto da implementação das regras críticas.
+- Ferramentas: `xUnit` para testes unitários e de integração; `Testcontainers` para subir instâncias de PostgreSQL em testes de integração; `WireMock.Net` para simular serviços externos; `Respawn` para resetar o banco entre testes; `FluentAssertions` para asserções expressivas.
+- Escopo priorizado: autenticação (`AuthService`), persistência (`UsuarioRepository`, `PreferenciasRepository`), e geração/consumo de recomendações (`RecomendacaoService`).
+
+#### Testes implementados
+
+| Teste | Camada testada | Funcionalidade | Resultado | Evidência |
+|---|---|---|---|---|
+| AuthService_ShouldHashAndVerifyPassword | Service | Registro e verificação de senha | Passed | `tests/BackEnd.Aventura.Tests/AuthServiceTests.cs` |
+| UsuarioRepository_CRUD | Repository (integration) | Criação/Leitura/Update de usuário | Passed | `tests/BackEnd.Aventura.Integration/UsuarioRepositoryTests.cs` (Testcontainers + Respawn) |
+| PreferenciasRepository_SaveAndLoad | Repository (integration) | Persistir e recuperar preferências | Passed | `tests/.../PreferenciasRepositoryTests.cs` |
+| RecomendacaoService_Fallback | Service (integration) | Geração de fallback por gêneros favoritos | Passed | `tests/.../RecomendacaoServiceTests.cs` (WireMock stub) |
+| RecommendationWriteRepository_MlId | Repository (integration) | Tradução `user_id` do dataset → `usuario_id` (UUID) via `ml_id`; sem mapeamento não persiste; DELETE+INSERT idempotente | Passed | `src/inference-service/InferenceService.Tests/RecommendationWriteRepositoryTests.cs` (Testcontainers) |
+| MlIdMapping_SeedUsuarios | DB/Schema (integration) | Usuários do seed recebem o `ml_id` mapeado (63261/14888/55251) após os scripts | Passed | `src/backend/BackEnd.Aventura.IntegrationTests/MlIdMappingTests.cs` (Testcontainers) |
+
+#### Execução dos testes
+
+Executar todos os testes do backend (local):
+
+```bash
+dotnet test src/backend/BackEnd.Aventura.sln --logger "console;verbosity=minimal"
+```
+
+Ou executar testes no diretório de testes:
+
+```bash
+dotnet test tests/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
+```
+
+#### Resultado da cobertura
+
+Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositórios) com meta de cobertura ≥ 70% nas partes essenciais. Relatórios de cobertura são gerados pelo pipeline de CI e anexados aos artefatos de build.
+
+---
+
+#### Link do vídeo demonstrativo backend
+
+[Vídeo demonstrativo](https://drive.google.com/file/d/1VCDSsW-dxjwJJM6786tu-Pd1RauL3sNp/view?usp=sharing)
+### 19.6 Estratégia de testes e metodologia TDD
+
+A estratégia de testes busca validar as regras de negócio e os comportamentos esperados de forma isolada, reproduzível e automatizada. No backend, os testes verificam entidades de domínio, serviços, controllers, mapeamentos e tratamento de exceções, utilizando fakes e mocks para isolar dependências. No frontend, a validação concentra-se nos Services e ViewModels, responsáveis pela lógica de estado, navegação e interação com dados.
+
+A metodologia TDD (*Test-Driven Development*) foi aplicada de forma pragmática nas funcionalidades críticas. Nesse processo, os cenários de teste orientam a implementação das regras, seguindo o ciclo de criar um teste que inicialmente falha, desenvolver o código mínimo necessário para fazê-lo passar e refatorar a solução sem alterar o comportamento validado.
+
 ---
 
 ### 19.7 Testes unitários do Frontend na Sprint 3

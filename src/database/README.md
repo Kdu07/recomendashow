@@ -837,6 +837,8 @@ Dois índices simples do Sprint 3 foram removidos e substituídos por índices c
 | `idx_interacoes_usuario` — `ON interacoes(usuario_id)` | `idx_interacoes_usuario_expiracao` — `ON interacoes(usuario_id, data_expiracao)` | O motor de recomendação filtra sempre por `usuario_id` **e** `data_expiracao`; o índice composto elimina a varredura extra na coluna de expiração e satisfaz ambos os predicados em um único Index Scan |
 | `idx_recomendacao_usuario` — `ON recomendacoes(usuario_id)` | `idx_recomendacoes_usuario_score` — `ON recomendacoes(usuario_id, score DESC)` | Recuperar as top-N recomendações de um usuário ordenadas por relevância passa a ser um Index Scan sem Sort Step adicional, pois o índice já entrega as linhas na ordem decrescente de `score` |
 
+Na tabela `recomendacoes`, a constraint `uq_recomendacao_usuario_espetaculo(usuario_id, espetaculo_id)` e o índice `idx_recomendacoes_usuario_score(usuario_id, score DESC)` coexistem porque têm papéis diferentes: a constraint impede recomendação duplicada do mesmo espetáculo para o mesmo usuário, enquanto o índice otimiza a leitura das recomendações de um usuário já ordenadas por score, especialmente em consultas com `ORDER BY score DESC` e `LIMIT`.
+
 Novos índices sem predecessor no Sprint 3:
 
 | Índice | Tabela | Colunas | Finalidade |

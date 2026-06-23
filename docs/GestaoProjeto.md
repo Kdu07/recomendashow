@@ -26,9 +26,10 @@ Este documento registra a gestão do projeto ao longo das sprints, reunindo retr
  - [Sprint 3](#3-sprint-3)
  - [Sprint 4 - Gestão Evolutiva](#4-sprint-4---gestão-evolutiva)
  - [Planejamento e Fechamento da Sprint 5](#5-planejamento-e-fechamento-da-sprint-5)
- - [Atendimento aos Critérios do Escritório de Projetos](#6-atendimento-aos-critérios-do-escritório-de-projetos)
- - [Uso das Políticas de Gestão de Configuração](#7-uso-das-políticas-de-gestão-de-configuração)
- - [Referências](#8-referências)
+ - [Consolidação Final da Gestão Evolutiva](#6-consolidação-final-da-gestão-evolutiva)
+ - [Atendimento aos Critérios do Escritório de Projetos](#7-atendimento-aos-critérios-do-escritório-de-projetos)
+ - [Uso das Políticas de Gestão de Configuração](#8-uso-das-políticas-de-gestão-de-configuração)
+ - [Referências](#9-referências)
 
 ---
 
@@ -441,19 +442,115 @@ As ações de melhoria da Sprint 5 foram definidas para responder diretamente ao
 | Quebrar atividades grandes antes da execução. | A lista separou validação, testes, documentação, deploy, vídeo, apresentação e post-mortem em itens próprios. | Parcialmente concluída | 15 issues ainda foram classificadas como G, exigindo atenção ao lead time. |
 | Considerar capacidade reduzida e priorizar tarefas críticas. | As tarefas críticas foram marcadas explicitamente, com foco em backend, testes, deploy, vídeo, integração e documentação final. | Concluída | 8 tasks críticas priorizadas no planejamento. |
 | Antecipar revisão documental, build e testes ao longo da sprint. | O planejamento colocou validações técnicas antes das tarefas dependentes de evidência final. | Concluída no planejamento | #257, #258, #261, #262, #263, #275, #276, #280 e #281 sustentam as evidências finais. |
-| Registrar evidências objetivas do board, dailies e fechamento da sprint. | A retrospectiva da Sprint 5 passou a registrar pontos fortes, fracos, métricas, ações de melhoria e post-mortem. | Concluída em documentação | Seções 5.4, 5.5 e 5.6 deste documento. |
-
-### 5.6 Análise Post-Mortem Final
-
-A análise final indica que o projeto evoluiu de uma fase inicial de descoberta e estruturação para uma entrega integrada, com backend, frontend, banco de dados, recomendação, testes, documentação e preparação de deploy. O principal ganho de gestão ao longo das sprints foi o aumento progressivo da granularidade das tarefas, da rastreabilidade dos critérios de aceite e da relação entre documentação e evidência técnica.
-
-Os problemas recorrentes estiveram ligados à concentração de validações perto do fechamento, dependências entre frentes técnicas e necessidade de revisar artefatos de sprints anteriores. Para projetos futuros, recomenda-se antecipar a validação de ambiente, manter testes e documentação evoluindo junto com o código e reservar a última sprint prioritariamente para estabilização, evidências e apresentação final, e não para descobertas técnicas de grande porte.
+| Registrar evidências objetivas do board, dailies e fechamento da sprint. | A retrospectiva da Sprint 5 passou a registrar pontos fortes, fracos, métricas, ações de melhoria e post-mortem. | Concluída em documentação | Seção 6 deste documento. |
 
 ---
 
-## 6. Atendimento aos Critérios do Escritório de Projetos
+## 6. Consolidação Final da Gestão Evolutiva
 
-### 6.1 README
+Esta seção concentra o template final do artefato de gestão evolutiva, contemplando retrospectiva da Sprint 5, evolução das métricas ao longo das sprints e análise post-mortem do projeto.
+
+### 6.1 Retrospectiva Final da Sprint 5
+
+Esta seção deve apresentar a análise final da Sprint 5, com pontos fortes, pontos fracos e ações de melhoria.
+
+#### 6.1.1 Pontos Fortes da Sprint 5
+
+| Ponto forte | Evidência | Impacto no projeto |
+|---|---|---|
+| A preencher | A preencher | A preencher |
+
+#### 6.1.2 Pontos Fracos da Sprint 5
+
+| Ponto fraco | Evidência | Impacto no projeto |
+|---|---|---|
+| A preencher | A preencher | A preencher |
+
+#### 6.1.3 Ações de Melhoria da Sprint 5
+
+| Ponto de melhoria | Ação proposta | Responsável | Aplicação futura |
+|---|---|---|---|
+| A preencher | A preencher | A preencher | A preencher |
+
+### 6.2 Análise de Evolução das Métricas
+
+Esta seção deve apresentar a evolução das métricas de gestão ao longo das sprints, com dados, gráficos e análise das tendências observadas.
+
+#### 6.2.1 Fonte dos Dados
+
+| Fonte | Dados utilizados | Observação |
+|---|---|---|
+| A preencher | A preencher | A preencher |
+
+#### 6.2.2 Evolução Quantitativa por Sprint
+
+| Métrica | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 | Sprint 5 | Tendência observada |
+|---|---:|---:|---:|---:|---:|---|
+| Velocity | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+| Lead time médio | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+| Cycle time médio | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+| Issues planejadas | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+| Issues concluídas | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+| Taxa de conclusão | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+
+#### 6.2.3 Gráficos Recomendados
+
+Inserir os gráficos consolidados das métricas após a coleta dos dados finais.
+
+| Gráfico | Link ou imagem | Análise |
+|---|---|---|
+| Evolução da velocity por sprint | A preencher | A preencher |
+| Lead time médio por sprint | A preencher | A preencher |
+| Issues planejadas x concluídas | A preencher | A preencher |
+| Distribuição de tarefas por tamanho | A preencher | A preencher |
+
+#### 6.2.4 Análise de Tendências
+
+| Tendência analisada | Evidência | Interpretação | Conclusão |
+|---|---|---|---|
+| A preencher | A preencher | A preencher | A preencher |
+
+#### 6.2.5 Conclusão das Métricas
+
+A preencher.
+
+### 6.3 Análise Post-Mortem Final
+
+Esta seção deve consolidar a análise post-mortem do projeto, considerando todo o ciclo de vida, os principais aprendizados e recomendações para projetos futuros.
+
+#### 6.3.1 Pontos Positivos do Projeto
+
+| Ponto positivo | Evidência ao longo do projeto | Lição aprendida |
+|---|---|---|
+| A preencher | A preencher | A preencher |
+
+#### 6.3.2 Oportunidades de Melhoria
+
+| Oportunidade de melhoria | Como apareceu no projeto | Recomendação para projetos futuros |
+|---|---|---|
+| A preencher | A preencher | A preencher |
+
+#### 6.3.3 Lições Aprendidas Consolidadas
+
+| Tema | Lição aprendida | Aplicação futura |
+|---|---|---|
+| A preencher | A preencher | A preencher |
+
+#### 6.3.4 Recomendações Finais
+
+| Recomendação | Justificativa | Aplicação futura |
+|---|---|---|
+| A preencher | A preencher | A preencher |
+
+#### 6.3.5 Conclusão do Post-Mortem
+
+A preencher.
+
+---
+
+## 7. Atendimento aos Critérios do Escritório de Projetos
+
+### 7.1 README
 
 | Nº | Critério | Evidência no repositório/documentação | Status | Ajuste necessário, se houver |
 |---|---|---|---|---|
@@ -472,7 +569,7 @@ Os problemas recorrentes estiveram ligados à concentração de validações per
 | 15 | Não apresenta nenhuma outra imagem além da logo do Inteli? | Não foram identificadas imagens no `README.md`. | Atendido | Caso o critério exija a logo do Inteli, adicionar apenas essa imagem. |
 | 16 | Instruções iniciais removidas? | Não foram encontradas instruções iniciais de template no `README.md`. | Atendido | Nenhum ajuste identificado. |
 
-### 6.2 Documentação
+### 7.2 Documentação
 
 | Nº | Critério | Evidência no repositório/documentação | Status | Ajuste necessário, se houver |
 |---|---|---|---|---|
@@ -489,7 +586,7 @@ Os problemas recorrentes estiveram ligados à concentração de validações per
 | 11 | Arquivos de instrução `.txt` ou não relevantes para o projeto foram removidos? | Não há arquivos `.txt` relevantes na raiz ou em `docs`; há arquivos gerados em ambientes/dependências. | Parcialmente atendido | A verificação de dependências geradas e pastas como `.venv311` e `node_modules` será revisada na Sprint 5 final. |
 | 12 | Links acessíveis sem solicitação de permissão? | Links de documentos locais são relativos; links externos dependem de acesso público. | Parcialmente atendido | A validação de links externos e remoção de links que exijam permissão será revisada na Sprint 5 final. |
 
-### 6.3 Aplicação
+### 7.3 Aplicação
 
 | Nº | Critério | Evidência no repositório/documentação | Status | Ajuste necessário, se houver |
 |---|---|---|---|---|
@@ -499,7 +596,7 @@ Os problemas recorrentes estiveram ligados à concentração de validações per
 
 ---
 
-## 7. Uso das Políticas de Gestão de Configuração
+## 8. Uso das Políticas de Gestão de Configuração
 
 As regras de gestão de configuração utilizadas pelo grupo foram descritas no documento [Gestao_Projeto_Configuracao.md](Gestao_Projeto_Configuracao.md). A tabela abaixo resume como essas políticas orientam o fluxo de versionamento, branches, commits, Pull Requests, issues e releases do projeto.
 
@@ -517,6 +614,6 @@ As regras de gestão de configuração utilizadas pelo grupo foram descritas no 
 
 ---
 
-## 8. Referências
+## 9. Referências
 
 As informações deste documento foram registradas a partir das observações realizadas durante as plannings, dailies e acompanhamento do Kanban da equipe ao longo das sprints. Também foram considerados os registros documentais já produzidos anteriormente pelo grupo.

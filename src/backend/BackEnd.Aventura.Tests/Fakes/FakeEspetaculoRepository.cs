@@ -10,6 +10,7 @@ namespace BackEnd.Aventura.Tests.Fakes
     {
         private readonly Dictionary<Guid, Espetaculo> _espetaculos = new();
         private readonly Dictionary<Guid, List<Espetaculo>> _espetaculosPorUsuario = new();
+        private readonly Dictionary<Guid, List<Espetaculo>> _espetaculosWishlistPorUsuario = new();
 
         public IReadOnlyList<Espetaculo> GetAll()
         {
@@ -45,6 +46,14 @@ namespace BackEnd.Aventura.Tests.Fakes
             return espetaculos.Take(limit).ToList();
         }
 
+        public IReadOnlyList<Espetaculo> GetByGenerosDaWishlist(Guid usuarioId, int limit)
+        {
+            if (!_espetaculosWishlistPorUsuario.TryGetValue(usuarioId, out var espetaculos))
+                return new List<Espetaculo>();
+
+            return espetaculos.Take(limit).ToList();
+        }
+
         public bool Exists(Guid id)
         {
             return _espetaculos.ContainsKey(id);
@@ -69,10 +78,22 @@ namespace BackEnd.Aventura.Tests.Fakes
             _espetaculosPorUsuario[usuarioId].Add(espetaculo);
         }
 
+        public void AddEspetaculoWishlistParaUsuario(Guid usuarioId, Espetaculo espetaculo)
+        {
+            if (espetaculo is null)
+                throw new ArgumentNullException(nameof(espetaculo));
+
+            if (!_espetaculosWishlistPorUsuario.ContainsKey(usuarioId))
+                _espetaculosWishlistPorUsuario[usuarioId] = new List<Espetaculo>();
+
+            _espetaculosWishlistPorUsuario[usuarioId].Add(espetaculo);
+        }
+
         public void Clear()
         {
             _espetaculos.Clear();
             _espetaculosPorUsuario.Clear();
+            _espetaculosWishlistPorUsuario.Clear();
         }
     }
 }

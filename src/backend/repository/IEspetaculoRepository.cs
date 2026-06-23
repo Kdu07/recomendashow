@@ -9,6 +9,7 @@ namespace BackEnd.Aventura.Repository
         IReadOnlyList<Espetaculo> GetByIds(IReadOnlyList<Guid> ids);
         IReadOnlyList<Espetaculo> GetByGenero(string genero);
         IReadOnlyList<Espetaculo> GetByGenerosFavoritos(Guid usuarioId, int limit);
+        IReadOnlyList<Espetaculo> GetByGenerosDaWishlist(Guid usuarioId, int limit);
         bool Exists(Guid id);
     }
 }

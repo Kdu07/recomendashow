@@ -8,6 +8,7 @@ namespace BackEnd.Aventura.Tests.Fakes
     public class FakeWishlistRepository : IWishlistRepository
     {
         private readonly List<(Guid UsuarioId, Guid EspetaculoId)> _items = new();
+        private readonly Dictionary<Guid, List<string>> _generosPorUsuario = new();
 
         public bool AddItem(Guid usuarioId, Guid espetaculoId)
         {
@@ -45,6 +46,22 @@ namespace BackEnd.Aventura.Tests.Fakes
                 .ToList();
         }
 
-        public void Clear() => _items.Clear();
+        public IReadOnlyList<string> GetGenerosDaWishlist(Guid usuarioId)
+        {
+            return _generosPorUsuario.TryGetValue(usuarioId, out var generos)
+                ? generos.ToList()
+                : new List<string>();
+        }
+
+        public void SetGenerosDaWishlist(Guid usuarioId, params string[] generos)
+        {
+            _generosPorUsuario[usuarioId] = generos.ToList();
+        }
+
+        public void Clear()
+        {
+            _items.Clear();
+            _generosPorUsuario.Clear();
+        }
     }
 }

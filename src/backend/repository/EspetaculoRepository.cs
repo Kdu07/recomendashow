@@ -81,6 +81,38 @@ LIMIT @Limit";
                 new NpgsqlParameter("@Limit", limit));
         }
 
+        public IReadOnlyList<Espetaculo> GetByGenerosDaWishlist(Guid usuarioId, int limit)
+        {
+            EntityGuards.NotEmpty(usuarioId, nameof(usuarioId));
+
+            var sql = $@"
+{EspetaculoQueries.SelectColumns}
+{EspetaculoQueries.FromTable}
+WHERE EXISTS (
+    SELECT 1
+    FROM espetaculo_genero eg
+    JOIN espetaculo_genero eg_wish ON eg_wish.genero_id = eg.genero_id
+    JOIN wishlist_curtidas w ON w.espetaculo_id = eg_wish.espetaculo_id
+    WHERE eg.espetaculo_id = e.id
+      AND w.usuario_id = @UsuarioId
+      AND w.tipo = 'wishlist'
+)
+AND NOT EXISTS (
+    SELECT 1
+    FROM wishlist_curtidas w2
+    WHERE w2.espetaculo_id = e.id
+      AND w2.usuario_id = @UsuarioId
+      AND w2.tipo = 'wishlist'
+)
+ORDER BY e.data_inicio
+LIMIT @Limit";
+
+            return Query(
+                sql,
+                new NpgsqlParameter("@UsuarioId", usuarioId),
+                new NpgsqlParameter("@Limit", limit));
+        }
+
         public bool Exists(Guid id)
         {
             EntityGuards.NotEmpty(id, nameof(id));

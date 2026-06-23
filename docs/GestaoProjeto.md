@@ -25,7 +25,7 @@ Este documento registra a gestão do projeto ao longo das sprints, reunindo retr
  - [Sprint 2](#2-sprint-2)
  - [Sprint 3](#3-sprint-3)
  - [Sprint 4 - Gestão Evolutiva](#4-sprint-4---gestão-evolutiva)
- - [Planejamento e Fechamento da Sprint 5](#5-planejamento-e-fechamento-da-sprint-5)
+ - [Planejamento da Sprint 5](#5-planejamento-da-sprint-5)
  - [Consolidação Final da Gestão Evolutiva](#6-consolidação-final-da-gestão-evolutiva)
  - [Atendimento aos Critérios do Escritório de Projetos](#7-atendimento-aos-critérios-do-escritório-de-projetos)
  - [Uso das Políticas de Gestão de Configuração](#8-uso-das-políticas-de-gestão-de-configuração)
@@ -290,7 +290,11 @@ Para a Sprint 4, o foco principal será melhorar a organização e divisão das 
 
 A Sprint 4 teve como foco consolidar entregas, revisar artefatos já produzidos, melhorar a organização documental e preparar o projeto para a etapa final de refinamento. A análise da sprint considera observações feitas em plannings, dailies, acompanhamento do Kanban e revisão dos documentos versionados no repositório.
 
-### 4.2 Pontos Fortes
+### 4.2 Retrospectiva da Sprint 4
+
+A retrospectiva da Sprint 4 consolida os pontos fortes, pontos fracos, ações de melhoria e evolução observada em relação à sprint anterior.
+
+#### 4.2.1 Pontos Fortes
 
 | Ponto forte | Evidência concreta | Impacto no projeto |
 |---|---|---|
@@ -300,7 +304,7 @@ A Sprint 4 teve como foco consolidar entregas, revisar artefatos já produzidos,
 | Uso do Kanban para acompanhamento | O andamento das tasks foi acompanhado no Kanban; a evidência exportada ou link público do board será revisado na Sprint 5 final. | Facilitou a identificação de pendências, tarefas em andamento e itens que precisavam de revisão. |
 | Preparação para o refinamento final | A seção de planejamento da Sprint 5 foi estruturada com métrica t-shirt e campos para priorização, dependências e critérios de aceite. | Criou uma base objetiva para transformar os problemas da Sprint 4 em ações planejadas na Sprint 5. |
 
-### 4.3 Pontos Fracos
+#### 4.2.2 Pontos Fracos
 
 | Ponto fraco | Evidência concreta | Consequência |
 |---|---|---|
@@ -310,7 +314,7 @@ A Sprint 4 teve como foco consolidar entregas, revisar artefatos já produzidos,
 | Redução de tempo útil por feriado | O calendário da sprint teve menos dias úteis; o registro da data do feriado considerado será revisado na Sprint 5 final. | Diminuiu a janela disponível para desenvolvimento, revisão e validação das entregas. |
 | Validação final concentrada | Correções finais de documentação e links foram feitas próximas ao fechamento da sprint. | Aumentou o risco de retrabalho e reduziu o tempo para revisão cruzada pela equipe. |
 
-### 4.4 Ações de Melhoria para a Sprint 5
+#### 4.2.3 Ações de Melhoria para a Sprint 5
 
 | Problema identificado | Ação de melhoria | Indicador de sucesso | Issue relacionada | Status esperado |
 |---|---|---|---|---|
@@ -321,7 +325,7 @@ A Sprint 4 teve como foco consolidar entregas, revisar artefatos já produzidos,
 | Validação final concentrada | Antecipar revisão documental, build e testes ao longo da sprint. | 100% dos merges para a branch principal com build/testes executados antes do merge, quando aplicável. | #257, #258, #261, #262, #263, #275, #276, #280 e #281. | Planejada |
 | Evidências incompletas de acompanhamento | Registrar evidências objetivas do board, dailies e fechamento da sprint. | 100% dos pontos fortes e fracos da Sprint 5 acompanhados por evidência, justificativa ou pendência explícita. | #264, #265, #266, #267, #271, #272, #278 e #282. | Planejada |
 
-### 4.5 Status das Ações da Sprint Anterior
+#### 4.2.4 Status das Ações da Sprint Anterior
 
 | Ação planejada na sprint anterior | Resultado na Sprint 4 | Status | Evidência ou justificativa |
 |---|---|---|---|
@@ -331,13 +335,13 @@ A Sprint 4 teve como foco consolidar entregas, revisar artefatos já produzidos,
 | Refinamento técnico prévio | Parte das revisões técnicas e documentais ainda ocorreu perto do fechamento. | Parcialmente concluída | A Sprint 5 deve antecipar revisão documental, build e testes antes do fechamento. |
 | Mapeamento de dependências | As dependências foram discutidas, mas ainda houve impacto de tasks demoradas e ajustes acumulados. | Parcialmente concluída | A Sprint 5 deve registrar dependências diretamente nas tasks planejadas. |
 
-### 4.6 Síntese da Evolução da Sprint
+#### 4.2.5 Síntese da Evolução da Sprint
 
 Em relação à Sprint 3, a Sprint 4 evoluiu na comunicação da equipe, na revisão dos documentos e na preparação do refinamento final. Porém, ainda persistiram problemas de granularidade, demora na conclusão de tasks, concentração de validações no fim da sprint e falta de evidências formais para alguns acompanhamentos. O planejamento da Sprint 5 responde a esses pontos ao priorizar refinamento final, uso da métrica t-shirt, registro de dependências, indicadores numéricos e validações antes do fechamento da entrega.
 
 ---
 
-## 5. Planejamento e Fechamento da Sprint 5
+## 5. Planejamento da Sprint 5
 
 ### 5.1 Objetivo da Sprint 5
 
@@ -355,7 +359,7 @@ O detalhamento das tasks da Sprint 5 foi definido no board da equipe. A prioriza
 
 ### 5.3 Lista de Tasks da Sprint 5
 
-A Sprint 5 foi voltada ao refinamento final do projeto. As tasks abaixo foram organizadas em uma sequência lógica, priorizando primeiro validações críticas de backend, integração, deploy e documentação principal; depois testes, refinamentos finais, conformidade com critérios do Escritório de Projetos e fechamento reflexivo do projeto. Todas as tasks listadas já estão presentes no GitLab e são rastreadas pelos IDs de issue apresentados na tabela.
+A Sprint 5 será voltada ao refinamento final do projeto. As tasks abaixo foram organizadas em uma sequência lógica, priorizando primeiro validações críticas de backend, integração, deploy e documentação principal; depois testes, refinamentos finais, conformidade com critérios do Escritório de Projetos e consolidação reflexiva do projeto. Todas as tasks listadas já estão presentes no GitLab e são rastreadas pelos IDs de issue apresentados na tabela.
 
 | Ordem | Issue relacionada | Task | Descrição | Prioridade | Tamanho t-shirt | Estimativa | Dependências | Critério de aceite |
 |---|---|---|---|---|---|---|---|---|
@@ -390,7 +394,7 @@ A Sprint 5 foi voltada ao refinamento final do projeto. As tasks abaixo foram or
 
 | Indicador | Valor planejado | Interpretação |
 |---|---:|---|
-| Total de tasks planejadas | 26 | Escopo final definido para fechamento do projeto. |
+| Total de tasks planejadas | 26 | Escopo planejado para a etapa final do projeto. |
 | Tasks críticas | 8 | Itens com impacto direto em execução, deploy, documentação final e demonstração. |
 | Tasks altas | 17 | Itens importantes para testes, conformidade, refinamento e documentação. |
 | Tasks médias | 1 | Item de consolidação de usabilidade, dependente de evidências já coletadas. |
@@ -398,51 +402,37 @@ A Sprint 5 foi voltada ao refinamento final do projeto. As tasks abaixo foram or
 | Tasks M | 10 | Atividades de documentação, revisão, consolidação e checklist. |
 | Tasks G | 15 | Atividades com maior esforço por envolverem testes, deploy, integração, frontend, vídeo, apresentação ou revisão ampla. |
 
-### 5.5 Retrospectiva da Sprint 5
+### 5.5 Análise do Planejamento da Sprint 5
 
-#### 5.5.1 Pontos Fortes
+Esta seção analisa o planejamento da Sprint 5 antes de sua execução, destacando pontos fortes, riscos identificados e ações preventivas para apoiar o acompanhamento da sprint.
 
-| Ponto forte | Evidência observada | Impacto no projeto |
+#### 5.5.1 Pontos Fortes do Planejamento
+
+| Ponto forte | Evidência no planejamento | Impacto esperado |
 |---|---|---|
-| Planejamento final mais objetivo | A sprint foi aberta com 26 tasks explícitas, cada uma com prioridade, dependência e critério de aceite. | Aumentou a rastreabilidade entre planejamento, execução e entrega final. |
-| Priorização das atividades críticas | O board destacou tarefas críticas de backend, deploy, integração, vídeo e documentação principal. | Reduziu o risco de finalizar documentos sem validar o funcionamento real da solução. |
-| Integração entre gestão e documentação técnica | Tasks de `GestaoProjeto.md`, `Projeto.md`, README, guia de padrões e manual de deploy foram planejadas em conjunto. | Deixou a entrega mais coerente entre código, operação, testes e narrativa do projeto. |
-| Critérios de aceite claros | Todas as tasks possuem definição objetiva de conclusão. | Facilitou revisão, fechamento de pendências e validação cruzada pela equipe. |
+| Planejamento final mais objetivo | A sprint foi planejada com 26 tasks explícitas, cada uma com prioridade, dependência e critério de aceite. | Aumentar a rastreabilidade entre planejamento, execução e entrega final. |
+| Priorização das atividades críticas | O board destaca tarefas críticas de backend, deploy, integração, vídeo e documentação principal. | Reduzir o risco de finalizar documentos sem validar o funcionamento real da solução. |
+| Integração entre gestão e documentação técnica | Tasks de `GestaoProjeto.md`, `Projeto.md`, README, guia de padrões e manual de deploy foram planejadas em conjunto. | Manter coerência entre código, operação, testes e narrativa do projeto. |
+| Critérios de aceite claros | Todas as tasks possuem definição objetiva de conclusão. | Facilitar revisão, acompanhamento de pendências e validação cruzada pela equipe. |
 
-#### 5.5.2 Pontos Fracos
+#### 5.5.2 Riscos e Pontos de Atenção do Planejamento
 
-| Ponto fraco | Evidência observada | Consequência |
+| Risco ou ponto de atenção | Evidência no planejamento | Possível impacto |
 |---|---|---|
-| Alto volume de tasks grandes | 15 das 26 tasks foram classificadas como G. | Aumentou o risco de concentração de entregas complexas no fechamento da sprint. |
-| Forte dependência de ambiente funcional | Várias tasks dependiam de backend, frontend, banco, Docker e ambiente final em execução. | Problemas de infraestrutura poderiam bloquear testes, vídeo, deploy e validações finais. |
-| Muitas entregas documentais dependentes de evidências | Projeto, gestão, README, guia, manual de deploy e apresentação dependiam de resultados técnicos já validados. | Qualquer atraso nas validações técnicas poderia gerar retrabalho documental. |
-| Validações finais concentradas na mesma sprint | Testes unitários, funcionais, integração, frontend, RNFs e usabilidade foram planejados para a sprint final. | A equipe precisou controlar bem prioridades para evitar execução superficial ou documentação incompleta. |
+| Alto volume de tasks grandes | 15 das 26 tasks foram classificadas como G. | Pode concentrar entregas complexas no final da sprint. |
+| Forte dependência de ambiente funcional | Várias tasks dependem de backend, frontend, banco, Docker e ambiente final em execução. | Problemas de infraestrutura podem bloquear testes, vídeo, deploy e validações finais. |
+| Entregas documentais dependentes de evidências | Projeto, gestão, README, guia, manual de deploy e apresentação dependem de resultados técnicos validados. | Atrasos técnicos podem gerar retrabalho documental. |
+| Validações finais concentradas na sprint | Testes unitários, funcionais, integração, frontend, RNFs e usabilidade estão previstos para a sprint final. | Pode haver execução superficial se a equipe não controlar prioridades e dependências. |
 
-#### 5.5.3 Ações de Melhoria e Aprendizados
+#### 5.5.3 Ações Preventivas para a Execução
 
-As ações de melhoria da Sprint 5 foram definidas para responder diretamente aos problemas observados na Sprint 4 e aos riscos do fechamento final. A tabela abaixo consolida o plano de ação adotado pela equipe, incluindo causa, frente responsável, prazo de execução dentro da sprint e indicador de sucesso.
-
-| Problema identificado | Issues relacionadas | Causa provável | Ação de melhoria | Frente responsável | Prazo na sprint | Indicador de sucesso |
-|---|---|---|---|---|---|---|
-| Concentração de tarefas grandes no encerramento | #259, #262, #263, #271, #272, #273, #274, #275, #276, #277 e #281 | Parte das validações técnicas e documentais dependia da versão final integrada. | Quebrar as tasks grandes em checkpoints menores: validação de ambiente, execução, registro de evidência e revisão documental. | Gestão do projeto e líderes técnicos | Início e meio da Sprint 5 | Tasks G acompanhadas por subtarefas ou checkpoints claros no board. |
-| Dependências técnicas fortes entre backend, frontend, banco e deploy | #257, #258, #263, #269, #275 e #276 | A solução final depende de múltiplos serviços funcionando em conjunto. | Registrar dependências no board e priorizar primeiro backend, banco, variáveis de ambiente, Swagger e Docker. | Backend, infraestrutura e integração | Primeiros dias da Sprint 5 | Validações críticas de ambiente concluídas antes de vídeo, testes finais e documentação final. |
-| Evidências espalhadas entre documentos e artefatos | #260, #264, #266, #267, #273, #277, #278 e #282 | Testes, vídeos, prints, links e resultados estavam distribuídos entre diferentes frentes. | Centralizar evidências principais no `Projeto.md` e referenciar documentos específicos, como README, guia de padrões e manual de deploy. | Documentação e QA | Durante toda a Sprint 5 | Evidências localizáveis por seção e sem dependência de explicação oral. |
-| Validações finais acumuladas | #261, #262, #263, #264, #280 e #281 | Testes unitários, funcionais, integração, frontend, RNFs e usabilidade foram planejados para o fechamento. | Definir ordem de execução dos testes e registrar resultado logo após cada rodada, evitando documentação retroativa. | QA, backend e frontend | Meio e fim da Sprint 5 | Resultados de testes registrados com comando, escopo, resultado e limitação. |
-| Risco de inconsistência entre código, documentação e apresentação | #268, #272, #273, #277, #278 e #279 | README, `Projeto.md`, guia de padrões, deploy e apresentação dependem da mesma versão final da solução. | Fazer revisão cruzada final entre documentos, repositório e apresentação antes do fechamento. | Documentação, gestão e apresentação | Fim da Sprint 5 | Documentos principais coerentes entre si e sem placeholders críticos. |
-| Feedbacks anteriores sem rastreabilidade explícita | #264, #267, #274 e #278 | Melhorias incorporadas podiam ficar implícitas na entrega final. | Criar ou atualizar tabela de feedbacks, indicando o que foi incorporado, o que ficou pendente e a justificativa. | Gestão do projeto e documentação | Meio da Sprint 5 | Feedbacks anteriores rastreados com status, evidência e justificativa. |
-| Risco de deploy ou execução final falhar perto da entrega | #257, #258, #269, #271, #275 e #276 | Ambiente final exige configuração correta de Docker, variáveis e serviços. | Criar manual de deploy para o parceiro e validar o passo a passo com a configuração final disponível. | Infraestrutura e backend | Fim da Sprint 5 | Manual sem credenciais reais, com pré-requisitos, comandos, validação e troubleshooting. |
-| Necessidade de aprendizado para projetos futuros | #265, #266 e #282 | As retrospectivas anteriores apontaram padrões recorrentes de atraso, retrabalho e dependência. | Elaborar análise post-mortem final com aprendizados técnicos, de gestão e recomendações práticas. | Gestão do projeto | Fim da Sprint 5 | Post-mortem incluído no `GestaoProjeto.md` com problemas recorrentes e ações preventivas. |
-
-#### 5.5.4 Status das Ações Planejadas para a Sprint 5
-
-| Ação planejada a partir da Sprint 4 | Como foi tratada na Sprint 5 | Status | Evidência ou resultado esperado |
+| Risco identificado | Ação preventiva | Frente responsável | Indicador de acompanhamento |
 |---|---|---|---|
-| Priorizar a Sprint 5 como refinamento final dos artefatos principais. | Foram planejadas tasks específicas para `Projeto.md`, README, `GestaoProjeto.md`, guia de padrões, manual de deploy e apresentação final. | Concluída no planejamento | #265, #268, #269, #272, #273, #277, #279 e #282. |
-| Reduzir escopo de cada task e acompanhar avanço diariamente no Kanban. | As 26 tasks foram descritas com dependência e critério de aceite, permitindo acompanhamento mais objetivo. | Parcialmente concluída | Ainda há tasks G que exigem checkpoints internos para controle de avanço. |
-| Quebrar atividades grandes antes da execução. | A lista separou validação, testes, documentação, deploy, vídeo, apresentação e post-mortem em itens próprios. | Parcialmente concluída | 15 issues ainda foram classificadas como G, exigindo atenção ao lead time. |
-| Considerar capacidade reduzida e priorizar tarefas críticas. | As tarefas críticas foram marcadas explicitamente, com foco em backend, testes, deploy, vídeo, integração e documentação final. | Concluída | 8 tasks críticas priorizadas no planejamento. |
-| Antecipar revisão documental, build e testes ao longo da sprint. | O planejamento colocou validações técnicas antes das tarefas dependentes de evidência final. | Concluída no planejamento | #257, #258, #261, #262, #263, #275, #276, #280 e #281 sustentam as evidências finais. |
-| Registrar evidências objetivas do board, dailies e fechamento da sprint. | A retrospectiva da Sprint 5 passou a registrar pontos fortes, fracos, métricas, ações de melhoria e post-mortem. | Concluída em documentação | Seção 6 deste documento. |
+| Concentração de tarefas grandes | Quebrar tasks G em checkpoints menores de validação, execução, evidência e revisão. | Gestão do projeto e líderes técnicos | Tasks G acompanhadas por subtarefas ou checkpoints claros no board. |
+| Dependências técnicas fortes | Registrar dependências no board e priorizar backend, banco, variáveis de ambiente, Swagger e Docker. | Backend, infraestrutura e integração | Validações críticas de ambiente concluídas antes de vídeo, testes finais e documentação final. |
+| Evidências espalhadas | Centralizar evidências principais no `Projeto.md` e referenciar documentos específicos quando necessário. | Documentação e QA | Evidências localizáveis por seção e sem dependência de explicação oral. |
+| Validações acumuladas | Definir ordem de execução dos testes e registrar resultado logo após cada rodada. | QA, backend e frontend | Resultados de testes registrados com comando, escopo, resultado e limitação. |
+| Inconsistência entre código, documentação e apresentação | Fazer revisão cruzada final entre documentos, repositório e apresentação. | Documentação, gestão e apresentação | Documentos principais coerentes entre si e sem placeholders críticos. |
 
 ---
 

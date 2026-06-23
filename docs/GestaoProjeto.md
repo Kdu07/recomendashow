@@ -464,15 +464,151 @@ Esta seção deve apresentar a análise final da Sprint 5, com pontos fortes, po
 
 ### 6.2 Análise de Evolução das Métricas
 
-Esta seção deve apresentar a evolução das métricas de gestão ao longo das sprints, com dados, gráficos e análise das tendências observadas.
+Esta seção apresenta a evolução das métricas de gestão acompanhadas ao longo das sprints do projeto. A análise considera os gráficos enviados pela orientadora durante o acompanhamento das sprints, os dados registrados no Kanban e nas issues do GitLab, além dos gráficos consolidados finais gerados a partir dos dados coletados.
+
+O objetivo desta análise é compreender a evolução do desempenho da equipe ao longo do projeto, avaliando capacidade de entrega, previsibilidade, aderência ao planejamento, distribuição de trabalho e maturidade no uso das práticas de gestão.
 
 #### 6.2.1 Fonte dos Dados
 
 | Fonte | Dados utilizados | Observação |
 |---|---|---|
-| A preencher | A preencher | A preencher |
+| Gráficos de acompanhamento por sprint | Evolução ideal x real, issues concluídas/em aberto, atividade temporal, conformidade de commits e distribuição de atividade por integrante. | Imagens armazenadas em `assets/graficos` e referenciadas na seção 6.2.2. |
+| Kanban e issues do GitLab | Issues planejadas, issues concluídas, status das tarefas, responsáveis e movimentação ao longo das sprints. | Base para consolidar velocity, taxa de conclusão e evolução do fluxo de trabalho. |
+| Histórico de commits e Merge Requests | Conformidade dos commits, relação com issues e distribuição de contribuições por integrante. | Apoia a análise de padronização técnica e colaboração da equipe. |
+| Retrospectivas das sprints | Pontos fortes, pontos fracos, riscos, ações de melhoria e aprendizados registrados ao longo do projeto. | Usadas para interpretar os dados quantitativos e explicar variações entre sprints. |
+| Planejamento da Sprint 5 | Total de tasks planejadas, prioridade, tamanho t-shirt, dependências e critérios de aceite. | Usado como referência planejada para a sprint final, antes da consolidação do fechamento. |
 
-#### 6.2.2 Evolução Quantitativa por Sprint
+#### 6.2.2 Análise Gráfica por Sprint
+
+##### Sprint 1
+
+A Sprint 1 representa o primeiro ciclo de organização da equipe, uso do Kanban, abertura de issues e aplicação dos padrões de commits. Os gráficos abaixo ajudam a observar a diferença entre o comportamento planejado e o comportamento real da equipe nesse início de projeto.
+
+<div align="center">
+<sub>Gráfico 01 - Evolução ideal e real da Sprint 1</sub><br>
+  <img src="../assets/graficos/metrica1.png" width="100%" alt="Evolução ideal e real da Sprint 1"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+
+O primeiro gráfico compara a linha ideal de evolução da sprint com a linha real registrada ao longo dos dias. Observa-se que a curva real não acompanhou a redução gradual esperada, apresentando crescimento significativo entre os dias 27/04 e 29/04. Esse comportamento indica concentração de movimentações ou ajustes no meio da sprint, sugerindo que parte do trabalho foi reorganizada ou registrada depois do início do ciclo. Como aprendizado, a equipe identificou a necessidade de manter o board atualizado diariamente para melhorar a previsibilidade e evitar leituras distorcidas do progresso.
+
+<div align="center">
+<sub>Gráfico 02 - Conformidade dos commits da Sprint 1</sub><br>
+  <img src="../assets/graficos/metrica1.1.png" width="100%" alt="Conformidade dos commits da Sprint 1"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+
+O segundo gráfico apresenta a conformidade dos commits com o padrão definido pela equipe, considerando uso semântico e vínculo com issue. A predominância de commits não conformes mostra que, na Sprint 1, o padrão ainda não estava consolidado entre os integrantes. Esse resultado reforçou a necessidade de padronizar mensagens, relacionar commits às issues e orientar a equipe sobre o uso consistente de Conventional Commits.
+
+<div align="center">
+<sub>Gráfico 03 - Distribuição de atividade por integrante na Sprint 1</sub><br>
+  <img src="../assets/graficos/metrica1.2.png" width="100%" alt="Distribuição de atividade por integrante na Sprint 1"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+
+O terceiro gráfico mostra a distribuição de atividades por integrante ao longo dos dias da sprint. A maior concentração ocorre entre 28/04 e 30/04, indicando aumento de atividade próximo ao fechamento do ciclo. Apesar de haver participação de diferentes membros, a concentração temporal sugere que a equipe ainda precisava melhorar a distribuição do esforço ao longo da sprint, evitando acúmulo de trabalho no final.
+
+##### Sprint 2
+
+A Sprint 2 permite observar a evolução da equipe em relação ao primeiro ciclo, principalmente na atualização do board, no fechamento de tarefas e na adoção dos padrões de commit. Os gráficos abaixo foram organizados em pares quando representam visões complementares da mesma dimensão de gestão.
+
+<div align="center">
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <sub>Gráfico 04 - Evolução ideal e real da Sprint 2</sub><br>
+      <img src="../assets/graficos/metrica2.png" width="100%" alt="Evolução ideal e real da Sprint 2"><br>
+      <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+    </td>
+    <td width="50%" align="center">
+      <sub>Gráfico 05 - Issues concluídas e em aberto na Sprint 2</sub><br>
+      <img src="../assets/graficos/metrica2.1.png" width="100%" alt="Issues concluídas e em aberto na Sprint 2"><br>
+      <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+    </td>
+  </tr>
+</table>
+</div>
+
+Os gráficos 04 e 05 mostram visões complementares do fluxo da Sprint 2. No gráfico de evolução ideal e real, a linha real se mantém acima da curva ideal em boa parte da sprint, indicando que o volume de trabalho em aberto permaneceu elevado por mais tempo do que o esperado. Já o gráfico de issues concluídas e em aberto mostra avanço expressivo no fechamento das tarefas nos dias finais, especialmente entre 14/05 e 16/05. Essa leitura indica que a equipe conseguiu concluir uma parte relevante do escopo, mas ainda concentrou fechamentos perto do encerramento da sprint, o que impacta a previsibilidade.
+
+<div align="center">
+<sub>Gráfico 06 - Evolução temporal de atividade da Sprint 2</sub><br>
+  <img src="../assets/graficos/metrica2.2.png" width="100%" alt="Evolução temporal de atividade da Sprint 2"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+
+O gráfico 06 reforça a leitura de acúmulo de atividade ao longo da sprint. A métrica cresce nos primeiros dias, permanece em patamar elevado durante boa parte do ciclo e cai apenas próximo ao final. Esse comportamento sugere que a equipe manteve um volume significativo de trabalho em andamento antes de reduzir pendências no fechamento, evidenciando a necessidade de acompanhar gargalos com mais frequência durante a execução.
+
+<div align="center">
+<table>
+  <tr>
+    <td width="45%" align="center">
+      <sub>Gráfico 07 - Conformidade dos commits da Sprint 2</sub><br>
+      <img src="../assets/graficos/metrica2.3.png" width="100%" alt="Conformidade dos commits da Sprint 2"><br>
+      <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+    </td>
+    <td width="55%" align="center">
+      <sub>Gráfico 08 - Distribuição de atividade por integrante na Sprint 2</sub><br>
+      <img src="../assets/graficos/metrica2.4.png" width="100%" alt="Distribuição de atividade por integrante na Sprint 2"><br>
+      <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+    </td>
+  </tr>
+</table>
+</div>
+
+Os gráficos 07 e 08 mostram evolução em organização técnica e participação da equipe. Em comparação com a Sprint 1, a proporção de commits conformes aumentou, indicando melhor adesão ao padrão semântico e ao vínculo com issues. A distribuição de atividade também mostra maior participação de diferentes integrantes, com maior concentração nos dias 13/05 e 15/05. Assim, a Sprint 2 evidencia avanço na colaboração e na padronização, mas ainda apresenta concentração temporal de entregas.
+
+##### Sprint 3
+
+A Sprint 3 evidencia uma nova etapa de amadurecimento do fluxo da equipe. A primeira semana da sprint teve impacto de feriado, o que reduziu a janela útil de trabalho e ajuda a explicar a menor movimentação inicial. Os gráficos mostram melhora no fechamento de tarefas ao final do ciclo e maior volume de atividade registrada depois desse período, mas também indicam concentração relevante de trabalho nos últimos dias da sprint.
+
+<div align="center">
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <sub>Gráfico 09 - Evolução ideal e real da Sprint 3</sub><br>
+      <img src="../assets/graficos/metrica3.png" width="100%" alt="Evolução ideal e real da Sprint 3"><br>
+      <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+    </td>
+    <td width="50%" align="center">
+      <sub>Gráfico 10 - Issues concluídas e em aberto na Sprint 3</sub><br>
+      <img src="../assets/graficos/metrica3.1.png" width="100%" alt="Issues concluídas e em aberto na Sprint 3"><br>
+      <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+    </td>
+  </tr>
+</table>
+</div>
+
+Os gráficos 09 e 10 mostram que a Sprint 3 teve crescimento do trabalho real entre 25/05 e 28/05, seguido de queda acentuada no fim do ciclo. A baixa movimentação no início deve ser lida considerando o feriado da primeira semana, que reduziu o tempo disponível para execução. No gráfico de issues concluídas e em aberto, observa-se aumento expressivo das tarefas concluídas entre 28/05 e 30/05, ao mesmo tempo em que as tarefas em aberto caem. Isso indica que a equipe conseguiu avançar no fechamento do escopo, mas concentrou parte importante das conclusões no encerramento da sprint.
+
+<div align="center">
+<sub>Gráfico 11 - Evolução temporal de atividade da Sprint 3</sub><br>
+  <img src="../assets/graficos/metrica3.2.png" width="100%" alt="Evolução temporal de atividade da Sprint 3"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+
+O gráfico 11 reforça a tendência de aumento progressivo da atividade até 28/05, quando ocorre o maior pico da sprint. Parte desse deslocamento de atividade para a segunda metade do ciclo está associado à redução de dias úteis na primeira semana. A queda nos dias seguintes sugere fechamento ou estabilização das pendências, mas o pico próximo ao fim evidencia que o esforço ainda ficou concentrado em uma janela curta. Esse comportamento confirma a necessidade de melhorar a distribuição das tarefas ao longo da sprint e antecipar validações quando houver feriados ou redução de capacidade.
+
+<div align="center">
+<table>
+  <tr>
+    <td width="45%" align="center">
+      <sub>Gráfico 12 - Conformidade dos commits da Sprint 3</sub><br>
+      <img src="../assets/graficos/metrica3.3.png" width="100%" alt="Conformidade dos commits da Sprint 3"><br>
+      <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+    </td>
+    <td width="55%" align="center">
+      <sub>Gráfico 13 - Distribuição de atividade por integrante na Sprint 3</sub><br>
+      <img src="../assets/graficos/metrica3.4.png" width="100%" alt="Distribuição de atividade por integrante na Sprint 3"><br>
+      <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+    </td>
+  </tr>
+</table>
+</div>
+
+Os gráficos 12 e 13 mostram que a conformidade dos commits continuou majoritariamente positiva na Sprint 3, com predominância de commits conformes em relação aos não conformes. A distribuição de atividade por integrante mostra participação de vários membros, mas com concentração elevada em alguns dias, especialmente 28/05 e 29/05. Considerando o feriado da primeira semana, essa concentração é parcialmente explicada pela menor capacidade inicial, mas ainda aponta para o desafio de distribuir melhor o esforço no decorrer do ciclo.
+
+#### 6.2.3 Evolução Quantitativa por Sprint
 
 | Métrica | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 | Sprint 5 | Tendência observada |
 |---|---:|---:|---:|---:|---:|---|
@@ -482,17 +618,6 @@ Esta seção deve apresentar a evolução das métricas de gestão ao longo das 
 | Issues planejadas | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
 | Issues concluídas | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
 | Taxa de conclusão | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
-
-#### 6.2.3 Gráficos Recomendados
-
-Inserir os gráficos consolidados das métricas após a coleta dos dados finais.
-
-| Gráfico | Link ou imagem | Análise |
-|---|---|---|
-| Evolução da velocity por sprint | A preencher | A preencher |
-| Lead time médio por sprint | A preencher | A preencher |
-| Issues planejadas x concluídas | A preencher | A preencher |
-| Distribuição de tarefas por tamanho | A preencher | A preencher |
 
 #### 6.2.4 Análise de Tendências
 

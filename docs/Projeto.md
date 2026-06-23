@@ -70,6 +70,7 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 - [5.2 Jornada do Usuário](#52-jornada-do-usuário)
   - [5.2.1 Jornada de Ana Luiza](#521-jornada-de-ana-luiza--cliente-em-formação)
   - [5.2.2 Jornada de Marcos Abrantes](#522-jornada-de-marcos-abrantes--cliente-ativo)
+  - [5.2.3 Matriz de oportunidades por etapa da jornada](#523-matriz-de-oportunidades-por-etapa-da-jornada)
 
 </details>
 
@@ -462,32 +463,42 @@ A matriz **"É / Não É / Faz / Não Faz"** delimita o papel do recomendador e 
 
 ## 5. Personas e Jornada do Usuário
  
----
  
 ### 5.1 Personas
+
+| Persona | Perfil representado | Contexto de uso | Principais dores | Funcionalidades orientadas pela persona |
+|---|---|---|---|---|
+| Ana Luiza | Cliente em formação, influenciada por redes sociais e por decisões em grupo | Descoberta cultural, saída com amigos, validação familiar e primeira compra | Falta de repertório, baixa paciência para navegação textual, medo de escolher algo pouco atraente ou inadequado ao grupo | Onboarding de interesses, home visual, categorias, recomendações personalizadas, wishlist, detalhes do espetáculo e link de compra |
+| Marcos Abrantes | Cliente ativo em decisão e consumo, com rotina intensa e maior intenção de compra | Consumo recorrente, busca objetiva, visita ocasional a outra cidade e uso contínuo do catálogo | Fadiga de decisão, dispersão de informações, incerteza sobre qualidade da recomendação, necessidade de preço/local/data claros | Busca, filtros por gênero/localidade, recomendação por histórico/preferências, informações de teatro, detalhes do espetáculo, métricas e recomendações persistidas |
  
 ### 5.1.1 Ana Luiza — Cliente em Formação (Descoberta)
  
 Ana Luiza representa um perfil emergente de consumidores culturais em formação: jovens que ainda não possuem o hábito consolidado de frequentar teatro, mas demonstram interesse quando expostos a estímulos visuais, sociais e tendências digitais. Sua relação com o lazer é fortemente influenciada por redes sociais e pelo grupo de amigos, tornando a descoberta de experiências mais espontânea do que planejada.
  
 Apesar de não ser uma consumidora ativa do setor, Ana exerce influência significativa na decisão de compra, especialmente em contextos familiares. No entanto, enfrenta barreiras como a falta de direcionamento, dificuldade em identificar conteúdos adequados para sua faixa etária e baixa atratividade das plataformas tradicionais. Esse cenário evidencia a necessidade de soluções que tornem a experiência mais visual, intuitiva e alinhada ao comportamento digital, incentivando o interesse e reduzindo a distância entre o público jovem e o consumo cultural.
+
+Em muitas situações, Ana não decide apenas por impulso individual: ela leva a sugestão para amigos ou familiares e precisa validar se a experiência é adequada, segura, financeiramente viável e interessante para o grupo. Por isso, sua jornada depende de informações claras sobre preço, data, local, descrição do espetáculo e recursos que permitam salvar alternativas antes da decisão final.
  
 <div align="center">
   <sub>Imagem 03 - Persona do cliente</sub><br>
   <img src="../assets/personas-ana.png" width="100%" alt="Persona do cliente"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
+
 ---
  
 ### 5.1.2 Marcos Abrantes — Cliente Ativo (Decisão e Consumo)
  
 Marcos Abrantes representa um perfil crescente de consumidores culturais urbanos: jovens adultos com rotina intensa, que buscam no lazer uma forma de descanso e inspiração, mas ainda têm uma relação pouco estruturada com o consumo de teatro. Seu contato com espetáculos acontece de forma reativa, mediado por redes sociais e indicações, o que torna sua jornada fragmentada. Apesar do interesse genuíno e do potencial de consumo, Marcos enfrenta dificuldades para descobrir novas produções com confiança, revelando uma oportunidade clara para soluções que organizem, personalizem e qualifiquem sua experiência de decisão.
+
+Marcos tem maior intenção de compra e costuma tomar decisões em contextos de agenda apertada, inclusive quando está em uma cidade onde não conhece bem a programação cultural. Nesses casos, ele precisa comparar opções por localização, entender o teatro, conferir preço e data e acessar a bilheteria sem fricção. Como usuário recorrente, suas preferências e interações também geram sinais úteis para qualificar recomendações, organizar vitrines e apoiar decisões de divulgação do catálogo.
  
 <div align="center">
   <sub>Imagem 04 - Persona do cliente</sub><br>
   <img src="../assets/Persona-marcos.png" width="100%" alt="Persona do cliente"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
+
 ---
  
 ### 5.2 Jornada do Usuário
@@ -528,6 +539,21 @@ Marcos Abrantes representa um perfil crescente de consumidores culturais urbanos
 | **Adaptação** | Feliz | **Ação:** Ele assiste a um musical recomendado e sai do teatro. **Encantamento e Fidelização:** O espetáculo supera as expectativas. Ele viveu algo memorável e sente que o tempo livre foi bem aproveitado. Ele compartilha a experiência com amigos e se torna um cliente leal a longo prazo. |
 
 ---
+
+### 5.2.3 Matriz de oportunidades por etapa da jornada
+
+Para tornar as jornadas mais úteis às decisões de produto, a tabela abaixo explicita quais funcionalidades respondem a cada ponto de fricção. Assim, as oportunidades deixam de ser genéricas e passam a orientar requisitos, priorização e validação da solução.
+
+| Persona | Etapa crítica | Fricção observada | Funcionalidade implicada | Requisito relacionado |
+|---|---|---|---|---|
+| Ana Luiza | Descoberta inicial | Falta de repertório e baixa identificação com plataformas muito textuais | Home visual, banners, categorias e cards com imagem | RF01, RF04, RF10 |
+| Ana Luiza | Validação da escolha | Medo de escolher algo pouco atraente para o grupo | Detalhes do espetáculo, descrição, imagem, preço e wishlist | RF04, RF06, RF09 |
+| Ana Luiza | Decisão familiar ou em grupo | Precisa mostrar que a opção é adequada, viável e interessante para outras pessoas | Informações objetivas de preço, data, local, descrição e possibilidade de salvar alternativas | RF04, RF06, RF07, RF09 |
+| Marcos Abrantes | Busca ativa | Cansaço por pesquisar em múltiplos canais | Busca por nome, filtro por gênero e catálogo centralizado | RF04, RF05 |
+| Marcos Abrantes | Decisão | Dúvida se a recomendação realmente combina com seu gosto | Recomendação baseada em preferências, gêneros favoritos e recomendações persistidas | RF08, RF10 |
+| Marcos Abrantes | Uso ocasional em outra cidade | Pouco conhecimento da programação local e necessidade de decidir rápido | Filtros por cidade/localidade, informações de teatro, eventos em cartaz e link direto para bilheteria | RF02, RF04, RF07, RF09 |
+| Marcos Abrantes | Pós-consumo e recorrência | Preferências mudam com o tempo e recomendações podem ficar genéricas | Gestão de perfil, edição de preferências, batch periódico e recomendações persistidas | RF08, RF10, RNF08 |
+| Marcos Abrantes | Evolução do catálogo | O comportamento de usuários recorrentes precisa gerar sinais úteis sobre interesse por temas, formatos e espetáculos | Métricas do modelo, análise de preferências/interações e monitoramento das recomendações geradas | RF10, RNF08 |
 
 ## 6. Fluxo do Negócio
 

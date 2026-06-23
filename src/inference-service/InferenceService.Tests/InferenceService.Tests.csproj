@@ -9,11 +9,9 @@
   </PropertyGroup>
 
   <!-- Gate de cobertura (RNF08): ativo quando rodando com /p:CollectCoverage=true.
-       Cobertura medida em 40,1% (12/06/2026) — abaixo da meta de 70% do RNF08.
-       Gate inicial em 35% (valor real − 5 p.p.) para
-       evitar regressão; elevar gradualmente até 70% (backlog). -->
+       Cobertura medida em 70,04% (23/06/2026) — meta de 70% do RNF08 atingida. -->
   <PropertyGroup Condition="'$(CollectCoverage)' == 'true'">
-    <Threshold>35</Threshold>
+    <Threshold>70</Threshold>
     <ThresholdType>line</ThresholdType>
     <ThresholdStat>total</ThresholdStat>
     <CoverletOutputFormat>cobertura</CoverletOutputFormat>

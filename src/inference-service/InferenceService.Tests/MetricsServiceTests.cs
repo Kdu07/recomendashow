@@ -17,7 +17,6 @@ public class MetricsServiceTests
         _fixture = fixture;
     }
 
-    // Mirrors the fixture dataset so PredictRating operates on known users/items.
     private static IReadOnlyList<InteractionRecord> FixtureInteractions() =>
     [
         new() { UserId = 1, ItemId = "ItemA", Ranking = 5, ValorMedioIngresso = 50.0, TipoEvento = "Teatro" },
@@ -48,10 +47,6 @@ public class MetricsServiceTests
         return dataset;
     }
 
-    // -----------------------------------------------------------------------
-    // Evaluate
-    // -----------------------------------------------------------------------
-
     [Fact]
     public void Evaluate_ReturnsReport_WithPositiveUsersEvaluated()
     {
@@ -75,10 +70,6 @@ public class MetricsServiceTests
 
         report.Rating.Rmse.Should().BeGreaterThanOrEqualTo(0);
     }
-
-    // -----------------------------------------------------------------------
-    // Cache
-    // -----------------------------------------------------------------------
 
     [Fact]
     public void Evaluate_WithSameParameters_ReturnsCachedResult()
@@ -106,10 +97,6 @@ public class MetricsServiceTests
         report3.TopK.Should().Be(3);
     }
 
-    // -----------------------------------------------------------------------
-    // GetPredictionErrors
-    // -----------------------------------------------------------------------
-
     [Fact]
     public void GetPredictionErrors_ReturnsNonNullList()
     {
@@ -117,10 +104,6 @@ public class MetricsServiceTests
 
         errors.Should().NotBeNull();
     }
-
-    // -----------------------------------------------------------------------
-    // GetRealAndPredicted
-    // -----------------------------------------------------------------------
 
     [Fact]
     public void GetRealAndPredicted_RealAndPredicted_HaveMatchingCount()

@@ -195,6 +195,10 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 <summary><a href="#16-diagrama-de-implantação">16. Diagrama de Implantação</a></summary>
 
 - [Diagrama de Implantação](#16-diagrama-de-implantação)
+- [16.1 Leitura do diagrama e status dos componentes](#161-leitura-do-diagrama-e-status-dos-componentes)
+- [16.2 Topologia de referência](#162-topologia-de-referência)
+- [16.3 Ambientes considerados](#163-ambientes-considerados)
+- [16.4 Limites do artefato e evolução posterior](#164-limites-do-artefato-e-evolução-posterior)
 
 </details>
 
@@ -236,9 +240,9 @@ Este documento apresenta a documentação principal do projeto, reunindo context
   - [19.4.2 Telas implementadas](#1942-telas-implementadas)
   - [19.4.3 Vídeo demonstrativo do frontend](#1943-vídeo-demonstrativo-do-frontend)
 - [19.5 Padrões de codificação e padrões de projeto](#195-padrões-de-codificação-e-padrões-de-projeto)
-- [19.6 Testes unitários do Backend e metodologia TDD](#196-testes-unitários-do-backend-e-metodologia-tdd)
-- [19.7 Testes unitários do Frontend (React Native)](#197-testes-unitários-do-frontend-react-native)
-- [19.8 Testes unitários do Backend](#198-testes-unitários-do-backend)
+- [19.6 Estratégia de testes e metodologia TDD](#196-estratégia-de-testes-e-metodologia-tdd)
+- [19.7 Testes unitários do Frontend na Sprint 3](#197-testes-unitários-do-frontend-na-sprint-3)
+- [19.8 Testes unitários do Backend na Sprint 3](#198-testes-unitários-do-backend-na-sprint-3)
 - [19.9 Documentação de API (Swagger)](#199-documentação-de-api-swagger)
 
 </details>
@@ -323,7 +327,7 @@ A figura a seguir apresenta uma síntese dessas forças aplicadas ao contexto da
 <div align="center">
 <sub>Imagem 01 - Cinco Forças de Porter</sub><br>
   <img src="../assets/5-forcas-de-porter.png" width="100%" alt="Cinco Forças de Porter"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 
@@ -374,7 +378,7 @@ Complementar às 5 Forças de Porter, a análise SWOT permite consolidar os fato
 <div align="center">
 <sub>Imagem 02 - Análise SWOT</sub><br>
   <img src="../assets/analise-swot.png" width="100%" alt="Análise SWOT - Aventura Teatros"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 #### **Forças**
@@ -532,7 +536,7 @@ Nesta seção, apresentamos o fluxo de negócios da Plataforma Aventura modelado
 <div align="center">
 <sub>Imagem 07 - Fluxo de Negócio (BPMN)</sub><br>
   <img src="../assets/fluxo-negocios-bpmn.png" width="100%" alt="Fluxo de Negócio (BPMN)"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 O fluxo de negócios é composto por duas pools distintas. Na pool do Cliente, o processo tem início com o acesso ao portal Aventura, seguido da recepção de recomendações. O gateway exclusivo "Se interessa?" determina o caminho seguinte: caso haja interesse, o cliente é direcionado à ticketera, encerrando o processo; caso contrário, o fluxo retorna à etapa de recepção de recomendações.
@@ -598,7 +602,7 @@ O Business Model Canvas apresentado a seguir sintetiza a estratégia do MVP da P
 <div align="center">
 <sub>Imagem 08 - Business Model Canvas do MVP</sub><br>
   <img src="../assets/Model-Canvas-MVP.png" width="100%" alt="Business Model Canvas do MVP"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 | Bloco | Descrição |
@@ -1096,7 +1100,7 @@ Cada RNF foi associado a uma característica e a uma subcaracterística da norma
 <div align="center">
 <sub>Imagem 09 - Diagrama Lógico</sub><br>
   <img src="../assets/diagrama_logico.png" width="100%" alt="Diagrama lógico do banco"><br>
-  <sup>Source: Material produzido pelos autores, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 O Diagrama Lógico representa as entidades principais do sistema, os relacionamentos entre elas e as cardinalidades, utilizando notação Entidade-Relacionamento (ER) com **retângulos** para as entidades e **losangos** para os relacionamentos.
@@ -1147,7 +1151,7 @@ Este modelo garante **clareza visual**, boa escalabilidade para consultas de rec
 <div align="center">
 <sub>Imagem 10 - Diagrama Conceitual</sub><br>
   <img src="../assets/diagrama-logico.png" width="100%" alt="Diagrama conceitual do banco"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 O modelo conceitual de dados representa a estruturação dos dados seguindo as regras do modelo relacional, servindo como uma ponte entre a abstração do modelo conceitual e a implementação física no SGDB.
@@ -1294,7 +1298,7 @@ O diagrama de classes representa o modelo de domínio de um sistema de gerenciam
 <div align="center">
 <sub>Imagem 11 - Diagrama de Classes UML</sub><br>
   <img src="../assets/diagrama-classes-mod6.drawio.png" width="100%" alt="Diagrama de Classes UML"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 ### Teatro
@@ -1677,9 +1681,7 @@ O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visual
 
 ## 16. Diagrama de Implantação
  
-O diagrama de implantação abaixo apresenta a arquitetura física de referência do Portal Aventura, destacando os ambientes de execução, os componentes previstos e suas comunicações. A solução inclui aplicativo móvel, API Gateway, backend ASP.NET Core, Training Job, serviço de recomendação, PostgreSQL, MongoDB e serviços externos. As conexões utilizam HTTPS ou TCP conforme o contrato de cada componente.
-
-O diagrama representa a arquitetura-alvo completa. O deploy efetivamente executado nesta etapa possui escopo menor: serviço de inferência e nginx em Docker na Oracle Cloud, com acesso ao PostgreSQL externo. A topologia implantada, as restrições do ambiente e o procedimento operacional estão documentados em [Deploy do Motor de Recomendação](./Deploy_Recomendacao.md#2-diagrama-de-implantação).
+O diagrama de implantação apresenta a arquitetura física de referência do Portal Aventura. Ele reúne os ambientes, componentes e comunicações previstos para aplicativo mobile, backend, recomendação, treinamento, persistência e serviços externos. O desenho representa a direção arquitetural do projeto, não uma declaração de que todos os nós estejam publicados.
  
 <div align="center">
   <sub>Imagem 14 - Diagrama de Implantação UML</sub><br>
@@ -1687,223 +1689,58 @@ O diagrama representa a arquitetura-alvo completa. O deploy efetivamente executa
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
- 
-#### Aplicação Mobile
- 
-Representa o aplicativo executado em dispositivos Android.
- 
-**Componentes Implantados:**
- 
-| Componente | Descrição |
-|------------|------------|
-| App Bundle (.apk) | Pacote distribuído para instalação do aplicativo móvel |
-| AsyncStorage | Armazenamento local utilizado para persistência de dados temporários e configurações do usuário |
- 
-**Tecnologias:**
- 
-- Android
-- React Native Runtime
-**Comunicação:**
- 
-| Destino | Protocolo |
-|----------|-----------|
-| API Gateway | HTTPS (TCP 443) |
-| Deep Links | HTTPS (TCP 443) |
- 
----
- 
-#### Ambiente de Servidor
- 
-Responsável pelo processamento das regras de negócio, autenticação, gerenciamento de usuários, recomendação de eventos e integração com serviços externos.
- 
-**Componentes:**
- 
-- API Gateway
-- Backend ASP.NET Core
-- Sistema de Recomendação
-- Training Job
----
- 
-**API Gateway:**
- 
-O API Gateway funciona como ponto único de entrada para as requisições realizadas pelo aplicativo móvel.
- 
-Artefato Implantado:
- 
-| Artefato | Descrição |
-|-----------|------------|
-| Gateway Service | Serviço responsável pelo roteamento das requisições para os serviços internos |
- 
-Responsabilidades:
- 
-- Receber requisições do aplicativo móvel
-- Encaminhar chamadas para o backend
-- Centralizar o acesso aos serviços internos
-- Aplicar políticas de segurança e controle de acesso
-Comunicação:
- 
-| Origem | Destino | Protocolo |
-|---------|---------|------------|
-| Mobile App | API Gateway | HTTPS (TCP 443) |
-| API Gateway | Backend ASP.NET Core | TCP 8080 |
- 
----
- 
-**Backend ASP.NET Core:**
- 
-Representa o núcleo da aplicação, responsável pelas regras de negócio e gerenciamento das funcionalidades disponibilizadas ao usuário.
- 
-Módulos Implantados:
-- **Autenticação:** Responsável pelo gerenciamento de login, registro e validação de credenciais.
-- **Usuários:** Responsável pelo gerenciamento dos dados dos usuários da plataforma.
-- **Espetáculos:** Responsável pela consulta, cadastro e gerenciamento dos eventos e espetáculos disponíveis.
-- **Interações:** Responsável pelo registro das ações realizadas pelos usuários, utilizadas posteriormente pelo sistema de recomendação.
-- **Geolocalização:** Responsável pelo tratamento de dados geográficos e busca de eventos com base na localização do usuário.
-Comunicação do Backend:
- 
-| Destino | Protocolo |
-|----------|-----------|
-| PostgreSQL | TCP 5432 |
-| MongoDB | TCP 27017 |
-| Object Storage | HTTPS (TCP 443) |
-| ViaCEP | HTTPS (TCP 443) |
-| Ticketeira (Sympla) | HTTPS (TCP 443) |
- 
----
- 
-**Sistema de Recomendação:**
- 
-Componente especializado na geração de recomendações personalizadas para os usuários.
- 
-Artefato Implantado:
- 
-| Artefato | Descrição |
-|-----------|------------|
-| Recommendation Engine | Motor responsável pela geração de recomendações com base nas interações dos usuários |
- 
-Responsabilidades:
- 
-- Processar histórico de interações
-- Gerar recomendações personalizadas
-- Disponibilizar recomendações para o backend
-- Consumir modelos treinados pelo Training Job
-Comunicação:
- 
-| Origem | Destino | Protocolo |
-|--------|----------|-----------|
-| Training Job | Sistema de Recomendação | HTTP REST (TCP 8081) |
-| Sistema de Recomendação | PostgreSQL | TCP 5432 |
- 
----
- 
-**Training Job:**
- 
-Serviço responsável pelo treinamento dos modelos utilizados pelo sistema de recomendação.
- 
-Artefato Implantado:
- 
-| Artefato | Descrição |
-|-----------|------------|
-| Training Pipeline | Pipeline de treinamento e atualização dos modelos de recomendação |
- 
-Responsabilidades:
- 
-- Processar dados históricos
-- Treinar modelos de recomendação
-- Atualizar modelos utilizados pelo Recommendation Engine
-- Consumir dados armazenados na infraestrutura de dados
-Comunicação:
- 
-| Destino | Protocolo |
-|----------|-----------|
-| PostgreSQL | TCP 5432 |
-| Sistema de Recomendação | HTTP REST (TCP 8081) |
-| Object Storage | HTTPS (TCP 443) |
- 
----
- 
-#### Infraestrutura de Dados
- 
-Camada responsável pelo armazenamento persistente das informações do sistema.
- 
-**PostgreSQL:**
- 
-Banco de dados relacional utilizado pela aplicação.
- 
-Funções:
- 
-- Armazenamento de usuários
-- Armazenamento de eventos
-- Armazenamento de interações
-- Persistência das informações de autenticação
-- Base para geração de recomendações
-Porta Utilizada:
- 
-| Serviço | Porta |
-|----------|--------|
-| PostgreSQL | TCP 5432 |
- 
----
- 
-**MongoDB:**
- 
-Banco de dados não relacional utilizado pela aplicação.
- 
-Funções:
- 
-- Armazenamento de dados não estruturados ou semiestruturados da plataforma
-Porta Utilizada:
- 
-| Serviço | Porta |
-|----------|--------|
-| MongoDB | TCP 27017 |
- 
----
- 
-**Object Storage:**
- 
-Armazenamento de objetos utilizado para persistência de arquivos e dados de treinamento.
- 
-Artefatos Armazenados:
- 
-| Artefato |
-|-----------|
-| Bucket S3 |
-| Eventos brutos (JSON) |
-| Modelos treinados (ZIP) |
- 
-Responsabilidades:
- 
-- Armazenamento de datasets
-- Armazenamento de modelos treinados
-- Disponibilização de arquivos para o pipeline de treinamento
-Comunicação:
- 
-| Origem | Protocolo |
-|---------|-----------|
-| Backend ASP.NET Core | HTTPS (TCP 443) |
-| Training Job | HTTPS (TCP 443) |
- 
----
- 
-#### Serviços Externos
- 
-Serviços de terceiros consumidos pela plataforma.
- 
-**ViaCEP:**
- 
-Serviço utilizado para consulta de informações de endereço a partir do CEP informado pelo usuário.
- 
-Comunicação:
- 
-- HTTPS (TCP 443)
-**Ticketeira (Sympla):**
- 
-Serviço externo responsável pelo fornecimento de informações relacionadas a eventos e venda de ingressos.
- 
-Comunicação:
- 
-- HTTPS (TCP 443)
+### 16.1 Leitura do diagrama e status dos componentes
+
+O status abaixo diferencia componentes implementados, disponíveis localmente ou apenas previstos na arquitetura.
+
+| Componente | Papel arquitetural | Situação documentada |
+|---|---|---|
+| Aplicativo React Native | Interface mobile, navegação e armazenamento local | **Implementado localmente**, com integrações em evolução |
+| Backend ASP.NET Core | Autenticação, usuários, catálogo, teatros, preferências, wishlist e recomendações | **Implementado e executável localmente** |
+| PostgreSQL | Persistência relacional da aplicação | **Disponível localmente** por Docker |
+| MongoDB | Persistência documental prevista para dados semiestruturados | **Disponível no ambiente local**, sem uso comprovado no fluxo principal |
+| API Gateway dedicado | Entrada única e roteamento entre serviços | **Previsto no desenho**, sem serviço independente comprovadamente implantado |
+| Serviço de recomendação | Geração e disponibilização de recomendações | **Previsto na arquitetura e implementado de forma evolutiva**, com implantação detalhada em documento próprio |
+| Training Job | Treinamento e atualização do modelo | **Previsto na arquitetura**, com evolução técnica nas sprints posteriores |
+| Object Storage | Armazenamento de datasets, eventos e modelos | **Previsto no desenho**, sem implantação comprovada |
+| ViaCEP | Consulta de endereço por CEP | **Dependência externa planejada** para cadastro e perfil |
+| Ticketeira externa | Destino da compra de ingressos | **Redirecionamento previsto**; sem processamento de venda pelo Portal |
+
+### 16.2 Topologia de referência
+
+O fluxo arquitetural previsto era:
+
+1. O aplicativo React Native envia requisições às APIs do backend.
+2. O backend processa autenticação, catálogo, perfil, wishlist e interações.
+3. Os dados transacionais são persistidos no PostgreSQL.
+4. O recomendador utiliza preferências e interações para produzir sugestões.
+5. O Training Job atualiza periodicamente os artefatos usados pelo recomendador.
+6. ViaCEP complementa dados de endereço, e a compra é concluída fora do sistema, na ticketeira.
+
+| Origem | Destino | Comunicação prevista | Situação documentada |
+|---|---|---|---|
+| Aplicativo mobile | Backend ASP.NET Core | REST sobre HTTP/HTTPS | Integração em desenvolvimento |
+| Backend ASP.NET Core | PostgreSQL | TCP 5432 | Execução local |
+| Backend/Training Job | MongoDB ou Object Storage | TCP 27017 ou HTTPS 443 | Elementos previstos, sem fluxo final comprovado |
+| Training Job | Serviço de recomendação | HTTP REST | Previsto no diagrama |
+| Aplicativo | ViaCEP | HTTPS 443 | Planejado para endereço |
+| Aplicativo | Ticketeira | URL HTTPS externa | Planejado como redirecionamento |
+
+### 16.3 Ambientes considerados
+
+| Ambiente | Finalidade | Componentes |
+|---|---|---|
+| Dispositivo/emulador | Execução do aplicativo | Expo/React Native e armazenamento local |
+| Ambiente local de desenvolvimento | Implementação, testes e integração | Backend .NET, PostgreSQL e MongoDB em Docker |
+| Ambiente de servidor | Destino arquitetural para APIs e recomendação | Componentes previstos no diagrama, ainda sem implantação integral comprovada |
+| Serviços externos | Recursos fora da infraestrutura do grupo | ViaCEP e páginas das ticketeiras |
+
+### 16.4 Limites do artefato e evolução posterior
+
+- O diagrama representa a arquitetura de referência e inclui componentes ainda não implantados.
+- “Componente implantado” deve ser interpretado como artefato previsto para um nó UML, não necessariamente publicado em produção.
+- A implantação isolada do serviço de inferência, o uso de nginx/Docker e as VMs OCI são evoluções posteriores e estão documentados em [Deploy do Motor de Recomendação](./Deploy_Recomendacao.md).
+- As seções de desenvolvimento e execução de testes registram a evolução da implementação e as evidências obtidas ao longo do projeto.
 
 ## 17. Linguagens e Tecnologias Utilizadas
 
@@ -3219,56 +3056,17 @@ Essas decisões de codificação e arquitetura foram tomadas para oferecer um ba
 
 ---
 
-### 19.6 Testes unitários do Backend e metodologia TDD
+### 19.6 Estratégia de testes e metodologia TDD
 
-Esta seção deve documentar a estratégia de testes unitários adotada no projeto, com foco nas funcionalidades implementadas e na aplicação da metodologia TDD.
+A estratégia de testes busca validar as regras de negócio e os comportamentos esperados de forma isolada, reproduzível e automatizada. No backend, os testes verificam entidades de domínio, serviços, controllers, mapeamentos e tratamento de exceções, utilizando fakes e mocks para isolar dependências. No frontend, a validação concentra-se nos Services e ViewModels, responsáveis pela lógica de estado, navegação e interação com dados.
 
-#### Estratégia de testes
-
-Abordagem adotada na Sprint 3:
-
-- Metodologia: TDD aplicada de forma pragmática nas camadas de `Service` e `Repository`; testes unitários escritos antes ou junto da implementação das regras críticas.
-- Ferramentas: `xUnit` para testes unitários e de integração; `Testcontainers` para subir instâncias de PostgreSQL em testes de integração; `WireMock.Net` para simular serviços externos; `Respawn` para resetar o banco entre testes; `FluentAssertions` para asserções expressivas.
-- Escopo priorizado: autenticação (`AuthService`), persistência (`UsuarioRepository`, `PreferenciasRepository`), e geração/consumo de recomendações (`RecomendacaoService`).
-
-#### Testes implementados
-
-| Teste | Camada testada | Funcionalidade | Resultado | Evidência |
-|---|---|---|---|---|
-| AuthService_ShouldHashAndVerifyPassword | Service | Registro e verificação de senha | Passed | `tests/BackEnd.Aventura.Tests/AuthServiceTests.cs` |
-| UsuarioRepository_CRUD | Repository (integration) | Criação/Leitura/Update de usuário | Passed | `tests/BackEnd.Aventura.Integration/UsuarioRepositoryTests.cs` (Testcontainers + Respawn) |
-| PreferenciasRepository_SaveAndLoad | Repository (integration) | Persistir e recuperar preferências | Passed | `tests/.../PreferenciasRepositoryTests.cs` |
-| RecomendacaoService_Fallback | Service (integration) | Geração de fallback por gêneros favoritos | Passed | `tests/.../RecomendacaoServiceTests.cs` (WireMock stub) |
-
-#### Execução dos testes
-
-Executar todos os testes do backend (local):
-
-```bash
-dotnet test src/backend/BackEnd.Aventura.sln --logger "console;verbosity=minimal"
-```
-
-Ou executar testes no diretório de testes:
-
-```bash
-dotnet test tests/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
-```
-
-#### Resultado da cobertura
-
-Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositórios) com meta de cobertura ≥ 70% nas partes essenciais. Relatórios de cobertura são gerados pelo pipeline de CI e anexados aos artefatos de build.
+A metodologia TDD (*Test-Driven Development*) foi aplicada de forma pragmática nas funcionalidades críticas. Nesse processo, os cenários de teste orientam a implementação das regras, seguindo o ciclo de criar um teste que inicialmente falha, desenvolver o código mínimo necessário para fazê-lo passar e refatorar a solução sem alterar o comportamento validado.
 
 ---
 
-#### Link do vídeo demonstrativo backend
+### 19.7 Testes unitários do Frontend na Sprint 3
 
-[Vídeo demonstrativo](https://drive.google.com/file/d/1VCDSsW-dxjwJJM6786tu-Pd1RauL3sNp/view?usp=sharing)
-
----
-
-### 19.7 Testes unitários do Frontend (React Native)
- 
-Esta seção documenta a estratégia de testes unitários adotada para o frontend mobile do projeto, cobrindo as camadas de ViewModel e Service da arquitetura MVVM.
+Esta seção documenta a estratégia e os testes registrados para o frontend mobile durante a Sprint 3, cobrindo as camadas de ViewModel e Service da arquitetura MVVM.
  
 #### Estratégia de testes
  
@@ -3276,68 +3074,55 @@ Abordagem adotada:
  
 - **Metodologia:** Testes unitários escritos para validar o comportamento das camadas de lógica (`ViewModel` e `Service`), isolando dependências externas via mocks. A camada de View (Screens/Components) não é coberta por testes unitários nesta sprint — requer setup de ambiente nativo.
 - **Ferramentas:** `Jest` como runner e framework de asserções; `@testing-library/react` para renderização e interação com hooks React; `jest-environment-jsdom` para simular o ambiente de browser exigido pelo `renderHook`.
-- **Escopo priorizado:** autenticação (`useAuthViewModel`), onboarding (`useOnboardingViewModel`, `onboardingService`), busca (`useSearchViewModel`), lista de salvos (`useWishlistViewModel`, `wishlistStorageService`), notificações (`useNotificationsViewModel`) e interesses (`useEditInterestsViewModel`).
+- **Escopo priorizado:** autenticação, onboarding, busca, wishlist, interesses, integração ViaCEP, cache VHS e preferências locais de notificação. O teste de notificações valida apenas o estado local da tela; não comprova envio de push.
 
 #### Testes implementados
  
-| Teste | Camada testada | Funcionalidade | Resultado | Arquivo |
-|---|---|---|---|---|
-| `useAuthViewModel – validação (login)` | ViewModel | Validação de campos obrigatórios no login | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
-| `useAuthViewModel – validação (register)` | ViewModel | Validação de nome, senha e confirmação no cadastro | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
-| `useAuthViewModel – handleSubmit` | ViewModel | Chamada ao repositório, navegação pós-login e controle de loading | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
-| `useAuthViewModel – handleGoogleAuth` | ViewModel | Autenticação via Google e restauração de loading | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
-| `useOnboardingViewModel – toggleCategory` | ViewModel | Seleção e remoção de categorias, canContinue | Passed | `tests/viewmodels/useOnboardingViewModel.test.js` |
-| `useOnboardingViewModel – navegação` | ViewModel | Avanço e recuo entre passos do fluxo de onboarding | Passed | `tests/viewmodels/useOnboardingViewModel.test.js` |
-| `useOnboardingViewModel – finalização` | ViewModel | Persistência de preferências e callback de conclusão | Passed | `tests/viewmodels/useOnboardingViewModel.test.js` |
-| `useSearchViewModel – busca por texto` | ViewModel | Filtro por título, localização e cidade (case-insensitive) | Passed | `tests/viewmodels/useSearchViewModel.test.js` |
-| `useSearchViewModel – filtro por categoria` | ViewModel | Filtro por categoria e combinação com busca textual | Passed | `tests/viewmodels/useSearchViewModel.test.js` |
-| `useSearchViewModel – wishlist` | ViewModel | Atualização de favoritos via toggle | Passed | `tests/viewmodels/useSearchViewModel.test.js` |
-| `useWishlistViewModel – carregamento` | ViewModel | Carregamento assíncrono da wishlist, isLoading e hasSavedEvents | Passed | `tests/viewmodels/useWishlistViewModel.test.js` |
-| `useWishlistViewModel – filtro por texto` | ViewModel | Filtro de salvos por título, localização e cidade | Passed | `tests/viewmodels/useWishlistViewModel.test.js` |
-| `useWishlistViewModel – remoção` | ViewModel | Remoção de evento da wishlist e atualização da lista | Passed | `tests/viewmodels/useWishlistViewModel.test.js` |
-| `useNotificationsViewModel – toggle` | ViewModel | Ativação/desativação de opções de notificação por seção | Passed | `tests/viewmodels/useNotificationsViewModel.test.js` |
-| `useEditInterestsViewModel – toggle` | ViewModel | Seleção e remoção de interesses, contagem e seleção exclusiva de cidade | Passed | `tests/viewmodels/useEditInterestsViewModel.test.js` |
-| `wishlistStorageService – CRUD` | Service | get, save, add, remove, toggle e verificação de evento na wishlist | Passed | `tests/services/wishlistStorageService.test.js` |
-| `onboardingService – persistência` | Service | save, load e clear de preferências via AsyncStorage | Passed | `tests/services/onboardingService.test.js` |
+| Suíte | Camada principal | Funcionalidade | Evidência |
+|---|---|---|---|
+| `Useauthviewmodel.test.js` | ViewModel | Login, cadastro, validações, loading e autenticação social simulada | `tests/Useauthviewmodel.test.js` |
+| `Useonboardingviewmodel.test.js` | ViewModel | Seleção de categorias, navegação e conclusão do onboarding | `tests/Useonboardingviewmodel.test.js` |
+| `Usesearchviewmodel.test.js` | ViewModel | Busca textual, filtros e interação com wishlist | `tests/Usesearchviewmodel.test.js` |
+| `Usewishlistviewmodel.test.js` | ViewModel | Carregamento, filtro e remoção de itens salvos | `tests/Usewishlistviewmodel.test.js` |
+| `Useeditinterestsviewmodel.test.js` | ViewModel | Edição de interesses e cidade | `tests/Useeditinterestsviewmodel.test.js` |
+| `Usenotificationsviewmodel.test.js` | ViewModel | Preferências locais da tela de notificações, sem envio de push | `tests/Usenotificationsviewmodel.test.js` |
+| `Onboardingservice.test.js` | Service | Persistência das respostas do onboarding | `tests/Onboardingservice.test.js` |
+| `Wishliststorageservice.test.js` | Service | Operações locais da wishlist | `tests/Wishliststorageservice.test.js` |
+| `viaCepService.test.js` e `viaCepIntegration.test.js` | Service/integração simulada | Validação, consulta e tratamento de erros do ViaCEP | `tests/viaCepService.test.js`; `tests/viaCepIntegration.test.js` |
+| `vhsService.test.js` | Service | Cache, TTL, HIT/MISS e limpeza do estado | `tests/vhsService.test.js` |
  
 #### Execução dos testes
  
-Executar todos os testes do frontend (a partir de `mobile-app-aventura/`):
- 
+Executar a partir da raiz do projeto:
+
 ```bash
+cd src/frontend/mobile-app-aventura
 npm test
 ```
- 
-Com relatório de cobertura:
- 
-```bash
-npm test -- --coverage
-```
+
+O script `npm test` já executa `jest --coverage --ci --runInBand`; não é necessário repetir a opção `--coverage`.
  
 #### Resultado da cobertura
  
-Cobertura focada nas camadas de ViewModel e Service, que concentram toda a lógica de negócio do frontend. A camada de View não é coberta intencionalmente nesta sprint, pois depende de ambiente nativo para renderização.
- 
-| Camada | Arquivos cobertos | Cobertura estimada |
-|---|---|---|
-| ViewModel | 6 arquivos | ~90–95% |
-| Service | 2 arquivos | ~95–100% |
-| Repository | Coberto via mock | — |
-| Screen/View | Não coberto | — |
+Na Sprint 3, a cobertura foi concentrada nas camadas de ViewModel e Service, que reuniam a maior parte da lógica testável sem ambiente nativo. Screens e componentes visuais ficaram fora do escopo unitário daquele ciclo.
+
+As contagens e percentuais consolidados apresentados posteriormente nas seções 20 e 21 refletem a evolução da suíte após a Sprint 3 e não devem ser retroativamente atribuídos a esta entrega.
 
 ---
 
-### 19.8 Testes unitários do Backend
+### 19.8 Testes unitários do Backend na Sprint 3
 
-Esta seção documenta a estratégia de testes unitários adotada para o backend da aplicação.
+Esta seção detalha a suíte unitária estruturada para o backend durante a Sprint 3 em `src/backend/BackEnd.Aventura.Tests`. Ela não inclui testes com PostgreSQL real, evitando misturar teste unitário com teste de integração. As reexecuções e ampliações posteriores aparecem nas seções 20 e 21.
 
 #### Estratégia de testes
 
 Abordagem adotada:
 
-- **Metodologia:** Testes unitários escritos em padrão AAA (Arrange, Act, Assert), cobrindo as camadas de Domain, Service e Controller de forma isolada. Repositórios são substituídos por fakes in-memory para eliminar dependência de banco de dados nos testes unitários.
-- **Ferramentas:** `xUnit` como framework de testes; `Moq` para mock de dependências nos testes de Controller; repositórios Fake escritos manualmente para testes de Service e Domain; `Microsoft.AspNetCore.Http` para simulação de contexto HTTP nos testes de middleware.
-- **Escopo priorizado:** entidades de domínio (`Usuario`, `Espetaculo`, `Teatro`, `Preferencias`, `Recomendacao`), serviços de aplicação (`AuthService`, `EspetaculoService`, `TeatroService`, `WishlistService`, `UsuarioService`, `PreferenciasService`, `RecomendacaoService`, `GeneroService`), controllers, infraestrutura (`DbConnectionFactory`, injeção de dependência) e middleware de exceções (`GlobalExceptionHandler`).
+- **Padrão:** AAA (Arrange, Act, Assert).
+- **Isolamento:** repositórios substituídos por fakes e dependências de controllers simuladas com Moq.
+- **Ferramentas:** xUnit, Moq, `Microsoft.AspNetCore.Http` e coverlet.
+- **Escopo:** Domain, Service, Controller, Middleware, Infrastructure, DI e mapeamentos.
+- **Limite:** repositories reais e banco de dados são cobertos pela suíte de integração, não pela suíte unitária.
 
 #### Testes implementados
 
@@ -3432,28 +3217,30 @@ Abordagem adotada:
 Executar todos os testes do backend (a partir da raiz do projeto):
 
 ```bash
-dotnet test BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
+dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
 ```
 
 Com saída detalhada:
 
 ```bash
-dotnet test BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj --logger "console;verbosity=detailed"
+dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj --logger "console;verbosity=detailed"
 ```
 
 #### Resultado da cobertura
 
-Cobertura focada nas camadas de Domain, Service, Controller, Middleware e Infraestrutura. Os repositórios reais não são cobertos por testes unitários — são substituídos por fakes — e serão alvo de testes de integração em sprints futuras.
+Na Sprint 3, a cobertura concentrou-se em Domain, Service, Controller, Middleware, Infrastructure e mapeamentos, com repositories reais substituídos por fakes. O objetivo era validar regras e contratos internos sem dependência de banco.
 
-| Camada | Arquivos cobertos | Cobertura estimada |
-|---|---|---|
-| Domain | 6 entidades + guards + exceptions | ~90% |
-| Service | 8 serviços | ~85–95% |
-| Controller | 8 controllers | ~90% |
-| Middleware | `GlobalExceptionHandler` | 100% |
-| Infrastructure | `DbConnectionFactory`, DI | ~80% |
-| Mapping | `DtoMapper` | ~90% |
-| Repository (real) | Não coberto | — |
+| Camada | Tratamento na Sprint 3 |
+|---|---|
+| Domain | Testes de entidades, guards e exceções |
+| Service | Testes das regras de autenticação, catálogo, wishlist, perfil, preferências e recomendação |
+| Controller | Testes de status HTTP e DTOs retornados |
+| Middleware | Testes do tratamento global de exceções |
+| Infrastructure/DI | Testes de configuração e registro de dependências |
+| Mapping | Testes de conversão entre domínio e DTOs |
+| Repository real | Fora do escopo unitário; planejado para integração posterior |
+
+Os números consolidados de execução e cobertura obtidos após a Sprint 3 permanecem documentados nas seções 20.5, 21.5 e 21.6, preservando a evolução temporal do projeto.
 
 ---
 

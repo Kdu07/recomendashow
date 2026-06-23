@@ -609,6 +609,35 @@ Ao desativar temporariamente `enable_seqscan`, o PostgreSQL utilizou o índice `
 
 Os índices avaliados estão corretamente criados e disponíveis no banco de dados. Contudo, nos testes realizados, o otimizador do PostgreSQL escolheu leituras sequenciais em parte das consultas porque as tabelas possuem poucos registros. Em ambientes com maior volume de dados, espera-se maior utilização dos índices, especialmente nas consultas filtradas por usuário, cidade, intervalo de datas e interações por usuário.
 
+### Evidência com volume realista
+
+Com o volume mínimo do seed funcional, o PostgreSQL pode preferir `Seq Scan`, porque o custo de varrer tabelas pequenas é menor que o custo de usar índices. Para validar o comportamento em escala maior, foram adicionados scripts opcionais em `src/database/benchmark/`:
+
+- `src/database/benchmark/04_synthetic_explain_data.sql` — gera massa sintética determinística para banco local ou descartável e executa `ANALYZE` ao final.
+- `src/database/benchmark/explain_benchmark_queries.sql` — executa consultas `EXPLAIN (ANALYZE, BUFFERS)` para os índices `idx_recomendacoes_usuario_score`, `idx_teatros_cidade`, `idx_espetaculos_datas`, `idx_interacoes_usuario_expiracao` e `idx_wishlist_usuario`.
+
+O script de massa sintética não é seed funcional, não substitui `03_initial_data.sql` e não é executado automaticamente pelo Dockerfile nem pelo DbRunner. Ele deve ser usado apenas em ambiente local ou banco descartável, pois insere milhares de registros nas tabelas transacionais.
+
+Os novos `EXPLAIN (ANALYZE, BUFFERS)` foram executados em um banco Supabase descartável, sem uso de `SET enable_seqscan=off`. A saída bruta completa está em `src/database/benchmark/explain-volume.txt`.
+
+| Consulta | Índice usado | Tipo de scan | Rows reais | Execution Time |
+|---|---|---|---:|---:|
+| Recomendações por usuário ordenadas por score | `idx_recomendacoes_usuario_score` | Index Scan | 50 | 4.761 ms |
+| Espetáculos por cidade | `idx_teatros_cidade` | Bitmap Index Scan + Bitmap Heap Scan | 102 teatros / 268 espetáculos | 192.606 ms |
+| Espetáculos por intervalo de datas | `idx_espetaculos_datas` | Index Scan | 200 | 7.976 ms |
+| Interações por usuário ordenadas por expiração | `idx_interacoes_usuario_expiracao` | Index Scan Backward | 50 | 26.704 ms |
+| Wishlist por usuário | `idx_wishlist_usuario` | Index Scan | 2000 | 20.168 ms |
+
+Ordem manual utilizada para gerar a evidência:
+
+```bash
+psql -h <host> -p <porta> -U <usuario> -d <banco> -f src/database/01_create_database.sql
+psql -h <host> -p <porta> -U <usuario> -d <banco> -f src/database/02_sprint4_improvements.sql
+psql -h <host> -p <porta> -U <usuario> -d <banco> -f src/database/03_initial_data.sql
+psql -h <host> -p <porta> -U <usuario> -d <banco> -f src/database/benchmark/04_synthetic_explain_data.sql
+psql -h <host> -p <porta> -U <usuario> -d <banco> -f src/database/benchmark/explain_benchmark_queries.sql
+```
+
 ## 9. Teste de Carga (pgbench)
 
 ### Metodologia

@@ -2691,7 +2691,8 @@ g02/
     │
     ├── database/                # Scripts SQL e Dockerfile do banco de dados
     │   ├── 01_create_database.sql
-    │   ├── 02_initial_data.sql
+    │   ├── 02_sprint4_improvements.sql
+    │   ├── 03_initial_data.sql
     │   └── Dockerfile
     │
     ├── backend/                 # Web API REST em .NET 10

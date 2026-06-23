@@ -174,7 +174,7 @@ test(recommendation): cover fallback behavior
 - Tabelas e colunas seguem o padrão `snake_case`.
 - Chaves primárias usam `id`.
 - Chaves estrangeiras usam o padrão `entidade_id`.
-- Scripts SQL são versionados por ordem de execução, como `01_create_database.sql` e `02_initial_data.sql`.
+- Scripts SQL são versionados por ordem de execução, como `01_create_database.sql`, `02_sprint4_improvements.sql` e `03_initial_data.sql`.
 
 ---
 

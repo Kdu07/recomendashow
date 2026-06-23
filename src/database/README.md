@@ -231,7 +231,7 @@ Isso inicia dois containers: `postgres_db` (PostgreSQL 16) e `aventura_mongodb` 
 
 1. `01_create_database.sql` — estrutura do banco
 2. `02_sprint4_improvements.sql` — melhorias da Sprint 4
-3. `02_initial_data.sql` — dados de seed
+3. `03_initial_data.sql` — dados de seed
 
 ### 6.4 Verificar que o banco subiu
 

@@ -110,7 +110,7 @@ namespace BackEnd.Aventura.Repository
         {
             var decomposed = value.Normalize(NormalizationForm.FormD);
             var builder = new StringBuilder(decomposed.Length);
-
+        
             foreach (var ch in decomposed)
             {
                 var category = CharUnicodeInfo.GetUnicodeCategory(ch);
@@ -118,19 +118,26 @@ namespace BackEnd.Aventura.Repository
                 {
                     continue;
                 }
-
+        
                 if (char.IsLetterOrDigit(ch))
                 {
                     builder.Append(char.ToLowerInvariant(ch));
                 }
-                else if (char.IsWhiteSpace(ch) && builder.Length > 0 && builder[^1] != ' ')
+                else if (IsWordSeparator(ch) && builder.Length > 0 && builder[^1] != ' ')
                 {
+                    // Trata hífen, underscore e demais separadores comuns em nomes de
+                    // arquivo/slug (ex.: "ayrton-senna-o-musical", "hair_banner") como
+                    // espaço, para que a normalização produza o mesmo resultado que a
+                    // versão com espaços reais (ex.: "Ayrton Senna, o Musical").
                     builder.Append(' ');
                 }
             }
-
+        
             return builder.ToString().Trim();
         }
+        
+        private static bool IsWordSeparator(char ch) =>
+            char.IsWhiteSpace(ch) || ch is '-' or '_' or '–' or '—';
 
         /// <summary>
         /// Verifica se <paramref name="text"/> começa com <paramref name="prefix"/> respeitando

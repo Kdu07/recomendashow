@@ -438,7 +438,7 @@ Esta seção analisa o planejamento da Sprint 5 antes de sua execução, destaca
 
 ## 6. Consolidação Final da Gestão Evolutiva
 
-Esta seção concentra o template final do artefato de gestão evolutiva, contemplando retrospectiva da Sprint 5, evolução das métricas ao longo das sprints e análise post-mortem do projeto.
+Esta seção consolida a gestão evolutiva do projeto em sua etapa final, contemplando a retrospectiva da Sprint 5, a evolução das métricas ao longo das sprints e a análise post-mortem do ciclo de desenvolvimento.
 
 ### 6.1 Retrospectiva Final da Sprint 5
 
@@ -473,7 +473,7 @@ O objetivo desta análise é compreender a evolução do desempenho da equipe ao
 | Fonte | Dados utilizados | Observação |
 |---|---|---|
 | Gráficos de acompanhamento por sprint | Evolução ideal x real, issues concluídas/em aberto, atividade temporal, conformidade de commits e distribuição de atividade por integrante. | Imagens armazenadas em `assets/graficos` e referenciadas na seção 6.2.2. |
-| Kanban e issues do GitLab | Issues planejadas, issues concluídas, status das tarefas, responsáveis e movimentação ao longo das sprints. | Base para consolidar velocity, taxa de conclusão e evolução do fluxo de trabalho. |
+| Kanban e issues do GitLab | Issues planejadas, issues concluídas, status das tarefas, responsáveis e movimentação ao longo das sprints. | Base para consolidar planejamento, conclusão, taxa de conclusão e evolução do acompanhamento do trabalho. |
 | Histórico de commits e Merge Requests | Conformidade dos commits, relação com issues e distribuição de contribuições por integrante. | Apoia a análise de padronização técnica e colaboração da equipe. |
 | Retrospectivas das sprints | Pontos fortes, pontos fracos, riscos, ações de melhoria e aprendizados registrados ao longo do projeto. | Usadas para interpretar os dados quantitativos e explicar variações entre sprints. |
 | Planejamento da Sprint 5 | Total de tasks planejadas, prioridade, tamanho t-shirt, dependências e critérios de aceite. | Usado como referência planejada para a sprint final, antes da consolidação do fechamento. |
@@ -686,24 +686,63 @@ Os gráficos 20 e 21 detalham duas dimensões importantes da evolução da equip
 
 #### 6.2.3 Evolução Quantitativa por Sprint
 
+As métricas quantitativas foram consolidadas a partir dos gráficos apresentados na seção 6.2.2 e dos dados de planejamento registrados neste documento. Para cumprir a análise de evolução do projeto, foram priorizadas métricas diretamente aferidas ou calculadas com base nas evidências disponíveis: issues planejadas, issues concluídas, taxa de conclusão, conformidade de issues e commits e esforço estimado por tamanho.
+
+Também foi incluído o esforço estimado por sprint com base na técnica de t-shirt sizing. Essa métrica não representa lead time ou cycle time real, pois não mede o tempo de permanência das issues no fluxo do Kanban nem o tempo efetivo entre início e conclusão. O objetivo é estimar o volume de esforço planejado ou concluído a partir dos tamanhos atribuídos às issues.
+
+Foram adotados os seguintes pesos para cálculo:
+
+| Tamanho | Valor adotado |
+|---|---:|
+| PP | 15 minutos |
+| P | 30 minutos |
+| M | 60 minutos |
+| G | 120 minutos |
+| GG | 180 minutos |
+
+A fórmula utilizada foi:
+
+```text
+Esforço estimado da sprint =
+(qtd_PP x 15) + (qtd_P x 30) + (qtd_M x 60) + (qtd_G x 120) + (qtd_GG x 180)
+
+Esforço estimado em horas = esforço estimado em minutos / 60
+```
+
+Para as Sprints 1 a 4, o cálculo foi realizado a partir das issues fechadas que possuíam marcação de tamanho no export de cards. Para a Sprint 5, por se tratar da etapa final de consolidação do projeto, foi utilizado o esforço planejado registrado para as 26 tasks da sprint.
+
 | Métrica | Sprint 1 | Sprint 2 | Sprint 3 | Sprint 4 | Sprint 5 | Tendência observada |
 |---|---:|---:|---:|---:|---:|---|
-| Velocity | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
-| Lead time médio | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
-| Cycle time médio | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
-| Issues planejadas | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
-| Issues concluídas | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
-| Taxa de conclusão | A preencher | A preencher | A preencher | A preencher | A preencher | A preencher |
+| Issues planejadas | 70 | 85 | 48 | 46 | 26 | O planejamento variou conforme escopo e refinamento de cada sprint; a Sprint 5 correspondeu ao planejamento final de consolidação. |
+| Issues concluídas | 67 | 55 | 46 | 36 | Não aferida no recorte comparativo | A Sprint 3 apresentou a melhor relação entre planejado e concluído. Na Sprint 2, muitos cards foram movidos para concluído apenas posteriormente, afetando a leitura do fechamento. A Sprint 4 foi impactada pelo feriado e por inconsistências na atualização de cards. |
+| Taxa de conclusão | 95,7% | 64,7% | 95,8% | 78,3% | Não aferida no recorte comparativo | A taxa oscilou ao longo do projeto, indicando melhora na Sprint 3 e queda na Sprint 4 por capacidade reduzida e problemas de atualização do board. Na Sprint 5, a ocorrência de prova também atrapalhou parcialmente a execução da consolidação final. |
+| Conformidade de issues e commits | 8% | 85% | 88% | 90% | Não aferida no recorte comparativo | Houve evolução contínua da padronização técnica, indicando amadurecimento no vínculo entre commits e issues. |
+| Esforço estimado por tamanho | 59,2 horas | 78,5 horas | 73 horas | 73 horas | 40,5 horas | Permite comparar o volume de esforço considerado por sprint, mas não substitui lead time ou cycle time real. |
+
+Para a Sprint 5, o esforço estimado foi calculado a partir das 26 tasks planejadas: 1 task P, 10 tasks M e 15 tasks G. O cálculo foi: `(1 x 30) + (10 x 60) + (15 x 120) = 2430 minutos`, equivalente a `40,5 horas`. Como as Sprints 1 a 4 foram calculadas a partir das issues fechadas com tamanho registrado, seus valores representam o esforço estimado do trabalho fechado e documentado no export, podendo apresentar diferença em relação ao volume total exibido nos gráficos.
 
 #### 6.2.4 Análise de Tendências
 
 | Tendência analisada | Evidência | Interpretação | Conclusão |
 |---|---|---|---|
-| A preencher | A preencher | A preencher | A preencher |
+| Relação entre planejamento e conclusão | As issues planejadas variaram de 70 na Sprint 1 para 85 na Sprint 2, 48 na Sprint 3, 46 na Sprint 4 e 26 na Sprint 5. As issues concluídas oscilaram entre 67, 55, 46 e 36 nas quatro primeiras sprints. | A equipe ajustou o escopo ao longo do projeto, mas a conclusão não acompanhou o planejamento de forma uniforme em todas as sprints. Na Sprint 2, parte dos cards foi movida para concluído depois do período de fechamento, e na Sprint 5 a prova reduziu a disponibilidade da equipe. | A previsibilidade melhorou na Sprint 3, mas ainda depende de escopo bem calibrado, atenção ao calendário acadêmico e atualização correta dos cards. |
+| Melhora na conformidade de issues e commits | A conformidade saiu de 8% na Sprint 1 para cerca de 90% na Sprint 4. | O padrão de commits, vínculo com issues e organização técnica foi assimilado progressivamente. | A equipe amadureceu nas práticas de versionamento e gestão de configuração. |
+| Oscilação na taxa de conclusão | A taxa de conclusão apresentou queda na Sprint 2, recuperação na Sprint 3 e nova redução na Sprint 4. | A previsibilidade foi afetada por escopo, calendário, feriado na Sprint 4 e atualização incorreta de alguns cards no Kanban. | A equipe deve manter atenção ao fechamento correto das issues e ao ajuste de capacidade em semanas reduzidas. |
+| Estimativa de esforço por tamanho | O esforço estimado foi calculado para todas as sprints: 59,2h na Sprint 1, 78,5h na Sprint 2, 73h na Sprint 3, 73h na Sprint 4 e 40,5h planejadas na Sprint 5. | O t-shirt sizing permite estimar o volume de esforço considerado em cada sprint, mas não representa o tempo real de fluxo das issues. | A equipe deve usar essa métrica como apoio ao planejamento, sem confundi-la com lead time ou cycle time. |
+| Concentração de atividade no fim das sprints | Os gráficos por sprint mostram picos próximos ao encerramento dos ciclos. | Parte das entregas foi concluída ou registrada tardiamente, especialmente em sprints com maior volume ou menor janela útil. | É necessário distribuir melhor o esforço e atualizar o board de forma contínua. |
+| Diferença entre execução real e status do board | Algumas issues foram realizadas e revisadas, mas não foram movidas para review ou concluídas no Kanban. | O board nem sempre refletiu com precisão o estado real das entregas. | A equipe deve padronizar o fechamento dos cards para evitar distorções nas métricas. |
 
 #### 6.2.5 Conclusão das Métricas
 
-A preencher.
+A análise das métricas evidencia uma evolução consistente da maturidade da equipe ao longo do projeto. O principal avanço observado foi na conformidade de issues e commits, que saiu de 8% na Sprint 1 para 90% na Sprint 4, demonstrando amadurecimento no uso de commits semânticos, vínculo entre entregas e issues, rastreabilidade técnica e gestão de configuração.
+
+Em relação à capacidade de entrega, a equipe manteve volume significativo de conclusão nas quatro primeiras sprints, com destaque para a Sprint 3, que apresentou a melhor relação entre issues planejadas e concluídas. A taxa de conclusão, porém, oscilou ao longo do projeto, indicando que a previsibilidade foi influenciada por fatores como escopo planejado, movimentação tardia de cards na Sprint 2, feriado na Sprint 4, avaliações acadêmicas durante a Sprint 5 e falhas pontuais na atualização do Kanban.
+
+A análise também mostrou que parte das entregas ficou concentrada nos dias finais das sprints. Esse comportamento demonstra capacidade de reação da equipe diante dos prazos, mas também aponta riscos de sobrecarga, revisão tardia e distorção das métricas de acompanhamento. Além disso, a diferença entre execução real e status registrado no board evidenciou a necessidade de maior disciplina na movimentação dos cards, principalmente para que as métricas reflitam com precisão o estado das entregas.
+
+As métricas de lead time e cycle time não foram aferidas quantitativamente, pois dependem do histórico detalhado de criação, movimentação entre colunas, início efetivo e fechamento das issues. Para evitar inferências artificiais, foi utilizada como complemento a métrica de esforço estimado por tamanho, calculada com base nos pesos PP, P, M, G e GG. Essa métrica apoiou a comparação do volume de esforço entre sprints, mas não substitui medições reais de fluxo.
+
+Conclui-se que o grupo evoluiu em organização, rastreabilidade, padronização técnica e entendimento do próprio processo de trabalho. Para projetos futuros, recomenda-se registrar lead time e cycle time desde a primeira sprint, atualizar o Kanban como parte obrigatória da Definition of Done, considerar feriados e avaliações acadêmicas no planejamento e distribuir melhor as entregas ao longo do ciclo. Dessa forma, a equipe tende a aumentar a previsibilidade, reduzir distorções nas métricas e melhorar a qualidade da gestão evolutiva.
 
 ### 6.3 Análise Post-Mortem Final
 

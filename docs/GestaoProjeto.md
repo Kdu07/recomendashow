@@ -539,6 +539,17 @@ Esta seção consolida a análise post-mortem do RecomendaShow, considerando o c
 | Validação por diferentes tipos de teste | A documentação registra testes unitários, integração, frontend, inferência, requisitos não funcionais, API externa, desempenho e usabilidade, com evidências associadas. | A qualidade do projeto fica mais convincente quando há múltiplas formas de validação, cobrindo código, experiência do usuário e requisitos de operação. |
 | Aprimoramento da gestão ao longo do tempo | As retrospectivas mostram evolução em comunicação, uso do Kanban, detalhamento de tasks, identificação de riscos e preparação da entrega final. | A gestão evolutiva ganha valor quando registra não só o que foi feito, mas também como a equipe aprendeu a trabalhar melhor. |
 
+#### 6.3.2 Oportunidades de Melhoria
+
+
+| Oportunidade de melhoria | Como apareceu no projeto | Recomendação para projetos futuros |
+|---|---|---|
+| Reduzir acúmulo de documentação no final | Várias revisões importantes de documentação, critérios de entrega, links, evidências e alinhamento técnico ficaram concentradas na Sprint 5. | Manter documentação viva desde as primeiras sprints, com revisão obrigatória sempre que uma funcionalidade ou decisão técnica mudar. |
+| Melhorar granularidade e previsibilidade das tarefas | As retrospectivas das sprints anteriores indicaram tasks grandes, dependências entre atividades e dificuldade de medir progresso real. | Quebrar tarefas grandes em entregas menores, com critérios de aceite objetivos e responsáveis definidos desde o planejamento. |
+| Antecipar validações técnicas críticas | Backend, frontend, banco, inferência, deploy e testes precisaram ser revisados de forma transversal no encerramento. | Reservar checkpoints técnicos intermediários para build, execução, integração e testes antes da sprint final. |
+| Padronizar evidências desde sua geração | Evidências de testes, prints, resultados exportados e registros de validação precisaram ser organizados no fechamento do projeto. | Definir uma estrutura padrão para evidências com nome, data, contexto, comando executado e relação com o requisito validado. |
+| Formalizar decisões e limitações continuamente | Algumas limitações técnicas, como cobertura do recomendador, mapeamento entre usuários do dataset e usuários reais, deploy manual e riscos de operação, ficaram mais explícitas na consolidação final. | Registrar decisões arquiteturais, limitações e trade-offs no momento em que ocorrem, evitando reconstruir justificativas apenas no encerramento. |
+| Integrar gestão e critérios de avaliação desde o início | Parte da Sprint 5 foi dedicada a verificar aderência a README, licença, execução local, critérios do Escritório de Projetos e organização do repositório. | Mapear os critérios avaliativos já na Sprint 1 e revisá-los como parte do Definition of Done de cada entrega. |
 
 ---
 

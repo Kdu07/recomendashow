@@ -70,6 +70,7 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 - [5.2 Jornada do Usuário](#52-jornada-do-usuário)
   - [5.2.1 Jornada de Ana Luiza](#521-jornada-de-ana-luiza--cliente-em-formação)
   - [5.2.2 Jornada de Marcos Abrantes](#522-jornada-de-marcos-abrantes--cliente-ativo)
+  - [5.2.3 Matriz de oportunidades por etapa da jornada](#523-matriz-de-oportunidades-por-etapa-da-jornada)
 
 </details>
 
@@ -83,12 +84,10 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 <details>
 <summary><a href="#7-brainstorming-de-features">7. Brainstorming de Features</a></summary>
 
-- [7.1 Visão Geral do Modelo](#71-visão-geral-do-modelo-backend--inteligência)
-- [7.2 Interface do Usuário](#72-interface-do-usuário-front-end)
-- [7.2.1 Fluxo de Cadastro e Onboarding](#721-fluxo-de-cadastro-e-onboarding)
-- [7.2.2 Estrutura de Navegação](#722-estrutura-de-navegação)
-- [7.3 Funcionalidades Core](#73-funcionalidades-core)
-- [7.4 Roadmap: Funcionalidades Adicionais](#74-roadmap-funcionalidades-adicionais-futuro)
+- [7.1 Features do MVP](#71-features-do-mvp)
+- [7.2 Roadmap futuro](#72-roadmap-futuro)
+- [7.3 Ideias descartadas ou fora de escopo](#73-ideias-descartadas-ou-fora-de-escopo)
+- [7.4 Pontos em aberto e trade-offs](#74-pontos-em-aberto-e-trade-offs)
 
 </details>
 
@@ -128,6 +127,8 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 - [RNF06 — Capacidade sob carga em pico de campanha](#rnf06--capacidade-sob-carga-em-pico-de-campanha)
 - [RNF07 — Precisão da geolocalização](#rnf07--precisão-da-geolocalização)
 - [RNF08 — Modularidade do serviço de recomendação](#rnf08--modularidade-do-serviço-de-recomendação)
+- [RNF09 — Interoperabilidade entre serviços](#rnf09--interoperabilidade-entre-serviços)
+- [RNF10 — Implantação reproduzível](#rnf10--implantação-reproduzível)
 
 </details>
 
@@ -195,6 +196,10 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 <summary><a href="#16-diagrama-de-implantação">16. Diagrama de Implantação</a></summary>
 
 - [Diagrama de Implantação](#16-diagrama-de-implantação)
+- [16.1 Leitura do diagrama e status dos componentes](#161-leitura-do-diagrama-e-status-dos-componentes)
+- [16.2 Topologia de referência](#162-topologia-de-referência)
+- [16.3 Ambientes considerados](#163-ambientes-considerados)
+- [16.4 Limites do artefato e evolução posterior](#164-limites-do-artefato-e-evolução-posterior)
 
 </details>
 
@@ -226,7 +231,7 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 <details>
 <summary><a href="#19-desenvolvimento-do-projeto--sprint-3">19. Desenvolvimento do Projeto — Sprint 3</a></summary>
 
-- [19.1 Objetivo da sessão](#191-objetivo-da-sessão)
+- [19.1 Objetivo da seção](#191-objetivo-da-seção)
 - [19.2 Arquitetura de codificação e estrutura de diretórios](#192-arquitetura-de-codificação-e-estrutura-de-diretórios)
 - [19.3 Desenvolvimento do Backend](#193-desenvolvimento-do-backend)
   - [19.3.1 Arquitetura do backend](#1931-arquitetura-do-backend)
@@ -236,9 +241,9 @@ Este documento apresenta a documentação principal do projeto, reunindo context
   - [19.4.2 Telas implementadas](#1942-telas-implementadas)
   - [19.4.3 Vídeo demonstrativo do frontend](#1943-vídeo-demonstrativo-do-frontend)
 - [19.5 Padrões de codificação e padrões de projeto](#195-padrões-de-codificação-e-padrões-de-projeto)
-- [19.6 Testes unitários do Backend e metodologia TDD](#196-testes-unitários-do-backend-e-metodologia-tdd)
-- [19.7 Testes unitários do Frontend (React Native)](#197-testes-unitários-do-frontend-react-native)
-- [19.8 Testes unitários do Backend](#198-testes-unitários-do-backend)
+- [19.6 Estratégia de testes e metodologia TDD](#196-estratégia-de-testes-e-metodologia-tdd)
+- [19.7 Testes unitários do Frontend na Sprint 3](#197-testes-unitários-do-frontend-na-sprint-3)
+- [19.8 Testes unitários do Backend na Sprint 3](#198-testes-unitários-do-backend-na-sprint-3)
 - [19.9 Documentação de API (Swagger)](#199-documentação-de-api-swagger)
 
 </details>
@@ -295,23 +300,23 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 
 ## 1. Problema
 
-A **Aventura Teatros**, fundada em 2008, consolidou-se como uma plataforma cultural completa e referência na economia criativa brasileira, acumulando mais de 50 produções de alto nível e um alcance de 5 milhões de espectadores. No entanto, esse sucesso no ambiente físico encontra um gargalo crítico em sua presença digital: atualmente a empresa só possui um site de informações de forma estática e linear, carecendo de um motor inteligente de recomendação de conteúdos e espetáculos.
+A **Aventura Teatros**, fundada em 2008, reúne mais de 50 produções e um público histórico de aproximadamente 5 milhões de espectadores. Apesar desse alcance, sua presença digital ainda oferece uma navegação predominantemente estática e linear, sem um mecanismo de recomendação que conecte usuários a outros espetáculos do catálogo.
 
 ### Descrição do Problema
-O problema central reside na fragmentação da jornada do usuário dentro da plataforma. Atualmente, ao acessar a página de um espetáculo ou equipamento cultural específico, o visitante não é impactado por sugestões personalizadas que conectem outros ativos do ecossistema da empresa. Essa ausência de um sistema de recomendação, interrompe o fluxo de exploração, fazendo com que o potencial de descoberta de novos conteúdos seja subutilizado e, consequentemente, reduzindo as taxas de conversão em vendas.
+O problema central é a fragmentação da jornada do usuário dentro da plataforma. Ao acessar a página de um espetáculo ou equipamento cultural, o visitante não recebe sugestões personalizadas que o conduzam a outros itens do catálogo. Essa ausência de recomendação interrompe o fluxo de exploração, limita a descoberta de conteúdos e reduz as oportunidades de redirecionamento para compra.
 
 ### Relevância no Contexto do Parceiro
-A resolução desta lacuna tecnológica é vital e estratégica para a Aventura por três pilares fundamentais:
+A solução responde a três necessidades do parceiro:
 
-* **Prioridade de Vendas:** Retenção e Aumento de Vendas: O fator de maior impacto esperado para o negócio é a retenção de vendas por meio de recomendações estratégicas. A ferramenta é vista como um motor essencial para impulsionar a venda de ingressos, pois direciona ativamente o espectador para novos espetáculos de seu interesse, reduzindo a evasão do site e facilitando a jornada até o momento da compra.
-* **Fortalecimento do Rebranding:** O projeto atua diretamente na mitigação do baixo engajamento digital, servindo como uma ferramenta de suporte ao atual esforço de reposicionamento da marca no mercado.
-* **Sinergia do Ecossistema:** A solução visa criar uma jornada conectada entre as diversas produções (teatro musical, festivais e ballet), incentivando o público a consumir a multiplicidade artística oferecida pela produtora, mostarndo de forma mais dinâmica e pessoal seus espetáculos.
+* **Conversão:** apresentar recomendações relevantes antes da saída do usuário e facilitar o acesso à bilheteria externa.
+* **Engajamento digital:** apoiar o reposicionamento da marca com uma experiência de descoberta mensurável.
+* **Integração do catálogo:** conectar musicais, festivais, balés e demais produções em uma navegação personalizada.
 
 ### Desafios e Oportunidades
 
-* **Desafios:** O principal desafio técnico consiste em projetar uma arquitetura orientada a serviços (SOA) que suporte o processamento de dados de interesse do usuário para gerar recomendações assertivas em tempo real, com os dados que foram disponibilizados. Além do desafio técnico, existe também um desafio de negócio: garantir que as recomendações realmente agreguem valor à experiência do usuário, evitando sugestões genéricas e contribuindo efetivamente para ampliar a descoberta de conteúdos e a conversão no portal.
-* **Oportunidades:** Apesar dos desafios, o projeto apresenta uma oportunidade clara de transformação digital para o parceiro. Ao incorporar uma camada de recomendação inteligente, o Portal Aventura pode deixar de ser uma plataforma de navegação estática e passar a atuar como um hub dinâmico de entretenimento e descoberta cultural. Essa mudança tende a aumentar o tempo de permanência dos usuários no portal, melhorar a experiência de navegação, estimular o consumo cruzado entre diferentes produções e fortalecer o vínculo do público com o ecossistema da Aventura. 
-Dessa forma, a solução proposta não apenas responde a uma lacuna tecnológica existente, mas também cria condições para que a experiência digital da Aventura se torne mais conectada, personalizada e estratégica para a geração de valor ao negócio.
+* **Desafio técnico:** implementar uma arquitetura orientada a serviços (SOA) que permita evoluir e implantar o serviço de recomendação de forma independente, mantendo desempenho, capacidade e disponibilidade mensuráveis.
+* **Desafio de negócio:** produzir recomendações relevantes com os dados disponíveis e demonstrar seu efeito sobre descoberta e redirecionamento para compra.
+* **Oportunidade:** transformar o portal em um hub de descoberta cultural, conectando diferentes produções e permitindo acompanhar, por eventos de navegação, o uso das recomendações e o avanço até a bilheteria externa.
 ---
 
 ## 2. Contexto da Indústria do Parceiro
@@ -323,7 +328,7 @@ A figura a seguir apresenta uma síntese dessas forças aplicadas ao contexto da
 <div align="center">
 <sub>Imagem 01 - Cinco Forças de Porter</sub><br>
   <img src="../assets/5-forcas-de-porter.png" width="100%" alt="Cinco Forças de Porter"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 
@@ -331,7 +336,7 @@ A figura a seguir apresenta uma síntese dessas forças aplicadas ao contexto da
 
 **Risco: Alto**
 
-A Aventura Teatros é uma empresa de produção de espetáculos que atua principalmente nas cidades de São Paulo e Rio de Janeiro, os dois maiores polos culturais do país. Nesses mercados, a rivalidade competitiva é intensa: apenas em São Paulo, a APETESP, Associação de Produtores de Espetáculos Teatrais do Estado de São Paulo, representa cerca de 108 empresas produtoras, evidenciando a densa concentração de concorrentes na principal praça de atuação da Aventura. No Rio de Janeiro, a disputa é igualmente acirrada, com a APTR, Associação dos Produtores de Teatro do Rio de Janeiro, reunindo produtoras locais de expressiva atuação.
+A Aventura Teatros atua principalmente em São Paulo e no Rio de Janeiro. Nesses mercados, a rivalidade é intensa: a APETESP representa cerca de 108 empresas produtoras em São Paulo, enquanto a APTR reúne produtoras no Rio de Janeiro. Além do número de agentes, empresas como **Atelier de Cultura**, especializada em musicais de grande porte, e **T4F — Time for Fun**, atuante em entretenimento ao vivo, teatros e grandes espetáculos, são referências competitivas por disputarem público, patrocínio, espaços, licenças e equipes técnicas no mesmo eixo. A comparação é indicativa, pois o grau de concorrência varia conforme gênero, praça, temporada e porte da produção.
 
 Além da quantidade de competidores, a rivalidade se manifesta na disputa por recursos escassos: patrocínios privados, editais de fomento cultural, datas em teatros de prestígio e elencos renomados. A produção teatral abrange diferentes formatos, como musicais, teatro de grupo, produções comerciais e independentes, além de apresentações em teatros de shopping, centros culturais, praças e parques, o que amplia o leque de competidores diretos e indiretos com os quais a Aventura precisa se posicionar. Some-se a isso a sazonalidade do setor, que concentra a disputa por público em períodos específicos do ano, como férias escolares e fim de ano, intensificando ainda mais a competição. 
 
@@ -356,7 +361,9 @@ O poder de barganha dos fornecedores da Aventura é classificado como médio-alt
 
 **Risco: Médio**
 
-O poder de barganha dos compradores da Aventura é classificado como médio. O alto grau de diferenciação de suas produções, com mais de 5 milhões de espectadores históricos e parcerias exclusivas com Disney-Pixar (Inteli & Aventura, 2024), limita o poder de negociação do consumidor individual ao dificultar a substituição por concorrentes. Ainda assim, a sensibilidade ao preço é uma variável relevante: o ticket médio dos espetáculos ao vivo no Brasil atingiu R$ 432 em 2024 (Anafima, 2024), e pesquisa da Revista Diálogo com a Economia Criativa (ESPM, 2018) aponta a política de preços como um dos fatores mais determinantes na decisão de consumo de teatro musical no país.
+O poder de barganha dos compradores da Aventura é classificado como médio. O alto grau de diferenciação de suas produções, associado ao histórico de público da empresa e a parcerias com marcas reconhecidas, dificulta a substituição direta por outras opções teatrais. Ainda assim, a sensibilidade ao preço permanece relevante, pois a decisão de consumo em teatro musical envolve fatores como valor do ingresso, temática, localização, interesse pelo elenco e percepção de valor da experiência.
+
+Dessa forma, o poder dos compradores não é baixo: mesmo diante de produções diferenciadas, o público compara opções de lazer, avalia custo-benefício e pode substituir a ida ao teatro por outros formatos culturais ou de entretenimento. Ao mesmo tempo, também não é alto, porque espetáculos de grande porte, marcas conhecidas e experiências presenciais exclusivas reduzem a substituição direta. Por isso, a classificação como risco médio é a mais adequada.
 
 ### 2.5 Ameaça de produtos substitutos
 
@@ -372,7 +379,7 @@ Complementar às 5 Forças de Porter, a análise SWOT permite consolidar os fato
 <div align="center">
 <sub>Imagem 02 - Análise SWOT</sub><br>
   <img src="../assets/analise-swot.png" width="100%" alt="Análise SWOT - Aventura Teatros"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 #### **Forças**
@@ -405,27 +412,31 @@ Além disso, a concorrência com plataformas digitais representa uma transforma�
 
 ### 3.1 Visão do Produto
 
-A visão do produto é conceber e estabelecer um novo ecossistema digital da Aventura Teatros. Através de um motor de recomendação orientado a dados, o sistema conectará o público ao vasto catálogo da produtora, antecipando interesses e sugerindo espetáculos de forma fluida. O propósito é criar uma jornada digital que retenha o usuário no ecossistema da marca, convertendo esse engajamento contínuo em um aumento real na venda de ingressos.
+O produto será um hub digital de descoberta do catálogo da Aventura Teatros. Um serviço de recomendação usará preferências, cidade e interações permitidas para ordenar espetáculos, enquanto busca e filtros permanecerão disponíveis. O resultado de negócio será acompanhado pelo uso das recomendações e pelos redirecionamentos à bilheteria externa.
 
 ### 3.2 Objetivos do Produto
-O desenvolvimento desta solução tem metas claras, alinhadas diretamente às necessidades de negócio da Aventura Teatros e ao valor entregue aos usuários:
 
-* **Maximizar a Retenção e Conversão de Vendas:** Atuar como o principal motor de direcionamento estratégico da empresa. Ao sugerir de forma inteligente novos espetáculos antes que o usuário abandone a página, o sistema visa reter o cliente no portal, transformando o tempo de navegação em aumento direto na venda de ingressos.
-* **Personalizar a Jornada de Descoberta:** Transformar a experiência do usuário de reativa para proativa. O objetivo é que cada visitante sinta que o portal entende suas preferências, recebendo recomendações assertivas que reduzem o atrito na busca por entretenimento.
-* **Integrar o Ecossistema Aventura:** Quebrar os silos entre as diferentes produções (teatros, musical, festivais, etc.). O sistema deve criar pontes fluidas, incentivando o público de um nicho a descobrir e consumir a multiplicidade artística da produtora.
-* **Implementar Arquitetura Escalável:** Entregar uma base tecnológica moderna através de uma Arquitetura Orientada a Serviços (SOA), capaz de processar os dados de interesse do usuário em tempo real e fornecer as recomendações de forma ágil, escalável e com alto desempenho.
+* **Aumentar o avanço até a compra:** ampliar a proporção de sessões que chegam ao link da bilheteria externa após interação com o catálogo ou com uma recomendação.
+* **Melhorar a descoberta:** apresentar recomendações coerentes com preferências, cidade e comportamento, sem impedir busca e navegação manual.
+* **Conectar o catálogo:** facilitar a descoberta cruzada entre diferentes gêneros, teatros e produções da Aventura.
+* **Sustentar a evolução técnica:** usar SOA para manter serviços com contratos explícitos, implantação independente e métricas de desempenho, capacidade e disponibilidade.
 
 ### 3.3 Métricas de Sucesso (KPIs)
-Para garantir e monitorar que os objetivos acima sejam atingidos, o produto focará nos seguintes indicadores chave:
-* **Taxa de Conversão:** Aumento na porcentagem de usuários que clicam em uma recomendação e são direcionados ao parceiro de bilheteria.
-* **Engajamento e Retenção:** Aumento do tempo médio de sessão e do número de páginas/telas acessadas por visita.
-* **Taxa de Cliques (CTR):** Volume de interação direta com os carrosséis de vitrines dinâmicas e notificações push.
+
+Como não existe série histórica validada do novo produto, o **baseline será medido nos primeiros 30 dias após a publicação**. As metas abaixo serão verificadas nos 90 dias seguintes, comparando usuários e canais equivalentes. A instrumentação deverá registrar somente identificadores pseudonimizados e eventos necessários à análise.
+
+| KPI | Fórmula e baseline | Meta SMART | Janela e fonte | Verificação |
+|---|---|---|---|---|
+| **CTR das recomendações** | `cliques em cards recomendados ÷ impressões válidas de cards recomendados × 100`. Baseline: primeiros 30 dias. | Atingir CTR **≥ 8%** e, após o baseline, crescimento relativo **≥ 15%** até o fim do 3º mês de acompanhamento. | Apuração semanal e consolidação mensal; eventos `recommendation_impression` e `recommendation_click`. | Dashboard de produto revisado pelo responsável de Produto/Analytics. |
+| **Taxa de redirecionamento para bilheteria** | `sessões com clique em "ingresso" ÷ sessões que visualizaram detalhes de espetáculo × 100`. Baseline: primeiros 30 dias. | Atingir taxa **≥ 12%** e crescimento relativo **≥ 10%** sobre o baseline em até 90 dias. O indicador mede o *hand-off*, não a venda concluída na ticketeira. | Consolidação mensal; eventos `show_detail_view` e `ticket_redirect_click`. | Relatório de conversão validado por Produto e representante da Aventura. |
+| **Profundidade de descoberta** | Média de espetáculos distintos visualizados por sessão e proporção de sessões com **≥ 3** espetáculos distintos. Baseline: primeiros 30 dias. | Elevar a média em **≥ 15%** e alcançar **≥ 35%** das sessões com três ou mais espetáculos em até 90 dias. | Eventos de visualização de detalhe, com sessões de bots e testes excluídas. | Consulta analítica mensal e comparação com o baseline. |
+| **Relevância das recomendações** | `itens recomendados compatíveis com gênero/cidade do perfil ÷ itens recomendados avaliados × 100`, complementada por CTR. Baseline técnico: primeira versão homologada. | Manter aderência **≥ 70%** na amostra de homologação e não reduzir o CTR por duas medições mensais consecutivas. | Amostra mínima de 100 listas de recomendação por versão do modelo; logs versionados do recomendador. | Relatório do serviço de recomendação revisado pela equipe de Dados/ML. |
 
 ---
 
 ## 4. O que o Produto Faz e o que Não Faz
 
-Considerando o desafio de criar um hub digital dinâmico, é fundamental estabelecer fronteiras claras de atuação. Para garantir o alinhamento de expectativas e o foco na entrega de valor estratégico para a Aventura Teatros, utilizamos a matriz **"É / Não É / Faz / Não Faz"**. Esta estrutura delimita com precisão o escopo do projeto, definindo o papel do motor de recomendação e da aplicação multiplataforma (Web e Mobile) dentro do ecossistema da empresa, e evitando sobreposições com sistemas já consolidados, como as parcerias com a bilheteria.
+A matriz **"É / Não É / Faz / Não Faz"** delimita o papel do recomendador e das aplicações web e mobile, evitando sobreposição com CMS, bilheteria, pagamento e operação física dos teatros.
 
 ### 4.1. O Produto É:
 * **Uma solução multiplataforma:** Uma aplicação disponível tanto em versão Web quanto em aplicativo móvel híbrido (iOS e Android), garantindo uma experiência consistente em diferentes dispositivos.
@@ -438,46 +449,56 @@ Considerando o desafio de criar um hub digital dinâmico, é fundamental estabel
 * **Uma rede social:** O foco é a recomendação de ativos da Aventura, e não a interação social entre usuários.
 
 ### 4.3. O Produto Faz:
-* **Notificações Personalizadas (Push):** Utiliza o motor de recomendação para enviar sugestões relevantes diretamente ao smartphone do usuário.
 * **Exibe Vitrines Dinâmicas:** Apresenta carrosséis de espetáculos, teatros e conteúdos baseados no comportamento de navegação no app.
 * **Integra-se com APIs da Aventura:** Consome os dados de eventos e peças para organizar as recomendações em tempo real.
 * **Monitora Interesses do Usuário:** Mapeia quais categorias (musicais, festivais) o usuário mais acessa para refinar as sugestões.
 
 ### 4.4. O Produto Não Faz:
 * **Não vende ingressos diretamente:** A finalização da compra ocorre via redirecionamento para o parceiro de ticketing.
-* **Não funciona offline:** Por depender de um motor de recomendação em tempo real e atualização de catálogo, o app exige conexão com a internet.
-* **Não gerencia a logística dos teatros:** O escopo é estritamente informativo e de recomendação, sem controle de assentos ou entrada física (QR Code de acesso pode estar fora de escopo, dependendo do que vocês decidiram).
+* **Não envia notificações push na versão atual:** Essa funcionalidade não integra o MVP e permanece apenas como possibilidade de evolução futura.
+* **Não funciona offline:** Por depender de autenticação, catálogo atualizado e consulta ao serviço de recomendação, o app exige conexão com a internet para entregar recomendações e redirecionamentos corretos.
+* **Não gerencia a logística dos teatros:** O escopo é informativo e de recomendação; não inclui controle de assentos, emissão ou leitura de QR Code e gestão de entrada física.
 
 ---
 
 ## 5. Personas e Jornada do Usuário
  
----
  
 ### 5.1 Personas
+
+| Persona | Perfil representado | Contexto de uso | Principais dores | Funcionalidades orientadas pela persona |
+|---|---|---|---|---|
+| Ana Luiza | Cliente em formação, influenciada por redes sociais e por decisões em grupo | Descoberta cultural, saída com amigos, validação familiar e primeira compra | Falta de repertório, baixa paciência para navegação textual, medo de escolher algo pouco atraente ou inadequado ao grupo | Onboarding de interesses, home visual, categorias, recomendações personalizadas, wishlist, detalhes do espetáculo e link de compra |
+| Marcos Abrantes | Cliente ativo em decisão e consumo, com rotina intensa e maior intenção de compra | Consumo recorrente, busca objetiva, visita ocasional a outra cidade e uso contínuo do catálogo | Fadiga de decisão, dispersão de informações, incerteza sobre qualidade da recomendação, necessidade de preço/local/data claros | Busca, filtros por gênero/localidade, recomendação por histórico/preferências, informações de teatro, detalhes do espetáculo, métricas e recomendações persistidas |
  
 ### 5.1.1 Ana Luiza — Cliente em Formação (Descoberta)
  
 Ana Luiza representa um perfil emergente de consumidores culturais em formação: jovens que ainda não possuem o hábito consolidado de frequentar teatro, mas demonstram interesse quando expostos a estímulos visuais, sociais e tendências digitais. Sua relação com o lazer é fortemente influenciada por redes sociais e pelo grupo de amigos, tornando a descoberta de experiências mais espontânea do que planejada.
  
 Apesar de não ser uma consumidora ativa do setor, Ana exerce influência significativa na decisão de compra, especialmente em contextos familiares. No entanto, enfrenta barreiras como a falta de direcionamento, dificuldade em identificar conteúdos adequados para sua faixa etária e baixa atratividade das plataformas tradicionais. Esse cenário evidencia a necessidade de soluções que tornem a experiência mais visual, intuitiva e alinhada ao comportamento digital, incentivando o interesse e reduzindo a distância entre o público jovem e o consumo cultural.
+
+Em muitas situações, Ana não decide apenas por impulso individual: ela leva a sugestão para amigos ou familiares e precisa validar se a experiência é adequada, segura, financeiramente viável e interessante para o grupo. Por isso, sua jornada depende de informações claras sobre preço, data, local, descrição do espetáculo e recursos que permitam salvar alternativas antes da decisão final.
  
 <div align="center">
   <sub>Imagem 03 - Persona do cliente</sub><br>
   <img src="../assets/personas-ana.png" width="100%" alt="Persona do cliente"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
+
 ---
  
 ### 5.1.2 Marcos Abrantes — Cliente Ativo (Decisão e Consumo)
  
 Marcos Abrantes representa um perfil crescente de consumidores culturais urbanos: jovens adultos com rotina intensa, que buscam no lazer uma forma de descanso e inspiração, mas ainda têm uma relação pouco estruturada com o consumo de teatro. Seu contato com espetáculos acontece de forma reativa, mediado por redes sociais e indicações, o que torna sua jornada fragmentada. Apesar do interesse genuíno e do potencial de consumo, Marcos enfrenta dificuldades para descobrir novas produções com confiança, revelando uma oportunidade clara para soluções que organizem, personalizem e qualifiquem sua experiência de decisão.
+
+Marcos tem maior intenção de compra e costuma tomar decisões em contextos de agenda apertada, inclusive quando está em uma cidade onde não conhece bem a programação cultural. Nesses casos, ele precisa comparar opções por localização, entender o teatro, conferir preço e data e acessar a bilheteria sem fricção. Como usuário recorrente, suas preferências e interações também geram sinais úteis para qualificar recomendações, organizar vitrines e apoiar decisões de divulgação do catálogo.
  
 <div align="center">
   <sub>Imagem 04 - Persona do cliente</sub><br>
   <img src="../assets/Persona-marcos.png" width="100%" alt="Persona do cliente"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
+
 ---
  
 ### 5.2 Jornada do Usuário
@@ -519,6 +540,21 @@ Marcos Abrantes representa um perfil crescente de consumidores culturais urbanos
 
 ---
 
+### 5.2.3 Matriz de oportunidades por etapa da jornada
+
+Para tornar as jornadas mais úteis às decisões de produto, a tabela abaixo explicita quais funcionalidades respondem a cada ponto de fricção. Assim, as oportunidades deixam de ser genéricas e passam a orientar requisitos, priorização e validação da solução.
+
+| Persona | Etapa crítica | Fricção observada | Funcionalidade implicada | Requisito relacionado |
+|---|---|---|---|---|
+| Ana Luiza | Descoberta inicial | Falta de repertório e baixa identificação com plataformas muito textuais | Home visual, banners, categorias e cards com imagem | RF01, RF04, RF10 |
+| Ana Luiza | Validação da escolha | Medo de escolher algo pouco atraente para o grupo | Detalhes do espetáculo, descrição, imagem, preço e wishlist | RF04, RF06, RF09 |
+| Ana Luiza | Decisão familiar ou em grupo | Precisa mostrar que a opção é adequada, viável e interessante para outras pessoas | Informações objetivas de preço, data, local, descrição e possibilidade de salvar alternativas | RF04, RF06, RF07, RF09 |
+| Marcos Abrantes | Busca ativa | Cansaço por pesquisar em múltiplos canais | Busca por nome, filtro por gênero e catálogo centralizado | RF04, RF05 |
+| Marcos Abrantes | Decisão | Dúvida se a recomendação realmente combina com seu gosto | Recomendação baseada em preferências, gêneros favoritos e recomendações persistidas | RF08, RF10 |
+| Marcos Abrantes | Uso ocasional em outra cidade | Pouco conhecimento da programação local e necessidade de decidir rápido | Filtros por cidade/localidade, informações de teatro, eventos em cartaz e link direto para bilheteria | RF02, RF04, RF07, RF09 |
+| Marcos Abrantes | Pós-consumo e recorrência | Preferências mudam com o tempo e recomendações podem ficar genéricas | Gestão de perfil, edição de preferências, batch periódico e recomendações persistidas | RF08, RF10, RNF08 |
+| Marcos Abrantes | Evolução do catálogo | O comportamento de usuários recorrentes precisa gerar sinais úteis sobre interesse por temas, formatos e espetáculos | Métricas do modelo, análise de preferências/interações e monitoramento das recomendações geradas | RF10, RNF08 |
+
 ## 6. Fluxo do Negócio
 
 Nesta seção, apresentamos o fluxo de negócios da Plataforma Aventura modelado em BPMN (Business Process Model and Notation). O diagrama mapeia as interações entre três participantes principais — o Cliente, o Sistema de Recomendação e a Gestão de Conteúdo — demonstrando como esses processos se integram para oferecer uma experiência personalizada ao usuário. A notação BPMN foi escolhida por permitir uma leitura clara e padronizada dos fluxos, facilitando tanto a comunicação entre equipes técnicas quanto a compreensão por stakeholders de negócio.
@@ -526,7 +562,7 @@ Nesta seção, apresentamos o fluxo de negócios da Plataforma Aventura modelado
 <div align="center">
 <sub>Imagem 07 - Fluxo de Negócio (BPMN)</sub><br>
   <img src="../assets/fluxo-negocios-bpmn.png" width="100%" alt="Fluxo de Negócio (BPMN)"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 O fluxo de negócios é composto por duas pools distintas. Na pool do Cliente, o processo tem início com o acesso ao portal Aventura, seguido da recepção de recomendações. O gateway exclusivo "Se interessa?" determina o caminho seguinte: caso haja interesse, o cliente é direcionado à ticketera, encerrando o processo; caso contrário, o fluxo retorna à etapa de recepção de recomendações.
@@ -537,53 +573,50 @@ Na pool da Plataforma Aventura, dois fluxos paralelos operam de forma independen
 
 ## 7. Brainstorming de Features
 
-Para o projeto de plataforma digital baseada em arquitetura orientada a serviços, desenvolvido em parceria com a **Aventura Teatros**, o desafio central identificado é a ausência de um sistema estruturado de recomendação no Portal Aventura. Isso limita o potencial de descoberta de novos conteúdos e impacta diretamente a conversão em vendas de ingressos.
+O brainstorm foi consolidado em um catálogo rastreável. Dados como nome, data de nascimento, gênero, CEP, e-mail e senha são campos das features de cadastro e onboarding, não features independentes.
 
-Esta documentação detalha o brainstorm de *features* realizado em grupo.
+### 7.1 Features do MVP
 
+| ID | Feature | Escopo e valor | Relação |
+|---|---|---|---|
+| F01 | Cadastro, autenticação e consentimento | Criar conta, autenticar e registrar o aceite da política de privacidade. | RF03, RNF02, RNF03 |
+| F02 | Onboarding de perfil e interesses | Coletar, de forma opcional quando aplicável, cidade, frequência e gêneros para iniciar a personalização. | RF01, RF08 |
+| F03 | Catálogo e detalhes | Exibir espetáculos por categorias, com dados de teatro, preço inicial e URL externa. | RF04, RF07 |
+| F04 | Busca e filtros | Pesquisar por título ou teatro e filtrar o catálogo por gênero e região. | RF02, RF05 |
+| F05 | Recomendação personalizada | Ordenar sugestões por preferências, cidade e comportamento disponível. | RF02, RF10 |
+| F06 | Wishlist persistente | Adicionar, remover e consultar espetáculos salvos entre sessões. | RF03, RF06 |
+| F07 | Perfil e privacidade | Editar dados e preferências, revogar consentimentos opcionais e solicitar exclusão/anonimização. | RF08, RNF03 |
+| F08 | Redirecionamento para compra | Abrir a URL oficial da ticketeira e registrar o evento de *hand-off*, sem processar pagamento. | RF09 |
+| F09 | Telemetria de produto | Registrar impressões, cliques, visualizações e redirecionamentos pseudonimizados para cálculo dos KPIs. | KPIs da seção 3.3 |
+| F10 | Integração e operação dos serviços | Expor contratos entre app, gateway, backend, recomendador e dados, com observabilidade básica. | RNF01, RNF05, RNF06, RNF08 |
 
-### 7.1 Visão Geral do Modelo (Backend & Inteligência)
+### 7.2 Roadmap futuro
 
-O motor de recomendação será alimentado por dados demográficos e comportamentais para personalizar a experiência do usuário no portal.
+| ID | Feature | Condições e decisão |
+|---|---|---|
+| F11 | Feedback explícito de recomendação | Incluir *like/dislike* após validar que o sinal melhora o modelo e não cria atrito excessivo. |
+| F12 | Notificações push personalizadas | **Fora do MVP.** Poderá ser avaliada futuramente, mediante opt-in específico, revogação pelo usuário, limite de frequência e tratamento dos tokens conforme a LGPD. |
+| F13 | Painel administrativo de catálogo e curadoria | Permitir gestão de eventos, datas, teatros, gêneros e destaques quando a Aventura definir responsável e fonte canônica dos dados. |
+| F14 | Gestão administrativa das regras de recomendação | Configurar pesos, bloqueios, campanhas e versões sem alteração manual de código, com trilha de auditoria. |
+| F15 | Painel de indicadores e conversões | Visualizar CTR, profundidade de descoberta e redirecionamentos por período, campanha e espetáculo. |
 
-* **Geolocalização:** Filtragem baseada na localização do usuário.
-* **Perfil Demográfico:** Segmentação por idade e gênero.
-* **Rastreio de Ações:** Monitoramento do comportamento de navegação dentro da plataforma.
-* **Indicadores de Interesse:** Gatilhos de conversão, como o clique no link da ticketeira (venda de ingressos).
-* **Integração com Wishlist:** O sistema deve reconhecer se o espetáculo já está na lista de desejos para refinar as sugestões.
+### 7.3 Ideias descartadas ou fora de escopo
 
+| ID | Item | Decisão |
+|---|---|---|
+| F16 | Venda e pagamento de ingressos | Fora de escopo; a compra permanece na ticketeira externa. |
+| F17 | Emissão ou leitura de QR Code | Fora de escopo; o produto não controla acesso físico. |
+| F18 | Rede social entre espectadores | Fora de escopo do produto de descoberta e recomendação. |
+| F19 | CMS completo no MVP | Fora de escopo; o MVP consome e persiste o catálogo necessário, sem substituir o sistema editorial do parceiro. |
 
-### 7.2 Interface do Usuário (Front-end)
+### 7.4 Pontos em aberto e trade-offs
 
-### 7.2.1 Fluxo de Cadastro e Onboarding
-Essencial para coletar os dados iniciais que alimentarão o sistema de recomendação inteligente.
-* **Credenciais:** E-mail e senha.
-* **Dados Pessoais:** Nome, Idade, Gênero e CEP.
-* **Questionário de Preferências:**
-    * Frequência de ida ao teatro.
-    * Tipos de preferência (Show musical, stand-up, espetáculo, espetáculo musical).
-    * Seleção de gêneros favoritos.
-
-### 7.2.2 Estrutura de Navegação
-* **Home:** Visão geral e destaques.
-* **Componentes de Descoberta:** Carrosséis e "Prateleiras" de recomendações personalizadas.
-* **Filtros Regionais:** Seleção rápida entre São Paulo (SP) e Rio de Janeiro (RJ).
-* **Retenção:** Seção "Assista Novamente" e acesso rápido à Wishlist.
-* **Perfil:** Gestão de dados e preferências do usuário.
-* **Teatro:** Páginas com informações fixas sobre os equipamentos geridos pela Aventura.
-
-
-### 7.3 Funcionalidades Core
-
-* **Direcionamento para Compra:** Link direto e facilitado para a aquisição de ingressos.
-* **Busca:** Sistema de pesquisa interna de conteúdos e espetáculos.
-* **Gestão de Wishlist:** Botão para salvar experiências de interesse futuro.
-
-
-### 7.4 Roadmap: Funcionalidades Adicionais (Futuro)
-
-* **Sistema de Feedback:** Avaliação de espetáculos por meio de "Like/Dislike" para aprimorar o algoritmo.
-* **Notificações Push:** Alertas automáticos quando um espetáculo salvo na Wishlist entrar em cartaz ou tiver novas datas disponíveis.
+| Decisão | Estado | Trade-off |
+|---|---|---|
+| Fonte canônica do catálogo | Pendente de validação com o parceiro | Integração automática reduz operação manual, mas depende da estabilidade e do contrato da API externa. |
+| Painel administrativo próprio | Roadmap | Aumenta autonomia da curadoria, mas amplia escopo, autenticação administrativa e custos de manutenção. |
+| Regras editáveis do recomendador | Roadmap | Facilita campanhas, mas requer auditoria, versionamento e proteção contra alterações que reduzam a qualidade. |
+| Medição de vendas concluídas | Não disponível no MVP | O app mede redirecionamentos; conversão financeira depende de integração ou retorno de dados da ticketeira. |
 
 
 ---
@@ -595,18 +628,18 @@ O Business Model Canvas apresentado a seguir sintetiza a estratégia do MVP da P
 <div align="center">
 <sub>Imagem 08 - Business Model Canvas do MVP</sub><br>
   <img src="../assets/Model-Canvas-MVP.png" width="100%" alt="Business Model Canvas do MVP"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 | Bloco | Descrição |
 |---|---|
 | Proposta de valor | Motor de recomendação personalizado que transforma o portal da Aventura de uma navegação estática em um hub dinâmico de descoberta cultural, conectando o usuário ao catálogo completo de produções (musicais, ballet, festivais) e reduzindo o atrito na jornada até a compra do ingresso. |
 | Segmentos de clientes | Frequentadores de teatro e espetáculos musicais nas praças de São Paulo e Rio de Janeiro; público digital com perfil de early adopter cultural; apreciadores de produções internacionais; e novos públicos a serem convertidos por meio das recomendações personalizadas. |
-| Canais | Aplicativo móvel híbrido (iOS e Android), plataforma web responsiva e notificações push. O redirecionamento para a compra de ingressos ocorre via parceiros de bilheteria (ticketeras). |
-| Relacionamento com clientes | Experiência proativa e personalizada por meio de vitrines dinâmicas no app e na web, além de notificações push baseadas no comportamento de navegação do usuário. A plataforma ainda não existe, sendo este o modelo-alvo da solução. |
+| Canais | Aplicativo móvel híbrido (iOS e Android) e plataforma web responsiva. O redirecionamento para a compra ocorre via parceiros de bilheteria. |
+| Relacionamento com clientes | Experiência personalizada por meio de vitrines dinâmicas no app e na web. |
 | Fontes de receita | Receita indireta via aumento da taxa de conversão de ingressos, com o fluxo financeiro passando pelas ticketeras parceiras. Há potencial futuro de destaque pago para espetáculos internacionais e valorização da marca Aventura como referência digital no setor cultural. |
 | Recursos principais | Base de dados de espetáculos da Aventura, equipe interna de engenharia e dados, infraestrutura SOA desenvolvida pelo time e catálogo histórico de produções. |
-| Atividades principais | Desenvolvimento e manutenção do motor de recomendação, curadoria e atualização do catálogo, monitoramento de comportamento do usuário, envio de notificações push personalizadas e integração contínua com as APIs da Aventura. |
+| Atividades principais | Desenvolvimento e manutenção do motor de recomendação, curadoria e atualização do catálogo, monitoramento pseudonimizado de comportamento e integração contínua com as APIs da Aventura. |
 | Parcerias principais | Parceiros de bilheteria (ticketeras), licenciadores internacionais (Broadway, Disney-Pixar), patrocinadores via Lei Rouanet e teatros e equipamentos culturais parceiros da Aventura. |
 | Estrutura de custos | Desenvolvimento e manutenção da plataforma pela equipe interna, infraestrutura de servidores e nuvem, evolução contínua do motor de recomendação e integração com APIs externas. Por ser desenvolvida internamente, a plataforma não exige investimento direto em licenças de software de terceiros. |
 
@@ -624,13 +657,32 @@ Durante a etapa de análise, delimitamos estrategicamente o escopo do sistema pa
 ### 9.2. Especificação e Validação de Requisitos Funcionais
 Conforme as premissas do SWEBOK, a especificação tem o papel de traduzir as necessidades do negócio em comportamentos claros e executáveis para o sistema, enquanto a validação garante que o produto construído seja plenamente testável.
 
-Para a especificação, adotamos o padrão estruturado de User Stories ("Como perfil, eu quero ação, para motivação"), garantindo que o desenvolvimento seja continuamente guiado pelo valor entregue ao usuário. Paralelamente, para a etapa de validação, foram definidos Casos de Teste de Usuário para cada funcionalidade descrita. Esses testes estabelecem critérios de aceitação rigorosos, contemplando pré-condições, procedimentos de execução e os resultados sistêmicos e visuais esperados, assegurando que todas as ações e comportamentos do software possam ser homologados com precisão técnica antes de serem disponibilizados ao público. Os requisitos detalhados sob esta ótica são apresentados a seguir.
+Para a especificação, foi adotado o padrão “Como [perfil], eu quero [ação], para [motivação]”. Cada RF possui critérios de aceitação próprios, que definem quando o requisito é considerado satisfeito. Em seguida, o caso de teste descreve pré-condição, procedimento, resultado esperado e pós-condição. Assim, o **critério do requisito** não se confunde com o **resultado esperado do caso de teste**.
+
+| ID | Nome | Ator | Objetivo | Prioridade | Origem |
+|---|---|---|---|---|---|
+| RF01 | Onboarding de Interesses | Novo usuário | Registrar preferências iniciais | Alta | F02; seção 7.1 |
+| RF02 | Recomendação por Geolocalização | Usuário | Priorizar eventos da cidade | Alta | F04/F05; seção 7.1 |
+| RF03 | Autenticação e Persistência | Usuário | Manter conta, sessão e dados entre acessos | Alta | F01/F06; seção 7.1 |
+| RF04 | Catálogo Categorizado | Usuário | Explorar o catálogo por categorias | Alta | F03; seção 7.1 |
+| RF05 | Busca Específica | Usuário | Localizar espetáculo ou teatro | Alta | F04; seção 7.1 |
+| RF06 | Gestão de Wishlist | Espectador | Salvar e remover espetáculos | Alta | F06; seção 7.1 |
+| RF07 | Informações de Teatros | Espectador | Consultar local e funcionamento | Média | F03; seção 7.1 |
+| RF08 | Gestão de Perfil e Preferências | Usuário | Controlar dados e personalização | Alta | F07; seção 7.1 |
+| RF09 | Redirecionamento de Compra | Usuário | Acessar a bilheteria oficial externa | Alta | F08; seção 7.1 |
+| RF10 | Recomendação Inteligente | Usuário | Descobrir espetáculos relevantes | Alta | F05; seção 7.1 |
 
 ### RF01 — Onboarding de Interesses
 
 **User story:** Como novo usuário, eu quero responder a um questionário de interesses (onboarding), para que o sistema recomende o catálogo de acordo com minhas preferências (gênero, frequência, localização).
 
-**Testes de usuário:**
+**Critérios de aceitação do requisito:**
+
+- O usuário pode concluir ou pular perguntas sem perder acesso ao aplicativo.
+- As respostas fornecidas são persistidas e ficam disponíveis para edição no perfil.
+- Se houver gênero e cidade informados, as seções personalizadas refletem essas escolhas na carga seguinte.
+
+**Caso de teste TU-RF01:**
 
 | Campo | Descrição |
 |---|---|
@@ -645,13 +697,19 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 **User story:** Como usuário, eu quero receber sugestões baseadas na minha localização (Geolocalização), para priorizar eventos que acontecem na minha cidade (RJ ou SP).
 
-**Testes de usuário:**
+**Critérios de aceitação do requisito:**
+
+- Com cidade definida e ao menos três espetáculos ativos elegíveis, o carrossel exibe no mínimo três cards, todos da cidade do usuário.
+- Se existirem menos de três espetáculos elegíveis, todos são exibidos e a limitação de catálogo é informada no registro do teste.
+- Sem cidade definida ou sem evento elegível, o sistema apresenta um estado vazio explícito, sem considerar o carrossel vazio como sucesso.
+
+**Caso de teste TU-RF02:**
 
 | Campo | Descrição |
 |---|---|
-| Pré-condição | O usuário está logado e possui a localização definida (ex: São Paulo).|
+| Pré-condição | O usuário está logado, possui a cidade São Paulo definida e a base contém ao menos três espetáculos ativos vinculados a teatros de São Paulo.|
 | Procedimento de teste |1. Acessar a página inicial (Home).<br>2. Rolar a página até a seção "Em Cartaz Perto de Você". <br> 3. Verificar os locais dos espetáculos exibidos. |
-| Resultado esperado |A prateleira exibe exclusivamente espetáculos vinculados a teatros localizados na cidade de São Paulo. |
+| Resultado esperado |A prateleira exibe no mínimo três cards e 100% deles estão vinculados a teatros da cidade de São Paulo. Se a base possuir menos de três elegíveis, exibe todos e registra a limitação; carrossel vazio só é válido com estado vazio explícito. |
 | Pós-condição |O sistema registra a visualização para refinar o algoritmo de engajamento local. |
 
 ---
@@ -660,7 +718,13 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 **User story:** Como usuário, eu quero me cadastrar e realizar login (E-mail/Senha), para que minhas preferências e minha Wishlist sejam salvas entre diferentes sessões e dispositivos.
 
-**Testes de usuário:**
+**Critérios de aceitação do requisito:**
+
+- Cadastro e login válidos criam uma sessão autenticada sem expor credenciais.
+- Preferências e Wishlist permanecem associadas à conta após encerramento e reabertura do aplicativo.
+- Credenciais inválidas não criam sessão e produzem mensagem de erro compreensível.
+
+**Caso de teste TU-RF03:**
 
 | Campo | Descrição |
 |---|---|
@@ -675,7 +739,13 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 **User story:** Como usuário, eu quero visualizar o catálogo completo de espetáculos organizado por categorias, para que eu tenha uma visão geral da multiplicidade artística da Aventura de forma estruturada.
 
-**Testes de usuário:**
+**Critérios de aceitação do requisito:**
+
+- Todo espetáculo ativo exibido possui uma categoria válida.
+- Ao aplicar uma categoria, somente itens associados a ela são apresentados.
+- A ausência de resultados apresenta estado vazio sem misturar itens de outras categorias.
+
+**Caso de teste TU-RF04:**
 
 | Campo | Descrição |
 |---|---|
@@ -689,7 +759,13 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 **User story:** Como usuário, eu quero pesquisar por termos específicos (teatro, título), para encontrar rapidamente informações sobre uma produção específica.
 
-**Testes de usuário:**
+**Critérios de aceitação do requisito:**
+
+- A busca considera título do espetáculo e nome do teatro.
+- Resultados correspondentes ao termo são exibidos sem itens não relacionados.
+- Termo sem correspondência apresenta estado vazio e não produz erro técnico.
+
+**Caso de teste TU-RF05:**
 
 | Campo | Descrição |
 |---|---|
@@ -703,13 +779,19 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 **User story:** Como espectador, eu quero adicionar ou remover espetáculos da minha Wishlist, para sinalizar ao algoritmo meus interesses reais e salvar peças para consulta futura.
 
-**Testes de usuário:**
+**Critérios de aceitação do requisito:**
+
+- Adicionar ou remover um espetáculo altera imediatamente o estado visual e persistido da Wishlist.
+- O mesmo espetáculo não pode ser duplicado na lista.
+- O estado da Wishlist permanece correto após recarregar a tela, reiniciar o aplicativo e realizar novo login.
+
+**Caso de teste TU-RF06:**
 
 | Campo | Descrição |
 |---|---|
 | Pré-condição |O usuário está logado e acessa a página de um espetáculo que não está em sua Wishlist. |
-| Procedimento de teste |1. Clicar no botão "Adicionar à Wishlist".<br>2. Acessar a página "Minha Wishlist" para validar a inclusão.<br>3. Voltar e clicar no mesmo botão para remover. |
-| Resultado esperado | O botão muda de estado visual. O espetáculo aparece na página Wishlist (passo 2) e desaparece ao ser removido (passo 3).|
+| Procedimento de teste |1. Clicar no botão "Adicionar à Wishlist".<br>2. Acessar a página "Minha Wishlist" para validar a inclusão.<br>3. Recarregar a tela e reiniciar o aplicativo, confirmando que o item permanece salvo.<br>4. Encerrar a sessão, realizar novo login e confirmar novamente a presença do item.<br>5. Voltar aos detalhes e remover o espetáculo; repetir reload para confirmar a remoção. |
+| Resultado esperado | O botão muda de estado visual; o espetáculo permanece na Wishlist após reload, reinício e novo login; após a remoção, desaparece e não retorna em novo reload.|
 | Pós-condição |O banco de dados insere (Create) ou deleta (Delete) o relacionamento entre as entidades Usuário e Espetáculo. |
 
 ---
@@ -718,7 +800,13 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 **User story:** Como espectador, eu quero encontrar informações de localização e horário de funcionamento sobre os teatros Aventura, para me preparar para assistir a um espetáculo.
 
-**Testes de usuário:**
+**Critérios de aceitação do requisito:**
+
+- A página apresenta nome, endereço e horários disponíveis do teatro associado.
+- Dados ausentes são indicados sem inventar informações ou quebrar a tela.
+- A consulta não altera dados do usuário ou do catálogo.
+
+**Caso de teste TU-RF07:**
 
 | Campo | Descrição |
 |---|---|
@@ -731,9 +819,15 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ### RF08 — Gestão de Perfil e Preferências
 
-**User story:** Como usuário, quero gerenciar e editar meus dados de perfil e preferências a qualquer momento, para garantir transparência e privacidade.
+**User story:** Como usuário, eu quero gerenciar e editar meus dados de perfil e preferências a qualquer momento, para garantir transparência e privacidade.
 
-**Testes de usuário:**
+**Critérios de aceitação do requisito:**
+
+- O usuário visualiza e altera somente os dados da própria conta.
+- Alterações salvas persistem e influenciam a próxima carga das recomendações.
+- O usuário pode solicitar encerramento e anonimização conforme o RNF03.
+
+**Caso de teste TU-RF08:**
 
 | Campo | Descrição |
 |---|---|
@@ -746,9 +840,15 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ### RF09 — Redirecionamento de Compra
 
-**User story:** Como usuário, quero ser direcionado para a bilheteria oficial via link externo, para realizar a compra do ingresso com segurança.
+**User story:** Como usuário, eu quero ser direcionado para a bilheteria oficial via link externo, para realizar a compra do ingresso com segurança.
 
-**Testes de usuário:**
+**Critérios de aceitação do requisito:**
+
+- O botão de compra só é habilitado para URL HTTPS válida e pertencente a um destino cadastrado para o espetáculo.
+- O clique abre o destino externo correto e deixa claro que o usuário saiu do ambiente da Aventura.
+- O aplicativo preserva o contexto da página ao retornar do navegador externo.
+
+**Caso de teste TU-RF09:**
 
 | Campo | Descrição |
 |---|---|
@@ -761,9 +861,15 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ### RF10 — Recomendação Inteligente
 
-**User story:** Como usuário, quero receber sugestões personalizadas com base no meu comportamento e preferências, para descobrir novos espetáculos relevantes de forma mais rápida e intuitiva.
+**User story:** Como usuário, eu quero receber sugestões personalizadas com base no meu comportamento e preferências, para descobrir novos espetáculos relevantes de forma mais rápida e intuitiva.
 
-**Testes de usuário:**
+**Critérios de aceitação do requisito:**
+
+- Pelo menos 70% dos itens da amostra de recomendação são aderentes ao gênero ou à cidade informados.
+- Itens indisponíveis ou já encerrados não são recomendados.
+- Usuário sem dados suficientes recebe conteúdo de fallback e explicação para completar preferências.
+
+**Caso de teste TU-RF10:**
 
 | Campo | Descrição |
 |---|---|
@@ -777,21 +883,28 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 
 ## 10. Requisitos Não Funcionais
+
+Para classificar os Requisitos Não Funcionais, foi adotado o modelo de qualidade da ISO/IEC 25010, considerando as categorias usadas na avaliação do projeto: Functional Suitability, Performance Efficiency, Compatibility, Usability, Reliability, Security, Maintainability e Portability.
+
+Cada RNF foi associado a uma característica e a uma subcaracterística da norma, além de possuir métrica, forma de validação e evidência esperada. No caso do RNF03, relacionado à LGPD, a classificação utilizada foi Security → Privacy, pois o requisito trata da proteção de dados pessoais, exclusão, anonimização e controle sobre as informações do usuário.
+
 ### RNF01 — Tempo de resposta das recomendações
 
 **Característica ISO 25010:** Eficiência de Desempenho → **Comportamento Temporal**
 
+**Métrica e validação:** média, p95 e p99 de latência em no mínimo 100 execuções por cenário; medição por k6 e logs de aplicação, com relatório JSON como evidência.
+
 **User story:** Como usuário, quero que as recomendações personalizadas e os carrosséis da home carreguem rapidamente, para que eu possa explorar o catálogo sem frustração e manter o interesse na navegação.
 
-**Critério de Aceitação:** sob carga nominal (até 200 usuários simultâneos), o tempo de renderização completa das prateleiras de recomendação tem **p95 ≤ 3 s** e **média ≤ 2 s**.
+**Critério de Aceitação:** sob carga nominal (até 200 usuários simultâneos), o tempo de renderização completa das prateleiras de recomendação tem **p95 ≤ 3 s**, **p99 ≤ 5 s** e **média ≤ 2 s**, calculados sobre pelo menos 100 execuções válidas. O limite máximo operacional é registrado separadamente e não é tratado como p99.
 
 **Teste de usuário:**
 
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Usuário autenticado com onboarding preenchido, wishlist com ao menos 1 item e conexão estável de no mínimo 10 Mbps. |
-| Procedimento | Acessar a Home do Portal e medir, via ferramenta de performance (ex.: Lighthouse/DevTools, marca de `paint` das prateleiras), o tempo entre o início do carregamento e a renderização completa dos carrosséis. Coletar uma amostra de pelo menos 30 execuções em horários distintos. |
-| Resultado esperado | A amostra apresenta p95 ≤ 3 s e média ≤ 2 s; nenhuma execução isolada ultrapassa 5 s (p99). |
+| Procedimento | Acessar a Home do Portal e medir, via k6 e marca de `paint` no aplicativo, o tempo entre o início do carregamento e a renderização completa dos carrosséis. Coletar pelo menos 100 execuções válidas em horários distintos. |
+| Resultado esperado | A amostra apresenta p95 ≤ 3 s, p99 ≤ 5 s e média ≤ 2 s. Valores máximos são registrados separadamente para diagnóstico. |
 | Pós-condição | Carrosséis renderizados com itens personalizados e logs de performance (timestamps por percentil) armazenados para análise. |
 
 ---
@@ -799,6 +912,8 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 ### RNF02 — Segurança das credenciais de usuário
 
 **Característica ISO 25010:** Segurança → **Confidencialidade** e **Integridade**
+
+**Métrica e validação:** 100% das rotas de autenticação em HTTPS/TLS 1.2+; 100% das senhas com hash BCrypt/Argon2 e *salt*; inspeção com DevTools, teste de integração, consulta controlada ao banco e evidência de configuração.
 
 **User story:** Como usuário cadastrado, quero que minha senha e meus dados pessoais (nome, idade, gênero, CEP) sejam armazenados e transmitidos de forma criptografada, para que minhas informações não sejam expostas em caso de tentativa de invasão ou interceptação.
 
@@ -817,7 +932,9 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ### RNF03 — Privacidade e direitos do titular (LGPD)
 
-**Característica ISO 25010:** Segurança → **Confidencialidade (foco em Privacidade de dados pessoais)** e **Responsabilização**
+**Característica ISO 25010:** Security → **Privacy**
+
+**Métrica e validação:** 100% das solicitações de encerramento auditadas; nenhum dado pessoal diretamente identificável associado à conta após o prazo; validação por testes de integração no PostgreSQL, inspeção da trilha de auditoria e relatório do job de anonimização.
 
 **User story:** Como usuário, quero consultar, editar e excluir meus dados pessoais e preferências a qualquer momento, para que a plataforma respeite os direitos garantidos pela LGPD e eu mantenha controle sobre minhas informações.
 
@@ -838,6 +955,8 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 **Característica ISO 25010:** Usabilidade → **Operabilidade**, **Apreensibilidade** e **Acessibilidade**
 
+**Métrica e validação:** SUS, taxa de conclusão por tarefa e inspeção de layout; teste moderado com usuários, dispositivos/emuladores e relatório de usabilidade.
+
 **User story:** Como espectador que acessa o portal pelo celular, quero que toda a navegação (home, busca, wishlist, perfil e onboarding) seja responsiva e intuitiva em telas a partir de 480 px, para que eu possa descobrir espetáculos e gerenciar minhas preferências em qualquer dispositivo.
 
 **Critério de Aceitação:** taxa de conclusão das tarefas ≥ 90% sem ajuda externa; pontuação **SUS ≥ 70**; nenhum elemento cortado ou inacessível nas larguras de 480 px a 1920 px.
@@ -857,6 +976,8 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 **Característica ISO 25010:** Confiabilidade → **Disponibilidade**
 
+**Métrica e validação:** `minutos disponíveis ÷ minutos totais × 100` em janela contínua de 30 dias; monitor de uptime com checagem a cada minuto e relatório exportado.
+
 **User story:** Como usuário do Portal Aventura, quero que a plataforma esteja disponível na maior parte do tempo, inclusive em horários de pico, para que eu possa consultar a programação e ser direcionado à bilheteria sem indisponibilidades.
 
 **Critério de Aceitação:** disponibilidade mensal ≥ **99%** (equivalente a no máximo ~7 h 18 min de indisponibilidade por mês), medida em janela contínua de 30 dias.
@@ -875,6 +996,8 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 ### RNF06 — Capacidade sob carga em pico de campanha
 
 **Característica ISO 25010:** Eficiência de Desempenho → **Capacidade**
+
+**Métrica e validação:** usuários virtuais concorrentes, média/p95/p99, taxa de erro, CPU e memória; teste k6/Locust e relatório de infraestrutura.
 
 **Premissa do volume-alvo:** o número de 1.000 usuários simultâneos representa uma estimativa de pico durante lançamentos de espetáculo/campanhas de marketing da Aventura. Esse valor deve ser recalibrado quando o parceiro disponibilizar os dados reais de tráfego do Portal.
 
@@ -897,6 +1020,8 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 **Característica ISO 25010:** Adequação Funcional → **Correção Funcional**
 
+**Métrica e validação:** `cidades identificadas corretamente ÷ casos válidos × 100`; amostra estratificada mínima de 100 casos (50 SP e 50 RJ), incluindo CEP e geolocalização autorizada, com relatório de acertos e erros.
+
 **User story:** Como usuário localizado no Rio de Janeiro ou em São Paulo, quero que o sistema identifique corretamente minha cidade a partir do CEP ou da geolocalização do dispositivo, para que as recomendações priorizem espetáculos da minha região.
 
 **Critério de Aceitação:** a cidade correta é identificada em **≥ 95%** dos casos; quando identificada, os espetáculos da região correspondente aparecem entre as primeiras posições da seção regional.
@@ -906,7 +1031,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 | Campo | Descrição |
 |---|---|
 | Pré-condição | Usuários de teste cadastrados com CEPs reais de SP e RJ; permissão de geolocalização concedida em parte dos casos. |
-| Procedimento | Acessar a home com 10 perfis distintos (5 SP, 5 RJ) e verificar a seção regional. Repetir com a geolocalização do navegador ativada. |
+| Procedimento | Acessar a home com 100 casos de teste estratificados (50 SP e 50 RJ), distribuídos entre CEP e geolocalização autorizada, e verificar a seção regional. |
 | Resultado esperado | Cidade correta em ≥ 95% dos casos; espetáculos da região correta nas primeiras posições. |
 | Pós-condição | Logs de geolocalização registrados apenas no nível de cidade (sem coordenadas precisas), respeitando a LGPD. |
 
@@ -915,6 +1040,8 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 ### RNF08 — Modularidade do serviço de recomendação
 
 **Característica ISO 25010:** Manutenibilidade → **Modularidade**, **Modificabilidade** e **Testabilidade**
+
+**Métrica e validação:** cobertura de linhas dos módulos críticos, arquivos afetados por mudança e disponibilidade dos serviços durante implantação; CI, relatório de cobertura e logs de deploy/health check.
 
 **User story:** Como desenvolvedor do projeto, quero que o serviço de recomendação seja modular e independente dos demais serviços, para que mudanças no algoritmo não exijam alterações em outros módulos nem causem regressões.
 
@@ -931,6 +1058,48 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 ---
 
+### RNF09 — Interoperabilidade entre serviços
+
+**Característica ISO 25010:** Compatibilidade → **Interoperabilidade**
+
+**User story:** Como responsável técnico, eu quero que aplicativo, API Gateway, backend e serviço de recomendação troquem dados por contratos versionados, para evitar falhas de integração durante a evolução independente dos serviços.
+
+**Métrica e validação:** 100% dos contratos críticos aprovados; zero quebra incompatível sem nova versão; testes de contrato automatizados, OpenAPI e logs de integração como evidência.
+
+**Critério de Aceitação:** os fluxos críticos de autenticação, catálogo, wishlist, recomendação e URL de bilheteria passam em testes de contrato; campos obrigatórios, códigos HTTP e formatos de data permanecem compatíveis; alteração incompatível exige versionamento explícito.
+
+**Teste de validação:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | Especificação OpenAPI versionada e ambientes de teste dos serviços disponíveis. |
+| Procedimento | Executar testes de contrato entre cliente, gateway, backend e recomendador; validar payloads válidos e inválidos, códigos HTTP e serialização de datas. |
+| Resultado esperado | 100% dos contratos críticos aprovados; nenhuma alteração incompatível é aceita sem nova versão. |
+| Pós-condição | Relatório de contrato e versão das APIs armazenados no pipeline. |
+
+---
+
+### RNF10 — Implantação reproduzível
+
+**Característica ISO 25010:** Portabilidade → **Instalabilidade/Deployability**
+
+**User story:** Como responsável por implantação, eu quero provisionar e iniciar os componentes em ambiente limpo por configuração versionada, para reduzir divergências entre desenvolvimento, homologação e produção.
+
+**Métrica e validação:** implantação concluída sem edição manual de código, em até 30 minutos, com 100% dos health checks críticos aprovados; Docker Compose, pipeline e log de instalação como evidência.
+
+**Critério de Aceitação:** em máquina ou agente limpo com pré-requisitos documentados, banco, backend e recomendador são configurados por variáveis de ambiente e artefatos versionados; a implantação termina em até 30 minutos e os health checks retornam sucesso.
+
+**Teste de validação:**
+
+| Campo | Descrição |
+|---|---|
+| Pré-condição | Ambiente limpo com Docker e versões de runtime documentadas. |
+| Procedimento | Seguir o guia de implantação, configurar variáveis de ambiente, subir os serviços e executar health checks e smoke tests. |
+| Resultado esperado | Implantação em até 30 minutos, sem alteração de código e com 100% dos health checks críticos aprovados. |
+| Pós-condição | Log da implantação, versões das imagens e resultado dos smoke tests armazenados. |
+
+---
+
 
 ## 11. Correlação entre RFs e RNFs
 
@@ -938,14 +1107,16 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 
 | RNF | RF relacionados | Justificativa |
 |---|---|---|
-| RNF01 | RF01, RF02, RF04, RF05, RF06, RF10 | O tempo de resposta impacta diretamente as funcionalidades de descoberta e personalização: o onboarding (RF01), as sugestões por geolocalização (RF02), a navegação pelo catálogo (RF04), a busca específica (RF05), a interação com a Wishlist (RF06) e, sobretudo, o feed de recomendação inteligente (RF10) dependem de carregamento ágil para que o usuário não abandone o fluxo antes de receber as sugestões. |
-| RNF02 | RF03, RF08 | A proteção criptográfica de credenciais e dados pessoais sustenta diretamente o cadastro/login (RF03), em que senhas trafegam e são armazenadas, e a gestão de perfil e preferências (RF08), que manipula dados sensíveis como idade, gênero e CEP coletados no onboarding. |
+| RNF01 | RF01, RF02, RF04, RF05, RF06, RF09, RF10 | O tempo de resposta impacta descoberta e personalização e também o caminho de conversão: o RF09 depende da obtenção ágil da URL validada antes de abrir a bilheteria externa. |
+| RNF02 | RF03, RF08, RF09 | A proteção criptográfica sustenta cadastro/login e gestão de perfil. No RF09, HTTPS e validação da URL reduzem redirecionamento para destino inseguro ou adulterado. |
 | RNF03 | RF03, RF08 | A privacidade e o controle do titular sobre seus dados (LGPD) operacionalizam o direito de visualizar, editar e excluir dados pessoais e preferências previsto na gestão de perfil (RF08) e dão validade ao tratamento dos dados coletados no cadastro (RF03), garantindo transparência e rastreabilidade das solicitações. |
 | RNF04 | RF01, RF04, RF05, RF06, RF08, RF09 | A responsividade mobile é crítica em toda a jornada citada na própria user story: o onboarding pelo celular (RF01), a exploração do catálogo (RF04), a busca (RF05), a gestão da Wishlist (RF06), a edição de perfil (RF08) e o redirecionamento à bilheteria externa (RF09), em que qualquer quebra de layout pode interromper a conversão em venda. |
 | RNF05 | RF02, RF04, RF05, RF07, RF09, RF10 | A disponibilidade da plataforma sustenta toda a jornada de descoberta e conversão: recomendações regionais (RF02), exploração do catálogo (RF04), busca (RF05), consulta de informações dos teatros (RF07), feed de recomendação personalizada (RF10) e direcionamento à bilheteria (RF09) precisam estar ativos especialmente em horários de pico, como vésperas de estreia. |
 | RNF06 | RF01, RF02, RF04, RF06, RF09, RF10 | A capacidade sob carga garante que o motor de recomendação mantenha o desempenho com muitos usuários simultâneos realizando onboarding (RF01), recebendo sugestões por geolocalização (RF02) e personalizadas (RF10), navegando pelo catálogo (RF04) e atualizando a Wishlist (RF06). Inclui o redirecionamento à bilheteria (RF09), caminho crítico de conversão que tende a concentrar acessos justamente nos picos de campanha. |
 | RNF07 | RF02, RF04 | A precisão da geolocalização é pré-requisito direto da filtragem regional (RF02), que prioriza eventos da cidade do usuário (RJ ou SP), e influencia a organização do catálogo (RF04), em que prateleiras regionais aparecem como destaque na home. |
 | RNF08 | RF01, RF02, RF08, RF10 | A modularidade do serviço de recomendação permite evoluir o algoritmo sem afetar os demais módulos. Atinge as funcionalidades alimentadas pelo motor: onboarding (RF01), recomendação por geolocalização (RF02), recomendação inteligente (RF10) e a atualização do vetor de interesses feita na gestão de perfil (RF08). |
+| RNF09 | RF01, RF02, RF03, RF04, RF05, RF06, RF07, RF08, RF09, RF10 | Todos os RFs atravessam contratos entre o aplicativo e os serviços; interoperabilidade evita que mudanças de payload, autenticação, datas ou códigos HTTP interrompam os fluxos. |
+| RNF10 | RF03, RF04, RF05, RF06, RF09, RF10 | Autenticação, catálogo, busca, wishlist, redirecionamento e recomendação dependem de ambiente implantado de forma reproduzível e configurado sem mudanças manuais de código. |
 ---
 
 ## 12. Diagramação do banco
@@ -955,7 +1126,7 @@ Para a especificação, adotamos o padrão estruturado de User Stories ("Como pe
 <div align="center">
 <sub>Imagem 09 - Diagrama Lógico</sub><br>
   <img src="../assets/diagrama_logico.png" width="100%" alt="Diagrama lógico do banco"><br>
-  <sup>Source: Material produzido pelos autores, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 O Diagrama Lógico representa as entidades principais do sistema, os relacionamentos entre elas e as cardinalidades, utilizando notação Entidade-Relacionamento (ER) com **retângulos** para as entidades e **losangos** para os relacionamentos.
@@ -1004,9 +1175,9 @@ Este modelo garante **clareza visual**, boa escalabilidade para consultas de rec
 ### 12.4 Diagrama Conceitual
 
 <div align="center">
-<sub>Imagem 09 - Diagrama conceitual</sub><br>
+<sub>Imagem 10 - Diagrama Conceitual</sub><br>
   <img src="../assets/diagrama-logico.png" width="100%" alt="Diagrama conceitual do banco"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 O modelo conceitual de dados representa a estruturação dos dados seguindo as regras do modelo relacional, servindo como uma ponte entre a abstração do modelo conceitual e a implementação física no SGDB.
@@ -1151,9 +1322,9 @@ A separação das entidades reduz redundâncias, melhora a escalabilidade do sis
 O diagrama de classes representa o modelo de domínio de um sistema de gerenciamento de teatro, espetáculos e recomendações personalizadas. O sistema registra interações, além de permitir que usuários descubram espetáculos, gerenciem listas de desejos e recebam recomendações baseadas em seu comportamento e preferências.
 
 <div align="center">
-<sub>Imagem 09 - Diagrama de Classes UML</sub><br>
+<sub>Imagem 11 - Diagrama de Classes UML</sub><br>
   <img src="../assets/diagrama-classes-mod6.drawio.png" width="100%" alt="Diagrama de Classes UML"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 ### Teatro
@@ -1339,7 +1510,7 @@ Enumeração que define os tipos possíveis de interação de um usuário com um
 O diagrama de componentes abaixo representa a estrutura da aplicação seguindo o padrão arquitetural MVVM no cliente (React Native) e SOA no servidor (ASP.NET Core), com dois mecanismos de persistência: um banco de dados relacional PostgreSQL para dados estruturados e transacionais e um Storage Bucket para armazenamento de eventos de comportamento, vetores latentes do modelo SVD e assets de mídia.
 
 <div align="center">
-  <sub>Imagem 10 - Diagrama de Componentes UML</sub><br>
+  <sub>Imagem 12 - Diagrama de Componentes UML</sub><br>
   <img src="../assets/diagrama-de-componentes.drawio.png" width="100%" alt="Diagrama de Componentes UML"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
@@ -1453,7 +1624,11 @@ Packages representam agrupamentos do código da aplicação. Infraestrutura exte
 
 ## 15. Diagrama de Casos de Uso
 
-![Diagrama de Casos de Uso](../assets/Diagrama-use-case.png)
+<div align="center">
+  <sub>Imagem 13 - Diagrama de Casos de Uso UML</sub><br>
+  <img src="../assets/Diagrama-use-case.png" width="100%" alt="Diagrama de Casos de Uso UML"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
 
 ### Atores
 
@@ -1532,231 +1707,66 @@ O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visual
 
 ## 16. Diagrama de Implantação
  
-O diagrama de implantação abaixo apresenta a arquitetura física do Portal Aventura, destacando os ambientes de execução, os componentes implantados e suas comunicações. A solução é composta pelo aplicativo móvel, API Gateway, Backend ASP.NET Core, Training Job, Sistema de Recomendação, banco de dados PostgreSQL, banco de dados MongoDB e serviços externos. As conexões entre os componentes utilizam protocolos como HTTPS e TCP, garantindo a comunicação entre os serviços da plataforma.
+O diagrama de implantação apresenta a arquitetura física de referência do Portal Aventura. Ele reúne os ambientes, componentes e comunicações previstos para aplicativo mobile, backend, recomendação, treinamento, persistência e serviços externos. O desenho representa a direção arquitetural do projeto, não uma declaração de que todos os nós estejam publicados.
  
 <div align="center">
-  <sub>Imagem 10 - Diagrama de Implantação UML</sub><br>
-  <img src="../assets/Diagrama-de-implantacao_drawio.png" width="100%" alt="Diagrama de Implantação UML"><br>
+  <sub>Imagem 14 - Diagrama de Implantação UML</sub><br>
+  <img src="../assets/Diagrama-de-implantacao.drawio.png" width="100%" alt="Diagrama de Implantação UML do Portal Aventura"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
-### Ambientes
- 
-#### Aplicação Mobile
- 
-Representa o aplicativo executado em dispositivos Android.
- 
-**Componentes Implantados:**
- 
-| Componente | Descrição |
-|------------|------------|
-| App Bundle (.apk) | Pacote distribuído para instalação do aplicativo móvel |
-| AsyncStorage | Armazenamento local utilizado para persistência de dados temporários e configurações do usuário |
- 
-**Tecnologias:**
- 
-- Android
-- React Native Runtime
-**Comunicação:**
- 
-| Destino | Protocolo |
-|----------|-----------|
-| API Gateway | HTTPS (TCP 443) |
-| Deep Links | HTTPS (TCP 443) |
- 
----
- 
-#### Ambiente de Servidor
- 
-Responsável pelo processamento das regras de negócio, autenticação, gerenciamento de usuários, recomendação de eventos e integração com serviços externos.
- 
-**Componentes:**
- 
-- API Gateway
-- Backend ASP.NET Core
-- Sistema de Recomendação
-- Training Job
----
- 
-**API Gateway:**
- 
-O API Gateway funciona como ponto único de entrada para as requisições realizadas pelo aplicativo móvel.
- 
-Artefato Implantado:
- 
-| Artefato | Descrição |
-|-----------|------------|
-| Gateway Service | Serviço responsável pelo roteamento das requisições para os serviços internos |
- 
-Responsabilidades:
- 
-- Receber requisições do aplicativo móvel
-- Encaminhar chamadas para o backend
-- Centralizar o acesso aos serviços internos
-- Aplicar políticas de segurança e controle de acesso
-Comunicação:
- 
-| Origem | Destino | Protocolo |
-|---------|---------|------------|
-| Mobile App | API Gateway | HTTPS (TCP 443) |
-| API Gateway | Backend ASP.NET Core | TCP 8080 |
- 
----
- 
-**Backend ASP.NET Core:**
- 
-Representa o núcleo da aplicação, responsável pelas regras de negócio e gerenciamento das funcionalidades disponibilizadas ao usuário.
- 
-Módulos Implantados:
-- **Autenticação:** Responsável pelo gerenciamento de login, registro e validação de credenciais.
-- **Usuários:** Responsável pelo gerenciamento dos dados dos usuários da plataforma.
-- **Espetáculos:** Responsável pela consulta, cadastro e gerenciamento dos eventos e espetáculos disponíveis.
-- **Interações:** Responsável pelo registro das ações realizadas pelos usuários, utilizadas posteriormente pelo sistema de recomendação.
-- **Geolocalização:** Responsável pelo tratamento de dados geográficos e busca de eventos com base na localização do usuário.
-Comunicação do Backend:
- 
-| Destino | Protocolo |
-|----------|-----------|
-| PostgreSQL | TCP 5432 |
-| MongoDB | TCP 27017 |
-| Object Storage | HTTPS (TCP 443) |
-| ViaCEP | HTTPS (TCP 443) |
-| Ticketeira (Sympla) | HTTPS (TCP 443) |
- 
----
- 
-**Sistema de Recomendação:**
- 
-Componente especializado na geração de recomendações personalizadas para os usuários.
- 
-Artefato Implantado:
- 
-| Artefato | Descrição |
-|-----------|------------|
-| Recommendation Engine | Motor responsável pela geração de recomendações com base nas interações dos usuários |
- 
-Responsabilidades:
- 
-- Processar histórico de interações
-- Gerar recomendações personalizadas
-- Disponibilizar recomendações para o backend
-- Consumir modelos treinados pelo Training Job
-Comunicação:
- 
-| Origem | Destino | Protocolo |
-|--------|----------|-----------|
-| Training Job | Sistema de Recomendação | HTTP REST (TCP 8081) |
-| Sistema de Recomendação | PostgreSQL | TCP 5432 |
- 
----
- 
-**Training Job:**
- 
-Serviço responsável pelo treinamento dos modelos utilizados pelo sistema de recomendação.
- 
-Artefato Implantado:
- 
-| Artefato | Descrição |
-|-----------|------------|
-| Training Pipeline | Pipeline de treinamento e atualização dos modelos de recomendação |
- 
-Responsabilidades:
- 
-- Processar dados históricos
-- Treinar modelos de recomendação
-- Atualizar modelos utilizados pelo Recommendation Engine
-- Consumir dados armazenados na infraestrutura de dados
-Comunicação:
- 
-| Destino | Protocolo |
-|----------|-----------|
-| PostgreSQL | TCP 5432 |
-| Sistema de Recomendação | HTTP REST (TCP 8081) |
-| Object Storage | HTTPS (TCP 443) |
- 
----
- 
-#### Infraestrutura de Dados
- 
-Camada responsável pelo armazenamento persistente das informações do sistema.
- 
-**PostgreSQL:**
- 
-Banco de dados relacional utilizado pela aplicação.
- 
-Funções:
- 
-- Armazenamento de usuários
-- Armazenamento de eventos
-- Armazenamento de interações
-- Persistência das informações de autenticação
-- Base para geração de recomendações
-Porta Utilizada:
- 
-| Serviço | Porta |
-|----------|--------|
-| PostgreSQL | TCP 5432 |
- 
----
- 
-**MongoDB:**
- 
-Banco de dados não relacional utilizado pela aplicação.
- 
-Funções:
- 
-- Armazenamento de dados não estruturados ou semiestruturados da plataforma
-Porta Utilizada:
- 
-| Serviço | Porta |
-|----------|--------|
-| MongoDB | TCP 27017 |
- 
----
- 
-**Object Storage:**
- 
-Armazenamento de objetos utilizado para persistência de arquivos e dados de treinamento.
- 
-Artefatos Armazenados:
- 
-| Artefato |
-|-----------|
-| Bucket S3 |
-| Eventos brutos (JSON) |
-| Modelos treinados (ZIP) |
- 
-Responsabilidades:
- 
-- Armazenamento de datasets
-- Armazenamento de modelos treinados
-- Disponibilização de arquivos para o pipeline de treinamento
-Comunicação:
- 
-| Origem | Protocolo |
-|---------|-----------|
-| Backend ASP.NET Core | HTTPS (TCP 443) |
-| Training Job | HTTPS (TCP 443) |
- 
----
- 
-#### Serviços Externos
- 
-Serviços de terceiros consumidos pela plataforma.
- 
-**ViaCEP:**
- 
-Serviço utilizado para consulta de informações de endereço a partir do CEP informado pelo usuário.
- 
-Comunicação:
- 
-- HTTPS (TCP 443)
-**Ticketeira (Sympla):**
- 
-Serviço externo responsável pelo fornecimento de informações relacionadas a eventos e venda de ingressos.
- 
-Comunicação:
- 
-- HTTPS (TCP 443)
+
+### 16.1 Leitura do diagrama e status dos componentes
+
+O status abaixo diferencia componentes implementados, disponíveis localmente ou apenas previstos na arquitetura.
+
+| Componente | Papel arquitetural | Situação documentada |
+|---|---|---|
+| Aplicativo React Native | Interface mobile, navegação e armazenamento local | **Implementado localmente**, com integrações em evolução |
+| Backend ASP.NET Core | Autenticação, usuários, catálogo, teatros, preferências, wishlist e recomendações | **Implementado e executável localmente** |
+| PostgreSQL | Persistência relacional da aplicação | **Disponível localmente** por Docker |
+| MongoDB | Persistência documental prevista para dados semiestruturados | **Disponível no ambiente local**, sem uso comprovado no fluxo principal |
+| API Gateway dedicado | Entrada única e roteamento entre serviços | **Previsto no desenho**, sem serviço independente comprovadamente implantado |
+| Serviço de recomendação | Geração e disponibilização de recomendações | **Previsto na arquitetura e implementado de forma evolutiva**, com implantação detalhada em documento próprio |
+| Training Job | Treinamento e atualização do modelo | **Previsto na arquitetura**, com evolução técnica nas sprints posteriores |
+| Object Storage | Armazenamento de datasets, eventos e modelos | **Previsto no desenho**, sem implantação comprovada |
+| ViaCEP | Consulta de endereço por CEP | **Dependência externa planejada** para cadastro e perfil |
+| Ticketeira externa | Destino da compra de ingressos | **Redirecionamento previsto**; sem processamento de venda pelo Portal |
+
+### 16.2 Topologia de referência
+
+O fluxo arquitetural previsto era:
+
+1. O aplicativo React Native envia requisições às APIs do backend.
+2. O backend processa autenticação, catálogo, perfil, wishlist e interações.
+3. Os dados transacionais são persistidos no PostgreSQL.
+4. O recomendador utiliza preferências e interações para produzir sugestões.
+5. O Training Job atualiza periodicamente os artefatos usados pelo recomendador.
+6. ViaCEP complementa dados de endereço, e a compra é concluída fora do sistema, na ticketeira.
+
+| Origem | Destino | Comunicação prevista | Situação documentada |
+|---|---|---|---|
+| Aplicativo mobile | Backend ASP.NET Core | REST sobre HTTP/HTTPS | Integração em desenvolvimento |
+| Backend ASP.NET Core | PostgreSQL | TCP 5432 | Execução local |
+| Backend/Training Job | MongoDB ou Object Storage | TCP 27017 ou HTTPS 443 | Elementos previstos, sem fluxo final comprovado |
+| Training Job | Serviço de recomendação | HTTP REST | Previsto no diagrama |
+| Aplicativo | ViaCEP | HTTPS 443 | Planejado para endereço |
+| Aplicativo | Ticketeira | URL HTTPS externa | Planejado como redirecionamento |
+
+### 16.3 Ambientes considerados
+
+| Ambiente | Finalidade | Componentes |
+|---|---|---|
+| Dispositivo/emulador | Execução do aplicativo | Expo/React Native e armazenamento local |
+| Ambiente local de desenvolvimento | Implementação, testes e integração | Backend .NET, PostgreSQL e MongoDB em Docker |
+| Ambiente de servidor | Destino arquitetural para APIs e recomendação | Componentes previstos no diagrama, ainda sem implantação integral comprovada |
+| Serviços externos | Recursos fora da infraestrutura do grupo | ViaCEP e páginas das ticketeiras |
+
+### 16.4 Limites do artefato e evolução posterior
+
+- O diagrama representa a arquitetura de referência e inclui componentes ainda não implantados.
+- “Componente implantado” deve ser interpretado como artefato previsto para um nó UML, não necessariamente publicado em produção.
+- A implantação isolada do serviço de inferência, o uso de nginx/Docker e as VMs OCI são evoluções posteriores e estão documentados em [Deploy do Motor de Recomendação](./Deploy_Recomendacao.md).
+- As seções de desenvolvimento e execução de testes registram a evolução da implementação e as evidências obtidas ao longo do projeto.
 
 ## 17. Linguagens e Tecnologias Utilizadas
 
@@ -1784,7 +1794,7 @@ Os artefatos do modelo são gerados em `data/models` a partir dos comandos do pr
 
 **Frontend em React Native**
 
-O frontend é desenvolvido em React Native com Expo, framework que permite criar aplicações móveis para iOS e Android a partir de uma única base de código. Isso é importante porque o produto precisa estar disponível nas duas plataformas sem duplicar o esforço de desenvolvimento. O React Native tem bom suporte a geolocalização, notificações push e navegação entre telas, funcionalidades centrais para o app. A proximidade com o ecossistema JavaScript facilita o consumo das APIs REST do backend.
+O frontend é desenvolvido em React Native com Expo, framework que permite criar aplicações móveis para iOS e Android a partir de uma única base de código. O React Native oferece suporte a geolocalização e navegação. A proximidade com o ecossistema JavaScript facilita o consumo das APIs REST do backend.
 
 **Padrão MVVM no frontend**
 
@@ -1841,7 +1851,7 @@ Os testes deverão contemplar cenários positivos e negativos, garantindo que o 
 
 ### 18.3 Testes de funcionalidade
 
-Esta seção evolui os testes de usuário definidos junto a cada Requisito Funcional (RFs da seção 9.2) para casos de teste funcionais completos, com propósito explícito, pré-condições, cenários positivos e negativos, instruções de execução, pós-condições e critério objetivo de sucesso. Dessa forma O plano de testes funcionais cobre **100% dos 10 RFs definidos na seção 9.2**.
+Esta seção evolui os casos de teste associados a cada Requisito Funcional (RFs da seção 9.2) para testes funcionais completos, com propósito explícito, pré-condições, cenários positivos e negativos, instruções de execução, pós-condições e critério objetivo de sucesso. Dessa forma, o plano de testes funcionais cobre **100% dos 10 RFs definidos na seção 9.2**. Os critérios dos requisitos permanecem na seção 9.2; os critérios abaixo avaliam o resultado de cada caso de teste.
 
 A premissa adotada foi garantir cobertura mínima de **um caso de teste principal por RF** (TF-01 a TF-10), priorizando os fluxos da jornada crítica do usuário: descoberta → personalização → wishlist → conversão. Os cenários negativos foram desenhados para validar tratamento de erro, validações de entrada, indisponibilidade de serviços externos e estados-limite da aplicação.
 
@@ -1886,7 +1896,7 @@ A premissa adotada foi garantir cobertura mínima de **um caso de teste principa
 
 **Propósito:** Verificar que (i) o carrossel "Perto de você" expõe exclusivamente espetáculos cujo teatro está localizado na cidade definida pelo usuário, (ii) alterações posteriores na cidade via Perfil refletem corretamente na próxima carga da tela Explorar e (iii) quando a cidade não é definida, o carrossel exibe o empty state correto convidando o usuário a informá-la.
 
-**Pré-condições:** Usuário logado; base populada com espetáculos ativos em SP e RJ vinculados a teatros com a cidade preenchida corretamente.
+**Pré-condições:** Usuário logado; base populada com ao menos três espetáculos ativos em SP e três no RJ, vinculados a teatros com a cidade preenchida corretamente.
 
 **Cenário positivo:** Usuário com cidade = SP definida (no onboarding ou no Perfil) acessa a tela Explorar e o carrossel "Perto de você" expõe exclusivamente cards de espetáculos cujo teatro está localizado em São Paulo.
 
@@ -1906,7 +1916,7 @@ A premissa adotada foi garantir cobertura mínima de **um caso de teste principa
 
 **Pós-condições:** Cidade do perfil atualizada no banco em caso de alteração; nenhum dado de espetáculo é modificado pela navegação.
 
-**Critério de sucesso:** Em todos os carregamentos com cidade definida, 100% dos cards exibidos no carrossel "Perto de você" possuem teatro com cidade igual à cidade do usuário; alterações de cidade via Perfil refletem corretamente na próxima visita à Explorar; quando não há cidade definida, o empty state é renderizado com o título, o texto e o botão exatos, e o botão direciona corretamente para o Perfil.
+**Critério de sucesso:** Com ao menos três espetáculos elegíveis, o carrossel "Perto de você" apresenta no mínimo três cards e 100% deles possuem teatro na cidade do usuário. Se houver menos de três elegíveis, todos são exibidos e a limitação é registrada. Carrossel sem cards somente é aceito com estado vazio explícito. Alterações de cidade via Perfil refletem na próxima visita e, sem cidade definida, o estado vazio e seu CTA são exibidos corretamente.
 
 ---
 
@@ -2018,11 +2028,11 @@ A premissa adotada foi garantir cobertura mínima de **um caso de teste principa
 
 **Funcionalidade testada:** Gestão da Wishlist: adição apenas a partir da página de detalhes do espetáculo (coração no canto superior direito), remoção pela página de detalhes ou pela aba Wishlist, com feedback visual por notificação a cada operação
 
-**Propósito:** Verificar que (i) adicionar um espetáculo via página de detalhes persiste o vínculo na Wishlist do usuário e dispara notificação de confirmação, (ii) remover um espetáculo pela própria página de detalhes ou pela aba Wishlist encerra o vínculo e dispara notificação de confirmação, (iii) quando a Wishlist está vazia, a aba exibe o empty state correto convidando o usuário a explorar espetáculos e (iv) a aba Wishlist permite apenas visualizar e remover, não dispondo de mecanismo para adicionar novos espetáculos.
+**Propósito:** Verificar que (i) adicionar um espetáculo via página de detalhes persiste o vínculo na Wishlist, inclusive após reload, reinício e novo login, (ii) remover um espetáculo encerra o vínculo de forma persistente, (iii) a Wishlist vazia exibe o estado correto e (iv) a aba permite visualizar e remover, sem adicionar novos espetáculos diretamente.
 
 **Pré-condições:** Usuário logado com Wishlist inicialmente vazia; base com espetáculos cadastrados (ex.: "A Noviça Rebelde" em cartaz no "Vibra São Paulo"); permissões de notificação concedidas no dispositivo de teste.
 
-**Cenário positivo:** Usuário acessa a página de detalhes de "A Noviça Rebelde", clica no coraçãozinho no canto superior direito — o ícone passa ao estado preenchido (roxo), são exibidas as notificações in-app e push com a mensagem "item adicionado à wishlist" e, ao acessar a aba Wishlist, o espetáculo aparece listado com coraçãozinho preenchido, título, teatro, cidade e categoria.
+**Cenário positivo:** Usuário acessa a página de detalhes de "A Noviça Rebelde", clica no coraçãozinho no canto superior direito — o ícone passa ao estado preenchido (roxo), é exibida uma confirmação in-app com a mensagem "item adicionado à wishlist" e, ao acessar a aba Wishlist, o espetáculo aparece listado com coraçãozinho preenchido, título, teatro, cidade e categoria.
 
 **Cenários negativos:**
 
@@ -2036,13 +2046,15 @@ A premissa adotada foi garantir cobertura mínima de **um caso de teste principa
 2. Clicar em "Explorar espetáculos" e confirmar a navegação para a aba Explorar.
 3. Abrir a página de detalhes de "A Noviça Rebelde" e clicar no coraçãozinho no canto superior direito; validar a mudança do ícone para o estado preenchido e a exibição das notificações "item adicionado à wishlist" (cenário positivo).
 4. Acessar a aba Wishlist e conferir que o espetáculo está listado com coraçãozinho preenchido e metadados completos (título, teatro, cidade, categoria).
-5. Clicar no coraçãozinho do item diretamente na aba Wishlist; validar as notificações "item removido da wishlist" e o retorno ao empty state (cenário negativo b — remoção via Wishlist).
-6. Repetir os passos 3 e 4 para readicionar o espetáculo; em seguida, voltar à página de detalhes e clicar no coraçãozinho; validar a remoção e as notificações (cenário negativo b — remoção via detalhes).
-7. Inspecionar a aba Wishlist e confirmar que não existe botão, atalho ou interação que permita adicionar novos espetáculos diretamente dessa tela (cenário negativo c).
+5. Recarregar a tela, encerrar e reabrir o aplicativo; confirmar que o item permanece na Wishlist.
+6. Fazer logout, realizar novo login e confirmar novamente a persistência do item.
+7. Clicar no coraçãozinho do item diretamente na aba Wishlist; validar as notificações e o retorno ao estado vazio. Recarregar a tela para confirmar que o item não retorna.
+8. Repetir a adição e remover pela página de detalhes, validando novamente a persistência da remoção.
+9. Inspecionar a aba Wishlist e confirmar que não existe mecanismo para adicionar novos espetáculos diretamente dessa tela.
 
 **Pós-condições:** Cada operação de adicionar ou remover persiste ou remove imediatamente o vínculo entre o usuário e o espetáculo no banco; nenhuma alteração nos dados do espetáculo, nas preferências do usuário ou na cidade do perfil.
 
-**Critério de sucesso:** Adicionar via página de detalhes persiste o espetáculo na Wishlist do usuário e dispara as notificações "item adicionado à wishlist"; remover (via página de detalhes ou via aba Wishlist) encerra o vínculo e dispara as notificações "item removido da wishlist"; quando vazia, a aba Wishlist exibe o empty state com título, texto e botão "Explorar espetáculos" funcional; a aba Wishlist não oferece, em nenhuma condição, mecanismo para adicionar novos espetáculos.
+**Critério de sucesso:** A adição permanece após reload, reinício do aplicativo e novo login; a remoção permanece após novo reload. As notificações e estados visuais correspondem à operação, o estado vazio é funcional e a aba Wishlist não oferece mecanismo de adição direta.
 
 ---
 
@@ -2081,13 +2093,13 @@ A premissa adotada foi garantir cobertura mínima de **um caso de teste principa
 
 **Requisito relacionado:** RF08
 
-**Funcionalidade testada:** Gestão dos dados do usuário pela aba Perfil: edição de nome e e-mail via botão "Editar Perfil" e edição de interesses (categorias) e cidade via atalho "Preferências e cidade" → tela "Editar Interesses", com persistência mediante o botão "Salvar Alterações" e notificação push "Preferências atualizadas"
+**Funcionalidade testada:** Gestão dos dados do usuário pela aba Perfil: edição de nome e e-mail via botão "Editar Perfil" e edição de interesses (categorias) e cidade via atalho "Preferências e cidade" → tela "Editar Interesses", com persistência mediante o botão "Salvar Alterações" e confirmação in-app "Preferências atualizadas"
 
-**Propósito:** Verificar que (i) o usuário pode editar nome e e-mail a partir da aba Perfil, (ii) o usuário pode editar interesses e cidade na tela "Editar Interesses" e salvar com feedback visual via notificação push, (iii) as alterações são persistidas no banco e se refletem imediatamente nas seções da Explorar que dependem dessas preferências e (iv) o caminho de chegada à tela "Editar Interesses" inclui tanto o atalho "Preferências e cidade" no Perfil quanto o CTA "Adicionar cidade" do empty state do carrossel "Perto de você" (fechamento do fluxo iniciado em TF-01 e TF-02).
+**Propósito:** Verificar que (i) o usuário pode editar nome e e-mail a partir da aba Perfil, (ii) pode editar interesses e cidade e salvar com feedback visual in-app, (iii) as alterações persistem e se refletem nas seções dependentes e (iv) os caminhos previstos chegam à tela "Editar Interesses".
 
 **Pré-condições:** Usuário logado com preferências já definidas; base com espetáculos cadastrados em SP e RJ em múltiplas categorias (Musical, Drama, Ballet, Infantil, Corporativo, Circo, Comédia e Dança, conforme exibido na tela "Editar Interesses"); permissão de notificação concedida no dispositivo de teste.
 
-**Cenário positivo:** Usuário acessa a aba Perfil, abre "Preferências e cidade", ajusta os interesses (ex.: marca "Musical", "Drama" e "Dança") e seleciona a cidade ("Rio de Janeiro"), clica em "Salvar Alterações" — recebe a notificação push "Preferências atualizadas"; ao retornar à Explorar, os carrosséis dependentes (incluindo "Perto de você") refletem as novas preferências.
+**Cenário positivo:** Usuário ajusta interesses e cidade, clica em "Salvar Alterações" e recebe a confirmação in-app "Preferências atualizadas"; ao retornar à Explorar, os carrosséis dependentes refletem as novas preferências.
 
 **Cenários negativos:**
 
@@ -2100,7 +2112,7 @@ A premissa adotada foi garantir cobertura mínima de **um caso de teste principa
 
 1. Logar com usuário que possui preferências definidas e acessar a aba Perfil; conferir os dados exibidos (foto, nome, e-mail) e os 3 atalhos disponíveis ("Preferências e cidade", "Notificações", "Informações Institucionais").
 2. Clicar em "Preferências e cidade" e validar a tela "Editar Interesses" com as seções "SELECIONE SEUS INTERESSES" e "SELECIONE SUA CIDADE" (opções: São Paulo, Rio de Janeiro, Outra).
-3. Alterar a seleção de interesses (ex.: marcar Musical, Drama, Dança) e a cidade (Rio de Janeiro), clicar em "Salvar Alterações" e validar a notificação push "Preferências atualizadas" (cenário positivo).
+3. Alterar a seleção de interesses e a cidade, clicar em "Salvar Alterações" e validar a confirmação in-app "Preferências atualizadas".
 4. Retornar ao Perfil, clicar em "Editar Perfil" e alterar o nome e/ou o e-mail; sem nenhuma ação explícita de salvamento, validar que os dados atualizados aparecem imediatamente na aba Perfil (cenário negativo a — auto-save).
 5. Voltar à tela "Editar Interesses", desmarcar todos os interesses e clicar em "Salvar Alterações"; validar que o sistema aceita a alteração e exibe a notificação "Preferências atualizadas" (cenário negativo b).
 6. Logar com uma segunda conta sem cidade definida (criada pulando a pergunta no onboarding), acessar a Explorar e validar o empty state do carrossel "Perto de você" (TF-02). Clicar em "Adicionar cidade", validar o direcionamento para a tela "Editar Interesses", selecionar a cidade, salvar e retornar à Explorar; conferir que o carrossel "Perto de você" passa a exibir espetáculos da cidade escolhida (cenário negativo c).
@@ -2108,7 +2120,7 @@ A premissa adotada foi garantir cobertura mínima de **um caso de teste principa
 
 **Pós-condições:** Dados de nome, e-mail, interesses e cidade do usuário persistidos no banco; cache de recomendações invalidado para refletir as novas preferências na próxima carga da Explorar.
 
-**Critério de sucesso:** Edição de nome e e-mail é aplicada automaticamente (auto-save) e visível na aba Perfil; edição de interesses e cidade é persistida no banco e dispara a notificação push "Preferências atualizadas"; alterações refletem nas seções dependentes da Explorar na próxima carga; navegação a partir do CTA "Adicionar cidade" chega corretamente à tela "Editar Interesses" e, após salvar, o carrossel "Perto de você" reflete a nova cidade; o botão "Limpar Filtros" desmarca toda a seleção visualmente sem persistir, exigindo clique em "Salvar Alterações" para efetivar a limpeza.
+**Critério de sucesso:** Edição de nome e e-mail é aplicada e visível na aba Perfil; edição de interesses e cidade persiste no banco e exibe a confirmação in-app "Preferências atualizadas"; as alterações refletem na próxima carga e os caminhos e controles da tela funcionam conforme definido.
 
 ---
 
@@ -2189,8 +2201,8 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
 | Campo | Descrição |
 |---|---|
 | **Pré-condição** | Usuário autenticado com perfil de onboarding preenchido e wishlist com ao menos 1 item. Conexão de rede estável de no mínimo 10 Mbps. Cache de recomendações aquecido (warm). |
-| **Procedimento** | 1: Abrir DevTools → abas Network e Performance. 2: Acessar a Home do Portal e registrar o timestamp de início. 3: Aguardar o carregamento completo dos carrosséis (evento `load` + elementos visuais renderizados). 4: Registrar o tempo total de carregamento. 5: Repetir 20 vezes em horários distintos (manhã, tarde, noite). 6. Calcular p50, p95 e média dos tempos coletados. |
-| **Resultado Esperado** | p95 ≤ 3 segundos; média ≤ 2 segundos; nenhuma exceção de timeout na série de 20 execuções. |
+| **Procedimento** | 1: Instrumentar o carregamento via k6 e marca de renderização no aplicativo. 2: Acessar a Home e registrar início e conclusão dos carrosséis. 3: Repetir pelo menos 100 vezes em horários distintos. 4: Calcular média, p50, p95, p99 e máximo separadamente. |
+| **Resultado Esperado** | p95 ≤ 3 segundos, p99 ≤ 5 segundos e média ≤ 2 segundos nas 100 ou mais execuções; o máximo é registrado separadamente para diagnóstico. |
 | **Pós-condição** | Carrosséis renderizados com itens personalizados; logs de performance armazenados; relatório de métricas gerado. |
  
 **Cenário Negativo 1:** Degradação sob latência de rede elevada (simulação de 3G)
@@ -2258,8 +2270,8 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
 | Campo | Descrição |
 |---|---|
 | **Pré-condição** | Usuário autenticado com dados de perfil e histórico de interações (wishlist, preferências). |
-| **Procedimento** | 1: Acessar Perfil → opção "Excluir minha conta". 2: Confirmar a exclusão conforme o fluxo definido (confirmação por e-mail ou senha). 3: Aguardar até 30 dias (simular com processo acelerado em ambiente de teste). 4: Verificar no banco se os dados pessoais foram removidos ou anonimizados (campos como nome, e-mail, CEP devem ser nulos ou substituídos por token anônimo). 5: Verificar se dados analíticos agregados sem identificação pessoal foram preservados conforme política. |
-| **Resultado Esperado** | Dados pessoais identificáveis removidos ou anonimizados em até 30 dias; conta não permite novo login; dados agregados anônimos preservados conforme política de retenção. |
+| **Procedimento** | 1: Acessar Perfil → opção "Excluir minha conta". 2: Confirmar a exclusão conforme o fluxo definido. 3: Simular o decurso do prazo máximo de 15 dias em ambiente de teste. 4: Verificar no banco se nome, e-mail, CEP e demais identificadores foram removidos ou anonimizados de forma irreversível. 5: Verificar se somente dados agregados não identificáveis foram preservados conforme a política. |
+| **Resultado Esperado** | Dados pessoais identificáveis removidos ou anonimizados em até 15 dias; conta não permite novo login; dados agregados anônimos preservados conforme política de retenção. |
 | **Pós-condição** | Registro de exclusão gerado com data e confirmação; log de auditoria arquivado para eventual comprovação perante a ANPD. |
  
 ---
@@ -2313,13 +2325,13 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
  
 #### RNF05 — Disponibilidade da Plataforma
 
-**Cenário Positivo:** Monitoramento contínuo com disponibilidade dentro do SLA
+**Cenário Positivo:** Monitoramento contínuo de 30 dias dentro do SLA
  
 | Campo | Descrição |
 |---|---|
 | **Pré-condição** | Plataforma publicada em produção com monitoramento ativo (ex.: UptimeRobot, Datadog, AWS CloudWatch). Health check endpoint configurado (`GET /health` retorna 200). |
-| **Procedimento** | 1: Configurar monitoramento com verificações a cada 1 minuto por 24 horas contínuas. 2: Registrar todas as respostas HTTP do health check. 3: Calcular disponibilidade: (minutos com resposta 200 / 1440) × 100. 4: Verificar se alertas são disparados corretamente em caso de queda (e-mail, Slack, PagerDuty). 5: Calcular downtime total e comparar com SLA (≤ 14,4 minutos em 24h). |
-| **Resultado Esperado** | Disponibilidade ≥ 99% na janela de 24h (downtime ≤ 14,4 min); alertas disparados em até 2 minutos após detecção de queda; relatório de uptime gerado automaticamente. |
+| **Procedimento** | 1: Configurar monitoramento com verificações a cada 1 minuto por 30 dias contínuos. 2: Registrar todas as respostas do health check. 3: Calcular disponibilidade: minutos disponíveis ÷ minutos totais × 100. 4: Validar os alertas de queda. 5: Comparar o downtime acumulado com o limite aproximado de 7 h 18 min em 30 dias. |
+| **Resultado Esperado** | Disponibilidade ≥ 99% na janela contínua de 30 dias; alertas disparados em até 2 minutos após a detecção; relatório de uptime exportado. |
 | **Pós-condição** | Relatório de uptime gerado; incidentes (se houver) registrados com causa raiz e MTTR. |
  
 **Cenário Negativo 1:** Simulação de queda de serviço e tempo de recuperação (RTO)
@@ -2342,30 +2354,30 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
 
 #### RNF06 — Capacidade sob carga em pico de campanha
 
-**Cenário Positivo:** Teste de carga com 100 usuários simultâneos dentro do SLA
+**Cenário Positivo:** Teste de capacidade com 1.000 usuários simultâneos dentro do SLA
  
 | Campo | Descrição |
 |---|---|
 | **Pré-condição** | Ambiente de homologação configurado com infraestrutura equivalente à produção. Ferramenta de carga instalada (k6 ou JMeter). Scripts simulando fluxo: login → home com carrosséis → adicionar à wishlist. |
-| **Procedimento** | 1: Configurar script com ramp-up gradual: 0 → 50 → 100 usuários em 5 minutos. 2: Manter 100 usuários concorrentes por 15 minutos contínuos. 3: Monitorar em tempo real: latência p50/p95, taxa de erro HTTP, CPU e memória dos servidores. 4: Analisar relatório completo ao final. 5: Verificar logs por erros, timeouts ou circuit breakers acionados. |
-| **Resultado Esperado** | Tempo médio de resposta ≤ 3s; p95 ≤ 5s; taxa de erro HTTP < 1%; nenhuma queda de serviço; CPU < 80% e memória < 85% durante toda a execução. |
+| **Procedimento** | 1: Configurar rampa progressiva de 100 → 500 → 1.000 usuários. 2: Manter 1.000 usuários concorrentes por 15 minutos. 3: Monitorar média, p95, p99, taxa de erro, CPU e memória. 4: Analisar o relatório e os logs por erros, timeouts ou mecanismos de proteção acionados. |
+| **Resultado Esperado** | Média ≤ 2s, p95 ≤ 3s, p99 ≤ 5s, taxa de erro HTTP < 1% e nenhuma queda de serviço. CPU e memória são registradas para diagnóstico de capacidade. |
 | **Pós-condição** | Relatório de carga exportado (HTML/JSON); métricas arquivadas; gargalos documentados como backlog de otimização. |
  
-**Cenário Negativo 1:** Sobrecarga além da capacidade projetada (150 usuários)
+**Cenário Negativo 1:** Sobrecarga além da capacidade projetada (1.200 usuários)
  
 | Campo | Descrição |
 |---|---|
-| **Pré-condição** | Mesmo ambiente de homologação. Script de carga adaptado para 150 usuários concorrentes. |
-| **Procedimento** | 1: Executar teste de stress com 150 usuários simultâneos por 10 minutos. 2: Monitorar latência, taxa de erro, comportamento do auto-scaling, circuit breakers e filas. 3: Verificar se o sistema aplica degradação elegante (ex.: desabilitar recomendações personalizadas e servir cache genérico). 4: Verificar se usuários recebem feedback adequado em caso de lentidão ou erro. |
+| **Pré-condição** | Mesmo ambiente de homologação. Script de carga adaptado para 1.200 usuários concorrentes. |
+| **Procedimento** | 1: Executar teste de stress com 1.200 usuários simultâneos por 10 minutos. 2: Monitorar latência, taxa de erro, escalonamento, circuit breakers e filas. 3: Verificar degradação controlada e feedback ao usuário. |
 | **Resultado Esperado** | O sistema não trava completamente; aplica degradação elegante com fallback para cache/conteúdo genérico; taxa de erro pode superar 1% porém sem perda total de funcionalidade; auto-scaling (se existente) acionado e registrado em logs; usuário recebe mensagem amigável. |
 | **Pós-condição** | Comportamento sob sobrecarga documentado; limites reais de capacidade registrados; plano de escalonamento revisado. |
  
-**Cenário Negativo 2:** Spike repentino de tráfego (0 → 100 usuários em 30 segundos)
+**Cenário Negativo 2:** Spike repentino de tráfego (0 → 1.000 usuários em 30 segundos)
  
 | Campo | Descrição |
 |---|---|
-| **Pré-condição** | Ambiente de homologação. Script configurado para spike sem ramp-up gradual: 0 para 100 usuários em 30 segundos. |
-| **Procedimento** | 1: Executar spike test: 0 para 100 usuários em 30 segundos. 2: Observar latência e taxa de erro nos primeiros 2 minutos após o spike. 3: Verificar se o sistema se recupera sozinho após o pico (estabilização da latência). 4: Verificar se circuit breakers ou rate limiters foram acionados. |
+| **Pré-condição** | Ambiente de homologação. Script configurado para spike sem rampa gradual: 0 para 1.000 usuários em 30 segundos. |
+| **Procedimento** | 1: Executar o spike de 0 para 1.000 usuários em 30 segundos. 2: Observar latência e taxa de erro nos primeiros 2 minutos. 3: Verificar recuperação após o pico e acionamento de proteções. |
 | **Resultado Esperado** | Sistema não cai durante o spike; latência pode elevar-se brevemente, mas retorna ao SLA em até 60 segundos após estabilização da carga; nenhuma perda de dados (wishlist, perfil) durante o pico. |
 | **Pós-condição** | Métricas de spike registradas; comportamento de auto-scaling documentado; thresholds de alerta ajustados se necessário. |
  
@@ -2375,9 +2387,9 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
  
 | Campo | Descrição |
 |---|---|
-| **Pré-condição** | 10 perfis de usuário de teste: 5 com CEPs reais de São Paulo e 5 com CEPs reais do Rio de Janeiro. Banco de dados de CEPs atualizado. |
-| **Procedimento** | 1: Para cada perfil, acessar a Home com geolocalização do navegador desativada. 2: Verificar na seção regional se a cidade exibida corresponde ao CEP cadastrado. 3: Verificar se ao menos um espetáculo da cidade correta aparece nas 3 primeiras posições da seção regional. 4: Repetir com geolocalização do navegador ativada. 5: Registrar acertos e erros por perfil. |
-| **Resultado Esperado** | Cidade identificada corretamente em ≥ 95% dos perfis (≥ 19 de 20); espetáculos da região correspondente nas 3 primeiras posições; geolocalização do dispositivo, quando ativada, tem prioridade sobre o CEP. |
+| **Pré-condição** | Amostra estratificada de 100 casos: 50 de São Paulo e 50 do Rio de Janeiro, distribuídos entre CEP e geolocalização autorizada. |
+| **Procedimento** | 1: Executar os 100 casos. 2: Comparar a cidade identificada com a cidade esperada. 3: Verificar as três primeiras posições da seção regional. 4: Registrar acertos, erros e mecanismo usado em cada caso. |
+| **Resultado Esperado** | Cidade identificada corretamente em ≥ 95 dos 100 casos; espetáculos da região correspondente nas três primeiras posições quando houver catálogo elegível. |
 | **Pós-condição** | Logs de geolocalização registrados (apenas cidade, sem coordenadas precisas) em conformidade com a LGPD; relatório de precisão gerado. |
  
 **Cenário Positivo 2:** Identificação por geolocalização com CEP ausente (novo usuário)
@@ -2435,6 +2447,24 @@ Nesta seção, são planejados os testes relacionados aos RNFs, avaliando atribu
 | **Procedimento** | 1. Simular a adição de novo código nos módulos críticos do serviço de recomendação sem os respectivos testes unitários. 2. Executar o pipeline de CI. 3. Verificar se o pipeline falha automaticamente ao detectar cobertura abaixo de 70% nos módulos críticos. 4. Verificar se o relatório de cobertura indica claramente quais linhas/funções não estão cobertas. |
 | **Resultado Esperado** | Pipeline retorna exit code 1 e bloqueia o merge/deploy quando cobertura < 70% nos módulos críticos; relatório HTML de cobertura indica exatamente as linhas não cobertas; desenvolvedor é notificado automaticamente. |
 | **Pós-condição** | Relatório de cobertura com falha exportado como artefato; testes faltantes registrados como tarefa no backlog antes do próximo deploy. |
+
+#### RNF09 — Interoperabilidade entre serviços
+
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | OpenAPI e contratos críticos versionados; app, gateway, backend e recomendador disponíveis em teste. |
+| **Procedimento** | Executar testes de contrato para autenticação, catálogo, wishlist, recomendação e URL de bilheteria; validar campos obrigatórios, códigos HTTP, datas e respostas inválidas. |
+| **Resultado Esperado** | 100% dos contratos críticos aprovados; nenhuma quebra incompatível aceita sem nova versão da API. |
+| **Pós-condição** | Relatório de contratos e versões armazenado como artefato do pipeline. |
+
+#### RNF10 — Implantação reproduzível
+
+| Campo | Descrição |
+|---|---|
+| **Pré-condição** | Ambiente limpo com Docker e runtimes nas versões documentadas. |
+| **Procedimento** | Configurar variáveis de ambiente, executar o procedimento de implantação versionado, iniciar os componentes e rodar health checks e smoke tests. |
+| **Resultado Esperado** | Ambiente funcional em até 30 minutos, sem edição manual de código e com 100% dos health checks críticos aprovados. |
+| **Pós-condição** | Log, versões das imagens e resultado dos smoke tests armazenados. |
 
 ### 18.5 Testes de usabilidade
 
@@ -2638,7 +2668,7 @@ Como próximos passos, recomenda-se executar os testes planejados de forma incre
 Esta seção documenta o progresso incremental da solução de software durante a Sprint 3. O objetivo é evidenciar a evolução do backend, frontend, integrações, padrões de desenvolvimento, testes unitários, metodologia e comprovações de execução da aplicação.
 
 ---
-### 19.1 Objetivo da sessão
+### 19.1 Objetivo da seção
 
 Esta seção evidencia o progresso incremental da solução durante a Sprint 3, contemplando:
 
@@ -3053,15 +3083,15 @@ Essas decisões de codificação e arquitetura foram tomadas para oferecer um ba
 
 ---
 
-### 19.6 Testes unitários do Backend e metodologia TDD
+### 19.6 Estratégia de testes e metodologia TDD
 
-Esta seção deve documentar a estratégia de testes unitários adotada no projeto, com foco nas funcionalidades implementadas e na aplicação da metodologia TDD.
+A estratégia de testes busca validar as regras de negócio e os comportamentos esperados de forma isolada, reproduzível e automatizada. No backend, os testes verificam entidades de domínio, serviços, controllers, mapeamentos e tratamento de exceções, utilizando fakes e mocks para isolar dependências. No frontend, a validação concentra-se nos Services e ViewModels, responsáveis pela lógica de estado, navegação e interação com dados.
+
+A metodologia TDD (*Test-Driven Development*) foi aplicada de forma pragmática nas funcionalidades críticas. Nesse processo, os cenários de teste orientam a implementação das regras, seguindo o ciclo de criar um teste que inicialmente falha, desenvolver o código mínimo necessário para fazê-lo passar e refatorar a solução sem alterar o comportamento validado.
 
 #### Estratégia de testes
 
-Abordagem adotada na Sprint 3:
-
-- Metodologia: TDD aplicada de forma pragmática nas camadas de `Service` e `Repository`; testes unitários escritos antes ou junto da implementação das regras críticas.
+- Metodologia: TDD aplicada nas camadas de `Service` e `Repository`; testes unitários escritos antes ou junto da implementação das regras críticas.
 - Ferramentas: `xUnit` para testes unitários e de integração; `Testcontainers` para subir instâncias de PostgreSQL em testes de integração; `WireMock.Net` para simular serviços externos; `Respawn` para resetar o banco entre testes; `FluentAssertions` para asserções expressivas.
 - Escopo priorizado: autenticação (`AuthService`), persistência (`UsuarioRepository`, `PreferenciasRepository`), e geração/consumo de recomendações (`RecomendacaoService`).
 
@@ -3073,6 +3103,8 @@ Abordagem adotada na Sprint 3:
 | UsuarioRepository_CRUD | Repository (integration) | Criação/Leitura/Update de usuário | Passed | `tests/BackEnd.Aventura.Integration/UsuarioRepositoryTests.cs` (Testcontainers + Respawn) |
 | PreferenciasRepository_SaveAndLoad | Repository (integration) | Persistir e recuperar preferências | Passed | `tests/.../PreferenciasRepositoryTests.cs` |
 | RecomendacaoService_Fallback | Service (integration) | Geração de fallback por gêneros favoritos | Passed | `tests/.../RecomendacaoServiceTests.cs` (WireMock stub) |
+| RecommendationWriteRepository_MlId | Repository (integration) | Tradução `user_id` do dataset → `usuario_id` (UUID) via `ml_id`; sem mapeamento não persiste; DELETE+INSERT idempotente | Passed | `src/inference-service/InferenceService.Tests/RecommendationWriteRepositoryTests.cs` (Testcontainers) |
+| MlIdMapping_SeedUsuarios | DB/Schema (integration) | Usuários do seed recebem o `ml_id` mapeado (63261/14888/55251) após os scripts | Passed | `src/backend/BackEnd.Aventura.IntegrationTests/MlIdMappingTests.cs` (Testcontainers) |
 
 #### Execução dos testes
 
@@ -3098,11 +3130,9 @@ Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositó
 
 [Vídeo demonstrativo](https://drive.google.com/file/d/1VCDSsW-dxjwJJM6786tu-Pd1RauL3sNp/view?usp=sharing)
 
----
+### 19.7 Testes unitários do Frontend na Sprint 3
 
-### 19.7 Testes unitários do Frontend (React Native)
- 
-Esta seção documenta a estratégia de testes unitários adotada para o frontend mobile do projeto, cobrindo as camadas de ViewModel e Service da arquitetura MVVM.
+Esta seção documenta a estratégia e os testes registrados para o frontend mobile durante a Sprint 3, cobrindo as camadas de ViewModel e Service da arquitetura MVVM.
  
 #### Estratégia de testes
  
@@ -3110,68 +3140,55 @@ Abordagem adotada:
  
 - **Metodologia:** Testes unitários escritos para validar o comportamento das camadas de lógica (`ViewModel` e `Service`), isolando dependências externas via mocks. A camada de View (Screens/Components) não é coberta por testes unitários nesta sprint — requer setup de ambiente nativo.
 - **Ferramentas:** `Jest` como runner e framework de asserções; `@testing-library/react` para renderização e interação com hooks React; `jest-environment-jsdom` para simular o ambiente de browser exigido pelo `renderHook`.
-- **Escopo priorizado:** autenticação (`useAuthViewModel`), onboarding (`useOnboardingViewModel`, `onboardingService`), busca (`useSearchViewModel`), lista de salvos (`useWishlistViewModel`, `wishlistStorageService`), notificações (`useNotificationsViewModel`) e interesses (`useEditInterestsViewModel`).
+- **Escopo priorizado:** autenticação, onboarding, busca, wishlist, interesses, integração ViaCEP, cache VHS e preferências locais de notificação. O teste de notificações valida apenas o estado local da tela; não comprova envio de push.
 
 #### Testes implementados
  
-| Teste | Camada testada | Funcionalidade | Resultado | Arquivo |
-|---|---|---|---|---|
-| `useAuthViewModel – validação (login)` | ViewModel | Validação de campos obrigatórios no login | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
-| `useAuthViewModel – validação (register)` | ViewModel | Validação de nome, senha e confirmação no cadastro | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
-| `useAuthViewModel – handleSubmit` | ViewModel | Chamada ao repositório, navegação pós-login e controle de loading | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
-| `useAuthViewModel – handleGoogleAuth` | ViewModel | Autenticação via Google e restauração de loading | Passed | `tests/viewmodels/useAuthViewModel.test.js` |
-| `useOnboardingViewModel – toggleCategory` | ViewModel | Seleção e remoção de categorias, canContinue | Passed | `tests/viewmodels/useOnboardingViewModel.test.js` |
-| `useOnboardingViewModel – navegação` | ViewModel | Avanço e recuo entre passos do fluxo de onboarding | Passed | `tests/viewmodels/useOnboardingViewModel.test.js` |
-| `useOnboardingViewModel – finalização` | ViewModel | Persistência de preferências e callback de conclusão | Passed | `tests/viewmodels/useOnboardingViewModel.test.js` |
-| `useSearchViewModel – busca por texto` | ViewModel | Filtro por título, localização e cidade (case-insensitive) | Passed | `tests/viewmodels/useSearchViewModel.test.js` |
-| `useSearchViewModel – filtro por categoria` | ViewModel | Filtro por categoria e combinação com busca textual | Passed | `tests/viewmodels/useSearchViewModel.test.js` |
-| `useSearchViewModel – wishlist` | ViewModel | Atualização de favoritos via toggle | Passed | `tests/viewmodels/useSearchViewModel.test.js` |
-| `useWishlistViewModel – carregamento` | ViewModel | Carregamento assíncrono da wishlist, isLoading e hasSavedEvents | Passed | `tests/viewmodels/useWishlistViewModel.test.js` |
-| `useWishlistViewModel – filtro por texto` | ViewModel | Filtro de salvos por título, localização e cidade | Passed | `tests/viewmodels/useWishlistViewModel.test.js` |
-| `useWishlistViewModel – remoção` | ViewModel | Remoção de evento da wishlist e atualização da lista | Passed | `tests/viewmodels/useWishlistViewModel.test.js` |
-| `useNotificationsViewModel – toggle` | ViewModel | Ativação/desativação de opções de notificação por seção | Passed | `tests/viewmodels/useNotificationsViewModel.test.js` |
-| `useEditInterestsViewModel – toggle` | ViewModel | Seleção e remoção de interesses, contagem e seleção exclusiva de cidade | Passed | `tests/viewmodels/useEditInterestsViewModel.test.js` |
-| `wishlistStorageService – CRUD` | Service | get, save, add, remove, toggle e verificação de evento na wishlist | Passed | `tests/services/wishlistStorageService.test.js` |
-| `onboardingService – persistência` | Service | save, load e clear de preferências via AsyncStorage | Passed | `tests/services/onboardingService.test.js` |
+| Suíte | Camada principal | Funcionalidade | Evidência |
+|---|---|---|---|
+| `Useauthviewmodel.test.js` | ViewModel | Login, cadastro, validações, loading e autenticação social simulada | `tests/Useauthviewmodel.test.js` |
+| `Useonboardingviewmodel.test.js` | ViewModel | Seleção de categorias, navegação e conclusão do onboarding | `tests/Useonboardingviewmodel.test.js` |
+| `Usesearchviewmodel.test.js` | ViewModel | Busca textual, filtros e interação com wishlist | `tests/Usesearchviewmodel.test.js` |
+| `Usewishlistviewmodel.test.js` | ViewModel | Carregamento, filtro e remoção de itens salvos | `tests/Usewishlistviewmodel.test.js` |
+| `Useeditinterestsviewmodel.test.js` | ViewModel | Edição de interesses e cidade | `tests/Useeditinterestsviewmodel.test.js` |
+| `Usenotificationsviewmodel.test.js` | ViewModel | Preferências locais da tela de notificações, sem envio de push | `tests/Usenotificationsviewmodel.test.js` |
+| `Onboardingservice.test.js` | Service | Persistência das respostas do onboarding | `tests/Onboardingservice.test.js` |
+| `Wishliststorageservice.test.js` | Service | Operações locais da wishlist | `tests/Wishliststorageservice.test.js` |
+| `viaCepService.test.js` e `viaCepIntegration.test.js` | Service/integração simulada | Validação, consulta e tratamento de erros do ViaCEP | `tests/viaCepService.test.js`; `tests/viaCepIntegration.test.js` |
+| `vhsService.test.js` | Service | Cache, TTL, HIT/MISS e limpeza do estado | `tests/vhsService.test.js` |
  
 #### Execução dos testes
  
-Executar todos os testes do frontend (a partir de `mobile-app-aventura/`):
- 
+Executar a partir da raiz do projeto:
+
 ```bash
+cd src/frontend/mobile-app-aventura
 npm test
 ```
- 
-Com relatório de cobertura:
- 
-```bash
-npm test -- --coverage
-```
+
+O script `npm test` já executa `jest --coverage --ci --runInBand`; não é necessário repetir a opção `--coverage`.
  
 #### Resultado da cobertura
  
-Cobertura focada nas camadas de ViewModel e Service, que concentram toda a lógica de negócio do frontend. A camada de View não é coberta intencionalmente nesta sprint, pois depende de ambiente nativo para renderização.
- 
-| Camada | Arquivos cobertos | Cobertura estimada |
-|---|---|---|
-| ViewModel | 6 arquivos | ~90–95% |
-| Service | 2 arquivos | ~95–100% |
-| Repository | Coberto via mock | — |
-| Screen/View | Não coberto | — |
+Na Sprint 3, a cobertura foi concentrada nas camadas de ViewModel e Service, que reuniam a maior parte da lógica testável sem ambiente nativo. Screens e componentes visuais ficaram fora do escopo unitário daquele ciclo.
+
+As contagens e percentuais consolidados apresentados posteriormente nas seções 20 e 21 refletem a evolução da suíte após a Sprint 3 e não devem ser retroativamente atribuídos a esta entrega.
 
 ---
 
-### 19.8 Testes unitários do Backend
+### 19.8 Testes unitários do Backend na Sprint 3
 
-Esta seção documenta a estratégia de testes unitários adotada para o backend da aplicação.
+Esta seção detalha a suíte unitária estruturada para o backend durante a Sprint 3 em `src/backend/BackEnd.Aventura.Tests`. Ela não inclui testes com PostgreSQL real, evitando misturar teste unitário com teste de integração. As reexecuções e ampliações posteriores aparecem nas seções 20 e 21.
 
 #### Estratégia de testes
 
 Abordagem adotada:
 
-- **Metodologia:** Testes unitários escritos em padrão AAA (Arrange, Act, Assert), cobrindo as camadas de Domain, Service e Controller de forma isolada. Repositórios são substituídos por fakes in-memory para eliminar dependência de banco de dados nos testes unitários.
-- **Ferramentas:** `xUnit` como framework de testes; `Moq` para mock de dependências nos testes de Controller; repositórios Fake escritos manualmente para testes de Service e Domain; `Microsoft.AspNetCore.Http` para simulação de contexto HTTP nos testes de middleware.
-- **Escopo priorizado:** entidades de domínio (`Usuario`, `Espetaculo`, `Teatro`, `Preferencias`, `Recomendacao`), serviços de aplicação (`AuthService`, `EspetaculoService`, `TeatroService`, `WishlistService`, `UsuarioService`, `PreferenciasService`, `RecomendacaoService`, `GeneroService`), controllers, infraestrutura (`DbConnectionFactory`, injeção de dependência) e middleware de exceções (`GlobalExceptionHandler`).
+- **Padrão:** AAA (Arrange, Act, Assert).
+- **Isolamento:** repositórios substituídos por fakes e dependências de controllers simuladas com Moq.
+- **Ferramentas:** xUnit, Moq, `Microsoft.AspNetCore.Http` e coverlet.
+- **Escopo:** Domain, Service, Controller, Middleware, Infrastructure, DI e mapeamentos.
+- **Limite:** repositories reais e banco de dados são cobertos pela suíte de integração, não pela suíte unitária.
 
 #### Testes implementados
 
@@ -3266,28 +3283,30 @@ Abordagem adotada:
 Executar todos os testes do backend (a partir da raiz do projeto):
 
 ```bash
-dotnet test BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
+dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
 ```
 
 Com saída detalhada:
 
 ```bash
-dotnet test BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj --logger "console;verbosity=detailed"
+dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj --logger "console;verbosity=detailed"
 ```
 
 #### Resultado da cobertura
 
-Cobertura focada nas camadas de Domain, Service, Controller, Middleware e Infraestrutura. Os repositórios reais não são cobertos por testes unitários — são substituídos por fakes — e serão alvo de testes de integração em sprints futuras.
+Na Sprint 3, a cobertura concentrou-se em Domain, Service, Controller, Middleware, Infrastructure e mapeamentos, com repositories reais substituídos por fakes. O objetivo era validar regras e contratos internos sem dependência de banco.
 
-| Camada | Arquivos cobertos | Cobertura estimada |
-|---|---|---|
-| Domain | 6 entidades + guards + exceptions | ~90% |
-| Service | 8 serviços | ~85–95% |
-| Controller | 8 controllers | ~90% |
-| Middleware | `GlobalExceptionHandler` | 100% |
-| Infrastructure | `DbConnectionFactory`, DI | ~80% |
-| Mapping | `DtoMapper` | ~90% |
-| Repository (real) | Não coberto | — |
+| Camada | Tratamento na Sprint 3 |
+|---|---|
+| Domain | Testes de entidades, guards e exceções |
+| Service | Testes das regras de autenticação, catálogo, wishlist, perfil, preferências e recomendação |
+| Controller | Testes de status HTTP e DTOs retornados |
+| Middleware | Testes do tratamento global de exceções |
+| Infrastructure/DI | Testes de configuração e registro de dependências |
+| Mapping | Testes de conversão entre domínio e DTOs |
+| Repository real | Fora do escopo unitário; planejado para integração posterior |
+
+Os números consolidados de execução e cobertura obtidos após a Sprint 3 permanecem documentados nas seções 20.5, 21.5 e 21.6, preservando a evolução temporal do projeto.
 
 ---
 
@@ -3472,7 +3491,7 @@ Também foi adicionada evolução importante para LGPD:
 - exclusão lógica por `deleted_at`;
 - flag `anonimizado`;
 - endpoint de exclusão de usuário em `DELETE /api/usuario/{id}`;
-- `AnonimizacaoJob`, executado a cada 24 horas, que anonimiza contas marcadas para exclusão há pelo menos 30 dias.
+- `AnonimizacaoJob`, executado a cada 24 horas. A implementação observada usa 30 dias, enquanto a política consolidada no RNF03 estabelece **até 15 dias**; a parametrização do job para 15 dias permanece como ajuste funcional pendente e não foi alterada nesta revisão documental.
 
 Com isso, o backend deixa de tratar exclusão como remoção imediata e passa a manter um ciclo compatível com retenção temporária e anonimização posterior.
 
@@ -3801,24 +3820,26 @@ dotnet test src\backend\BackEnd.Aventura.Tests\BackEnd.Aventura.Tests.csproj --f
 
 ### 21.6 Testes de requisitos não funcionais
 
-Os testes de requisitos não funcionais foram executados para avaliar atributos de qualidade da solução, considerando desempenho, segurança, privacidade, usabilidade, disponibilidade, capacidade sob carga, precisão da geolocalização e modularidade do serviço de recomendação. A execução comparou as métricas observadas com os critérios definidos na seção 10 e adaptou o procedimento às restrições do ambiente publicado.
+Os testes de requisitos não funcionais avaliaram desempenho, segurança, privacidade, usabilidade, disponibilidade, capacidade, geolocalização e modularidade. Interoperabilidade e implantação reproduzível foram formalizadas posteriormente como RNF09 e RNF10 e ainda precisam de execução específica.
 
 **Restrição de ambiente (infra OCI):** o backend roda na VM `163.176.204.208:5253` (HTTP, porta alta); as portas 80/443 estão bloqueadas pela Security List e o time não tem acesso ao console OCI. Por isso, as medições de **desempenho e segurança de hashing** foram feitas contra um ambiente local idêntico (backend .NET 9 + PostgreSQL 16 em container, com schema e seeds oficiais aplicados), e a verificação de **HTTPS/TLS no ambiente publicado ficou bloqueada** — registrada como risco de infra (RNF02).
 
-**RNFs avaliados:** Todos os oito (RNF01 a RNF08) foram avaliados. Nenhum ficou sem medição ou justificativa.
+**RNFs avaliados:** RNF01 a RNF08 possuem medição ou justificativa de limitação. RNF09 e RNF10 foram adicionados nesta revisão documental e permanecem com execução pendente.
 
 #### Síntese RNF a RNF
 
 | RNF | Critério (seção 10) | Resultado medido | Status |
 |---|---|---|---|
-| RNF01 Tempo de resposta | Carga de tela ≤ 3 s | Local: p95 ≤ 57 ms por endpoint (catálogo/gênero/recomendação, 30 amostras cada); VM pública: p95 304 ms no login (20 amostras). k6 smoke: `http_req_duration` p95 = 88,7 ms | **Atendido** |
+| RNF01 Tempo de resposta | Média ≤ 2 s; p95 ≤ 3 s; p99 ≤ 5 s; amostra ≥ 100 | Medições existentes têm 20–30 amostras por endpoint e latências abaixo do limite, mas não atingem a amostra formal revisada. | **Evidência parcial** |
 | RNF02 Credenciais | Senha com hash + salt; tráfego seguro | Hash **BCrypt `$2a$11$`** (60 chars, salt embutido, work factor 11) confirmado no banco e no código (`BCrypt.Net.BCrypt.HashPassword`/`Verify`). Brute force: 12 logins inválidos → 12×401. **TLS bloqueado pela OCI** (risco). **Sem rate limiting** (lacuna) | **Parcialmente atendido** |
-| RNF03 LGPD | Consentimento, anonimização e auditoria | `LgpdDatabaseTests`, `TriggerConsentimentoTests` e `AnonimizacaoJob` cobertos na suíte de integração real (parte dos 36/36) | **Atendido** |
+| RNF03 LGPD | Consentimento, anonimização em até 15 dias e auditoria | Testes confirmam consentimento, anonimização e auditoria; o job documentado ainda usa limiar de 30 dias e deve ser ajustado para cumprir a política de 15 dias. | **Parcialmente atendido** |
 | RNF04 Responsividade | Layout adaptável mobile | Coberto em 20.7 (SUS 88,5; 5/5 concluíram todas as tarefas, sem elemento crítico cortado) | **Atendido** |
-| RNF05 Disponibilidade | ≥ 99% | Endpoint `/health` implementado (`MapHealthChecks`) e verificado localmente (`200 Healthy`). Sondagem read-only da VM: 20/20 respostas válidas (100%) | **Atendido na janela medida** (ver limitação) |
-| RNF06 Carga | Suportar carga concorrente | **3 cenários de 18.4 executados em 12/06/2026 contra ambiente local** (backend .NET 9 + PostgreSQL 16 com seeds oficiais): pico 100 VUs/15 min — 82.941 req, **0% falhas, p95 7,87 ms**; stress 150 VUs/10 min — 76.361 req, **0% falhas, p95 7,25 ms**; spike 0→100 em 30 s — 11.716 req, **0% falhas, p95 6,5 ms**. Todos os thresholds (média ≤ 3 s, p95 ≤ 5 s, erro < 1%) aprovados. Rampa a 1.000 VUs contra a VM segue condicionada à autorização do time | **Atendido (ambiente local)** |
-| RNF07 Geolocalização | Conteúdo por região | Filtro por cidade coberto em `RecomendacaoServiceTests`; ViaCEP real validado em 20.8 (CEP de SP retorna `localidade: São Paulo`) | **Atendido** |
+| RNF05 Disponibilidade | ≥ 99% em 30 dias | Endpoint `/health` verificado localmente e sondagem curta da VM com 20/20 respostas; a janela contínua de 30 dias não foi executada. | **Evidência parcial** |
+| RNF06 Carga | 1.000 VUs por 15 min; p95 ≤ 3 s; p99 ≤ 5 s; erro < 1% | Cenários de 100/150 VUs e spike 0→100 foram executados localmente com 0% de falhas. São evidência incremental, não comprovação da meta de 1.000 VUs. | **Evidência parcial** |
+| RNF07 Geolocalização | Acerto ≥ 95% em 100 casos estratificados | Filtro por cidade e um CEP real foram validados, mas a amostra formal de 100 casos não foi executada. | **Evidência parcial** |
 | RNF08 Modularidade | Cobertura ≥ 70% módulos críticos; deploy isolado | Cobertura medida (coverlet, linhas): backend **módulos críticos 85,3%** (global 54,0% — repositories ficam com a suíte de integração); frontend **88,96%** statements e **89,32%** lines nos módulos medidos; serviço de recomendação **40,1%** (abaixo da meta — lacuna registrada). **Gate de cobertura implementado** (`.gitlab-ci.yml` + thresholds nos projetos; falha comprovada com exit 1) | **Parcialmente atendido** (cobertura do inference abaixo da meta) |
+| RNF09 Interoperabilidade | 100% dos contratos críticos aprovados | Requisito adicionado; há testes de integração, mas ainda não existe suíte formal de contratos versionados para todos os serviços. | **Pendente** |
+| RNF10 Implantação | Deploy limpo ≤ 30 min e 100% dos health checks | Requisito adicionado; Docker e guias existem, mas o ensaio integral em ambiente limpo ainda não foi registrado. | **Pendente** |
 
 #### Detalhamento e cenários negativos
 
@@ -3826,7 +3847,7 @@ Os testes de requisitos não funcionais foram executados para avaliar atributos 
 
 **RNF02 — Credenciais.** A consulta direta ao banco mostrou `senha_hash` no formato `$2a$11$...` (BCrypt, 60 caracteres, salt embutido, custo 11); não há senha em texto puro. O **cenário negativo de brute force** (12 logins consecutivos com senha incorreta) retornou 401 em todas as tentativas, confirmando rejeição — porém **sem bloqueio/rate limiting** após N falhas, lacuna registrada para a próxima sprint. O **cenário negativo de downgrade HTTPS/HSTS** não é executável: as portas 443/80 estão bloqueadas na OCI — limitação de infra documentada. Evidências: [rnf02-hash-banco.txt](../assets/testes/rnf02-hash-banco.txt), [rnf02-bruteforce.json](../assets/testes/rnf02-bruteforce.json).
 
-**RNF05 — Disponibilidade.** O endpoint `/health` foi adicionado ao `Program.cs` (`AddHealthChecks()` + `MapHealthChecks("/health").AllowAnonymous()`, nativo do ASP.NET Core) e retornou `200 Healthy` no ambiente local. Uma sondagem read-only de 20 checagens contra a VM publicada teve 100% de respostas válidas (latência média 85 ms). **Limitações:** o `/health` ainda não está publicado na VM (deploy é ação em infra compartilhada, pendente de execução pelo time) e a janela de 24 h / 7 dias / 30 dias prevista em 18.4 e na seção 10 não foi percorrida — registrado como risco. Evidência: [rnf05-sondagem-vm.json](../assets/testes/rnf05-sondagem-vm.json).
+**RNF05 — Disponibilidade.** O endpoint `/health` retornou `200 Healthy` no ambiente local. Uma sondagem de 20 checagens contra a VM teve 100% de respostas válidas. Essa sondagem é apenas evidência preliminar: a aceitação exige monitoramento contínuo de **30 dias**. O `/health` ainda precisa ser publicado na VM e integrado ao monitor. Evidência: [rnf05-sondagem-vm.json](../assets/testes/rnf05-sondagem-vm.json).
 
 **RNF06 — Carga.** O script [tests/load/k6-pico.js](../tests/load/k6-pico.js) implementa os três cenários de 18.4, **todos executados em 12/06/2026 contra o ambiente local** (backend .NET 9 via `dotnet run` + PostgreSQL 16 em container com seeds oficiais, fluxo home → carrosséis → wishlist autenticado por JWT):
 
@@ -3836,11 +3857,11 @@ Os testes de requisitos não funcionais foram executados para avaliar atributos 
 | Stress (negativo) | 150 VUs por 10 min | 15.272 (21,1/s) | 76.361 | **0%** | **7,25 ms** | 10,62 ms | ✅ sem degradação |
 | Spike (negativo) | 0→100 VUs em 30 s | 2.343 (12,6/s) | 11.716 | **0%** | **6,5 ms** | 8,09 ms | ✅ recuperação imediata |
 
-As metas do cenário positivo (média ≤ 3 s, p95 ≤ 5 s, erro < 1%) foram atendidas com folga de ~3 ordens de magnitude (média 4,31 ms no pico); no stress não houve degradação mensurável em relação ao pico (p95 até menor, 7,25 ms vs 7,87 ms), e no spike o sistema absorveu a subida 0→100 sem nenhum erro — 100% dos checks aprovados nos três cenários (171.018 requisições no total). **Ressalva de ambiente:** os números absolutos refletem o hardware local (sem rede WAN); o comportamento qualitativo (estabilidade, ausência de erros, degradação elegante) é o resultado transferível. A rampa adicional 100→500→1.000 VUs (critério da seção 10) **segue condicionada à autorização do time** por risco de derrubar a VM única. **Inconsistência interna do Projeto.md (registrada):** a seção 10 pede 1.000 usuários enquanto 18.4 especifica 100/150 e spike 0→100; o escopo-base adotado são os cenários de 18.4. Evidências: [k6-pico-local.txt](../assets/testes/k6-pico-local.txt), [k6-stress-local.txt](../assets/testes/k6-stress-local.txt), [k6-spike-local.txt](../assets/testes/k6-spike-local.txt), [k6-smoke-local.txt](../assets/testes/k6-smoke-local.txt).
+Os cenários executados de 100/150 VUs apresentaram latências baixas e 0% de erros, constituindo uma etapa incremental bem-sucedida. Eles **não comprovam** o critério formal de 1.000 VUs definido nas seções 10 e 18.4. A rampa 100→500→1.000 VUs permanece condicionada à autorização do time por risco sobre a VM compartilhada. Evidências: [k6-pico-local.txt](../assets/testes/k6-pico-local.txt), [k6-stress-local.txt](../assets/testes/k6-stress-local.txt), [k6-spike-local.txt](../assets/testes/k6-spike-local.txt), [k6-smoke-local.txt](../assets/testes/k6-smoke-local.txt).
 
 **RNF08 — Modularidade e cobertura.** A cobertura foi coletada com **coverlet.msbuild** (`/p:CollectCoverage=true`, formato cobertura) nas suítes .NET e com `jest --coverage` no frontend (relatórios versionados em [assets/testes/dotnet-coverage/](../assets/testes/dotnet-coverage/)). No frontend, o gate mede as camadas `services` e `viewmodels` por meio de `collectCoverageFrom`, com **88,96% de statements** e **89,32% de lines** (136/136 testes). No backend, os **módulos críticos atingem 85,3% de linhas** (800/938) — por camada: Mappings 100%, DTOs 91,5%, Domínio 89,9%, Controllers 83,3%, Serviços 79,2% —, acima da meta de 70%; o global fica em 54,0% porque a camada de acesso a dados (Repository, 434 linhas, 0% na unitária) é deliberadamente coberta pela **suíte de integração real** (TI-02), e `Program.cs` (bootstrap) não é alvo de teste unitário. Pontos baixos rastreados: `AnonimizacaoJob` (0% na unitária; coberto na integração), `PreferenceController`/`PreferenceService` legados (0%) e `UsuarioController` (60%). **Lacuna nova identificada na medição:** o próprio serviço de recomendação (`InferenceService` 30,6% + `AventuraML` 47,7% = **40,1% de linha**) está **abaixo dos 70%** exigidos pelo critério — ampliação da suíte registrada como ação corretiva. O serviço permanece deployável de forma isolada do backend (projeto separado, suíte própria 48/48). **Cenário negativo 2 de 18.4** (gate de cobertura < 70% falhando o pipeline): **implementado em 12/06/2026** — `.gitlab-ci.yml` criado na raiz com jobs `backend-tests` e `frontend-tests`, e thresholds versionados nos próprios projetos: backend **70% de linha** com repositories/`Program` excluídos do gate unitário (resultado com filtro: **85,28%**, aprovado), inference **35%** temporário (40,08% medido; elevar a 70% é backlog) e frontend **70%** via `coverageThreshold` do Jest (88,96% statements / 89,32% lines, aprovado). O comportamento de falha foi comprovado localmente: threshold forçado a 90% derruba o `dotnet test` com exit code 1 (`error: The total line coverage is below the specified 90`) — evidência em [rnf08-gate-negativo.txt](../assets/testes/rnf08-gate-negativo.txt). A validação do pipeline no GitLab ocorre no primeiro push da branch. Evidências: [assets/testes/dotnet-coverage/](../assets/testes/dotnet-coverage/).
 
-**Análise:** Os atributos de qualidade verificáveis no ambiente disponível foram atendidos com folga em desempenho (latências em dezenas de milissegundos contra teto de 3 s), privacidade (LGPD coberta por integração real), segurança de armazenamento de senha (BCrypt com salt) e usabilidade (SUS 88,5). Permanecem como **riscos/lacunas rastreados**: (i) TLS não verificável na OCI; (ii) ausência de rate limiting no login; (iii) rampa a 1.000 VUs contra a VM e monitor de uptime de longa janela, ambos dependentes de autorização/deploy do time (os cenários 100/150/spike de 18.4 foram executados localmente com 0% de falhas); (iv) primeira execução do pipeline GitLab ainda pendente após a configuração do gate. Nenhum desses bloqueia a entrega, mas todos constam das ações corretivas em 21.9.
+**Análise:** As medições existentes indicam bom desempenho em cargas menores, hashing adequado e usabilidade acima da meta. Permanecem lacunas para a aceitação integral: TLS na OCI, rate limiting, anonimização em 15 dias, amostra mínima do RNF01, monitoramento de 30 dias, carga de 1.000 VUs, amostra de 100 casos de geolocalização, cobertura do recomendador e execução de RNF09/RNF10.
 
 ### 21.7 Testes de usabilidade
 
@@ -3997,17 +4018,17 @@ A consolidação considera as suítes automatizadas executadas (backend unitári
 | Indicador | Resultado |
 |---|---|
 | Total de testes automatizados executados | **343** (123 backend unitário + 36 integração + 48 inference + 136 frontend Jest) |
-| Testes aprovados | **314 / 314 (100%)** |
+| Testes aprovados | **343 / 343 (100%)** nas suítes automatizadas contabilizadas |
 | Testes reprovados | 0 |
-| Testes bloqueados | 0 (TLS/RNF02 e carga plena/RNF06 não são "reprovados", e sim limitados pelo ambiente — ver riscos) |
+| Execuções pendentes ou limitadas | TLS em produção; anonimização em 15 dias; amostra ampliada do RNF01; uptime de 30 dias; carga de 1.000 VUs; 100 casos de geolocalização; RNF09 e RNF10 |
 | Cobertura de código | Frontend **88,96% statements** e **89,32% lines** nos módulos medidos; backend módulos críticos **85,3%** de linhas (global 54,0% — acesso a dados via integração); serviço de recomendação 40,1% (abaixo da meta, lacuna rastreada) |
-| RNFs avaliados | 8/8, sendo 5 atendidos, 2 parcialmente atendidos (RNF02, RNF08) e 1 atendido na janela medida (RNF05) |
+| RNFs avaliados | RNF01–RNF08 com evidência total ou parcial; RNF09 e RNF10 definidos e pendentes de execução |
 | APIs externas | ViaCEP: 3/3 casos com tratamento correto |
 | Usabilidade | SUS 88,5; 40/40 conclusões de tarefa (seção 20.7) |
 | Principais falhas encontradas | Nenhuma falha de regra de negócio. Suítes de frontend estavam desatualizadas em relação à implementação (onboarding/edição via API, busca assíncrona) e foram realinhadas — sem alteração de código de produção |
-| Riscos remanescentes | (i) HTTPS/TLS não verificável na OCI (portas 80/443 bloqueadas); (ii) ausência de rate limiting no login; (iii) rampa a 1.000 VUs e monitor de uptime de longa janela pendentes de autorização/deploy (cenários 100/150/spike executados localmente em 12/06/2026 com 0% de falhas — 171.018 requisições); (iv) `/health` ainda não publicado na VM; (v) gate de cobertura implementado localmente, mas o pipeline GitLab ainda não rodou (valida no primeiro push); (vi) TI-01/03/04/05 cobertos por fakes, sem infra de integração ponta a ponta; (vii) cobertura do serviço de recomendação em 40,1% de linhas, abaixo da meta de 70% (gate temporário em 35%) |
-| Ações corretivas planejadas | Publicar `/health` na VM e ativar monitor (UptimeRobot/cron); adicionar rate limiting/lockout no login; executar a rampa 100→500→1.000 VUs com autorização do time e monitoramento de CPU/memória da VM; validar o pipeline GitLab no primeiro push (gate de cobertura já configurado); ampliar a suíte do serviço de recomendação (40,1% → ≥ 70%) e elevar o gate temporário de 35% até 70%; montar WireMock.Net/`WebApplicationFactory` para as demais trilhas de integração; complementar TFs com evidências manuais (prints/vídeos) na sprint final |
-| Conclusão geral | O sistema demonstra **boa prontidão de qualidade**: 100% das suítes automatizadas verdes, cobertura adequada nos módulos críticos, desempenho muito acima do alvo, privacidade (LGPD) e segurança de senha (BCrypt) verificadas, e excelente usabilidade. As limitações remanescentes são majoritariamente de **infraestrutura e processo** (TLS bloqueado na OCI, deploy/monitor e gate de CI), não de funcionalidade, e estão rastreadas como ações corretivas |
+| Riscos remanescentes | TLS não verificável na OCI; ausência de rate limiting; job de anonimização ainda configurado para 30 dias; metas ampliadas de desempenho, uptime, carga e geolocalização sem execução completa; cobertura do recomendador em 40,1%; contratos RNF09 e ensaio RNF10 pendentes |
+| Ações corretivas planejadas | Ajustar o job para até 15 dias; publicar `/health` e monitorar 30 dias; adicionar rate limiting; executar amostras e cargas formais; ampliar cobertura do recomendador; implementar testes de contrato e ensaio de implantação limpa |
+| Conclusão geral | As suítes automatizadas executadas estão verdes e fornecem boa evidência inicial. A aceitação integral dos RNFs depende das ações e medições pendentes explicitadas acima. |
 
 ---
 
@@ -4073,12 +4094,14 @@ Com base no IA4People, a plataforma apresenta boa aderência inicial aos princí
 
 | Termo / Abreviação | Definição |
 |---|---|
+| API Gateway | Ponto de entrada das requisições do cliente, responsável por encaminhar chamadas aos serviços internos e aplicar políticas comuns de comunicação. |
+| Docker | Plataforma de conteinerização usada para empacotar e executar componentes com dependências e configurações reproduzíveis. |
 | Gateway (BPMN) | Elemento de controle de fluxo em diagramas BPMN que determina a divisão ou convergência de caminhos no processo. |
 | Gateway de Pagamento | Serviço que processa transações financeiras eletrônicas entre o cliente e o estabelecimento. |
 | Hash | Função criptográfica que converte dados de entrada em uma sequência fixa e irreversível, utilizada para armazenamento seguro de senhas. |
 | HTTPS | HyperText Transfer Protocol Secure — protocolo de comunicação seguro na web, utilizando criptografia TLS. |
 | IEEE | Institute of Electrical and Electronics Engineers — organização internacional que define padrões técnicos em engenharia, incluindo o SWEBOK. |
-| ISO 25010 | Norma internacional que define o modelo de qualidade de software, classificando características como desempenho, segurança, usabilidade e confiabilidade. |
+| ISO/IEC 25010:2011 | Edição do modelo de qualidade de produto adotada na classificação dos RNFs deste projeto; foi substituída pela edição de 2023, mas preservada para rastreabilidade da avaliação. |
 | Lei Rouanet | Lei nº 8.313/1991 que institui o Programa Nacional de Apoio à Cultura (PRONAC), permitindo incentivos fiscais para projetos culturais no Brasil. |
 | LGPD | Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018) — legislação brasileira que regula o tratamento de dados pessoais. |
 | MVP | Minimum Viable Product (Produto Mínimo Viável) — versão inicial de um produto contendo as funcionalidades essenciais para validar a proposta de valor. |
@@ -4092,13 +4115,22 @@ Com base no IA4People, a plataforma apresenta boa aderência inicial aos princí
 | Vitrine Dinâmica | Componente de interface que exibe conteúdos personalizados de forma adaptativa, baseando-se no perfil e comportamento do usuário. |
 | Wishlist | Lista de desejos — conjunto de espetáculos que o cliente deseja assistir e salva para consulta futura. |
 | MVVM | Model-View-ViewModel — padrão arquitetural utilizado para separar interface, lógica e dados da aplicação. |
+| PostgreSQL | Sistema gerenciador de banco de dados relacional utilizado para persistir dados transacionais do projeto. |
+| Recommendation Service | Serviço responsável por calcular ou servir recomendações personalizadas aos demais componentes. |
+| SOA | Service-Oriented Architecture (Arquitetura Orientada a Serviços) — abordagem que organiza capacidades do sistema em serviços com contratos explícitos. |
+| Strategy | Padrão de projeto que encapsula algoritmos intercambiáveis sob um contrato comum, permitindo selecionar a estratégia sem alterar o consumidor. |
+| SVD | Singular Value Decomposition; no projeto, técnica de fatoração matricial usada para estimar afinidade entre usuários e espetáculos. |
+| Timestamptz | Tipo do PostgreSQL que armazena instante de data e hora com normalização de fuso horário. |
+| Training Job | Processo executado periodicamente para preparar dados, treinar e versionar o modelo de recomendação. |
 | Include | Relação UML utilizada quando um caso de uso obrigatoriamente incorpora outro comportamento. |
 | Extend | Relação UML utilizada quando um caso de uso adiciona comportamentos opcionais a outro. |
 
-
+---
 ## Referências
 
 FLORIDI, Luciano et al. AI4People - An Ethical Framework for a Good AI Society: Opportunities, Risks, Principles, and Recommendations. Minds and Machines, v. 28, p. 689-707, 2018. Disponível em: https://link.springer.com/article/10.1007/s11023-018-9482-5. Acesso em: 12 jun. 2026.
+
+INTERNATIONAL ORGANIZATION FOR STANDARDIZATION (ISO); INTERNATIONAL ELECTROTECHNICAL COMMISSION (IEC). ISO/IEC 25010:2011 — Systems and software engineering: Systems and software Quality Requirements and Evaluation (SQuaRE): System and software quality models. Genebra: ISO, 2011. Edição substituída pela ISO/IEC 25010:2023. Disponível em: https://www.iso.org/standard/35733.html. Acesso em: 22 jun. 2026.
 
 ASSOCIAÇÃO DOS PRODUTORES DE ESPETÁCULOS TEATRAIS DO ESTADO DE SÃO PAULO (APETESP). Wikipédia, a enciclopédia livre. Disponível em: https://pt.wikipedia.org/wiki/Associa%C3%A7%C3%A3o_dos_Produtores_de_Espet%C3%A1culos_Teatrais_do_Estado_de_S%C3%A3o_Paulo. Acesso em: 23 abr. 2026.
 
@@ -4116,9 +4148,9 @@ PORTAL EXIBIDOR. Balanço 2024: cinemas superam expectativas e público aumenta 
 
 COREDAÇÃO. O desafio de reduzir a desigualdade no acesso ao teatro no Brasil. Disponível em: https://coredacao.com/temas-de-redacao/o-desafio-de-reduzir-a-desigualdade-no-acesso-ao-teatro-no-brasil/. Acesso em: 23 abr. 2026.
 
-ANAFIMA. *PIB da Música no Brasil*. Valor Cultural, 2024. Disponível em: https://valorcultural.com.br/mercado-da-musica-fatura-r-116-bilhoes-mas-carece-de-valorizacao-institucional/. Acesso em: 23 abr. 2026.
+VALOR CULTURAL. *Mercado da música fatura R\$ 116 bilhões, mas carece de valorização institucional*. 20 set. 2025. Matéria baseada no estudo *O PIB da Música no Brasil — Edição 2025*, da Associação Nacional da Indústria da Música (ANAFIMA), com dados do mercado de 2024. O ticket médio de R\$ 432 citado na publicação refere-se a eventos de música ao vivo, não especificamente ao teatro. Disponível em: https://valorcultural.com.br/mercado-da-musica-fatura-r-116-bilhoes-mas-carece-de-valorizacao-institucional/. Acesso em: 22 jun. 2026.
 
-ESPM. Teatro Musical no Rio de Janeiro: Uma pesquisa com consumidores cariocas. *Diálogo com a Economia Criativa*, 2018. Disponível em: https://dialogo.espm.br/revistadcec-rj/article/view/155. Acesso em: 23 abr. 2026.
+MOGRABI, Amanda Rocha; CORRÊA, Alessandra Baiocchi Antunes; PESSÔA, Luís Alexandre Grubits de Paula. Teatro Musical no Rio de Janeiro: uma pesquisa com consumidores cariocas. *Diálogo com a Economia Criativa*, Rio de Janeiro, v. 3, n. 8, p. 6–22, 2018. DOI: 10.22398/2525-2828.386-22. Disponível em: https://dialogo.espm.br/revistadcec-rj/article/view/155. Acesso em: 22 jun. 2026.
 
 INFOTEATRO. O Impacto do Teatro Musical no Cenário Brasileiro. 2025. Disponível em: https://infoteatro.com.br/o-impacto-do-teatro-musical-no-cenario-brasileiro/. Acesso em: 23 abr. 2026.
 
@@ -4126,16 +4158,18 @@ INFOTEATRO. Afinal, o que é a Lei Rouanet e como funciona? 2025. Disponível em
 
 INTELI; AVENTURA. TAPI — ESMD6: Plataforma digital baseada em arquitetura orientada a serviços. 2024.
 
-PRICEWATERHOUSECOOPERS (PwC). Global Entertainment & Media Outlook 2023–2027. Disponível em: https://www.pwc.com/outlook. Acesso em: 26 abr. 2026.
+ATELIER DE CULTURA. Site institucional e portfólio de produções. Disponível em: https://atelierdecultura.com.br/. Acesso em: 22 jun. 2026.
+
+T4F ENTRETENIMENTO. Site institucional. Disponível em: https://www.t4f.com.br/. Acesso em: 22 jun. 2026.
+
+PRICEWATERHOUSECOOPERS (PwC). *Global Entertainment & Media Outlook 2023–2027*. Edição global, seção de tendências de entretenimento, mídia digital e experiências presenciais. Disponível em: https://www.pwc.com/outlook. Acesso em: 22 jun. 2026.
 
 UNESCO. Cultural Times: The First Global Map of Cultural and Creative Industries. Paris: UNESCO, 2015. Disponível em: https://unesdoc.unesco.org. Acesso em: 26 abr. 2026.
 
-INSTITUTO BRASILEIRO DE GEOGRAFIA E ESTATÍSTICA (IBGE). Pesquisa de Orçamentos Familiares 2017–2018: análise do consumo cultural no Brasil. Rio de Janeiro: IBGE, 2020. Disponível em: https://www.ibge.gov.br. Acesso em: 26 abr. 2026.
-Lei Rouanet.
+INSTITUTO BRASILEIRO DE GEOGRAFIA E ESTATÍSTICA (IBGE). *Pesquisa de Orçamentos Familiares 2017–2018: perfil das despesas no Brasil — indicadores selecionados*. Rio de Janeiro: IBGE, 2020. Consultar as tabelas de despesa por classes de rendimento para a análise de acesso e consumo. Disponível em: https://www.ibge.gov.br/estatisticas/sociais/populacao/24786-pesquisa-de-orcamentos-familiares-2.html. Acesso em: 22 jun. 2026.
 
 BRASIL. Lei nº 8.313, de 23 de dezembro de 1991. Institui o Programa Nacional de Apoio à Cultura (PRONAC). Diário Oficial da União: seção 1, Brasília, DF, 24 dez. 1991. Disponível em: http://www.planalto.gov.br. Acesso em: 26 abr. 2026.
 
 ASSOCIAÇÃO PAULISTA DOS PRODUTORES DE TEATRO (APPT). Dados e relatórios sobre produção teatral em São Paulo. Disponível em: https://www.appt.org.br. Acesso em: 26 abr. 2026.
-Aventura Teatros.
 
 AVENTURA TEATROS. Site oficial. Disponível em: https://aventurateatros.com.br. Acesso em: 26 abr. 2026.

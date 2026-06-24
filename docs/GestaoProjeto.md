@@ -438,7 +438,7 @@ Esta seção analisa o planejamento da Sprint 5 antes de sua execução, destaca
 
 ## 6. Consolidação Final da Gestão Evolutiva
 
-Esta seção concentra o template final do artefato de gestão evolutiva, contemplando retrospectiva da Sprint 5, evolução das métricas ao longo das sprints e análise post-mortem do projeto.
+Esta seção concentra a finalização do artefato de gestão evolutiva, contemplando retrospectiva da Sprint 5, evolução das métricas ao longo das sprints e análise post-mortem do projeto.
 
 ### 6.1 Retrospectiva Final da Sprint 5
 
@@ -455,7 +455,7 @@ A retrospectiva abaixo considera o estado final do repositório, os artefatos do
 | Integração entre produto, tecnologia e recomendação | O repositório reúne backend em .NET, frontend mobile em Expo/React Native, banco PostgreSQL, serviço de inferência, pipeline de machine learning em ML.NET e scripts/documentos de deploy. | A solução deixou de ser apenas uma interface de catálogo e passou a demonstrar um fluxo técnico mais completo, com cadastro, autenticação, eventos, interações, avaliações e recomendação personalizada. |
 | Organização das evidências de validação | A pasta `assets/testes` concentra resultados de testes unitários, integração, cobertura, testes de inferência, testes de desempenho com k6, evidências de requisitos não funcionais e validações de API externa. | As evidências fortalecem a rastreabilidade da qualidade do sistema e reduzem a dependência de afirmações apenas textuais na documentação final. |
 | Refinamento do motor de recomendação | A documentação do modelo descreve a abordagem híbrida, combinando SVD com afinidade por categoria, enquanto o código mantém componentes separados para treinamento, inferência e integração com a aplicação. | O sistema passou a justificar melhor como as recomendações são geradas e como elas se conectam ao comportamento do usuário, aumentando a consistência entre proposta de valor e implementação. |
-| Maior alinhamento com os critérios da entrega final | A documentação de gestão passou a relacionar tarefas, riscos, métricas, README, licença, configuração, execução, testes e estrutura do repositório. | O projeto ganhou uma leitura mais objetiva para a banca, facilitando a verificação dos requisitos da entrega e a localização dos artefatos principais. |
+| Maior alinhamento com os critérios da entrega final | A documentação de gestão passou a relacionar tarefas, riscos, métricas, README, licença, configuração, execução, testes e estrutura do repositório. | O projeto ganhou uma leitura mais objetiva, facilitando a verificação dos requisitos da entrega e a localização dos artefatos principais. |
 
 #### 6.1.2 Pontos Fracos da Sprint 5
 
@@ -468,19 +468,17 @@ A retrospectiva abaixo considera o estado final do repositório, os artefatos do
 | Integração entre recomendação e usuários reais ainda sensível | A documentação técnica indica a necessidade de mapear corretamente identificadores de usuários, interações e eventos para alimentar o modelo de recomendação. | Caso esse fluxo não seja mantido de forma consistente, a personalização pode perder precisão ou exigir retrabalho na evolução futura do produto. |
 | Pouco tempo útil para uma revisão final completa | O planejamento da sprint já apontava redução de tempo disponível e risco de concentração das validações finais. | A equipe precisou priorizar os pontos com maior impacto na entrega acadêmica, deixando menor espaço para melhorias de refinamento ou automação adicional. |
 
-#### 6.1.3 Ações de Melhoria e Aprendizados da Sprint 5
+#### 6.1.3 Ações de Melhoria da Sprint 5
 
-Como a Sprint 5 representa o encerramento do projeto, as ações de melhoria não foram tratadas como novas mudanças a serem implementadas no próprio RecomendaShow. Elas foram registradas como encaminhamentos finais da entrega e como aprendizados para projetos acadêmicos futuros com estrutura semelhante.
-
-| Ponto de melhoria | Encaminhamento na Sprint 5 | Responsável | Aprendizado consolidado |
+| Ponto de melhoria | Ação proposta | Responsável | Aplicação futura |
 |---|---|---|---|
-| Revisão documental concentrada no encerramento | Consolidar os documentos finais com base no estado real do repositório, priorizando coerência entre `README.md`, `Projeto.md`, `Modelo_Recomendacao.md`, `Deploy_Recomendacao.md` e `GestaoProjeto.md`. | Todos os integrantes, com consolidação pela frente de gestão/documentação. | Em projetos futuros, a documentação deve ser revisada continuamente a cada sprint para evitar acúmulo de correções na etapa final. |
-| Critérios de entrega distribuídos em muitos artefatos | Organizar a entrega final a partir de uma verificação única dos critérios obrigatórios, incluindo execução local, testes, licença, variáveis de ambiente, deploy, evidências e links internos. | Gestão do projeto e responsáveis técnicos de cada módulo. | A existência de um checklist central desde o início reduziria retrabalho e tornaria a preparação da entrega final mais previsível. |
-| Integrações técnicas estabilizadas tardiamente | Validar, na entrega final, se os principais contratos entre frontend, backend, banco de dados, serviço de inferência e modelo de recomendação estão refletidos corretamente na documentação. | Backend, frontend, banco de dados e machine learning. | Interfaces técnicas devem ser congeladas antes da sprint final, reservando o encerramento para validação e documentação, não para redefinição estrutural. |
-| Evidências de teste espalhadas por diferentes frentes | Centralizar e referenciar as evidências finais de testes automatizados, integração, cobertura, desempenho, requisitos não funcionais e validações externas. | Responsáveis por QA/testes e documentação. | Evidências devem ser armazenadas com padrão de nome, data e contexto desde sua geração, facilitando a rastreabilidade da qualidade do projeto. |
-| Risco de divergência entre instruções e execução real | Conferir se os comandos e orientações descritos nos documentos finais correspondem à estrutura atual do repositório e aos serviços efetivamente implementados. | Responsáveis técnicos de backend, frontend, banco e recomendação. | A validação cruzada entre documentação e execução precisa fazer parte da rotina de aceite de cada entrega parcial. |
-| Decisões e limitações registradas apenas no fechamento | Explicitar na documentação final os riscos, limitações, escolhas técnicas e justificativas de escopo que influenciaram o resultado entregue. | Gestão do projeto, com apoio dos responsáveis de cada frente. | Registrar decisões ao longo do desenvolvimento melhora a transparência do processo e facilita retrospectivas mais precisas. |
-| Responsabilidades de revisão pouco formalizadas | Distribuir a revisão final por artefato, garantindo que cada documento, módulo técnico e grupo de evidências tenha ao menos um responsável por conferência. | Scrum Master/gestão e equipe completa. | A separação antecipada de responsáveis por artefato aumenta a qualidade da revisão e reduz lacunas no encerramento do projeto. |
+| Antecipação da revisão documental | Criar uma revisão incremental de documentação ao final de cada sprint, validando se os documentos refletem o código implementado, os testes executados e os feedbacks recebidos. | Todos os integrantes, com consolidação pela frente de gestão/documentação. | Reduzir o acúmulo de correções na sprint final e manter os artefatos sempre próximos do estado real do projeto. |
+| Checklist único de entrega | Manter uma lista central com critérios de README, execução local, variáveis de ambiente, testes, deploy, licença, links, evidências e documentos obrigatórios. | Gestão do projeto e responsáveis técnicos de cada módulo. | Facilitar auditorias internas antes das entregas e diminuir o risco de itens obrigatórios ficarem incompletos. |
+| Congelamento progressivo de interfaces técnicas | Definir prazos internos para estabilizar endpoints, modelos de dados, contratos entre frontend/backend, estrutura do banco e artefatos do modelo de recomendação. | Backend, frontend, banco de dados e machine learning. | Evitar alterações estruturais próximas da entrega final e permitir testes mais confiáveis. |
+| Centralização das evidências de teste | Padronizar nomes, localização e referência dos arquivos de evidência, mantendo resultados de testes automatizados, manuais, desempenho e requisitos não funcionais em uma estrutura única. | Responsáveis por QA/testes e documentação. | Tornar a comprovação da qualidade mais rápida de consultar e mais fácil de reaproveitar em relatórios futuros. |
+| Validação cruzada entre documentação e execução | Antes de cada entrega, executar os comandos descritos no README e nos documentos técnicos, verificando se instalação, build, testes e execução local funcionam conforme descrito. | Responsáveis técnicos de backend, frontend, banco e recomendação. | Aumentar a confiabilidade das instruções entregues e reduzir inconsistências entre texto e prática. |
+| Registro contínuo de decisões e riscos | Documentar durante a sprint as principais decisões, limitações conhecidas, riscos técnicos e justificativas de escopo. | Gestão do projeto, com apoio dos responsáveis de cada frente. | Melhorar a rastreabilidade das escolhas do grupo e facilitar retrospectivas mais objetivas em projetos futuros. |
+| Separação mais clara de responsabilidades por artefato | Associar cada documento, módulo de código e grupo de evidências a um responsável principal e a um revisor. | Scrum Master/gestão e equipe completa. | Evitar lacunas de revisão e distribuir melhor o esforço final entre os integrantes. |
 
 ### 6.2 Análise de Evolução das Métricas
 
@@ -524,37 +522,10 @@ Inserir os gráficos consolidados das métricas após a coleta dos dados finais.
 
 A preencher.
 
+---
+
 ### 6.3 Análise Post-Mortem Final
-
-Esta seção deve consolidar a análise post-mortem do projeto, considerando todo o ciclo de vida, os principais aprendizados e recomendações para projetos futuros.
-
-#### 6.3.1 Pontos Positivos do Projeto
-
-| Ponto positivo | Evidência ao longo do projeto | Lição aprendida |
-|---|---|---|
-| A preencher | A preencher | A preencher |
-
-#### 6.3.2 Oportunidades de Melhoria
-
-| Oportunidade de melhoria | Como apareceu no projeto | Recomendação para projetos futuros |
-|---|---|---|
-| A preencher | A preencher | A preencher |
-
-#### 6.3.3 Lições Aprendidas Consolidadas
-
-| Tema | Lição aprendida | Aplicação futura |
-|---|---|---|
-| A preencher | A preencher | A preencher |
-
-#### 6.3.4 Recomendações Finais
-
-| Recomendação | Justificativa | Aplicação futura |
-|---|---|---|
-| A preencher | A preencher | A preencher |
-
-#### 6.3.5 Conclusão do Post-Mortem
-
-A preencher.
+Esta seção consolida a análise post-mortem do RecomendaShow, considerando o ciclo completo de desenvolvimento, desde a definição inicial do problema e das personas até a consolidação final de backend, frontend, banco de dados, recomendação, deploy, testes e documentação. Como a Sprint 5 representa o encerramento do projeto, a análise não propõe novas mudanças para o produto atual; ela registra uma leitura crítica sobre o que funcionou, o que gerou dificuldade e quais aprendizados podem orientar projetos acadêmicos futuros.
 
 ---
 

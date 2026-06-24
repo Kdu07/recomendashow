@@ -706,6 +706,8 @@ ORDER BY score DESC;
 | 50 | 4 | 345,99 | 144,52 ms | 0 |
 | 75 | 8 | 389,95 | 192,33 ms | 0 |
 
+As saídas brutas reais do terminal, incluindo a tentativa com 100 clientes bloqueada por limite de conexões, estão versionadas em `src/database/benchmark/pgbench-results.txt`.
+
 ### Análise dos Resultados
 
 Os resultados demonstram que o banco de dados permaneceu estável durante todos os cenários executados, sem ocorrência de falhas de transação.

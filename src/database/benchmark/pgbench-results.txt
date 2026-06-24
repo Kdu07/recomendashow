@@ -1,0 +1,86 @@
+# pgbench - Resultados Brutos
+
+## 5 clientes / 2 threads
+
+PS C:\Users\Inteli\Desktop\g02-2> & "C:\Program Files\PostgreSQL\16\bin\pgbench.exe" -n -h 137.131.172.248 -p 5432 -U postgres -c 5 -j 2 -T 60 -f src/database/pgbench_readonly_workload.sql aventura_db
+Password:
+
+pgbench (16.14)
+transaction type: src/database/pgbench_readonly_workload.sql
+scaling factor: 1
+query mode: simple
+number of clients: 5
+number of threads: 2
+maximum number of tries: 1
+duration: 60 s
+number of transactions actually processed: 2996
+number of failed transactions: 0 (0.000%)
+latency average = 99.282 ms
+initial connection time = 602.292 ms
+tps = 50.361373 (without initial connection time)
+
+## 20 clientes / 4 threads
+
+PS C:\Users\Inteli\Desktop\g02-2> & "C:\Program Files\PostgreSQL\16\bin\pgbench.exe" -n -h 137.131.172.248 -p 5432 -U postgres -c 20 -j 4 -T 60 -f src/database/pgbench_readonly_workload.sql aventura_db
+Password:
+
+pgbench (16.14)
+transaction type: src/database/pgbench_readonly_workload.sql
+scaling factor: 1
+query mode: simple
+number of clients: 20
+number of threads: 4
+maximum number of tries: 1
+duration: 60 s
+number of transactions actually processed: 5662
+number of failed transactions: 0 (0.000%)
+latency average = 207.772 ms
+initial connection time = 1303.405 ms
+tps = 96.259298 (without initial connection time)
+
+## 50 clientes / 4 threads
+
+PS C:\Users\Inteli\Desktop\g02-2> & "C:\Program Files\PostgreSQL\16\bin\pgbench.exe" -n -h 137.131.172.248 -p 5432 -U postgres -c 50 -j 4 -T 60 -f src/database/pgbench_readonly_workload.sql aventura_db
+Password:
+
+pgbench (16.14)
+transaction type: src/database/pgbench_readonly_workload.sql
+scaling factor: 1
+query mode: simple
+number of clients: 50
+number of threads: 4
+maximum number of tries: 1
+duration: 60 s
+number of transactions actually processed: 20493
+number of failed transactions: 0 (0.000%)
+latency average = 144.515 ms
+initial connection time = 1226.183 ms
+tps = 345.985353 (without initial connection time)
+
+## 75 clientes / 8 threads
+
+PS C:\Users\Inteli\Desktop\g02-2> & "C:\Program Files\PostgreSQL\16\bin\pgbench.exe" -n -h 137.131.172.248 -p 5432 -U postgres -c 75 -j 8 -T 60 -f src/database/pgbench_readonly_workload.sql aventura_db
+Password:
+
+pgbench (16.14)
+transaction type: src/database/pgbench_readonly_workload.sql
+scaling factor: 1
+query mode: simple
+number of clients: 75
+number of threads: 8
+maximum number of tries: 1
+duration: 60 s
+number of transactions actually processed: 23091
+number of failed transactions: 0 (0.000%)
+latency average = 192.330 ms
+initial connection time = 1374.851 ms
+tps = 389.954215 (without initial connection time)
+
+## 100 clientes / 8 threads
+
+PS C:\Users\Inteli\Desktop\g02-2> & "C:\Program Files\PostgreSQL\16\bin\pgbench.exe" -n -h 137.131.172.248 -p 5432 -U postgres -c 100 -j 8 -T 60 -f src/database/pgbench_readonly_workload.sql aventura_db
+Password:
+
+pgbench (16.14)
+pgbench: error: connection to server at "137.131.172.248", port 5432 failed: FATAL:  sorry, too many clients already
+pgbench: error: could not create connection for client 99

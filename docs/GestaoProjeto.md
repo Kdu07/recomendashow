@@ -580,6 +580,18 @@ Esta seção consolida a análise post-mortem do RecomendaShow, considerando o c
 | Reservar tempo real para refinamento final | A Sprint 5 demonstrou que a etapa final exige leitura transversal do projeto, não apenas pequenos ajustes. | Planejar a última sprint com menor carga de novas funcionalidades e maior foco em validação, consistência e apresentação. |
 
 
+#### 6.3.5 Conclusão do Post-Mortem
+
+
+O post-mortem do RecomendaShow indica que o projeto alcançou uma entrega tecnicamente ampla e coerente com a proposta de recomendação de experiências culturais para a Aventura Teatros. Ao longo das sprints, a equipe construiu uma solução que articula produto, dados, experiência mobile, backend, banco de dados, recomendação personalizada, deploy e validação por testes.
+
+
+Os principais ganhos estiveram na capacidade de transformar uma necessidade de negócio em uma arquitetura funcional e documentada, com evidências de implementação e preocupação com experiência do usuário, segurança, LGPD, desempenho e explicabilidade. Por outro lado, o projeto também revelou desafios típicos de entregas acadêmicas complexas: concentração de revisões no fim, dependências entre frentes técnicas, necessidade de evidências mais padronizadas e dificuldade de manter documentação, código e critérios de avaliação sempre sincronizados.
+
+
+Como aprendizado final, a equipe conclui que projetos com múltiplas frentes técnicas precisam tratar documentação, testes, gestão e deploy como partes contínuas do desenvolvimento, e não como etapas finais separadas. A Sprint 5 cumpriu o papel de consolidar a entrega, explicitar limitações e organizar os aprendizados, deixando uma base mais clara para avaliação do projeto e para a execução de trabalhos futuros com escopo semelhante.
+
+
 ---
 
 ## 7. Atendimento aos Critérios do Escritório de Projetos

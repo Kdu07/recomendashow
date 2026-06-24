@@ -527,6 +527,19 @@ A preencher.
 ### 6.3 Análise Post-Mortem Final
 Esta seção consolida a análise post-mortem do RecomendaShow, considerando o ciclo completo de desenvolvimento, desde a definição inicial do problema e das personas até a consolidação final de backend, frontend, banco de dados, recomendação, deploy, testes e documentação. Como a Sprint 5 representa o encerramento do projeto, a análise não propõe novas mudanças para o produto atual; ela registra uma leitura crítica sobre o que funcionou, o que gerou dificuldade e quais aprendizados podem orientar projetos acadêmicos futuros.
 
+#### 6.3.1 Pontos Positivos do Projeto
+
+
+| Ponto positivo | Evidência ao longo do projeto | Lição aprendida |
+|---|---|---|
+| Evolução clara da solução ao longo das sprints | O projeto saiu da definição de problema, público e requisitos para uma solução com aplicativo mobile, API backend, banco PostgreSQL, serviço de inferência, modelo de recomendação e documentação de deploy. | A divisão por sprints permitiu transformar uma proposta ampla em entregas progressivas, mesmo com ajustes e retrabalho ao longo do caminho. |
+| Boa integração entre visão de produto e implementação técnica | As personas, jornadas, requisitos, arquitetura e testes foram conectados às funcionalidades implementadas, como onboarding, busca, favoritos, avaliações, catálogo, recomendações e cadastro com endereço. | Documentar o produto junto com a implementação ajuda a manter a solução orientada ao usuário, não apenas à entrega de código. |
+| Separação técnica entre os principais módulos do código | O repositório organiza frontend mobile, backend, banco de dados, machine learning, serviço de inferência, deploy e documentação em áreas próprias. | A separação de responsabilidades facilita entendimento, manutenção e evolução, especialmente em projetos com múltiplas tecnologias. |
+| Consolidação de um motor de recomendação documentado | O modelo híbrido combina SVD com afinidade por categoria, possui documentação própria, artefatos de treino, serviço de inferência e contrato com o backend via tabela `recomendacoes`. | Recomendações personalizadas exigem tanto implementação quanto explicação técnica, incluindo dados usados, limitações, fallback e métricas. |
+| Validação por diferentes tipos de teste | A documentação registra testes unitários, integração, frontend, inferência, requisitos não funcionais, API externa, desempenho e usabilidade, com evidências associadas. | A qualidade do projeto fica mais convincente quando há múltiplas formas de validação, cobrindo código, experiência do usuário e requisitos de operação. |
+| Aprimoramento da gestão ao longo do tempo | As retrospectivas mostram evolução em comunicação, uso do Kanban, detalhamento de tasks, identificação de riscos e preparação da entrega final. | A gestão evolutiva ganha valor quando registra não só o que foi feito, mas também como a equipe aprendeu a trabalhar melhor. |
+
+
 ---
 
 ## 7. Atendimento aos Critérios do Escritório de Projetos

@@ -565,6 +565,21 @@ Esta seção consolida a análise post-mortem do RecomendaShow, considerando o c
 | Documentação | Documentação final não deve ser apenas um relatório; ela precisa permitir que outra pessoa entenda, execute, avalie e mantenha o projeto. | Escrever documentos como artefatos operacionais, com contexto, comandos, decisões, evidências e limitações. |
 | Entrega acadêmica | Critérios de avaliação, evidências e rastreabilidade têm peso semelhante ao funcionamento técnico da solução. | Planejar a entrega como produto completo: código, documentação, testes, apresentação, justificativas e organização do repositório. |
 
+
+#### 6.3.4 Recomendações Finais
+
+
+| Recomendação | Justificativa | Aplicação futura |
+|---|---|---|
+| Manter um checklist de entrega desde a primeira sprint | O projeto exigiu validação de muitos itens: README, licença, execução local, variáveis de ambiente, deploy, testes, documentos e evidências. | Criar um checklist vivo e revisá-lo a cada sprint, evitando concentração de conferências no encerramento. |
+| Vincular cada requisito a evidências de implementação e teste | A rastreabilidade entre requisitos, código, testes e documentação fortalece a avaliação da solução. | Usar uma matriz simples que relacione requisito, funcionalidade, arquivo principal, teste e evidência. |
+| Registrar decisões técnicas no momento em que são tomadas | Decisões sobre arquitetura, deploy, recomendação, banco e limitações ficaram mais fáceis de justificar quando documentadas. | Manter um log de decisões arquiteturais e de produto, mesmo que simples, ao longo do desenvolvimento. |
+| Planejar deploy e operação antes da etapa final | O deploy do serviço de recomendação envolveu Docker, VM, nginx, variáveis de ambiente, banco remoto e verificação de health. | Tratar deploy como parte do desenvolvimento, não como uma atividade isolada no final do projeto. |
+| Definir responsáveis por revisão de cada artefato | A entrega final envolveu muitos documentos e módulos técnicos, aumentando o risco de inconsistências. | Atribuir responsáveis e revisores por documento, módulo e grupo de evidências desde o início de cada sprint. |
+| Considerar limitações de ML como parte do escopo | O recomendador possui riscos próprios, como cold-start, dados históricos enviesados, cobertura de testes e dependência de mapeamento de usuários. | Incluir avaliação, explicabilidade, viés, fallback e atualização de modelo como critérios de qualidade do componente de recomendação. |
+| Reservar tempo real para refinamento final | A Sprint 5 demonstrou que a etapa final exige leitura transversal do projeto, não apenas pequenos ajustes. | Planejar a última sprint com menor carga de novas funcionalidades e maior foco em validação, consistência e apresentação. |
+
+
 ---
 
 ## 7. Atendimento aos Critérios do Escritório de Projetos

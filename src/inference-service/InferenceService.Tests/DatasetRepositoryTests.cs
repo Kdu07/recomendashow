@@ -251,9 +251,22 @@ public class DatasetRepositoryTests : IDisposable
         repo.ColdStartItems.Should().ContainSingle().Which.Should().Be("ShowX");
     }
 
-    // -----------------------------------------------------------------------
-    // Cleanup
-    // -----------------------------------------------------------------------
+    [Fact]
+    public void GetAllUserIds_ReturnsAllUsersInDataset()
+    {
+        var repo = BuildFromCsv(BaseCsv);
+        repo.GetAllUserIds().Should().BeEquivalentTo([1, 2, 3]);
+    }
+
+    [Fact]
+    public void DatasetRepository_WhenPathDoesNotExist_ThrowsFileNotFoundException()
+    {
+        var opts = Options.Create(new ModelPathsOptions { DatasetCsv = "this_file_does_not_exist_xyz.csv" });
+
+        var act = () => new DatasetRepository(opts, NullLogger<DatasetRepository>.Instance);
+
+        act.Should().Throw<FileNotFoundException>();
+    }
 
     public void Dispose()
     {

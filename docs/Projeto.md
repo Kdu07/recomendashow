@@ -3128,13 +3128,6 @@ Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositó
 #### Link do vídeo demonstrativo backend
 
 [Vídeo demonstrativo](https://drive.google.com/file/d/1VCDSsW-dxjwJJM6786tu-Pd1RauL3sNp/view?usp=sharing)
-### 19.6 Estratégia de testes e metodologia TDD
-
-A estratégia de testes busca validar as regras de negócio e os comportamentos esperados de forma isolada, reproduzível e automatizada. No backend, os testes verificam entidades de domínio, serviços, controllers, mapeamentos e tratamento de exceções, utilizando fakes e mocks para isolar dependências. No frontend, a validação concentra-se nos Services e ViewModels, responsáveis pela lógica de estado, navegação e interação com dados.
-
-A metodologia TDD (*Test-Driven Development*) foi aplicada de forma pragmática nas funcionalidades críticas. Nesse processo, os cenários de teste orientam a implementação das regras, seguindo o ciclo de criar um teste que inicialmente falha, desenvolver o código mínimo necessário para fazê-lo passar e refatorar a solução sem alterar o comportamento validado.
-
----
 
 ### 19.7 Testes unitários do Frontend na Sprint 3
 

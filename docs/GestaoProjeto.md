@@ -551,6 +551,20 @@ Esta seção consolida a análise post-mortem do RecomendaShow, considerando o c
 | Formalizar decisões e limitações continuamente | Algumas limitações técnicas, como cobertura do recomendador, mapeamento entre usuários do dataset e usuários reais, deploy manual e riscos de operação, ficaram mais explícitas na consolidação final. | Registrar decisões arquiteturais, limitações e trade-offs no momento em que ocorrem, evitando reconstruir justificativas apenas no encerramento. |
 | Integrar gestão e critérios de avaliação desde o início | Parte da Sprint 5 foi dedicada a verificar aderência a README, licença, execução local, critérios do Escritório de Projetos e organização do repositório. | Mapear os critérios avaliativos já na Sprint 1 e revisá-los como parte do Definition of Done de cada entrega. |
 
+
+#### 6.3.3 Lições Aprendidas Consolidadas
+
+
+| Tema | Lição aprendida | Aplicação futura |
+|---|---|---|
+| Produto | Personas, jornadas e requisitos precisam orientar decisões concretas de funcionalidade, não apenas descrever perfis de usuário. | Usar cada dor mapeada como entrada para funcionalidades, critérios de aceite e testes de experiência. |
+| Arquitetura | Separar frontend, backend, banco, recomendação e inferência aumenta clareza, mas exige contratos bem documentados entre os módulos. | Definir contratos de API, tabelas, variáveis de ambiente e fluxos de dados antes de avançar para integrações complexas. |
+| Machine Learning | Um modelo de recomendação só é completo quando seus dados, métricas, limitações, fallback e integração com o produto são documentados. | Tratar modelos de ML como componentes de software versionados, testáveis e auditáveis. |
+| Testes | A combinação de testes automatizados, manuais, usabilidade, desempenho e requisitos não funcionais oferece uma visão mais realista da qualidade. | Planejar testes desde o início da implementação, associando cada suíte a riscos específicos do produto. |
+| Gestão | Retrospectivas são mais úteis quando conectam problemas recorrentes a evidências, impacto e ações concretas. | Evitar retrospectivas genéricas e manter um histórico de evolução entre sprints. |
+| Documentação | Documentação final não deve ser apenas um relatório; ela precisa permitir que outra pessoa entenda, execute, avalie e mantenha o projeto. | Escrever documentos como artefatos operacionais, com contexto, comandos, decisões, evidências e limitações. |
+| Entrega acadêmica | Critérios de avaliação, evidências e rastreabilidade têm peso semelhante ao funcionamento técnico da solução. | Planejar a entrega como produto completo: código, documentação, testes, apresentação, justificativas e organização do repositório. |
+
 ---
 
 ## 7. Atendimento aos Critérios do Escritório de Projetos

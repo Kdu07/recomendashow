@@ -1,4 +1,5 @@
 using BackEnd.Aventura.Infrastructure;
+using BackEnd.Aventura.Repository;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
@@ -79,6 +80,14 @@ public class ApiFixture : IAsyncLifetime
 
                     services.AddSingleton<IMongoConnectionFactory>(_ =>
                         new TestMongoConnectionFactory());
+
+                    var imageRepository = services.SingleOrDefault(
+                        x => x.ServiceType == typeof(IEspetaculoImagemRepository));
+
+                    if (imageRepository is not null)
+                        services.Remove(imageRepository);
+
+                    services.AddSingleton<IEspetaculoImagemRepository, TestEspetaculoImagemRepository>();
                 });
             });
 
@@ -160,4 +169,9 @@ public class TestMongoConnectionFactory : IMongoConnectionFactory
     }
 
     public IMongoDatabase GetDatabase() => _database;
+}
+
+public class TestEspetaculoImagemRepository : IEspetaculoImagemRepository
+{
+    public Domain.EspetaculoImagem? GetByEspetaculoNome(string espetaculoNome) => null;
 }

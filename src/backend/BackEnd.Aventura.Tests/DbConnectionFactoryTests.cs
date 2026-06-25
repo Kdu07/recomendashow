@@ -17,17 +17,14 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public void Constructor_MissingSettings_ShouldThrowInvalidOperationException()
         {
-            // Arrange
             var configuration = new ConfigurationBuilder().Build();
 
-            // Act & Assert
             Assert.Throws<InvalidOperationException>(() => new DbConnectionFactory(configuration));
         }
 
         [Fact]
         public void Constructor_WithDefaultConnection_ShouldSucceed()
         {
-            // Arrange
             var myConfiguration = new Dictionary<string, string?>
             {
                 {"ConnectionStrings:DefaultConnection", "Host=localhost;Database=test;Username=postgres;Password=pwd"}
@@ -36,11 +33,9 @@ namespace BackEnd.Aventura.Tests
                 .AddInMemoryCollection(myConfiguration)
                 .Build();
 
-            // Act
             var factory = new DbConnectionFactory(configuration);
             var connection = factory.CreateConnection();
 
-            // Assert
             Assert.NotNull(connection);
             Assert.Contains("localhost", connection.ConnectionString);
             Assert.Contains("test", connection.ConnectionString);
@@ -49,7 +44,6 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public void Constructor_WithIndividualSettings_ShouldSucceed()
         {
-            // Arrange
             var myConfiguration = new Dictionary<string, string?>
             {
                 {"DB_HOST", "localhost"},
@@ -62,14 +56,74 @@ namespace BackEnd.Aventura.Tests
                 .AddInMemoryCollection(myConfiguration)
                 .Build();
 
-            // Act
             var factory = new DbConnectionFactory(configuration);
             var connection = factory.CreateConnection();
 
-            // Assert
             Assert.NotNull(connection);
             Assert.Contains("localhost", connection.ConnectionString);
             Assert.Contains("testdb", connection.ConnectionString);
+        }
+
+        [Fact]
+        public void Constructor_WithPostgresPrefixedSettings_ShouldSucceed()
+        {
+            var myConfiguration = new Dictionary<string, string?>
+            {
+                {"POSTGRES_HOST", "db.internal"},
+                {"POSTGRES_PORT", "5433"},
+                {"POSTGRES_DB", "aventuradb"},
+                {"POSTGRES_USER", "aventurauser"},
+                {"POSTGRES_PASSWORD", "aventurapwd"}
+            };
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(myConfiguration)
+                .Build();
+
+            var factory = new DbConnectionFactory(configuration);
+            var connection = factory.CreateConnection();
+
+            Assert.NotNull(connection);
+            Assert.Contains("db.internal", connection.ConnectionString);
+            Assert.Contains("aventuradb", connection.ConnectionString);
+            Assert.Contains("5433", connection.ConnectionString);
+        }
+
+        [Fact]
+        public void Constructor_WithInvalidPort_ShouldFallbackToDefaultPort()
+        {
+            var myConfiguration = new Dictionary<string, string?>
+            {
+                {"DB_HOST", "localhost"},
+                {"DB_PORT", "nao-e-um-numero"},
+                {"DB_NAME", "testdb"},
+                {"DB_USER", "testuser"},
+                {"DB_PASSWORD", "testpwd"}
+            };
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(myConfiguration)
+                .Build();
+
+            var factory = new DbConnectionFactory(configuration);
+            var connection = factory.CreateConnection();
+
+            Assert.NotNull(connection);
+            Assert.Contains("5432", connection.ConnectionString);
+        }
+
+        [Fact]
+        public void Constructor_MissingPassword_ShouldThrowInvalidOperationException()
+        {
+            var myConfiguration = new Dictionary<string, string?>
+            {
+                {"DB_HOST", "localhost"},
+                {"DB_NAME", "testdb"},
+                {"DB_USER", "testuser"}
+            };
+            var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(myConfiguration)
+                .Build();
+
+            Assert.Throws<InvalidOperationException>(() => new DbConnectionFactory(configuration));
         }
     }
 }

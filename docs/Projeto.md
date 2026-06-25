@@ -275,7 +275,8 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 - [21.6 Testes de requisitos não funcionais](#216-testes-de-requisitos-não-funcionais)
 - [21.7 Testes de usabilidade](#217-testes-de-usabilidade)
 - [21.8 Testes de APIs externas](#218-testes-de-apis-externas)
-- [21.9 Análise consolidada dos resultados](#219-análise-consolidada-dos-resultados)
+- [21.9 Testes End-to-End (E2E)](#219-testes-end-to-end-e2e)
+- [21.10 Análise consolidada dos resultados](#2110-análise-consolidada-dos-resultados)
 
 </details>
 
@@ -4044,7 +4045,116 @@ Com 55 testes aprovados e 100% de cobertura nos serviços responsáveis pela int
 
 **Validação complementar com chamadas reais:** Além da suíte automatizada com mocks, os três casos planejados em 18.6 foram executados via requisição HTTP real contra a API: CEP válido `01310-100` (HTTP 200, JSON com `logradouro: Avenida Paulista`), CEP malformado `123` (barrado pelo cliente antes da chamada de rede) e CEP inexistente `99999-999` (HTTP 200 com corpo `{erro:true}`, tratado pelo cliente com "CEP não encontrado."). A execução real confirmou que o ViaCEP não usa 404 para CEP inexistente e que a latência é variável (primeira chamada ~5,8 s, provavelmente cold start/DNS). Evidência em [assets/testes/viacep-resultados.json](../assets/testes/viacep-resultados.json).
 
-### 21.9 Análise consolidada dos resultados
+### 21.9 Testes End-to-End (E2E)
+
+
+Na Sprint 5, foram adicionados testes End-to-End para validar fluxos completos do RecomendaShow atravessando múltiplas camadas da aplicação. O objetivo desta suíte é complementar os testes unitários, de integração e de requisitos não funcionais, verificando se as principais jornadas do usuário funcionam de ponta a ponta de forma coerente com a proposta do produto.
+
+
+A estratégia foi dividida em duas frentes:
+
+
+| Frente E2E | Arquivo | Escopo validado | Tipo de ambiente |
+|---|---|---|---|
+| E2E backend/API | `src/backend/BackEnd.Aventura.IntegrationTests/EndToEndApplicationTests.cs` | Executa a API ASP.NET Core com banco PostgreSQL real via Testcontainers, validando autenticação, catálogo, preferências, recomendações, wishlist, perfil, teatros, health check e isolamento entre usuários. | Aplicação backend real + banco real isolado em container |
+| E2E mobile/services | `src/frontend/mobile-app-aventura/tests/AppJourney.e2e.test.js` | Simula a jornada do app React Native por meio dos serviços consumidos pela interface, validando cadastro, sessão, ViaCEP, cache VHS, onboarding, perfil, busca, recomendações, teatros, bilheteria, wishlist local e expiração de sessão. | Jest com `fetch`, sessão e armazenamento simulados |
+
+
+#### 21.9.1 Objetivo dos testes E2E
+
+
+Os testes E2E foram criados para responder a três perguntas principais:
+
+
+1. O usuário consegue percorrer os fluxos centrais do produto sem inconsistências entre API, banco, serviços e regras de negócio?
+2. Os cenários negativos mais importantes retornam códigos HTTP e mensagens compatíveis com o comportamento esperado pela aplicação?
+3. A experiência mobile consome corretamente os contratos da API, mesmo quando os testes são executados sem emulador ou dependência de serviços externos reais?
+
+
+Dessa forma, os E2E não substituem as suítes unitárias ou de integração já existentes. Eles funcionam como uma camada de validação transversal, concentrada nas jornadas que conectam diferentes funcionalidades do sistema.
+
+
+#### 21.9.2 Fluxos E2E cobertos no backend
+
+
+Os testes E2E de backend foram incluídos na suíte de integração existente, aproveitando a infraestrutura já preparada com `WebApplicationFactory`, `Testcontainers.PostgreSql`, `Respawn`, `Npgsql`, `xUnit` e `FluentAssertions`. Cada teste reinicia o estado do banco antes da execução, garantindo isolamento entre cenários.
+
+
+| ID | Fluxo validado | Cobertura funcional |
+|---|---|---|
+| E2E-01 | Usuário novo completa onboarding, descobre espetáculo, favorita e segue para bilheteria | Cadastro, autenticação, perfil, preferências, gêneros, catálogo, busca, detalhe do espetáculo, teatro, wishlist e URL de bilheteria |
+| E2E-02 | Usuário recorrente recebe recomendações persistidas e remove item da wishlist | Recomendações ordenadas por score, motivo da recomendação, wishlist, duplicidade e remoção |
+| E2E-03 | Autenticação protege recursos, perfil é atualizado e conta encerrada bloqueia novo login | JWT, proteção de endpoint, atualização de usuário, exclusão lógica e bloqueio de login |
+| E2E-04 | Cadastro e login rejeitam entradas inválidas | Consentimento ausente, menor de idade, e-mail duplicado, senha incorreta e ausência de vazamento de detalhes internos |
+| E2E-05 | Catálogo, busca e detalhe tratam filtros e recursos inexistentes | Busca por nome, busca por gênero, resultado vazio, espetáculo inexistente e teatro inexistente |
+| E2E-06 | Recomendação usa fallback por gêneros favoritos | Preferências do usuário, gêneros favoritos e recomendação sem registros persistidos pelo motor |
+| E2E-07 | Recomendação valida limites e estado vazio | Limite zero, limite acima de 50, usuário sem recomendações e acesso anônimo |
+| E2E-08 | Wishlist cobre estados de sucesso e erro | Lista vazia, item inexistente, adição, duplicidade, remoção e remoção inexistente |
+| E2E-09 | Preferências suportam criação automática e atualização parcial | Preferências iniciais, gêneros, tags, cidade, faixa de preço, notificações e validação de faixa inválida |
+| E2E-10 | Health check é público e endpoints de negócio continuam protegidos | `/health` anônimo e proteção de catálogo, gêneros e teatros |
+| E2E-11 | Dados permanecem isolados entre usuários | Recomendações e wishlist separadas por conta, evitando vazamento entre usuários |
+
+
+**Comando de execução:**
+
+
+```bash
+dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.IntegrationTests.csproj --filter Category=E2E
+```
+
+
+**Pré-condições:** Docker em execução, SDK .NET disponível no ambiente e acesso aos scripts SQL em `src/database`. O banco é criado em container temporário e reiniciado entre testes por meio da fixture de integração.
+
+#### 21.9.3 Fluxos E2E cobertos no frontend mobile
+
+
+Os testes E2E do frontend foram implementados com Jest, sem depender de emulador mobile. A suíte usa os serviços reais da aplicação e substitui as dependências externas por mocks controlados: `fetch`, armazenamento de autenticação, `AsyncStorage` e navegação. Essa abordagem permite validar a jornada que a interface consome, mantendo execução determinística no pipeline.
+
+
+| Fluxo validado | Cobertura funcional |
+|---|---|
+| Consulta de CEP | Sanitização do CEP, chamada ViaCEP simulada, preenchimento de endereço e cache VHS com `MISS` na primeira chamada e `HIT` na segunda |
+| Cadastro e sessão | Cadastro com payload no formato consumido pelo backend, normalização da resposta e persistência da sessão |
+| Perfil | Leitura de perfil autenticado e atualização de dados pessoais/endereço |
+| Onboarding | Salvamento de categorias, cidade e frequência com mapeamento para preferências do backend |
+| Catálogo e busca | Carregamento de espetáculos, busca por nome/gênero e transformação do DTO em estrutura usada pela tela |
+| Detalhe e bilheteria | Mapeamento de preço, datas, descrição e URL de compra externa |
+| Wishlist local | Adição, prevenção de duplicidade, toggle, remoção e consulta de favorito no armazenamento local |
+| Teatros | Listagem de teatros e espetáculos vinculados a um teatro |
+| Recomendações | Consumo do endpoint de recomendação e mapeamento de score/motivo para o card exibido no app |
+| Encerramento de conta | Chamada de exclusão e bloqueio de login posterior |
+| Expiração de sessão | Tratamento de `401` em endpoint protegido, limpeza de autenticação e acionamento de navegação para sessão expirada |
+
+
+**Comando de execução:**
+
+
+```bash
+cd src/frontend/mobile-app-aventura
+npm test -- --runTestsByPath tests/AppJourney.e2e.test.js
+```
+
+
+
+
+
+
+
+#### 21.9.4 Critérios de sucesso
+
+
+| Critério | Resultado esperado |
+|---|---|
+| Isolamento | Cada cenário deve iniciar sem depender de estado deixado por testes anteriores |
+| Autenticação | Endpoints protegidos devem retornar `401` sem token e funcionar com JWT válido |
+| Persistência | Dados criados no fluxo devem ser refletidos nas consultas posteriores |
+| Contratos | DTOs retornados pelo backend devem ser consumidos corretamente pelo frontend |
+| Cenários negativos | Entradas inválidas devem retornar `400`, duplicidades `409`, recursos inexistentes `404` e sessão inválida `401` |
+| Recomendações | Recomendações persistidas devem respeitar ordenação por score, e o fallback por gêneros deve funcionar quando não houver recomendação salva |
+| Experiência mobile | Serviços do app devem lidar corretamente com sessão, cache, busca, recomendações, wishlist local e expiração de autenticação |
+
+### 21.10 Análise consolidada dos resultados
+
 
 A consolidação considera as suítes automatizadas executadas (backend unitário, integração real, inference e frontend), os testes manuais/instrumentados de RNF e os casos de API externa.
 
@@ -4127,6 +4237,7 @@ Com base no IA4People, a plataforma apresenta boa aderência inicial aos princí
 
 ## 23. Desenvolvimento do Projeto — Sprint 5
 
+<<<<<<< HEAD
 ### 23.1 Integração no Backend com o MongoDB
 
 #### 23.1.1 Dependência e configuração da conexão com o Mongo
@@ -4289,6 +4400,9 @@ As variáveis são carregadas pelo `Program.cs` a partir de um arquivo `.env` na
 **Conclusão:** a integração foi implementada de forma aditiva (mantendo o fallback local existente) e com separação de camadas consistente com o restante do projeto (Domínio/Infraestrutura/Repositório/Serviço/Controller no backend; Service/Componente/Tela no frontend). Os principais riscos — vínculo por nome e escala do fallback de busca — já estão documentados em comentários no próprio código-fonte, o que indica que foram decisões conscientes da equipe, não descuidos.
 
 #### 23.6 Testes unitários do frontend (Sprint 5)
+=======
+### 23.1 Testes unitários do frontend (Sprint 5)
+>>>>>>> 2452b2e9f1c23204efa12bfb24802bc72aa544e8
 
 Na Sprint 5, a suíte de testes unitários do frontend foi expandida para cobrir a totalidade das camadas de `services` e `viewmodels` da aplicação React Native, eliminando as exclusões de cobertura que existiam desde a Sprint 4 e fechando lacunas pontuais nos arquivos já testados anteriormente. A suíte continua localizada em `src/frontend/mobile-app-aventura/tests` e é executada com Jest.
 
@@ -4317,6 +4431,40 @@ npm test
 | Lines | 94,92% |
 
 O threshold mínimo de cobertura configurado no `package.json` (`coverageThreshold.global`) aumentou para 90% para `statements` e `lines`, valor amplamente superado pelo resultado obtido.
+
+### 23.2 Testes unitários do Backend (Sprint 5)
+
+Na Sprint 5, a suíte de testes unitários do backend, localizada em `src/backend/BackEnd.Aventura.Tests`, foi revisada com foco na elevação da cobertura de linha para ≥ 90%, partindo da baseline de 85,62% e do gate de 70% herdados da Sprint 3. A revisão foi orientada pelo próprio relatório de cobertura (`coverlet`/`cobertura.xml`): a partir dele foram identificadas todas as classes e branches ainda sem cobertura, e novos testes foram escritos especificamente para fechar essas lacunas — constructors com argumentos nulos, validações de borda, caminhos de exceção e overloads pouco exercitados.
+
+Diferente da Sprint 3, em que autenticação (`AuthService`), domínio de usuário (`Usuario`, `UsuarioService`, `UsuarioController`), domínio de preferências (`Preferencias`, `PreferenciasService`), domínio de catálogo (`Teatro`, `Espetaculo`, `Recomendacao`, `RecomendacaoService`) e infraestrutura (`DbConnectionFactory`, `GlobalExceptionHandler`) ainda tinham branches de erro e caminhos de validação sem teste correspondente, a Sprint 5 fechou essas lacunas e passou a tratar também o `AnonimizacaoJob` — job de anonimização LGPD até então nunca exercitado como classe —, agora validado por uma suíte de integração dedicada (`src/backend/BackEnd.Aventura.IntegrationTests`) contra uma instância real de PostgreSQL.
+
+Os testes unitários e de integração que já cobriam a mesma classe foram consolidados nos arquivos existentes (um arquivo de teste por classe de produção), sem duplicação. Na suíte unitária (`xUnit`, `Moq`, `coverlet`), dependências externas continuam isoladas via mocks de interfaces; a nova suíte de integração acrescenta `Testcontainers.PostgreSql` (uma instância real de PostgreSQL por execução), `Microsoft.AspNetCore.Mvc.Testing` (`WebApplicationFactory`), `WireMock.Net` (simulação de serviços externos), `Respawn` (reset de banco entre testes) e `FluentAssertions`.
+
+O gate de cobertura, configurado em `BackEnd.Aventura.Tests.csproj` e ativo apenas quando o build roda com `/p:CollectCoverage=true`, passou a excluir explicitamente apenas as classes que dependem diretamente de uma conexão `Npgsql` real e por isso não são mockáveis sem banco: `Repository.*`, `Infrastructure.Persistence.*` (ex.: `EspetaculoMapper`), `Services.AnonimizacaoJob` e `Program`. Essas classes não ficam sem teste — são validadas pela suíte de integração contra PostgreSQL real, incluindo triggers de banco e schema, e simplesmente não entram no cálculo do gate unitário.
+
+Durante a revisão, foi identificado e removido código morto: `PreferenceService`/`PreferenceController`/`IPreferenceService` (namespace em inglês, com `userId: int`) era uma implementação legada nunca consumida, mantida em paralelo à implementação real `PreferenciasService`/`PreferenciasController` (`usuarioId: Guid`, persistida em Postgres). A ausência de uso foi confirmada por busca textual no repositório do frontend mobile, que só consome a rota `/api/Preferencias/{usuarioId}`. Em vez de escrever testes para mascarar esse código morto, os três arquivos e o respectivo registro em `Program.cs` foram removidos.
+
+**Comando de execução:**
+
+```bash
+# Testes unitários, com relatório de cobertura (gate de 90% aplicado)
+dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
+
+# Testes de integração (requer Docker em execução — sobe um container PostgreSQL via Testcontainers)
+dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.IntegrationTests.csproj
+```
+
+**Resultado validado na Sprint 5:** 30 suítes aprovadas (uma por classe de produção testada), totalizando 173 testes unitários aprovados (0 falhas), além de 26 testes de integração aprovados separadamente, com cobertura de:
+
+| Métrica | Antes (Sprint 3) | Depois (Sprint 5) |
+|---|---|---|
+| Linha | 85,62% | 97,58% |
+| Branch | — | 96,52% |
+| Método | — | 96,95% |
+
+O threshold mínimo de cobertura configurado no gate (`Threshold` / `ThresholdType=line`) subiu de 70% para 90%, valor superado com margem — o ganho veio principalmente de classes que estavam em 0% de cobertura e de branches de erro (e-mail duplicado, idade abaixo do mínimo, conta encerrada, configuração ausente) sem caso de teste correspondente.
+
+---
 
 ## 24. Termos e Abreviações
 

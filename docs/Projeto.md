@@ -2687,6 +2687,8 @@ Esta subseção documenta o planejamento dos testes unitários do serviço de in
 | `MetricsController` | `MetricsControllerTests.cs` | Validações de entrada: `k=0` e `rankingUsers=0` retornam 400 para `GetMetrics` e `GetSvdVsHybrid`. Happy path: `GetMetrics` retorna 200 com `MetricsResponse`; `GetErrorHistogram`, `GetRealVsPredicted` e `GetSvdVsHybrid` retornam arquivo PNG (`image/png`). |
 | `HybridModelLoader` | `HybridModelLoaderTests.cs` | Construtor com arquivo ausente lança `FileNotFoundException`; `IsLoaded=false` antes de `StartAsync`; acesso a `Recommender` antes de `StartAsync` lança `InvalidOperationException`; `StartAsync` carrega modelo e o torna disponível via `Recommender`; `StartAsync` exporta metadados corretos (`KnownUsers`, `CatalogSize`, `Alpha`); `StopAsync` completa sem exceção. |
 | `DatasetRepository` | `DatasetRepositoryTests.cs` | Carga de CSV padrão (3 usuários, 4 itens); `ColdStartItems` ordenados por popularidade; `GetConsumedItems` para usuário com histórico e usuário desconhecido; `GetInteractions` com e sem usuário; `GetRating` para par existente e par inexistente; `UserExists` positivo e negativo; `AllInteractions` contém todos os registros; `AllItems` contém conjunto correto; normalização de `ItemId` e `TipoEvento` via `Trim`; colisão após trim usa ranking máximo; CSV vazio; usuário único; `GetAllUserIds` retorna todos os usuários do dataset; path inexistente lança `FileNotFoundException`. |
+| `ScottPlotChartService` | `ScottPlotChartServiceTests.cs` | Geração de PNG válido (verificação da assinatura de 8 bytes do formato e tamanho não-vazio) para os três gráficos do serviço: histograma dos erros de predição, scatter de ranking real × predito e gráfico de barras comparando métricas de ranking SVD puro × híbrido; caso de métricas idênticas (SVD = híbrido). |
+| `Benchmarker` | `BenchmarkerTests.cs` | Benchmark de latência sobre o modelo híbrido real da fixture com `n` reduzido: a saída de console contém startup, percentis (P50/P95/P99), throughput e tempo total; caminho de erro com artefato de modelo inexistente lança exceção. |
 
 **Meta de cobertura:** ≥ 70% de linhas combinadas nos módulos `AventuraML` e `InferenceService`, conforme RNF08. Gate de cobertura configurado em `InferenceService.Tests.csproj` via `<Threshold>` do Coverlet e validado no pipeline GitLab antes de cada merge.
 
@@ -3118,46 +3120,7 @@ A estratégia de testes busca validar as regras de negócio e os comportamentos 
 
 A metodologia TDD (*Test-Driven Development*) foi aplicada de forma pragmática nas funcionalidades críticas. Nesse processo, os cenários de teste orientam a implementação das regras, seguindo o ciclo de criar um teste que inicialmente falha, desenvolver o código mínimo necessário para fazê-lo passar e refatorar a solução sem alterar o comportamento validado.
 
-#### Estratégia de testes
-
-- Metodologia: TDD aplicada nas camadas de `Service` e `Repository`; testes unitários escritos antes ou junto da implementação das regras críticas.
-- Ferramentas: `xUnit` para testes unitários e de integração; `Testcontainers` para subir instâncias de PostgreSQL em testes de integração; `WireMock.Net` para simular serviços externos; `Respawn` para resetar o banco entre testes; `FluentAssertions` para asserções expressivas.
-- Escopo priorizado: autenticação (`AuthService`), persistência (`UsuarioRepository`, `PreferenciasRepository`), e geração/consumo de recomendações (`RecomendacaoService`).
-
-#### Testes implementados
-
-| Teste | Camada testada | Funcionalidade | Resultado | Evidência |
-|---|---|---|---|---|
-| AuthService_ShouldHashAndVerifyPassword | Service | Registro e verificação de senha | Passed | `tests/BackEnd.Aventura.Tests/AuthServiceTests.cs` |
-| UsuarioRepository_CRUD | Repository (integration) | Criação/Leitura/Update de usuário | Passed | `tests/BackEnd.Aventura.Integration/UsuarioRepositoryTests.cs` (Testcontainers + Respawn) |
-| PreferenciasRepository_SaveAndLoad | Repository (integration) | Persistir e recuperar preferências | Passed | `tests/.../PreferenciasRepositoryTests.cs` |
-| RecomendacaoService_Fallback | Service (integration) | Geração de fallback por gêneros favoritos | Passed | `tests/.../RecomendacaoServiceTests.cs` (WireMock stub) |
-| RecommendationWriteRepository_MlId | Repository (integration) | Tradução `user_id` do dataset → `usuario_id` (UUID) via `ml_id`; sem mapeamento não persiste; DELETE+INSERT idempotente | Passed | `src/inference-service/InferenceService.Tests/RecommendationWriteRepositoryTests.cs` (Testcontainers) |
-| MlIdMapping_SeedUsuarios | DB/Schema (integration) | Usuários do seed recebem o `ml_id` mapeado (63261/14888/55251) após os scripts | Passed | `src/backend/BackEnd.Aventura.IntegrationTests/MlIdMappingTests.cs` (Testcontainers) |
-
-#### Execução dos testes
-
-Executar todos os testes do backend (local):
-
-```bash
-dotnet test src/backend/BackEnd.Aventura.sln --logger "console;verbosity=minimal"
-```
-
-Ou executar testes no diretório de testes:
-
-```bash
-dotnet test tests/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
-```
-
-#### Resultado da cobertura
-
-Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositórios) com meta de cobertura ≥ 70% nas partes essenciais. Relatórios de cobertura são gerados pelo pipeline de CI e anexados aos artefatos de build.
-
 ---
-
-#### Link do vídeo demonstrativo backend
-
-[Vídeo demonstrativo](https://drive.google.com/file/d/1VCDSsW-dxjwJJM6786tu-Pd1RauL3sNp/view?usp=sharing)
 
 ### 19.7 Testes unitários do Frontend na Sprint 3
 
@@ -3894,6 +3857,8 @@ Os cenários executados de 100/150 VUs apresentaram latências baixas e 0% de er
 
 **Atualização Sprint 5 (23/06/2026):** a lacuna "Parcialmente atendido" registrada nesta seção para o serviço de inferência foi corrigida. A cobertura de linha combinada (`AventuraML` + `InferenceService`) atingiu **70,04%** (AventuraML 72,61% · InferenceService 66,86%), superando a meta de 70% do RNF08. O gate temporário de 35% foi elevado para **70%** no `InferenceService.Tests.csproj`; o pipeline GitLab valida esse threshold a cada push. **O RNF08 passa a "Atendido" integralmente a partir desta sprint** — as restrições de cobertura citadas no parágrafo acima (40,1% e gate provisório de 35%) estão encerradas.
 
+**Atualização (25/06/2026) — fechamento das últimas lacunas do recomendador:** foram cobertas as duas únicas classes do recomendador que permaneciam em **0% de linha**: `Benchmarker` (`AventuraML`) e `ScottPlotChartService` (`InferenceService`), ambas elevadas a **100%**. A suíte `InferenceService.Tests` recebeu **6 novos testes** (2 em `BenchmarkerTests.cs`, 4 em `ScottPlotChartServiceTests.cs`), totalizando **113 testes** (todos aprovados), e a cobertura de linha combinada (`AventuraML` + `InferenceService`) subiu para **84,15%** (AventuraML **79,49%** · InferenceService **89,92%**), folga confortável sobre a meta de 70% do RNF08. Branch combinado 66,0% e método 94,7%. As únicas linhas sem cobertura restantes são os entrypoints `Program.cs` dos dois projetos (bootstrap, fora do escopo de teste unitário).
+
 **Análise:** As medições existentes indicam bom desempenho em cargas menores, hashing adequado e usabilidade acima da meta. Permanecem lacunas para a aceitação integral: TLS na OCI, rate limiting, anonimização em 15 dias, amostra mínima do RNF01, monitoramento de 30 dias, carga de 1.000 VUs, amostra de 100 casos de geolocalização, cobertura do recomendador e execução de RNF09/RNF10.
 
 ### 21.7 Testes de usabilidade
@@ -4065,6 +4030,8 @@ A consolidação considera as suítes automatizadas executadas (backend unitári
 
 **Atualização Sprint 5 (23/06/2026):** o total de testes automatizados passa de **343 para 399** (123 backend unitário + 36 integração real + **104 inference** + 136 frontend Jest), todos aprovados (100%). O item (vii) dos riscos remanescentes foi encerrado: a suíte de inferência foi ampliada, a cobertura atingiu 70,04% (meta RNF08 de ≥ 70%) e o gate foi atualizado de 35% para 70%. **RNF08: Parcialmente atendido → Atendido.**
 
+**Atualização (25/06/2026):** a suíte do serviço de inferência recebeu **6 novos testes** que cobrem as duas últimas classes sem testes — `Benchmarker` e `ScottPlotChartService`, ambas de 0% → 100% —, totalizando **113 testes** (todos aprovados). A cobertura de linha combinada do recomendador (`AventuraML` + `InferenceService`) subiu para **84,15%** (AventuraML 79,49% · InferenceService 89,92%), bem acima da meta de 70% do RNF08.
+
 ---
 
 ## 22. Análise de Impactos Éticos IA4People
@@ -4127,7 +4094,7 @@ Com base no IA4People, a plataforma apresenta boa aderência inicial aos princí
 
 ## 23. Desenvolvimento do Projeto — Sprint 5
 
-#### 23.X Testes unitários do frontend (Sprint 5)
+#### 23.1 Testes unitários do frontend (Sprint 5)
 
 Na Sprint 5, a suíte de testes unitários do frontend foi expandida para cobrir a totalidade das camadas de `services` e `viewmodels` da aplicação React Native, eliminando as exclusões de cobertura que existiam desde a Sprint 4 e fechando lacunas pontuais nos arquivos já testados anteriormente. A suíte continua localizada em `src/frontend/mobile-app-aventura/tests` e é executada com Jest.
 
@@ -4156,6 +4123,35 @@ npm test
 | Lines | 94,92% |
 
 O threshold mínimo de cobertura configurado no `package.json` (`coverageThreshold.global`) aumentou para 90% para `statements` e `lines`, valor amplamente superado pelo resultado obtido.
+
+---
+
+#### 23.2 Testes do motor de recomendação (Sprint 5)
+
+Na Sprint 5, o motor de recomendação ganhou uma suíte de testes unitários própria, cobrindo os dois módulos C# que o compõem: `AventuraML` (`src/ml` — pré-processamento, treino do SVD, recomendação híbrida, avaliação e benchmark) e `InferenceService` (`src/inference-service` — carregamento do modelo, serviço de inferência, batch de recomendações, métricas, diagnósticos e geração de gráficos). O objetivo foi verificar o comportamento isolado de cada componente, cobrindo caminhos de sucesso e de erro, e atingir a cobertura de linha **≥ 70%** exigida pelo RNF08. O planejamento detalhado dos componentes e cenários está documentado na seção 18.9; esta subseção registra o resultado consolidado da execução na Sprint 5.
+
+A suíte está localizada em `src/inference-service/InferenceService.Tests` e é executada com xUnit, apoiada por FluentAssertions (asserções) e NSubstitute (substituição de dependências com interface). Para evitar o custo de treinar um modelo a cada classe de teste, a fixture `HybridArtifactsFixture` treina uma única vez por sessão um modelo SVD real de escala reduzida (4 itens, 5 usuários) e o compartilha entre as classes via `[Collection("hybrid-artifacts")]`. Dependências concretas sem interface (`Recommender`, `MetricsService`) são exercitadas com os artefatos reais da fixture, garantindo que os testes percorram o pipeline de inferência de ponta a ponta, e não apenas dublês.
+
+Em relação à Sprint 4, a principal evolução foi o fechamento das duas últimas lacunas de cobertura do módulo `AventuraML`/`InferenceService`: os testes de `Benchmarker` (`BenchmarkerTests.cs`), que validam a saída do benchmark de latência sobre o modelo híbrido real (startup, percentis P50/P95/P99, throughput e tempo total) e o caminho de erro com artefato inexistente; e os testes de `ScottPlotChartService` (`ScottPlotChartServiceTests.cs`), que verificam que cada um dos três gráficos do serviço (histograma de erros, scatter real × predito e comparação de ranking SVD puro × híbrido) produz um PNG válido — checando a assinatura mágica de 8 bytes do formato e o conteúdo não-vazio. Esses gráficos substituem, em C#, as visualizações `matplotlib` que antes existiam apenas nos notebooks de análise. Com esses dois arquivos, a cobertura de linha combinada subiu dos 70,04% registrados em 23/06/2026 (limite do gate do RNF08) para 84,15%.
+
+**Comando de execução:**
+
+```bash
+cd src/inference-service/InferenceService.Tests
+dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
+```
+
+(o gate de cobertura configurado no `InferenceService.Tests.csproj` falha o build quando a cobertura de linha total fica abaixo de 70%, conforme o RNF08; a coleta é validada também no pipeline GitLab antes de cada merge)
+
+**Resultado validado na Sprint 5:** 113 testes unitários aprovados (0 falhas, 0 ignorados), distribuídos em 12 arquivos de teste, com a seguinte cobertura combinada (972 de 1.155 linhas):
+
+| Módulo | Cobertura de linhas | Cobertura de branches |
+|---|---|---|
+| `AventuraML` (`src/ml`) | 79,49% | 58,64% |
+| `InferenceService` (`src/inference-service`) | 89,92% | 80,00% |
+| **Combinado** | **84,15%** | **65,99%** |
+
+O resultado supera com folga a meta de 70% de linhas estabelecida pelo RNF08 para os módulos críticos do serviço de recomendação, atendendo ao critério de aceitação de cobertura ≥ 70% verificado no pipeline de CI.
 
 ## 24. Termos e Abreviações
 

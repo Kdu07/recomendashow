@@ -217,3 +217,12 @@ CREATE TRIGGER trg_usuarios_update
 
 ALTER TABLE wishlist_curtidas
     ADD COLUMN IF NOT EXISTS adicionado_em TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP;
+
+-- ML integration: mapeamento dos usuários do sistema -> user_id do dataset (ml_id)
+-- Cada usuário do seed é associado a um user_id do dataset com histórico rico,
+-- para que o batch de recomendação persista recomendações personalizadas para eles.
+-- Idempotente; roda após a criação da coluna ml_id (ADD COLUMN ml_id SERIAL, acima).
+
+UPDATE usuarios SET ml_id = 63261 WHERE email = 'alex@email.com';
+UPDATE usuarios SET ml_id = 14888 WHERE email = 'maria@email.com';
+UPDATE usuarios SET ml_id = 55251 WHERE email = 'joao@email.com';

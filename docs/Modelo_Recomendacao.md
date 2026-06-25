@@ -383,9 +383,11 @@ O modelo também poderia ser avaliado com acurácia/precisão binária usando li
 
 ## 8. Riscos, Limitações e Pendências
 
-### Mapeamento usuário do dataset ↔ usuário do banco (pendência D4 — bloqueia persistência real)
+### Mapeamento usuário do dataset ↔ usuário do banco (D4 — resolvido para a demo via `ml_id`)
 
-O writer resolve `usuarios WHERE ml_id = @userId`, mas `ml_id SERIAL` é um auto-incremento por ordem de inserção **sem relação** com o `user_id` do Sympla no `dataset.csv`. Enquanto esse mapeamento não for definido (decisão de produto adiada — ver `docs/Plano_Migracao_Pipeline_Hibrido.md`, §5.2), o batch roda mas **não grava linhas para os usuários corretos**. O writer já suporta colunas alternativas (`dataset_user_id`, `external_user_id`, ...) para quando a decisão for tomada.
+O writer resolve `usuarios WHERE ml_id = @userId`. A coluna `ml_id` (`SERIAL UNIQUE`) nasce com um auto-incremento por ordem de inserção, **sem relação** com o `user_id` do Sympla no `dataset.csv` — por isso, sozinha, ela não bastava. O mapeamento foi então **definido explicitamente**: no fim de `src/database/02_sprint4_improvements.sql`, três `UPDATE ... WHERE email = ...` associam os usuários do seed a `user_id` do dataset com histórico rico (`alex@email.com → 63261`, `maria@email.com → 14888`, `joao@email.com → 55251`). Com isso o batch passa a **gravar recomendações reais** para esses três usuários (em banco recriado do zero; ver `Deploy_Recomendacao.md` §8). O writer já suporta colunas alternativas (`dataset_user_id`, `external_user_id`, ...) caso o mapeamento mude.
+
+**Limitação:** o `dataset.csv` é anônimo (`user_id` inteiro, sem PII), então isto é uma **atribuição de persona** — cada usuário do seed herda o histórico de um comprador parecido —, não um casamento de identidade real. O mapeamento cobre apenas os usuários do seed; usuários autenticados em geral ainda não recebem `ml_id` mapeado (evolução futura: mapear por identidade real em escala).
 
 ### Thread-safety do PredictionEngine
 

@@ -290,9 +290,16 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 </details>
 
 <details>
-<summary><a href="#23-termos-e-abreviações">23. Termos e Abreviações</a></summary>
+<summary><a href="#23-desenvolvimento-do-projeto--sprint-5">23. Termos e Abreviações</a></summary>
 
-- [Termos e Abreviações](#23-termos-e-abreviações)
+- [Desenvolvimento do Projeto — Sprint 5](#23-desenvolvimento-do-projeto--sprint-5)
+
+</details>
+
+<details>
+<summary><a href="#24-termos-e-abreviações">23. Termos e Abreviações</a></summary>
+
+- [Termos e Abreviações](#24-termos-e-abreviações)
 
 </details>
 
@@ -4117,7 +4124,39 @@ Com base no IA4People, a plataforma apresenta boa aderência inicial aos princí
 
 ---
 
-## 23. Termos e Abreviações
+## 23. Desenvolvimento do Projeto — Sprint 5
+
+#### 23.X Testes unitários do frontend (Sprint 5)
+
+Na Sprint 5, a suíte de testes unitários do frontend foi expandida para cobrir a totalidade das camadas de `services` e `viewmodels` da aplicação React Native, eliminando as exclusões de cobertura que existiam desde a Sprint 4 e fechando lacunas pontuais nos arquivos já testados anteriormente. A suíte continua localizada em `src/frontend/mobile-app-aventura/tests` e é executada com Jest.
+
+Diferente da Sprint 4, em que parte significativa dos `services` (`authService`, `eventLocationService`, `recommendationService`, `showService`, `theaterService`, `userProfileService`, `apiClient`, `categoryService`, `preferenceService`, `tokenStorageService`) e seis `viewmodels` (`useEditProfileViewModel`, `useHomeViewModel`, `useInstitutionalViewModel`, `useProfileViewModel`, `useShowInfoViewModel`, `useWelcomeViewModel`) estavam explicitamente excluídos da medição de cobertura, a Sprint 5 passou a medir 100% dos arquivos de `services/` e `viewmodels/`, sem exceções. A exclusão original mascarava o fato de que esses módulos não tinham nenhum teste cobrindo seu comportamento.
+
+Os novos testes seguem o mesmo padrão já estabelecido na Sprint 4: mocks de dependências externas (`fetch`, `AsyncStorage`, `@react-navigation/native`, `Linking`) via `jest.mock`, e testes isolados por camada (cada `service` testado independentemente dos `viewmodels` que o consomem, e vice-versa, via mock da camada inferior). Como a suíte de testes não tem acesso aos arquivos de imagem reais usados pelo aplicativo (`assets/home/*.png`, `*.jpeg`, `*.webp`), foi adicionado um `moduleNameMapper` no Jest que substitui qualquer `import`/`require` de imagem por um módulo stub (`tests/__mocks__/fileMock.js`) durante a execução dos testes, sem qualquer impacto no comportamento do aplicativo em produção.
+
+Os testes cobrem tanto os caminhos de sucesso quanto os de erro de cada módulo: falhas de rede (`fetch` rejeitado), respostas HTTP de erro (400, 401, 404, 409, 500), payloads malformados (JSON inválido, datas inválidas), sessão de usuário ausente, e fallback de cache (`eventLocationService`). Um teste documenta explicitamente um bug de encoding identificado em `showService.js` (o literal `'comÃ©dia'` usado na comparação de categoria nunca corresponde à entrada real `"Comédia"`, por estar com mojibake), sem alterar o código de produção — a correção foi reportada para tratamento em sprint futura.
+
+**Comando de execução:**
+
+```bash
+cd src/frontend/mobile-app-aventura
+npm test
+```
+
+(equivalente a `jest --coverage --ci --runInBand`, já configurado no script `test` do `package.json`)
+
+**Resultado validado na Sprint 5:** 28 suítes aprovadas, totalizando 340 testes unitários aprovados, com cobertura de:
+
+| Métrica | Cobertura |
+|---|---|
+| Statements | 94,63% |
+| Branches | 87,61% |
+| Functions | 95,81% |
+| Lines | 94,92% |
+
+O threshold mínimo de cobertura configurado no `package.json` (`coverageThreshold.global`) aumentou para 90% para `statements` e `lines`, valor amplamente superado pelo resultado obtido.
+
+## 24. Termos e Abreviações
 
 | Termo / Abreviação | Definição |
 |---|---|

@@ -65,6 +65,21 @@ public sealed class RecommendationWriteRepositoryTests : IClassFixture<PostgresF
         return id;
     }
 
+    private async Task<Guid> InsertEspetaculoAsync(string nome, string? itemDataset)
+    {
+        var id = Guid.NewGuid();
+        await using var conn = new NpgsqlConnection(_db.ConnectionString);
+        await conn.OpenAsync();
+        await using var cmd = new NpgsqlCommand(
+            @"INSERT INTO espetaculos(id, nome, item_dataset, data_inicio, data_fim)
+              VALUES (@Id, @Nome, @ItemDataset, NOW(), NOW() + INTERVAL '1 day')", conn);
+        cmd.Parameters.AddWithValue("@Id", id);
+        cmd.Parameters.AddWithValue("@Nome", nome);
+        cmd.Parameters.AddWithValue("@ItemDataset", (object?)itemDataset ?? DBNull.Value);
+        await cmd.ExecuteNonQueryAsync();
+        return id;
+    }
+
     private async Task<long> CountRecomendacoesAsync(Guid espetaculoId)
     {
         await using var conn = new NpgsqlConnection(_db.ConnectionString);
@@ -110,6 +125,57 @@ public sealed class RecommendationWriteRepositoryTests : IClassFixture<PostgresF
 
         (await CountRecomendacoesAsync(espId)).Should().Be(0,
             "sem usuário com ml_id correspondente, o writer não tem usuario_id para gravar");
+    }
+
+    [Fact(DisplayName = "Caminho B: casa pelo item_dataset mantendo o nome bonito do espetáculo")]
+    public async Task SaveAsync_ComItemDataset_CasaPeloMapeamentoNaoPeloNome()
+    {
+        const int mlId = 900010;
+        var usuarioId = await InsertUsuarioAsync(mlId);
+        // Nome "bonito" no banco difere do nome cru emitido pelo modelo.
+        var espId = await InsertEspetaculoAsync("A Noviça Rebelde", itemDataset: "A NOVIÇA REBELDE");
+
+        var repo = BuildRepo();
+        await repo.SaveAsync(mlId, [new RecommendationResult("A NOVIÇA REBELDE", 0.85)], "hibrido");
+
+        await using var conn = new NpgsqlConnection(_db.ConnectionString);
+        await conn.OpenAsync();
+        await using var cmd = new NpgsqlCommand(
+            "SELECT espetaculo_id FROM recomendacoes WHERE usuario_id = @U", conn);
+        cmd.Parameters.AddWithValue("@U", usuarioId);
+        var result = await cmd.ExecuteScalarAsync();
+
+        result.Should().Be(espId,
+            "a recomendação deve casar pelo item_dataset, mesmo com espetaculos.nome diferente");
+    }
+
+    [Fact(DisplayName = "Caminho B: normalização (caixa/acento) ainda casa o item_dataset")]
+    public async Task SaveAsync_ItemDatasetComCaixaEAcentoDiferentes_AindaCasa()
+    {
+        const int mlId = 900011;
+        await InsertUsuarioAsync(mlId);
+        var espId = await InsertEspetaculoAsync("Elis", itemDataset: "ELIS, A MUSICAL");
+
+        // Modelo emite com caixa baixa e sem acento -> normalização defensiva deve casar.
+        var repo = BuildRepo();
+        await repo.SaveAsync(mlId, [new RecommendationResult("  elis, a musical  ", 0.7)], "hibrido");
+
+        (await CountRecomendacoesAsync(espId)).Should().Be(1,
+            "TRIM+UPPER+unaccent dos dois lados deve absorver diferenças de espaço/caixa/acento");
+    }
+
+    [Fact(DisplayName = "Caminho B: espetáculo sem item_dataset e sem nome correspondente não persiste")]
+    public async Task SaveAsync_EspetaculoSemMapeamentoNemNome_NaoPersiste()
+    {
+        const int mlId = 900012;
+        await InsertUsuarioAsync(mlId);
+        var espId = await InsertEspetaculoAsync("Hamlet", itemDataset: null);
+
+        var repo = BuildRepo();
+        await repo.SaveAsync(mlId, [new RecommendationResult("ALGUM SHOW DO DATASET", 0.6)], "hibrido");
+
+        (await CountRecomendacoesAsync(espId)).Should().Be(0,
+            "sem item_dataset mapeado nem nome igual, o show do modelo não tem espetáculo para gravar");
     }
 
     [Fact(DisplayName = "Reprocessar o mesmo usuário (DELETE+INSERT) não duplica recomendações")]

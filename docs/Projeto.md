@@ -4073,6 +4073,36 @@ Os testes E2E foram criados para responder a três perguntas principais:
 Dessa forma, os E2E não substituem as suítes unitárias ou de integração já existentes. Eles funcionam como uma camada de validação transversal, concentrada nas jornadas que conectam diferentes funcionalidades do sistema.
 
 
+#### 21.9.2 Fluxos E2E cobertos no backend
+
+
+Os testes E2E de backend foram incluídos na suíte de integração existente, aproveitando a infraestrutura já preparada com `WebApplicationFactory`, `Testcontainers.PostgreSql`, `Respawn`, `Npgsql`, `xUnit` e `FluentAssertions`. Cada teste reinicia o estado do banco antes da execução, garantindo isolamento entre cenários.
+
+
+| ID | Fluxo validado | Cobertura funcional |
+|---|---|---|
+| E2E-01 | Usuário novo completa onboarding, descobre espetáculo, favorita e segue para bilheteria | Cadastro, autenticação, perfil, preferências, gêneros, catálogo, busca, detalhe do espetáculo, teatro, wishlist e URL de bilheteria |
+| E2E-02 | Usuário recorrente recebe recomendações persistidas e remove item da wishlist | Recomendações ordenadas por score, motivo da recomendação, wishlist, duplicidade e remoção |
+| E2E-03 | Autenticação protege recursos, perfil é atualizado e conta encerrada bloqueia novo login | JWT, proteção de endpoint, atualização de usuário, exclusão lógica e bloqueio de login |
+| E2E-04 | Cadastro e login rejeitam entradas inválidas | Consentimento ausente, menor de idade, e-mail duplicado, senha incorreta e ausência de vazamento de detalhes internos |
+| E2E-05 | Catálogo, busca e detalhe tratam filtros e recursos inexistentes | Busca por nome, busca por gênero, resultado vazio, espetáculo inexistente e teatro inexistente |
+| E2E-06 | Recomendação usa fallback por gêneros favoritos | Preferências do usuário, gêneros favoritos e recomendação sem registros persistidos pelo motor |
+| E2E-07 | Recomendação valida limites e estado vazio | Limite zero, limite acima de 50, usuário sem recomendações e acesso anônimo |
+| E2E-08 | Wishlist cobre estados de sucesso e erro | Lista vazia, item inexistente, adição, duplicidade, remoção e remoção inexistente |
+| E2E-09 | Preferências suportam criação automática e atualização parcial | Preferências iniciais, gêneros, tags, cidade, faixa de preço, notificações e validação de faixa inválida |
+| E2E-10 | Health check é público e endpoints de negócio continuam protegidos | `/health` anônimo e proteção de catálogo, gêneros e teatros |
+| E2E-11 | Dados permanecem isolados entre usuários | Recomendações e wishlist separadas por conta, evitando vazamento entre usuários |
+
+
+**Comando de execução:**
+
+
+```bash
+dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.IntegrationTests.csproj --filter Category=E2E
+```
+
+
+**Pré-condições:** Docker em execução, SDK .NET disponível no ambiente e acesso aos scripts SQL em `src/database`. O banco é criado em container temporário e reiniciado entre testes por meio da fixture de integração.
 
 ## 22. Análise de Impactos Éticos IA4People
 

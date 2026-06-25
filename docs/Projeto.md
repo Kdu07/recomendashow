@@ -4127,7 +4127,7 @@ Com base no IA4People, a plataforma apresenta boa aderência inicial aos princí
 
 ## 23. Desenvolvimento do Projeto — Sprint 5
 
-#### 23.X Testes unitários do frontend (Sprint 5)
+### 23.1 Testes unitários do frontend (Sprint 5)
 
 Na Sprint 5, a suíte de testes unitários do frontend foi expandida para cobrir a totalidade das camadas de `services` e `viewmodels` da aplicação React Native, eliminando as exclusões de cobertura que existiam desde a Sprint 4 e fechando lacunas pontuais nos arquivos já testados anteriormente. A suíte continua localizada em `src/frontend/mobile-app-aventura/tests` e é executada com Jest.
 
@@ -4156,6 +4156,40 @@ npm test
 | Lines | 94,92% |
 
 O threshold mínimo de cobertura configurado no `package.json` (`coverageThreshold.global`) aumentou para 90% para `statements` e `lines`, valor amplamente superado pelo resultado obtido.
+
+### 23.2 Testes unitários do Backend (Sprint 5)
+
+Na Sprint 5, a suíte de testes unitários do backend, localizada em `src/backend/BackEnd.Aventura.Tests`, foi revisada com foco na elevação da cobertura de linha para ≥ 90%, partindo da baseline de 85,62% e do gate de 70% herdados da Sprint 3. A revisão foi orientada pelo próprio relatório de cobertura (`coverlet`/`cobertura.xml`): a partir dele foram identificadas todas as classes e branches ainda sem cobertura, e novos testes foram escritos especificamente para fechar essas lacunas — constructors com argumentos nulos, validações de borda, caminhos de exceção e overloads pouco exercitados.
+
+Diferente da Sprint 3, em que autenticação (`AuthService`), domínio de usuário (`Usuario`, `UsuarioService`, `UsuarioController`), domínio de preferências (`Preferencias`, `PreferenciasService`), domínio de catálogo (`Teatro`, `Espetaculo`, `Recomendacao`, `RecomendacaoService`) e infraestrutura (`DbConnectionFactory`, `GlobalExceptionHandler`) ainda tinham branches de erro e caminhos de validação sem teste correspondente, a Sprint 5 fechou essas lacunas e passou a tratar também o `AnonimizacaoJob` — job de anonimização LGPD até então nunca exercitado como classe —, agora validado por uma suíte de integração dedicada (`src/backend/BackEnd.Aventura.IntegrationTests`) contra uma instância real de PostgreSQL.
+
+Os testes unitários e de integração que já cobriam a mesma classe foram consolidados nos arquivos existentes (um arquivo de teste por classe de produção), sem duplicação. Na suíte unitária (`xUnit`, `Moq`, `coverlet`), dependências externas continuam isoladas via mocks de interfaces; a nova suíte de integração acrescenta `Testcontainers.PostgreSql` (uma instância real de PostgreSQL por execução), `Microsoft.AspNetCore.Mvc.Testing` (`WebApplicationFactory`), `WireMock.Net` (simulação de serviços externos), `Respawn` (reset de banco entre testes) e `FluentAssertions`.
+
+O gate de cobertura, configurado em `BackEnd.Aventura.Tests.csproj` e ativo apenas quando o build roda com `/p:CollectCoverage=true`, passou a excluir explicitamente apenas as classes que dependem diretamente de uma conexão `Npgsql` real e por isso não são mockáveis sem banco: `Repository.*`, `Infrastructure.Persistence.*` (ex.: `EspetaculoMapper`), `Services.AnonimizacaoJob` e `Program`. Essas classes não ficam sem teste — são validadas pela suíte de integração contra PostgreSQL real, incluindo triggers de banco e schema, e simplesmente não entram no cálculo do gate unitário.
+
+Durante a revisão, foi identificado e removido código morto: `PreferenceService`/`PreferenceController`/`IPreferenceService` (namespace em inglês, com `userId: int`) era uma implementação legada nunca consumida, mantida em paralelo à implementação real `PreferenciasService`/`PreferenciasController` (`usuarioId: Guid`, persistida em Postgres). A ausência de uso foi confirmada por busca textual no repositório do frontend mobile, que só consome a rota `/api/Preferencias/{usuarioId}`. Em vez de escrever testes para mascarar esse código morto, os três arquivos e o respectivo registro em `Program.cs` foram removidos.
+
+**Comando de execução:**
+
+```bash
+# Testes unitários, com relatório de cobertura (gate de 90% aplicado)
+dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
+
+# Testes de integração (requer Docker em execução — sobe um container PostgreSQL via Testcontainers)
+dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.IntegrationTests.csproj
+```
+
+**Resultado validado na Sprint 5:** 30 suítes aprovadas (uma por classe de produção testada), totalizando 173 testes unitários aprovados (0 falhas), além de 26 testes de integração aprovados separadamente, com cobertura de:
+
+| Métrica | Antes (Sprint 3) | Depois (Sprint 5) |
+|---|---|---|
+| Linha | 85,62% | 97,58% |
+| Branch | — | 96,52% |
+| Método | — | 96,95% |
+
+O threshold mínimo de cobertura configurado no gate (`Threshold` / `ThresholdType=line`) subiu de 70% para 90%, valor superado com margem — o ganho veio principalmente de classes que estavam em 0% de cobertura e de branches de erro (e-mail duplicado, idade abaixo do mínimo, conta encerrada, configuração ausente) sem caso de teste correspondente.
+
+---
 
 ## 24. Termos e Abreviações
 

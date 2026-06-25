@@ -49,7 +49,8 @@ SELECT id, nome, email, senha_hash, idade, data_nascimento, data_cadastro,
        cep, logradouro, numero, complemento, bairro, cidade,
        consentimento_aceito, data_consentimento, deleted_at, anonimizado
 FROM usuarios
-WHERE LOWER(email) = LOWER(@Email)";
+WHERE LOWER(email) = LOWER(@Email)
+  AND deleted_at IS NULL";
 
             using var command = new NpgsqlCommand(sql, connection);
             command.Parameters.AddWithValue("@Email", normalizedEmail);

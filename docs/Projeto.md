@@ -1635,7 +1635,6 @@ Responsável pelo processamento das regras de negócio, autenticação, gerencia
 - API Gateway
 - Backend ASP.NET Core
 - Sistema de Recomendação
-- Training Job
 ---
  
 **API Gateway:**
@@ -1679,9 +1678,7 @@ Comunicação do Backend:
 |----------|-----------|
 | PostgreSQL | TCP 5432 |
 | MongoDB | TCP 27017 |
-| Object Storage | HTTPS (TCP 443) |
 | ViaCEP | HTTPS (TCP 443) |
-| Ticketeira (Sympla) | HTTPS (TCP 443) |
  
 ---
  
@@ -1705,36 +1702,11 @@ Comunicação:
  
 | Origem | Destino | Protocolo |
 |--------|----------|-----------|
-| Training Job | Sistema de Recomendação | HTTP REST (TCP 8081) |
+
 | Sistema de Recomendação | PostgreSQL | TCP 5432 |
  
 ---
  
-**Training Job:**
- 
-Serviço responsável pelo treinamento dos modelos utilizados pelo sistema de recomendação.
- 
-Artefato Implantado:
- 
-| Artefato | Descrição |
-|-----------|------------|
-| Training Pipeline | Pipeline de treinamento e atualização dos modelos de recomendação |
- 
-Responsabilidades:
- 
-- Processar dados históricos
-- Treinar modelos de recomendação
-- Atualizar modelos utilizados pelo Recommendation Engine
-- Consumir dados armazenados na infraestrutura de dados
-Comunicação:
- 
-| Destino | Protocolo |
-|----------|-----------|
-| PostgreSQL | TCP 5432 |
-| Sistema de Recomendação | HTTP REST (TCP 8081) |
-| Object Storage | HTTPS (TCP 443) |
- 
----
  
 #### Infraestrutura de Dados
  
@@ -1773,33 +1745,7 @@ Porta Utilizada:
 | MongoDB | TCP 27017 |
  
 ---
- 
-**Object Storage:**
- 
-Armazenamento de objetos utilizado para persistência de arquivos e dados de treinamento.
- 
-Artefatos Armazenados:
- 
-| Artefato |
-|-----------|
-| Bucket S3 |
-| Eventos brutos (JSON) |
-| Modelos treinados (ZIP) |
- 
-Responsabilidades:
- 
-- Armazenamento de datasets
-- Armazenamento de modelos treinados
-- Disponibilização de arquivos para o pipeline de treinamento
-Comunicação:
- 
-| Origem | Protocolo |
-|---------|-----------|
-| Backend ASP.NET Core | HTTPS (TCP 443) |
-| Training Job | HTTPS (TCP 443) |
- 
----
- 
+
 #### Serviços Externos
  
 Serviços de terceiros consumidos pela plataforma.
@@ -1807,13 +1753,6 @@ Serviços de terceiros consumidos pela plataforma.
 **ViaCEP:**
  
 Serviço utilizado para consulta de informações de endereço a partir do CEP informado pelo usuário.
- 
-Comunicação:
- 
-- HTTPS (TCP 443)
-**Ticketeira (Sympla):**
- 
-Serviço externo responsável pelo fornecimento de informações relacionadas a eventos e venda de ingressos.
  
 Comunicação:
  

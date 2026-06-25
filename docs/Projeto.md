@@ -1597,7 +1597,7 @@ O diagrama de implantação abaixo apresenta a arquitetura física do Portal Ave
  
 <div align="center">
   <sub>Imagem 10 - Diagrama de Implantação UML</sub><br>
-  <img src="../assets/Diagrama-de-implantacao_drawio.png" width="100%" alt="Diagrama de Implantação UML"><br>
+  <img src="../assets/Diagrama-de-implantacao.drawio.png" width="100%" alt="Diagrama de Implantação UML"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 ### Ambientes

@@ -4104,6 +4104,38 @@ dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.Integ
 
 **Pré-condições:** Docker em execução, SDK .NET disponível no ambiente e acesso aos scripts SQL em `src/database`. O banco é criado em container temporário e reiniciado entre testes por meio da fixture de integração.
 
+#### 21.9.3 Fluxos E2E cobertos no frontend mobile
+
+
+Os testes E2E do frontend foram implementados com Jest, sem depender de emulador mobile. A suíte usa os serviços reais da aplicação e substitui as dependências externas por mocks controlados: `fetch`, armazenamento de autenticação, `AsyncStorage` e navegação. Essa abordagem permite validar a jornada que a interface consome, mantendo execução determinística no pipeline.
+
+
+| Fluxo validado | Cobertura funcional |
+|---|---|
+| Consulta de CEP | Sanitização do CEP, chamada ViaCEP simulada, preenchimento de endereço e cache VHS com `MISS` na primeira chamada e `HIT` na segunda |
+| Cadastro e sessão | Cadastro com payload no formato consumido pelo backend, normalização da resposta e persistência da sessão |
+| Perfil | Leitura de perfil autenticado e atualização de dados pessoais/endereço |
+| Onboarding | Salvamento de categorias, cidade e frequência com mapeamento para preferências do backend |
+| Catálogo e busca | Carregamento de espetáculos, busca por nome/gênero e transformação do DTO em estrutura usada pela tela |
+| Detalhe e bilheteria | Mapeamento de preço, datas, descrição e URL de compra externa |
+| Wishlist local | Adição, prevenção de duplicidade, toggle, remoção e consulta de favorito no armazenamento local |
+| Teatros | Listagem de teatros e espetáculos vinculados a um teatro |
+| Recomendações | Consumo do endpoint de recomendação e mapeamento de score/motivo para o card exibido no app |
+| Encerramento de conta | Chamada de exclusão e bloqueio de login posterior |
+| Expiração de sessão | Tratamento de `401` em endpoint protegido, limpeza de autenticação e acionamento de navegação para sessão expirada |
+
+
+**Comando de execução:**
+
+
+```bash
+cd src/frontend/mobile-app-aventura
+npm test -- --runTestsByPath tests/AppJourney.e2e.test.js
+```
+
+
+
+
 ## 22. Análise de Impactos Éticos IA4People
 
 Esta seção analisa os impactos éticos do projeto a partir do framework IA4People, citado na literatura original como AI4People. O framework propõe que sistemas baseados em inteligência artificial sejam avaliados por cinco princípios: beneficência, não maleficência, autonomia, justiça e explicabilidade. No contexto da solução, essa análise é relevante porque a plataforma usa dados pessoais, preferências culturais, CEP, histórico de interação e recomendações automatizadas para influenciar a descoberta de espetáculos.

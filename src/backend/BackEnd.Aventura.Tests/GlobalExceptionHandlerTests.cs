@@ -47,13 +47,10 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public async Task TryHandleAsync_ArgumentException_ShouldReturn400()
         {
-            // Arrange
             var ex = new ArgumentException("Erro de teste");
 
-            // Act
             var (context, problem) = await HandleExceptionAsync(ex);
 
-            // Assert
             Assert.Equal(StatusCodes.Status400BadRequest, context.Response.StatusCode);
             Assert.Equal("Requisição inválida", problem.Title);
             Assert.Equal("Erro de teste", problem.Detail);
@@ -62,13 +59,10 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public async Task TryHandleAsync_UnauthorizedAccessException_ShouldReturn401()
         {
-            // Arrange
             var ex = new UnauthorizedAccessException("Sem acesso");
 
-            // Act
             var (context, problem) = await HandleExceptionAsync(ex);
 
-            // Assert
             Assert.Equal(StatusCodes.Status401Unauthorized, context.Response.StatusCode);
             Assert.Equal("Não autorizado", problem.Title);
             Assert.Equal("Sem acesso", problem.Detail);
@@ -77,28 +71,34 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public async Task TryHandleAsync_NotFoundException_ShouldReturn404()
         {
-            // Arrange
             var ex = new NotFoundException("Objeto não encontrado");
 
-            // Act
             var (context, problem) = await HandleExceptionAsync(ex);
 
-            // Assert
             Assert.Equal(StatusCodes.Status404NotFound, context.Response.StatusCode);
             Assert.Equal("Recurso não encontrado", problem.Title);
             Assert.Equal("Objeto não encontrado", problem.Detail);
         }
 
         [Fact]
-        public async Task TryHandleAsync_ConflictException_ShouldReturn409()
+        public async Task TryHandleAsync_KeyNotFoundException_ShouldReturn404()
         {
-            // Arrange
-            var ex = new ConflictException("Objeto duplicado");
+            var ex = new KeyNotFoundException("Chave não encontrada");
 
-            // Act
             var (context, problem) = await HandleExceptionAsync(ex);
 
-            // Assert
+            Assert.Equal(StatusCodes.Status404NotFound, context.Response.StatusCode);
+            Assert.Equal("Recurso não encontrado", problem.Title);
+            Assert.Equal("Chave não encontrada", problem.Detail);
+        }
+
+        [Fact]
+        public async Task TryHandleAsync_ConflictException_ShouldReturn409()
+        {
+            var ex = new ConflictException("Objeto duplicado");
+
+            var (context, problem) = await HandleExceptionAsync(ex);
+
             Assert.Equal(StatusCodes.Status409Conflict, context.Response.StatusCode);
             Assert.Equal("Conflito", problem.Title);
             Assert.Equal("Objeto duplicado", problem.Detail);
@@ -107,18 +107,14 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public async Task TryHandleAsync_GenericException_ShouldReturn500()
         {
-            // Arrange
             var ex = new Exception("Erro fatal");
 
-            // Act
             var (context, problem) = await HandleExceptionAsync(ex);
 
-            // Assert
             Assert.Equal(StatusCodes.Status500InternalServerError, context.Response.StatusCode);
             Assert.Equal("Erro interno", problem.Title);
             Assert.Equal("Ocorreu um erro interno. Tente novamente mais tarde.", problem.Detail);
 
-            // Verify log was written for 500 error
             _loggerMock.Verify(
                 x => x.Log(
                     LogLevel.Error,

@@ -22,13 +22,10 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public void GetByUsuario_ShouldReturnPreferencias()
         {
-            // Arrange
             var userId = Guid.NewGuid();
 
-            // Act
             var result = _service.GetByUsuario(userId);
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal(userId, result.UsuarioId);
         }
@@ -42,7 +39,6 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public void Update_ValidDto_ShouldUpdateAndSave()
         {
-            // Arrange
             var userId = Guid.NewGuid();
             var dto = new PreferenciasUpdateDto
             {
@@ -55,10 +51,8 @@ namespace BackEnd.Aventura.Tests
                 ReceberNotificacoes = false
             };
 
-            // Act
             var result = _service.Update(userId, dto);
 
-            // Assert
             Assert.NotNull(result);
             Assert.Equal(userId, result.UsuarioId);
             Assert.Equal("Rio de Janeiro", result.Cidade);
@@ -68,6 +62,23 @@ namespace BackEnd.Aventura.Tests
             Assert.False(result.ReceberNotificacoes);
             Assert.Contains("Drama", result.Generos);
             Assert.Contains("musical", result.Tags);
+        }
+
+        [Fact]
+        public void Update_WithoutReceberNotificacoes_ShouldKeepCurrentValue()
+        {
+            var userId = Guid.NewGuid();
+            var dto = new PreferenciasUpdateDto
+            {
+                Cidade = "Curitiba",
+                ReceberNotificacoes = null
+            };
+
+            var result = _service.Update(userId, dto);
+
+            // Valor default do domínio (true) deve permanecer intocado.
+            Assert.True(result.ReceberNotificacoes);
+            Assert.Equal("Curitiba", result.Cidade);
         }
     }
 }

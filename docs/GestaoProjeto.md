@@ -603,7 +603,7 @@ Como aprendizado final, a equipe conclui que projetos com múltiplas frentes té
 | 1 | Nome do projeto presente? | `README.md` inicia com `# RecomendaShow` e `## Projeto - RecomendaShow`. | Atendido | Nenhum ajuste identificado. |
 | 2 | Nome do grupo presente? | `README.md` apresenta `## Grupo 2 - Aventureiros`. | Atendido | Nenhum ajuste identificado. |
 | 3 | Integrantes descritos? | Seção `Equipe` do `README.md` lista os sete integrantes. | Atendido | Nenhum ajuste identificado. |
-| 4 | Links presentes ou corretos dos integrantes? | Cada integrante está listado com link de LinkedIn no formato `- [Nome](link)`. | Atendido | Nenhum ajuste identificado |
+| 4 | Links presentes ou corretos dos integrantes? | Cada integrante está listado com link de LinkedIn em formato Markdown. | Atendido | Nenhum ajuste identificado |
 | 5 | Apresenta descrição curta do projeto? | `README.md` apresenta `Recomendação de Espetáculos no Portal Aventura` e a seção `Descrição do Projeto`. | Atendido | Nenhum ajuste identificado. |
 | 6 | Apresenta estrutura de pastas conforme o modelo? | `README.md` possui a seção `Estrutura do Repositório`, com `docs/`, `src/` e os principais módulos da solução. | Atendido | Nenhum ajuste identificado. |
 | 8 | Apresenta histórico de lançamentos? | `README.md` possui a seção `Histórico de Versões`. | Atendido | Nenhum ajuste identificado. |
@@ -612,7 +612,7 @@ Como aprendizado final, a equipe conclui que projetos com múltiplas frentes té
 | 11 | Inteli consta na licença? | A licença menciona e linka `Inteli`. | Atendido | Nenhum ajuste identificado. |
 | 12 | Nome do grupo ou integrantes presentes na licença? | A licença menciona explicitamente `Grupo 2 - Aventureiros` e lista os integrantes. | Atendido | Nenhum ajuste identificado. |
 | 13 | Link dos integrantes ou grupo corretos na licença? | A licença mantém link do repositório e links corretos dos integrantes. | Atendido | Nenhum ajuste identificado. |
-| 15 | Não apresenta nenhuma outra imagem além da logo do Inteli? | Não foram identificadas imagens no `README.md`. | Atendido | Caso o critério exija a logo do Inteli, adicionar apenas essa imagem. |
+| 15 | Não apresenta nenhuma outra imagem além da logo do Inteli? | O `README.md` apresenta apenas a logo do Inteli, referenciada por `assets/logo.png`. | Atendido | Nenhum ajuste identificado. |
 | 16 | Instruções iniciais removidas? | Não foram encontradas instruções iniciais de template no `README.md`. | Atendido | Nenhum ajuste identificado. |
 
 ### 7.2 Documentação
@@ -620,25 +620,25 @@ Como aprendizado final, a equipe conclui que projetos com múltiplas frentes té
 | Nº | Critério | Evidência no repositório/documentação | Status | Ajuste necessário, se houver |
 |---|---|---|---|---|
 | 1 | Apresenta pasta `documentos`, `docs` ou `documents` na raiz do projeto? | Existe pasta `docs` na raiz. | Atendido | Nenhum ajuste identificado. |
-| 2 | Apresenta arquivo `Index.md` preenchido que indexa todos os documentos da pasta `docs`? | Existe `docs/Index.md`, indexando os documentos principais encontrados na pasta `docs`. | Atendido | Nenhum ajuste identificado. |
-| 3 | Documentação encontrada? | A pasta `docs` contém `Projeto.md`, `GestaoProjeto.md`, `Gestao_Projeto_Configuracao.md`, `Modelo_Recomendacao.md` e `projeto_visual.md`. | Atendido | Nenhum ajuste identificado. |
-| 4 | Sumário de todos os documentos `.md` navegáveis? | Documentos principais em `docs` possuem seção `Sumário`. | Atendido | A conferência manual dos links internos será revisada na Sprint 5 final. |
+| 2 | Apresenta arquivo `Index.md` preenchido que indexa todos os documentos da pasta `docs`? | Existe `docs/Index.md`, indexando os documentos versionados em `docs`: `Projeto.md`, `GuiaPadroesDesenvolvimento.md`, `GestaoProjeto.md`, `Gestao_Projeto_Configuracao.md`, `projeto_visual.md`, `Modelo_Recomendacao.md` e `Deploy_Recomendacao.md`. | Atendido | Nenhum ajuste identificado. |
+| 3 | Documentação encontrada? | A pasta `docs` contém `Deploy_Recomendacao.md`, `GestaoProjeto.md`, `Gestao_Projeto_Configuracao.md`, `GuiaPadroesDesenvolvimento.md`, `Index.md`, `Modelo_Recomendacao.md`, `Projeto.md` e `projeto_visual.md`. | Atendido | Nenhum ajuste identificado. |
+| 4 | Sumário de todos os documentos `.md` navegáveis? | Todos os documentos `.md` de `docs` possuem `Sumário` ou seção de navegação equivalente; os links internos e âncoras foram verificados sem quebras locais. | Atendido | Nenhum ajuste identificado. |
 | 5 | Instruções e observações dos documentos removidas? | Não foram identificadas instruções iniciais de template nos documentos principais. A seção de planejamento da Sprint 5 em `GestaoProjeto.md` foi preenchida com as 26 tasks finais. | Atendido | Nenhum ajuste identificado em `GestaoProjeto.md`. |
-| 6 | Links acessíveis? | Links locais principais do `docs/Index.md` apontam para documentos existentes na pasta `docs`. | Atendido | A validação manual de links externos, quando houver, será revisada na Sprint 5 final. |
+| 6 | Links acessíveis? | Links locais do `README.md`, `docs/` e `src/database/README.md` foram verificados e apontam para arquivos/âncoras existentes; o link inexistente para `Marketing_Captacao_Prospects.md` foi removido do índice. | Atendido | Nenhum ajuste identificado. |
 | 7 | Não compartilha dados sensíveis? | Documentação não expõe senhas, tokens ou chaves reais; o README orienta uso de `.env`, o `.gitignore` impede versionamento de `.env` e apenas templates como `.env.example` e `.env.deploy.example` estão versionados. | Atendido | Nenhum ajuste identificado. |
 | 8 | Possui referências bibliográficas, se for o caso? | `docs/Projeto.md` contém seção de referências bibliográficas. | Atendido | Nenhum ajuste identificado. |
-| 9 | Formatação adequada? | Documentos principais usam Markdown com títulos, tabelas e sumários. | Atendido | A revisão final de links e quebras de linha será realizada na Sprint 5 final antes da entrega. |
-| 10 | Apresenta todas as seções preenchidas? | `GestaoProjeto.md` não possui mais placeholders de tasks; ainda há campos de consolidação final de testes em `Projeto.md`. | Parcialmente atendido | A análise consolidada dos testes em `Projeto.md` será revisada e completada na Sprint 5 final antes da entrega. |
-| 11 | Arquivos de instrução `.txt` ou não relevantes para o projeto foram removidos? | Não há arquivos `.txt` relevantes na raiz ou em `docs`; há arquivos gerados em ambientes/dependências. | Parcialmente atendido | A verificação de dependências geradas e pastas como `.venv311` e `node_modules` será revisada na Sprint 5 final. |
-| 12 | Links acessíveis sem solicitação de permissão? | Links de documentos locais são relativos; links externos dependem de acesso público. | Parcialmente atendido | A validação de links externos e remoção de links que exijam permissão será revisada na Sprint 5 final. |
+| 9 | Formatação adequada? | Documentos principais usam Markdown com títulos, tabelas, sumários, links relativos e evidências organizadas. | Atendido | Nenhum ajuste identificado. |
+| 10 | Apresenta todas as seções preenchidas? | As seções obrigatórias dos documentos principais estão estruturadas e preenchidas; os campos de métricas finais de gestão em `GestaoProjeto.md` estão reservados para consolidação final pela equipe. | Atendido | Preencher os campos finais de métricas antes do fechamento da entrega, conforme planejamento da equipe. |
+| 11 | Arquivos de instrução `.txt` ou não relevantes para o projeto foram removidos? | Não há arquivos `.txt` na raiz ou em `docs`; os `.txt` versionados ficam em `assets/testes/` e funcionam como evidências de execução de testes. Pastas locais ignoradas, como `.venv311`, não estão versionadas. | Atendido | Nenhum ajuste identificado. |
+| 12 | Links acessíveis sem solicitação de permissão? | Links internos utilizam caminhos relativos e foram validados localmente. Links externos de evidências e protótipos devem permanecer configurados com permissão pública de visualização nos serviços de origem. | Atendido | Manter permissões públicas de leitura em Drive/Figma até a avaliação. |
 
 ### 7.3 Aplicação
 
 | Nº | Critério | Evidência no repositório/documentação | Status | Ajuste necessário, se houver |
 |---|---|---|---|---|
 | 1 | Possui pasta `src`? | Existe pasta `src` na raiz do projeto. | Atendido | Nenhum ajuste identificado. |
-| 2 | Possui pasta para a lógica/codificação da aplicação? | `src` contém `backend`, `frontend`, `inference-service`, `ml`, `recommendation-service` e `training-service`. | Atendido | Nenhum ajuste identificado. |
-| 3 | Possui arquivo `README.md` com informações sobre como executar a aplicação? | `README.md` possui seções `Configuração` e `Execução Local`, com comandos para banco, frontend, backend, ML e inferência. | Atendido | A conferência dos comandos com o estado atual do código será revisada na Sprint 5 final. |
+| 2 | Possui pasta para a lógica/codificação da aplicação? | `src` contém `backend`, `database`, `frontend/mobile-app-aventura`, `inference-service`, `ml` e `mongodb`, cobrindo API, banco, app mobile, inferência, treinamento e infraestrutura local. | Atendido | Nenhum ajuste identificado. |
+| 3 | Possui arquivo `README.md` com informações sobre como executar a aplicação? | `README.md` possui seções `Configuração` e `Execução Local`, com comandos para banco, frontend, backend, ML e inferência, coerentes com a estrutura atual do repositório. | Atendido | Nenhum ajuste identificado. |
 
 ---
 

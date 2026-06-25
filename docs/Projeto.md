@@ -4059,6 +4059,21 @@ A estratégia foi dividida em duas frentes:
 | E2E mobile/services | `src/frontend/mobile-app-aventura/tests/AppJourney.e2e.test.js` | Simula a jornada do app React Native por meio dos serviços consumidos pela interface, validando cadastro, sessão, ViaCEP, cache VHS, onboarding, perfil, busca, recomendações, teatros, bilheteria, wishlist local e expiração de sessão. | Jest com `fetch`, sessão e armazenamento simulados |
 
 
+#### 21.9.1 Objetivo dos testes E2E
+
+
+Os testes E2E foram criados para responder a três perguntas principais:
+
+
+1. O usuário consegue percorrer os fluxos centrais do produto sem inconsistências entre API, banco, serviços e regras de negócio?
+2. Os cenários negativos mais importantes retornam códigos HTTP e mensagens compatíveis com o comportamento esperado pela aplicação?
+3. A experiência mobile consome corretamente os contratos da API, mesmo quando os testes são executados sem emulador ou dependência de serviços externos reais?
+
+
+Dessa forma, os E2E não substituem as suítes unitárias ou de integração já existentes. Eles funcionam como uma camada de validação transversal, concentrada nas jornadas que conectam diferentes funcionalidades do sistema.
+
+
+
 ## 22. Análise de Impactos Éticos IA4People
 
 Esta seção analisa os impactos éticos do projeto a partir do framework IA4People, citado na literatura original como AI4People. O framework propõe que sistemas baseados em inteligência artificial sejam avaliados por cinco princípios: beneficência, não maleficência, autonomia, justiça e explicabilidade. No contexto da solução, essa análise é relevante porque a plataforma usa dados pessoais, preferências culturais, CEP, histórico de interação e recomendações automatizadas para influenciar a descoberta de espetáculos.

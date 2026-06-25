@@ -14,12 +14,14 @@ namespace BackEnd.Aventura.Tests
     public class EspetaculoControllerTests
     {
         private readonly Mock<IEspetaculoService> _serviceMock;
+        private readonly Mock<IEspetaculoImagemService> _imagemServiceMock;
         private readonly EspetaculoController _controller;
 
         public EspetaculoControllerTests()
         {
             _serviceMock = new Mock<IEspetaculoService>();
-            _controller = new EspetaculoController(_serviceMock.Object);
+            _imagemServiceMock = new Mock<IEspetaculoImagemService>();
+            _controller = new EspetaculoController(_serviceMock.Object, _imagemServiceMock.Object);
         }
 
         private Espetaculo CreateEspetaculo(string nome)
@@ -84,6 +86,36 @@ namespace BackEnd.Aventura.Tests
             var returnedList = Assert.IsAssignableFrom<IReadOnlyList<EspetaculoDto>>(actionResult.Value);
             Assert.Single(returnedList);
             Assert.Equal("A", returnedList[0].Nome);
+        }
+
+        [Fact]
+        public void GetImagem_ShouldReturnFileStreamResultWithContentType()
+        {
+            // Arrange
+            var espetaculoId = Guid.NewGuid();
+            using var conteudo = new MemoryStream(new byte[] { 1, 2, 3 });
+            var imagem = new EspetaculoImagem(conteudo, "image/jpeg", "show.jpg");
+            _imagemServiceMock.Setup(s => s.GetImagem(espetaculoId)).Returns(imagem);
+
+            // Act
+            var result = _controller.GetImagem(espetaculoId);
+
+            // Assert
+            var fileResult = Assert.IsType<FileStreamResult>(result);
+            Assert.Equal("image/jpeg", fileResult.ContentType);
+            Assert.Equal("show.jpg", fileResult.FileDownloadName);
+        }
+
+        [Fact]
+        public void GetImagem_NotFound_ShouldPropagateException()
+        {
+            // Arrange
+            var espetaculoId = Guid.NewGuid();
+            _imagemServiceMock.Setup(s => s.GetImagem(espetaculoId))
+                .Throws(new BackEnd.Aventura.Exceptions.NotFoundException("Imagem não encontrada."));
+
+            // Act & Assert
+            Assert.Throws<BackEnd.Aventura.Exceptions.NotFoundException>(() => _controller.GetImagem(espetaculoId));
         }
     }
 }

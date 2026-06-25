@@ -275,7 +275,8 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 - [21.6 Testes de requisitos não funcionais](#216-testes-de-requisitos-não-funcionais)
 - [21.7 Testes de usabilidade](#217-testes-de-usabilidade)
 - [21.8 Testes de APIs externas](#218-testes-de-apis-externas)
-- [21.9 Análise consolidada dos resultados](#219-análise-consolidada-dos-resultados)
+- [21.9 Testes End-to-End (E2E)](#219-testes-end-to-end-e2e)
+- [21.10 Análise consolidada dos resultados](#2110-análise-consolidada-dos-resultados)
 
 </details>
 
@@ -4044,7 +4045,116 @@ Com 55 testes aprovados e 100% de cobertura nos serviços responsáveis pela int
 
 **Validação complementar com chamadas reais:** Além da suíte automatizada com mocks, os três casos planejados em 18.6 foram executados via requisição HTTP real contra a API: CEP válido `01310-100` (HTTP 200, JSON com `logradouro: Avenida Paulista`), CEP malformado `123` (barrado pelo cliente antes da chamada de rede) e CEP inexistente `99999-999` (HTTP 200 com corpo `{erro:true}`, tratado pelo cliente com "CEP não encontrado."). A execução real confirmou que o ViaCEP não usa 404 para CEP inexistente e que a latência é variável (primeira chamada ~5,8 s, provavelmente cold start/DNS). Evidência em [assets/testes/viacep-resultados.json](../assets/testes/viacep-resultados.json).
 
-### 21.9 Análise consolidada dos resultados
+### 21.9 Testes End-to-End (E2E)
+
+
+Na Sprint 5, foram adicionados testes End-to-End para validar fluxos completos do RecomendaShow atravessando múltiplas camadas da aplicação. O objetivo desta suíte é complementar os testes unitários, de integração e de requisitos não funcionais, verificando se as principais jornadas do usuário funcionam de ponta a ponta de forma coerente com a proposta do produto.
+
+
+A estratégia foi dividida em duas frentes:
+
+
+| Frente E2E | Arquivo | Escopo validado | Tipo de ambiente |
+|---|---|---|---|
+| E2E backend/API | `src/backend/BackEnd.Aventura.IntegrationTests/EndToEndApplicationTests.cs` | Executa a API ASP.NET Core com banco PostgreSQL real via Testcontainers, validando autenticação, catálogo, preferências, recomendações, wishlist, perfil, teatros, health check e isolamento entre usuários. | Aplicação backend real + banco real isolado em container |
+| E2E mobile/services | `src/frontend/mobile-app-aventura/tests/AppJourney.e2e.test.js` | Simula a jornada do app React Native por meio dos serviços consumidos pela interface, validando cadastro, sessão, ViaCEP, cache VHS, onboarding, perfil, busca, recomendações, teatros, bilheteria, wishlist local e expiração de sessão. | Jest com `fetch`, sessão e armazenamento simulados |
+
+
+#### 21.9.1 Objetivo dos testes E2E
+
+
+Os testes E2E foram criados para responder a três perguntas principais:
+
+
+1. O usuário consegue percorrer os fluxos centrais do produto sem inconsistências entre API, banco, serviços e regras de negócio?
+2. Os cenários negativos mais importantes retornam códigos HTTP e mensagens compatíveis com o comportamento esperado pela aplicação?
+3. A experiência mobile consome corretamente os contratos da API, mesmo quando os testes são executados sem emulador ou dependência de serviços externos reais?
+
+
+Dessa forma, os E2E não substituem as suítes unitárias ou de integração já existentes. Eles funcionam como uma camada de validação transversal, concentrada nas jornadas que conectam diferentes funcionalidades do sistema.
+
+
+#### 21.9.2 Fluxos E2E cobertos no backend
+
+
+Os testes E2E de backend foram incluídos na suíte de integração existente, aproveitando a infraestrutura já preparada com `WebApplicationFactory`, `Testcontainers.PostgreSql`, `Respawn`, `Npgsql`, `xUnit` e `FluentAssertions`. Cada teste reinicia o estado do banco antes da execução, garantindo isolamento entre cenários.
+
+
+| ID | Fluxo validado | Cobertura funcional |
+|---|---|---|
+| E2E-01 | Usuário novo completa onboarding, descobre espetáculo, favorita e segue para bilheteria | Cadastro, autenticação, perfil, preferências, gêneros, catálogo, busca, detalhe do espetáculo, teatro, wishlist e URL de bilheteria |
+| E2E-02 | Usuário recorrente recebe recomendações persistidas e remove item da wishlist | Recomendações ordenadas por score, motivo da recomendação, wishlist, duplicidade e remoção |
+| E2E-03 | Autenticação protege recursos, perfil é atualizado e conta encerrada bloqueia novo login | JWT, proteção de endpoint, atualização de usuário, exclusão lógica e bloqueio de login |
+| E2E-04 | Cadastro e login rejeitam entradas inválidas | Consentimento ausente, menor de idade, e-mail duplicado, senha incorreta e ausência de vazamento de detalhes internos |
+| E2E-05 | Catálogo, busca e detalhe tratam filtros e recursos inexistentes | Busca por nome, busca por gênero, resultado vazio, espetáculo inexistente e teatro inexistente |
+| E2E-06 | Recomendação usa fallback por gêneros favoritos | Preferências do usuário, gêneros favoritos e recomendação sem registros persistidos pelo motor |
+| E2E-07 | Recomendação valida limites e estado vazio | Limite zero, limite acima de 50, usuário sem recomendações e acesso anônimo |
+| E2E-08 | Wishlist cobre estados de sucesso e erro | Lista vazia, item inexistente, adição, duplicidade, remoção e remoção inexistente |
+| E2E-09 | Preferências suportam criação automática e atualização parcial | Preferências iniciais, gêneros, tags, cidade, faixa de preço, notificações e validação de faixa inválida |
+| E2E-10 | Health check é público e endpoints de negócio continuam protegidos | `/health` anônimo e proteção de catálogo, gêneros e teatros |
+| E2E-11 | Dados permanecem isolados entre usuários | Recomendações e wishlist separadas por conta, evitando vazamento entre usuários |
+
+
+**Comando de execução:**
+
+
+```bash
+dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.IntegrationTests.csproj --filter Category=E2E
+```
+
+
+**Pré-condições:** Docker em execução, SDK .NET disponível no ambiente e acesso aos scripts SQL em `src/database`. O banco é criado em container temporário e reiniciado entre testes por meio da fixture de integração.
+
+#### 21.9.3 Fluxos E2E cobertos no frontend mobile
+
+
+Os testes E2E do frontend foram implementados com Jest, sem depender de emulador mobile. A suíte usa os serviços reais da aplicação e substitui as dependências externas por mocks controlados: `fetch`, armazenamento de autenticação, `AsyncStorage` e navegação. Essa abordagem permite validar a jornada que a interface consome, mantendo execução determinística no pipeline.
+
+
+| Fluxo validado | Cobertura funcional |
+|---|---|
+| Consulta de CEP | Sanitização do CEP, chamada ViaCEP simulada, preenchimento de endereço e cache VHS com `MISS` na primeira chamada e `HIT` na segunda |
+| Cadastro e sessão | Cadastro com payload no formato consumido pelo backend, normalização da resposta e persistência da sessão |
+| Perfil | Leitura de perfil autenticado e atualização de dados pessoais/endereço |
+| Onboarding | Salvamento de categorias, cidade e frequência com mapeamento para preferências do backend |
+| Catálogo e busca | Carregamento de espetáculos, busca por nome/gênero e transformação do DTO em estrutura usada pela tela |
+| Detalhe e bilheteria | Mapeamento de preço, datas, descrição e URL de compra externa |
+| Wishlist local | Adição, prevenção de duplicidade, toggle, remoção e consulta de favorito no armazenamento local |
+| Teatros | Listagem de teatros e espetáculos vinculados a um teatro |
+| Recomendações | Consumo do endpoint de recomendação e mapeamento de score/motivo para o card exibido no app |
+| Encerramento de conta | Chamada de exclusão e bloqueio de login posterior |
+| Expiração de sessão | Tratamento de `401` em endpoint protegido, limpeza de autenticação e acionamento de navegação para sessão expirada |
+
+
+**Comando de execução:**
+
+
+```bash
+cd src/frontend/mobile-app-aventura
+npm test -- --runTestsByPath tests/AppJourney.e2e.test.js
+```
+
+
+
+
+
+
+
+#### 21.9.4 Critérios de sucesso
+
+
+| Critério | Resultado esperado |
+|---|---|
+| Isolamento | Cada cenário deve iniciar sem depender de estado deixado por testes anteriores |
+| Autenticação | Endpoints protegidos devem retornar `401` sem token e funcionar com JWT válido |
+| Persistência | Dados criados no fluxo devem ser refletidos nas consultas posteriores |
+| Contratos | DTOs retornados pelo backend devem ser consumidos corretamente pelo frontend |
+| Cenários negativos | Entradas inválidas devem retornar `400`, duplicidades `409`, recursos inexistentes `404` e sessão inválida `401` |
+| Recomendações | Recomendações persistidas devem respeitar ordenação por score, e o fallback por gêneros deve funcionar quando não houver recomendação salva |
+| Experiência mobile | Serviços do app devem lidar corretamente com sessão, cache, busca, recomendações, wishlist local e expiração de autenticação |
+
+### 21.10 Análise consolidada dos resultados
+
 
 A consolidação considera as suítes automatizadas executadas (backend unitário, integração real, inference e frontend), os testes manuais/instrumentados de RNF e os casos de API externa.
 

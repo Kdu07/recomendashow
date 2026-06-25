@@ -4,6 +4,7 @@ import { Animated, Image, Text, StyleSheet, StatusBar, Platform } from 'react-na
 import { colors } from '../constants/colors';
 import { typography } from '../constants/typography';
 import { spacing } from '../constants/spacing';
+import { getAuthToken } from '../services/tokenStorageService';
 
 const DISPLAY_DURATION = 1500;
 const FADE_DURATION = 500;
@@ -17,8 +18,9 @@ export default function SplashScreen({ navigation }) {
         toValue: 0,
         duration: FADE_DURATION,
         useNativeDriver: true,
-      }).start(() => {
-        navigation.replace('Auth');
+      }).start(async () => {
+        const token = await getAuthToken();
+        navigation.replace(token ? 'MainTabs' : 'Auth');
       });
     }, DISPLAY_DURATION);
 

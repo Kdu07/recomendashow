@@ -53,7 +53,7 @@ namespace BackEnd.Aventura.Services
             EntityGuards.NotNullOrWhiteSpace(request.Senha, nameof(request.Senha));
 
             var usuario = _usuarioRepository.GetByEmail(email);
-            if (usuario is null || !BCrypt.Net.BCrypt.Verify(request.Senha, usuario.SenhaHash))
+            if (usuario is null)
             {
                 throw new UnauthorizedAccessException("E-mail ou senha inválidos.");
             }
@@ -61,6 +61,16 @@ namespace BackEnd.Aventura.Services
             if (usuario.DeletedAt is not null)
             {
                 throw new UnauthorizedAccessException("Esta conta foi encerrada.");
+            }
+
+            if (usuario.Anonimizado || string.IsNullOrEmpty(usuario.SenhaHash))
+            {
+                throw new UnauthorizedAccessException("Usuário inválido.");
+            }
+
+            if (!BCrypt.Net.BCrypt.Verify(request.Senha, usuario.SenhaHash))
+            {
+                throw new UnauthorizedAccessException("E-mail ou senha inválidos.");
             }
 
             return ToAuthResponse(usuario);

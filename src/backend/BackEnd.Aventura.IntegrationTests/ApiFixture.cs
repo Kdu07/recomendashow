@@ -1,8 +1,10 @@
 using BackEnd.Aventura.Infrastructure;
+using BackEnd.Aventura.Repository;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
 using Npgsql;
 using Respawn;
 using Testcontainers.PostgreSql;
@@ -69,6 +71,23 @@ public class ApiFixture : IAsyncLifetime
 
                     services.AddSingleton<IDbConnectionFactory>(_ =>
                         new TestDbConnectionFactory(ConnString));
+
+                    var m = services.SingleOrDefault(
+                        x => x.ServiceType == typeof(IMongoConnectionFactory));
+
+                    if (m is not null)
+                        services.Remove(m);
+
+                    services.AddSingleton<IMongoConnectionFactory>(_ =>
+                        new TestMongoConnectionFactory());
+
+                    var imageRepository = services.SingleOrDefault(
+                        x => x.ServiceType == typeof(IEspetaculoImagemRepository));
+
+                    if (imageRepository is not null)
+                        services.Remove(imageRepository);
+
+                    services.AddSingleton<IEspetaculoImagemRepository, TestEspetaculoImagemRepository>();
                 });
             });
 
@@ -131,4 +150,28 @@ public class TestDbConnectionFactory : IDbConnectionFactory
     private readonly string _cs;
     public TestDbConnectionFactory(string cs) => _cs = cs;
     public NpgsqlConnection CreateConnection() => new(_cs);
+}
+
+/// <summary>
+/// Fábrica Mongo para os testes de integração. O MongoClient não conecta de forma eager
+/// (a conexão real só ocorre na primeira operação), então isso evita que a inicialização
+/// da aplicação falhe por falta de variáveis MONGO_* no ambiente de teste. Testes que
+/// exercitam o GridFS de fato (ex.: download de imagem) devem apontar para um Mongo real.
+/// </summary>
+public class TestMongoConnectionFactory : IMongoConnectionFactory
+{
+    private readonly IMongoDatabase _database;
+
+    public TestMongoConnectionFactory(string connectionString = "mongodb://localhost:27017", string databaseName = "aventura_ml_test")
+    {
+        var client = new MongoClient(connectionString);
+        _database = client.GetDatabase(databaseName);
+    }
+
+    public IMongoDatabase GetDatabase() => _database;
+}
+
+public class TestEspetaculoImagemRepository : IEspetaculoImagemRepository
+{
+    public Domain.EspetaculoImagem? GetByEspetaculoNome(string espetaculoNome) => null;
 }

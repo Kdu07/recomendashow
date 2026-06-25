@@ -6,6 +6,24 @@ Este guia consolida os padrões de desenvolvimento adotados no projeto **Recomen
 
 ---
 
+## Sumário
+
+1. [Objetivo do Guia](#1-objetivo-do-guia)
+2. [Estrutura de Pastas](#2-estrutura-de-pastas)
+3. [Padrão de Branches](#3-padrão-de-branches)
+4. [Padrão de Commits](#4-padrão-de-commits)
+5. [Padrão de Nomenclatura](#5-padrão-de-nomenclatura)
+6. [Arquitetura em Camadas](#6-arquitetura-em-camadas)
+7. [Controllers, Services e Repositories](#7-controllers-services-e-repositories)
+8. [DTOs e Mappers](#8-dtos-e-mappers)
+9. [Tratamento de Erros](#9-tratamento-de-erros)
+10. [Testes](#10-testes)
+11. [Padrões de Projeto Aplicados](#11-padrões-de-projeto-aplicados)
+12. [Definition of Ready e Definition of Done](#12-definition-of-ready-e-definition-of-done)
+13. [Referências Internas](#referências-internas)
+
+---
+
 ## 2. Estrutura de Pastas
 
 A organização do repositório separa documentação, aplicação, banco de dados, treinamento, inferência e assets.
@@ -174,7 +192,7 @@ test(recommendation): cover fallback behavior
 - Tabelas e colunas seguem o padrão `snake_case`.
 - Chaves primárias usam `id`.
 - Chaves estrangeiras usam o padrão `entidade_id`.
-- Scripts SQL são versionados por ordem de execução, como `01_create_database.sql` e `02_initial_data.sql`.
+- Scripts SQL são versionados por ordem de execução, como `01_create_database.sql`, `02_sprint4_improvements.sql` e `03_initial_data.sql`.
 
 ---
 

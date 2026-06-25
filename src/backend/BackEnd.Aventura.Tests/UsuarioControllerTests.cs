@@ -53,5 +53,31 @@ namespace BackEnd.Aventura.Tests
             var returnedDto = Assert.IsType<UsuarioResponse>(actionResult.Value);
             Assert.Equal("User Updated", returnedDto.Nome);
         }
+
+        [Fact]
+        public void Delete_ShouldCallServiceAndReturnNoContent()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+
+            // Act
+            var result = _controller.Delete(userId);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result);
+            _serviceMock.Verify(s => s.SolicitarExclusao(userId), Times.Once);
+        }
+
+        [Fact]
+        public void Delete_NonExistentUser_ShouldPropagateException()
+        {
+            // Arrange
+            var userId = Guid.NewGuid();
+            _serviceMock.Setup(s => s.SolicitarExclusao(userId))
+                .Throws(new BackEnd.Aventura.Exceptions.NotFoundException("Usuário não encontrado."));
+
+            // Act & Assert
+            Assert.Throws<BackEnd.Aventura.Exceptions.NotFoundException>(() => _controller.Delete(userId));
+        }
     }
 }

@@ -441,7 +441,7 @@ A seguir, são apresentadas as telas do mockup de alta fidelidade do aplicativo 
 <div align="center">
 <sub>Imagem 01 - Splash Screen do aplicativo</sub><br>
   <img src="../assets/design/splash.png" width="30%" alt="Splash Screen do aplicativo"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A Splash Screen apresenta a identidade visual da Aventura no momento de abertura do aplicativo. A tela utiliza fundo roxo, logotipo centralizado e a frase “Cultura • Teatro • Eventos”, reforçando o posicionamento da marca antes do início da navegação.
@@ -449,7 +449,7 @@ A Splash Screen apresenta a identidade visual da Aventura no momento de abertura
 <div align="center">
 <sub>Imagem 02 - Tela de Login</sub><br>
   <img src="../assets/design/login.png" width="30%" alt="Tela de Login"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de login permite que o usuário acesse sua conta utilizando e-mail e senha ou autenticação com Google. Também há a opção de criação de conta. A tela prioriza simplicidade, com campos bem espaçados e botão principal em roxo para destacar a ação de entrada.
@@ -457,7 +457,7 @@ A tela de login permite que o usuário acesse sua conta utilizando e-mail e senh
 <div align="center">
 <sub>Imagem 03 - Tela inicial de boas-vindas</sub><br>
   <img src="../assets/design/inicial.png" width="30%" alt="Tela inicial de boas-vindas"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de boas-vindas inicia o processo de personalização. Ela apresenta uma saudação nominal ao usuário e prepara a navegação para as próximas etapas do onboarding. Os indicadores inferiores mostram que há um fluxo progressivo a ser concluído.
@@ -465,7 +465,7 @@ A tela de boas-vindas inicia o processo de personalização. Ela apresenta uma s
 <div align="center">
 <sub>Imagem 04 - Onboarding de localização</sub><br>
   <img src="../assets/design/onboarding_1.png" width="30%" alt="Onboarding de localização"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de localização pergunta onde o usuário está, permitindo selecionar uma cidade. Essa informação é importante para recomendações geográficas, especialmente seções como “Perto de você”. A opção selecionada aparece destacada em roxo.
@@ -473,7 +473,7 @@ A tela de localização pergunta onde o usuário está, permitindo selecionar um
 <div align="center">
 <sub>Imagem 05 - Onboarding de interesses</sub><br>
   <img src="../assets/design/onboarding_2.png" width="30%" alt="Onboarding de interesses"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de interesses permite que o usuário selecione categorias culturais, como Musical, Drama, Ballet, Infantil, Comédia e Dança. Essas preferências ajudam a alimentar a lógica de recomendação e tornam a experiência inicial mais personalizada.
@@ -481,7 +481,7 @@ A tela de interesses permite que o usuário selecione categorias culturais, como
 <div align="center">
 <sub>Imagem 06 - Onboarding de frequência</sub><br>
   <img src="../assets/design/onboarding_3.png" width="30%" alt="Onboarding de frequência"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de frequência busca entender o hábito cultural do usuário, perguntando com que frequência ele vai ao teatro. Essa informação pode apoiar a personalização de recomendações e notificações, diferenciando usuários recorrentes de usuários iniciantes.
@@ -489,7 +489,7 @@ A tela de frequência busca entender o hábito cultural do usuário, perguntando
 <div align="center">
 <sub>Imagem 07 - Home principal</sub><br>
   <img src="../assets/design/principal.png" width="30%" alt="Home principal"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A Home principal funciona como ponto central de descoberta. Ela apresenta banner de destaque, filtros por categoria, seção “Em alta” e recomendações personalizadas em “Para você”. O uso de imagens e cards favorece a exploração rápida de espetáculos.
@@ -497,7 +497,7 @@ A Home principal funciona como ponto central de descoberta. Ela apresenta banner
 <div align="center">
 <sub>Imagem 08 - Tela de recomendações</sub><br>
   <img src="../assets/design/recomendação.png" width="30%" alt="Tela de recomendações"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de recomendações aprofunda a descoberta de conteúdo por meio de seções como “Para você”, “Novidades” e “Perto de você”. Essa organização separa recomendações por contexto, facilitando a navegação em um catálogo amplo de espetáculos.
@@ -505,7 +505,7 @@ A tela de recomendações aprofunda a descoberta de conteúdo por meio de seçõ
 <div align="center">
 <sub>Imagem 09 - Tela de busca</sub><br>
   <img src="../assets/design/busca.png" width="30%" alt="Tela de busca"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de busca permite pesquisar espetáculos e teatros. Ela também apresenta uma lista de recomendações, contendo imagem, título, local e categoria. O campo de busca e o ícone de filtro indicam possibilidade de refinamento dos resultados.
@@ -513,7 +513,7 @@ A tela de busca permite pesquisar espetáculos e teatros. Ela também apresenta 
 <div align="center">
 <sub>Imagem 10 - Detalhes do espetáculo</sub><br>
   <img src="../assets/design/sinopse.png" width="30%" alt="Detalhes do espetáculo"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de detalhes apresenta informações completas sobre um espetáculo selecionado, incluindo imagem de capa, título, data, local, endereço, mapa e descrição. Essa tela apoia a decisão do usuário antes do redirecionamento para a ticketeira externa.
@@ -523,7 +523,7 @@ A compra não é realizada dentro da aplicação. O aplicativo atua como ponto d
 <div align="center">
 <sub>Imagem 11 - Wishlist</sub><br>
   <img src="../assets/design/wishlist.png" width="30%" alt="Wishlist"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de Wishlist apresenta o estado vazio da lista de favoritos. Em vez de exibir apenas uma tela sem conteúdo, ela informa que nenhum espetáculo foi salvo e oferece o caminho “Explorar espetáculos”, incentivando o usuário a continuar navegando.
@@ -531,7 +531,7 @@ A tela de Wishlist apresenta o estado vazio da lista de favoritos. Em vez de exi
 <div align="center">
 <sub>Imagem 12 - Tela de teatros</sub><br>
   <img src="../assets/design/teatros.png" width="30%" alt="Tela de teatros"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A seção de teatros apresenta espaços culturais relevantes, com imagem, nome, localização e botão “Conhecer”. Essa tela amplia a experiência do aplicativo, permitindo que o usuário descubra não apenas espetáculos, mas também os locais onde eles acontecem.
@@ -539,7 +539,7 @@ A seção de teatros apresenta espaços culturais relevantes, com imagem, nome, 
 <div align="center">
 <sub>Imagem 13 - Perfil do usuário</sub><br>
   <img src="../assets/design/perfil.png" width="30%" alt="Perfil do usuário"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de perfil centraliza informações e configurações do usuário. Ela apresenta foto, nome, e-mail, edição de perfil, preferências e cidade, notificações, informações institucionais e opção de sair. A organização em cards facilita a navegação entre configurações.
@@ -547,7 +547,7 @@ A tela de perfil centraliza informações e configurações do usuário. Ela apr
 <div align="center">
 <sub>Imagem 14 - Editar interesses</sub><br>
   <img src="../assets/design/editar.png" width="30%" alt="Editar interesses"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de edição de interesses permite atualizar categorias culturais e cidade. Essa funcionalidade é importante porque as preferências do usuário podem mudar com o tempo, e o sistema de recomendação precisa refletir essas mudanças para continuar relevante.
@@ -555,7 +555,7 @@ A tela de edição de interesses permite atualizar categorias culturais e cidade
 <div align="center">
 <sub>Imagem 15 - Configurações de notificações</sub><br>
   <img src="../assets/design/notificações.png" width="30%" alt="Configurações de notificações"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de notificações permite gerenciar alertas do aplicativo. O usuário pode ativar ou desativar notificações push, e-mails, novidades, recomendações personalizadas, espetáculos salvos, newsletter e atualizações do app. Os switches deixam claro o estado de cada opção.
@@ -563,7 +563,7 @@ A tela de notificações permite gerenciar alertas do aplicativo. O usuário pod
 <div align="center">
 <sub>Imagem 16 - Informações institucionais</sub><br>
   <img src="../assets/design/informações.png" width="30%" alt="Informações institucionais"><br>
-  <sup>Source: Material produced by the authors, 2026.</sup>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 A tela de informações institucionais apresenta dados sobre a Aventura, redes sociais, e-mail de contato, site oficial e localização. Essa área reforça a transparência, credibilidade e conexão institucional com o usuário.

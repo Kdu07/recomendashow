@@ -16,5 +16,11 @@ namespace BackEnd.Aventura.Tests
             Assert.Equal(0.75m, r.Score);
             Assert.Equal("porque", r.Motivo);
         }
+
+        [Fact]
+        public void Constructor_NullEspetaculo_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() => new Recomendacao(null!, 0.5m, "motivo"));
+        }
     }
 }

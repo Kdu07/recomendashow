@@ -1,29 +1,31 @@
+# Banco de Dados - RecomendaShow
+
 ## Sumário
 
-1. [Banco de Dados](#banco-de-dados)
-   - 1.1 [Principais Entidades](#principais-entidades)
-   - 1.2 [Relacionamentos Implementados](#relacionamentos-implementados)
-2. [Regras de Negócio Implementadas](#regras-de-negócio-implementadas)
-3. [Configuração e Execução](#configuração-e-execução)
-   - 3.1 [Pré-requisitos](#pré-requisitos)
-   - 3.2 [Variáveis de Ambiente](#variáveis-de-ambiente)
-   - 3.3 [Instalar Dependências do Executor](#instalar-dependências-do-executor)
-   - 3.4 [Executar Scripts SQL](#executar-scripts-sql)
-4. [Modelo de Dados](#modelo-de-dados)
-5. [Infraestrutura de Banco de Dados](#infraestrutura-de-banco-de-dados)
-   - 5.1 [Migração da Infraestrutura](#migração-da-infraestrutura)
-   - 5.2 [Especificações da Máquina Virtual](#especificações-da-máquina-virtual)
-   - 5.3 [Benefícios da Arquitetura Utilizada](#benefícios-da-arquitetura-utilizada)
-6. [Subindo o banco localmente com Docker](#subindo-o-banco-localmente-com-docker)
-   - 6.1 [Pré-requisito](#pré-requisito)
-   - 6.2 [Variáveis de ambiente](#variáveis-de-ambiente)
-   - 6.3 [Subir o banco](#subir-o-banco)
-   - 6.4 [Verificar que o banco subiu](#verificar-que-o-banco-subiu)
-   - 6.5 [Derrubar o banco](#derrubar-o-banco)
-7. [Dicionário de Dados](#dicionário-de-dados)
-8. [Explain Analyze](#explain-analyze)
-9. [Teste de Carga (pgbench)](#teste-de-carga-pgbench)
-10. [Evoluções - Sprint 4](#evoluções--sprint-4)
+1. [Banco de Dados](#1-banco-de-dados)
+   - 1.1 [Principais Entidades](#11-principais-entidades)
+   - 1.2 [Relacionamentos Implementados](#12-relacionamentos-implementados)
+2. [Regras de Negócio Implementadas](#2-regras-de-negócio-implementadas)
+3. [Configuração e Execução](#3-configuração-e-execução)
+   - 3.1 [Pré-requisitos](#31-pré-requisitos)
+   - 3.2 [Variáveis de Ambiente](#32-variáveis-de-ambiente)
+   - 3.3 [Instalar Dependências do Executor](#33-instalar-dependências-do-executor)
+   - 3.4 [Executar Scripts SQL](#34-executar-scripts-sql)
+4. [Modelo de Dados](#4-modelo-de-dados)
+5. [Infraestrutura de Banco de Dados](#5-infraestrutura-de-banco-de-dados)
+   - 5.1 [Migração da Infraestrutura](#51-migração-da-infraestrutura)
+   - 5.2 [Especificações da Máquina Virtual](#52-especificações-da-máquina-virtual)
+   - 5.3 [Benefícios da Arquitetura Utilizada](#53-benefícios-da-arquitetura-utilizada)
+6. [Subindo o banco localmente com Docker](#6-subindo-o-banco-localmente-com-docker)
+   - 6.1 [Pré-requisito](#61-pré-requisito)
+   - 6.2 [Variáveis de ambiente](#62-variáveis-de-ambiente)
+   - 6.3 [Subir o banco](#63-subir-o-banco)
+   - 6.4 [Verificar que o banco subiu](#64-verificar-que-o-banco-subiu)
+   - 6.5 [Derrubar o banco](#65-derrubar-o-banco)
+7. [Dicionário de Dados](#7-dicionário-de-dados)
+8. [Explain Analyze](#8-explain-analyze)
+9. [Teste de Carga (pgbench)](#9-teste-de-carga-pgbench)
+10. [Evoluções - Sprint 4](#10-evoluções---sprint-4)
 
 ---
 
@@ -230,8 +232,8 @@ docker compose -f docker-compose-db.yml up -d
 Isso inicia dois containers: `postgres_db` (PostgreSQL 16) e `aventura_mongodb` (MongoDB). Os scripts SQL são executados automaticamente na primeira inicialização, na ordem:
 
 1. `01_create_database.sql` — estrutura do banco
-2. `01b_sprint4_improvements.sql` — melhorias da Sprint 4
-3. `02_initial_data.sql` — dados de seed
+2. `02_sprint4_improvements.sql` — melhorias da Sprint 4
+3. `03_initial_data.sql` — dados de seed
 
 ### 6.4 Verificar que o banco subiu
 
@@ -609,6 +611,35 @@ Ao desativar temporariamente `enable_seqscan`, o PostgreSQL utilizou o índice `
 
 Os índices avaliados estão corretamente criados e disponíveis no banco de dados. Contudo, nos testes realizados, o otimizador do PostgreSQL escolheu leituras sequenciais em parte das consultas porque as tabelas possuem poucos registros. Em ambientes com maior volume de dados, espera-se maior utilização dos índices, especialmente nas consultas filtradas por usuário, cidade, intervalo de datas e interações por usuário.
 
+### Evidência com volume realista
+
+Com o volume mínimo do seed funcional, o PostgreSQL pode preferir `Seq Scan`, porque o custo de varrer tabelas pequenas é menor que o custo de usar índices. Para validar o comportamento em escala maior, foram adicionados scripts opcionais em `src/database/benchmark/`:
+
+- `src/database/benchmark/04_synthetic_explain_data.sql` — gera massa sintética determinística para banco local ou descartável e executa `ANALYZE` ao final.
+- `src/database/benchmark/explain_benchmark_queries.sql` — executa consultas `EXPLAIN (ANALYZE, BUFFERS)` para os índices `idx_recomendacoes_usuario_score`, `idx_teatros_cidade`, `idx_espetaculos_datas`, `idx_interacoes_usuario_expiracao` e `idx_wishlist_usuario`.
+
+O script de massa sintética não é seed funcional, não substitui `03_initial_data.sql` e não é executado automaticamente pelo Dockerfile nem pelo DbRunner. Ele deve ser usado apenas em ambiente local ou banco descartável, pois insere milhares de registros nas tabelas transacionais.
+
+Os novos `EXPLAIN (ANALYZE, BUFFERS)` foram executados em um banco Supabase descartável, sem uso de `SET enable_seqscan=off`. A saída bruta completa está em `src/database/benchmark/explain-volume.txt`.
+
+| Consulta | Índice usado | Tipo de scan | Rows reais | Execution Time |
+|---|---|---|---:|---:|
+| Recomendações por usuário ordenadas por score | `idx_recomendacoes_usuario_score` | Index Scan | 50 | 4.761 ms |
+| Espetáculos por cidade | `idx_teatros_cidade` | Bitmap Index Scan + Bitmap Heap Scan | 102 teatros / 268 espetáculos | 192.606 ms |
+| Espetáculos por intervalo de datas | `idx_espetaculos_datas` | Index Scan | 200 | 7.976 ms |
+| Interações por usuário ordenadas por expiração | `idx_interacoes_usuario_expiracao` | Index Scan Backward | 50 | 26.704 ms |
+| Wishlist por usuário | `idx_wishlist_usuario` | Index Scan | 2000 | 20.168 ms |
+
+Ordem manual utilizada para gerar a evidência:
+
+```bash
+psql -h <host> -p <porta> -U <usuario> -d <banco> -f src/database/01_create_database.sql
+psql -h <host> -p <porta> -U <usuario> -d <banco> -f src/database/02_sprint4_improvements.sql
+psql -h <host> -p <porta> -U <usuario> -d <banco> -f src/database/03_initial_data.sql
+psql -h <host> -p <porta> -U <usuario> -d <banco> -f src/database/benchmark/04_synthetic_explain_data.sql
+psql -h <host> -p <porta> -U <usuario> -d <banco> -f src/database/benchmark/explain_benchmark_queries.sql
+```
+
 ## 9. Teste de Carga (pgbench)
 
 ### Metodologia
@@ -676,6 +707,8 @@ ORDER BY score DESC;
 | 20 | 4 | 96,26 | 207,77 ms | 0 |
 | 50 | 4 | 345,99 | 144,52 ms | 0 |
 | 75 | 8 | 389,95 | 192,33 ms | 0 |
+
+As saídas brutas reais do terminal, incluindo a tentativa com 100 clientes bloqueada por limite de conexões, estão versionadas em `src/database/benchmark/pgbench-results.txt`.
 
 ### Análise dos Resultados
 
@@ -807,6 +840,8 @@ Dois índices simples do Sprint 3 foram removidos e substituídos por índices c
 |---|---|---|
 | `idx_interacoes_usuario` — `ON interacoes(usuario_id)` | `idx_interacoes_usuario_expiracao` — `ON interacoes(usuario_id, data_expiracao)` | O motor de recomendação filtra sempre por `usuario_id` **e** `data_expiracao`; o índice composto elimina a varredura extra na coluna de expiração e satisfaz ambos os predicados em um único Index Scan |
 | `idx_recomendacao_usuario` — `ON recomendacoes(usuario_id)` | `idx_recomendacoes_usuario_score` — `ON recomendacoes(usuario_id, score DESC)` | Recuperar as top-N recomendações de um usuário ordenadas por relevância passa a ser um Index Scan sem Sort Step adicional, pois o índice já entrega as linhas na ordem decrescente de `score` |
+
+Na tabela `recomendacoes`, a constraint `uq_recomendacao_usuario_espetaculo(usuario_id, espetaculo_id)` e o índice `idx_recomendacoes_usuario_score(usuario_id, score DESC)` coexistem porque têm papéis diferentes: a constraint impede recomendação duplicada do mesmo espetáculo para o mesmo usuário, enquanto o índice otimiza a leitura das recomendações de um usuário já ordenadas por score, especialmente em consultas com `ORDER BY score DESC` e `LIMIT`.
 
 Novos índices sem predecessor no Sprint 3:
 

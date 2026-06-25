@@ -36,7 +36,9 @@ namespace BackEnd.Aventura.Extensions
             services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRecommendationStrategy, StoredRecommendationStrategy>();
+            services.AddScoped<IRecommendationStrategy, WishlistGenresRecommendationStrategy>();
             services.AddScoped<IRecommendationStrategy, FavoriteGenresRecommendationStrategy>();
+            services.AddSingleton<IWishlistRecommendationPostProcessor, WishlistRecommendationPostProcessor>();
             services.AddScoped<IRecomendacaoService, RecomendacaoService>();
             services.AddScoped<IGeneroService, GeneroService>();
 

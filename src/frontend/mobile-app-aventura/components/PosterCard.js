@@ -1,10 +1,11 @@
 import React from "react";
-import { TouchableOpacity, Image, Text, StyleSheet, View } from "react-native";
+import { TouchableOpacity, Text, StyleSheet, View } from "react-native";
 import { Heart } from "lucide-react-native";
 
 import { colors } from "../constants/colors";
 import { typography } from "../constants/typography";
 import { radius, spacing } from "../constants/spacing";
+import FallbackImage from "./FallbackImage";
 
 export default function PosterCard({
   title,
@@ -23,7 +24,7 @@ export default function PosterCard({
       activeOpacity={0.85}
     >
       <View style={[styles.imageWrapper, { height: imageHeight }]}>
-        <Image source={image} style={styles.image} resizeMode="cover" />
+        <FallbackImage source={image} style={styles.image} resizeMode="cover" />
 
         {onFavoritePress && (
           <TouchableOpacity

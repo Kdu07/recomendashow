@@ -1,4 +1,4 @@
-import { apiFetch } from './apiClient';
+import { apiFetch, API_BASE } from './apiClient';
 
 const DEFAULT_IMAGE = require('../assets/home/amazonica.jpeg');
 
@@ -17,10 +17,26 @@ function read(dto, pascal, camel) {
   return dto?.[pascal] ?? dto?.[camel];
 }
 
-function getShowImage(dto) {
+// Imagens reais dos espetáculos ficam no MongoDB (GridFS), servidas pelo backend
+// via GET /api/Espetaculo/{id}/imagem. Esse endpoint é público (não exige token),
+// então a URL pode ser usada direto em <Image source={{ uri }} />.
+function getShowImageUrl(dto) {
+  const id = read(dto, 'Id', 'id');
+  if (!id) return null;
+  return `${API_BASE}/api/Espetaculo/${id}/imagem`;
+}
+
+// Fallback local enquanto a imagem não existe no Mongo para aquele espetáculo,
+// ou caso o download remoto falhe (ver onError nos componentes de imagem).
+function getFallbackImage(dto) {
   const name = `${read(dto, 'Nome', 'nome') ?? ''} ${read(dto, 'Genero', 'genero') ?? ''} ${read(dto, 'TipoEvento', 'tipoEvento') ?? ''}`;
   const match = IMAGE_MAP.find((item) => item.pattern.test(name));
   return match?.image ?? DEFAULT_IMAGE;
+}
+
+function getShowImage(dto) {
+  const url = getShowImageUrl(dto);
+  return url ? { uri: url } : getFallbackImage(dto);
 }
 
 function getCategoryId(dto) {

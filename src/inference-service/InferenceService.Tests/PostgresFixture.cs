@@ -6,7 +6,7 @@ namespace InferenceService.Tests;
 
 /// <summary>
 /// Sobe um PostgreSQL efêmero (Testcontainers) com o schema real do projeto
-/// (01_create_database + 02_sprint4_improvements) para testar o
+/// (01_create_database + 02_sprint4_improvements + 04_espetaculo_dataset_mapping) para testar o
 /// <see cref="InferenceService.Data.RecommendationWriteRepository"/> contra um banco de verdade.
 /// Requer Docker em execução.
 /// </summary>
@@ -23,6 +23,7 @@ public sealed class PostgresFixture : IAsyncLifetime
         await _container.StartAsync();
         await ApplyScriptAsync("01_create_database.sql");
         await ApplyScriptAsync("02_sprint4_improvements.sql");
+        await ApplyScriptAsync("04_espetaculo_dataset_mapping.sql");
     }
 
     public Task DisposeAsync() => _container.DisposeAsync().AsTask();

@@ -171,7 +171,7 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 </details>
 
 <details>
-<summary><a href="#14-diagrama-de-componentes">14. Diagrama de Componentes</a></summary>
+<summary><a href="#14-Diagrama-de-componentes">14. Diagrama de Componentes</a></summary>
 
 - [Packages](#packages)
 - [Componentes](#componentes)
@@ -1194,7 +1194,16 @@ O modelo conceitual de dados representa a estruturação dos dados seguindo as r
 
 ### 12.4.1 Dicionário de Dados e Mapeamento
 
-A conversão do modelo lógico para o modelo conceitual foi realizada mapeando cada entidade conceitual para uma tabela relacional e transformando relacionamentos Muitos-para-Muitos (N:N) em tabelas associativas.
+A conversão do modelo lógico para o modelo relacional foi realizada mapeando cada entidade para uma tabela e transformando relacionamentos Muitos-para-Muitos (N:N) em tabelas associativas. O banco de dados utiliza **PostgreSQL** com chaves primárias do tipo **UUID** (`gen_random_uuid()`).
+
+---
+
+### Tipos Enumerados (ENUM)
+
+| Tipo | Valores | Uso |
+| :--- | :--- | :--- |
+| `tipo_interacao` | `'Clique'`, `'Acesso'`, `'TempoDeTela'` | Campo `tipo` em `interacoes` |
+| `tipo_lista` | `'curtida'`, `'wishlist'` | Campo `tipo` em `wishlist_curtidas` |
 
 ---
 
@@ -1202,126 +1211,178 @@ A conversão do modelo lógico para o modelo conceitual foi realizada mapeando c
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **USUARIOS** | `Id` | INT | PK, AI | Identificador único do usuário. |
-| | `Nome` | VARCHAR(100) | NN | Nome completo do usuário. |
-| | `Email` | VARCHAR(100) | UNIQUE, NN | E-mail utilizado para autenticação. |
-| | `Senha` | VARCHAR(255) | NN | Hash da senha de acesso. |
-| | `Idade` | INT | - | Idade do usuário. |
+| **usuarios** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único do usuário. |
+| | `nome` | VARCHAR(100) | NN | Nome completo do usuário. |
+| | `email` | VARCHAR(255) | UNIQUE, NN | E-mail utilizado para autenticação. |
+| | `senha_hash` | TEXT | NN | Hash da senha de acesso. |
+| | `idade` | INT | CHECK(idade >= 13) | Idade do usuário (mínimo 13 anos). |
+| | `data_nascimento` | DATE | - | Data de nascimento do usuário. |
+| | `data_cadastro` | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | Data e hora do cadastro. |
+| | `data_atualizacao` | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | Data da última atualização do perfil. |
+| | `cep` | VARCHAR(9) | - | CEP do endereço do usuário. |
+| | `logradouro` | VARCHAR(255) | - | Logradouro (preenchido via ViaCEP). |
+| | `numero` | VARCHAR(10) | - | Número do endereço. |
+| | `complemento` | VARCHAR(255) | - | Complemento do endereço. |
+| | `bairro` | VARCHAR(100) | - | Bairro do endereço. |
+| | `cidade` | VARCHAR(100) | - | Cidade do usuário. |
+| | `consentimento_aceito` | BOOLEAN | DEFAULT FALSE | Registro de aceite dos termos (LGPD). |
+| | `data_consentimento` | TIMESTAMPTZ | - | Data/hora do aceite do consentimento. |
+| | `deleted_at` | TIMESTAMPTZ | - | Soft-delete: data de exclusão lógica (LGPD). |
+| | `anonimizado` | BOOLEAN | DEFAULT FALSE | Indica se os dados foram anonimizados (LGPD). |
+| | `anonimizado_em` | TIMESTAMPTZ | - | Data/hora da anonimização dos dados. |
+| | `ml_id` | SERIAL | UNIQUE | Identificador sequencial para integração com o modelo de ML. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **GENEROS** | `id` | INT | PK, AI | Identificador único do gênero. |
-| | `Nome` | VARCHAR(50) | NN | Nome do gênero artístico. |
+| **generos** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único do gênero. |
+| | `nome` | VARCHAR(50) | UNIQUE, NN | Nome do gênero artístico. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **TEATROS** | `id` | INT | PK, AI | Identificador único do teatro. |
-| | `Nome` | VARCHAR(100) | NN | Nome do teatro ou espaço cultural. |
-| | `Cidade` | VARCHAR(100) | NN | Cidade onde o teatro está localizado. |
-| | `Estado` | VARCHAR(50) | NN | Estado onde o teatro está localizado. |
-| | `Rua` | VARCHAR(150) | NN | Nome da rua do teatro. |
-| | `Numero` | VARCHAR(20) | NN | Número do endereço do teatro. |
-| | `Horario_func` | VARCHAR(100) | - | Horário de funcionamento do teatro. |
-| | `Descricao` | TEXT | - | Descrição geral do teatro. |
-| | `Imagem` | VARCHAR(255) | - | URL ou caminho da imagem do teatro. |
+| **teatros** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único do teatro. |
+| | `nome` | VARCHAR(150) | UNIQUE, NN | Nome do teatro ou espaço cultural. |
+| | `endereco` | VARCHAR(255) | - | Endereço completo do teatro. |
+| | `cidade` | VARCHAR(100) | - | Cidade onde o teatro está localizado. |
+| | `horario_funcionamento` | VARCHAR(100) | - | Horário de funcionamento do teatro. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **ESPETACULOS** | `id` | INT | PK, AI | Identificador único do espetáculo. |
-| | `Nome` | VARCHAR(150) | NN | Nome do espetáculo. |
-| | `link_ingresso` | VARCHAR(255) | - | Link para compra de ingressos. |
-| | `Descricao` | TEXT | - | Descrição detalhada do espetáculo. |
-| | `Imagem` | VARCHAR(255) | - | URL ou caminho da imagem do espetáculo. |
+| **espetaculos** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único do espetáculo. |
+| | `nome` | VARCHAR(150) | UNIQUE, NN | Nome do espetáculo. |
+| | `tipo_evento` | VARCHAR(80) | - | Tipo do evento (ex: peça, musical, ópera). |
+| | `descricao` | TEXT | - | Descrição detalhada do espetáculo. |
+| | `url_bilheteria` | TEXT | - | URL para compra de ingressos. |
+| | `data_inicio` | TIMESTAMPTZ | NN | Data e hora de início das apresentações. |
+| | `data_fim` | TIMESTAMPTZ | NN | Data e hora de encerramento. CHECK(data_fim > data_inicio). |
+| | `valor_ingresso` | DECIMAL(10,2) | CHECK(valor_ingresso >= 0) | Valor do ingresso em reais. |
 
 ---
 
-### B. Tabelas Associativas e Operacionais
+### B. Tabelas de Preferências e Recomendações
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **ESP_GEN** | `id_esp` | INT | FK, PK(1/2) | Espetáculo relacionado ao gênero. |
-| | `id_gen` | INT | FK, PK(2/2) | Gênero associado ao espetáculo. |
-
----
-
-| Tabela | Coluna | Tipo | Restrição | Descrição |
-| :--- | :--- | :--- | :--- | :--- |
-| **GEN_FAV** | `id_usu` | INT | FK, PK(1/2) | Usuário que favoritou o gênero. |
-| | `id_gen` | INT | FK, PK(2/2) | Gênero marcado como preferência pelo usuário. |
-
----
-
-| Tabela | Coluna | Tipo | Restrição | Descrição |
-| :--- | :--- | :--- | :--- | :--- |
-| **TEAT_ESPET** | `id_teat` | INT | FK, PK(1/2) | Teatro onde o espetáculo ocorre. |
-| | `id_espet` | INT | FK, PK(2/2) | Espetáculo vinculado ao teatro. |
+| **preferencias** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único do registro. |
+| | `usuario_id` | UUID | FK → usuarios.id, UNIQUE, ON DELETE CASCADE | Usuário dono das preferências (relação 1:1). |
+| | `cidade` | VARCHAR(100) | - | Cidade preferida pelo usuário. |
+| | `tags` | TEXT[] | - | Array de tags de interesse do usuário. |
+| | `faixa_preco_min` | DECIMAL(10,2) | - | Preço mínimo de interesse. |
+| | `faixa_preco_max` | DECIMAL(10,2) | - | Preço máximo de interesse. |
+| | `receber_notificacoes` | BOOLEAN | DEFAULT TRUE | Opt-in para notificações. |
+| | `data_atualizacao` | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | Última atualização (gerenciada por trigger). |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **CURT_WISH** | `id_usu` | INT | FK, PK(1/2) | Usuário que realizou a interação. |
-| | `id_esp` | INT | FK, PK(2/2) | Espetáculo alvo da interação. |
-| | `tipo` | ENUM('curtida', 'wishlist') | NN | Tipo de interação realizada pelo usuário. |
+| **recomendacoes** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único da recomendação. |
+| | `usuario_id` | UUID | FK → usuarios.id, NN, ON DELETE CASCADE | Usuário que recebeu a recomendação. |
+| | `espetaculo_id` | UUID | FK → espetaculos.id, NN, ON DELETE CASCADE | Espetáculo recomendado. |
+| | `score` | DECIMAL(4,2) | CHECK(score >= 0 AND score <= 1) | Pontuação de relevância (0 a 1). |
+| | `motivo` | TEXT | - | Justificativa textual da recomendação. |
+| | `data_geracao` | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | Data/hora de geração da recomendação. |
+| | `visualizada_em` | TIMESTAMPTZ | - | Data/hora em que o usuário visualizou. |
+| | - | - | UNIQUE(usuario_id, espetaculo_id) | Evita recomendações duplicadas por usuário. |
+
+---
+
+### C. Tabelas Associativas e Operacionais
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **espetaculo_genero** | `espetaculo_id` | UUID | FK → espetaculos.id, PK(1/2), ON DELETE CASCADE | Espetáculo associado ao gênero. |
+| | `genero_id` | UUID | FK → generos.id, PK(2/2), ON DELETE CASCADE | Gênero associado ao espetáculo. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **INTERAÇÕES_USU** | `id` | INT | PK, AI | Identificador único do evento registrado. |
-| | `id_usu` | INT | FK, NN | Usuário que realizou a interação. |
-| | `id_esp` | INT | FK, NN | Espetáculo relacionado à interação. |
-| | `tipo` | VARCHAR(50) | NN | Tipo de evento/interação realizada. |
-| | `temp_pagi` | INT | - | Tempo de permanência na página (segundos). |
+| **usuario_genero_favorito** | `usuario_id` | UUID | FK → usuarios.id, PK(1/2), ON DELETE CASCADE | Usuário que favoritou o gênero. |
+| | `genero_id` | UUID | FK → generos.id, PK(2/2), ON DELETE CASCADE | Gênero marcado como preferência. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **teatro_espetaculo** | `teatro_id` | UUID | FK → teatros.id, PK(1/2), ON DELETE RESTRICT | Teatro onde o espetáculo ocorre. |
+| | `espetaculo_id` | UUID | FK → espetaculos.id, PK(2/2), ON DELETE CASCADE | Espetáculo vinculado ao teatro. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **wishlist_curtidas** | `usuario_id` | UUID | FK → usuarios.id, PK(1/3), ON DELETE CASCADE | Usuário que realizou a interação. |
+| | `espetaculo_id` | UUID | FK → espetaculos.id, PK(2/3), ON DELETE CASCADE | Espetáculo alvo da interação. |
+| | `tipo` | tipo_lista | PK(3/3), NN | Tipo de interação: `'curtida'` ou `'wishlist'`. |
+| | `adicionado_em` | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | Data/hora em que o item foi adicionado. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **interacoes** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único da interação. |
+| | `usuario_id` | UUID | FK → usuarios.id, NN, ON DELETE CASCADE | Usuário que realizou a interação. |
+| | `espetaculo_id` | UUID | FK → espetaculos.id, NN, ON DELETE CASCADE | Espetáculo relacionado à interação. |
+| | `tipo` | tipo_interacao | NN | Tipo: `'Clique'`, `'Acesso'` ou `'TempoDeTela'`. |
+| | `pontuacao` | DECIMAL(4,2) | CHECK(pontuacao >= 0 AND pontuacao <= 10) | Pontuação atribuída à interação. |
+| | `data_registro` | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | Data/hora do registro da interação. |
+| | `data_expiracao` | TIMESTAMPTZ | CHECK(data_expiracao > data_registro) | Data/hora de expiração do registro. |
 
 ---
 
 ### 12.4.2 Definição de Chaves e Integridade Referencial
 
 ### Chaves Primárias (PK)
-As chaves primárias foram definidas para garantir a unicidade de cada registro. Nas tabelas associativas (`ESP_GEN`, `GEN_FAV`, `TEAT_ESPET`, `CURT_WISH`), utilizam-se chaves compostas pelos IDs das entidades relacionadas para evitar duplicidade de associações.
+Todas as tabelas utilizam **UUID** gerado automaticamente (`gen_random_uuid()`) como chave primária, garantindo unicidade global sem dependência de sequências numéricas. Nas tabelas associativas (`espetaculo_genero`, `usuario_genero_favorito`, `teatro_espetaculo`), utilizam-se chaves compostas pelos UUIDs das entidades relacionadas para evitar duplicidade de associações. A tabela `wishlist_curtidas` possui chave composta tripla `(usuario_id, espetaculo_id, tipo)`, permitindo que o mesmo usuário tenha um espetáculo tanto em curtidas quanto em wishlist.
 
 ### Chaves Estrangeiras (FK)
-As chaves estrangeiras garantem a integridade referencial, assegurando que as associações entre usuários, espetáculos, teatros e gêneros apontem apenas para registros existentes.
+As chaves estrangeiras garantem a integridade referencial. A política `ON DELETE CASCADE` é aplicada em entidades dependentes do usuário (interações, preferências, recomendações). A relação `teatro_espetaculo` usa `ON DELETE RESTRICT` para proteger teatros de exclusão acidental enquanto possuem espetáculos vinculados.
 
 ### Relacionamentos implementados
-- **Usuários e Interações**: Um usuário pode gerar múltiplos registros de interação e eventos de navegação (`1:N`).
-- **Gêneros Favoritos**: Relação `N:N` que permite ao usuário filtrar sua experiência com base em múltiplos interesses.
-- **Espetáculos e Teatros**: Relação `N:N` via `TEAT_ESPET`, permitindo que uma produção ocorra em diferentes locais e que um teatro receba diversos eventos.
-- **Categorização Multifacetada**: Através da `ESP_GEN`, um espetáculo pode ser associado a diversos gêneros simultaneamente.
+- **Usuários e Interações**: Um usuário pode gerar múltiplos registros de interação (`1:N` via `interacoes`).
+- **Usuários e Preferências**: Relação `1:1` — cada usuário possui exatamente um registro de preferências (`preferencias`).
+- **Usuários e Recomendações**: Um usuário pode receber múltiplas recomendações (`1:N` via `recomendacoes`), com unicidade por par `(usuario_id, espetaculo_id)`.
+- **Gêneros Favoritos**: Relação `N:N` via `usuario_genero_favorito`, permitindo múltiplos interesses por usuário.
+- **Espetáculos e Teatros**: Relação `N:N` via `teatro_espetaculo`, permitindo que uma produção ocorra em diferentes locais e que um teatro receba diversos eventos.
+- **Categorização Multifacetada**: Via `espetaculo_genero`, um espetáculo pode ser associado a diversos gêneros simultaneamente.
 
 ---
 
 ### 12.4.3 Regras de Normalização Aplicadas
 
-O modelo conceitual segue os princípios da Terceira Forma Normal (3FN).
+O modelo segue os princípios da Terceira Forma Normal (3FN).
 
 ### Primeira Forma Normal (1FN)
-Todos os atributos possuem valores atômicos. Colunas como `tipo` em `CURT_WISH` utilizam ENUM para padronização, evitando dados multivalorados.
+Todos os atributos possuem valores atômicos. Os tipos ENUM (`tipo_interacao`, `tipo_lista`) garantem padronização dos valores permitidos. A exceção intencional é o campo `tags` em `preferencias` (tipo `TEXT[]`), que utiliza array nativo do PostgreSQL para representar múltiplos interesses sem criar tabela auxiliar.
 
 ### Segunda Forma Normal (2FN)
-Não existem dependências parciais. Em tabelas com chaves compostas, os atributos dependem da junção completa das chaves estrangeiras.
+Não existem dependências parciais. Em tabelas com chaves compostas, todos os atributos não-chave dependem da junção completa das chaves estrangeiras que formam a PK.
 
 ### Terceira Forma Normal (3FN)
-Não há dependências transitivas. Atributos descritivos (como os detalhes de endereço em `TEATROS`) dependem exclusivamente da PK daquela tabela.
+Não há dependências transitivas. Atributos descritivos de cada entidade dependem exclusivamente de sua própria PK. Os dados de endereço do usuário foram mantidos em `usuarios` pois caracterizam diretamente aquele registro.
 
 ---
 
 ### 12.4.4 Justificativa e Rastreabilidade
 
-O modelo conceitual foi estruturado para manter fidelidade ao modelo lógico, garantindo consistência entre as regras de negócio e a implementação relacional.
+O modelo foi estruturado para manter fidelidade ao modelo lógico, garantindo consistência entre as regras de negócio e a implementação relacional no PostgreSQL.
 
-As tabelas associativas permitem representar corretamente relacionamentos Muitos-para-Muitos, como:
+As tabelas associativas representam corretamente relacionamentos Muitos-para-Muitos:
 
-- preferências de gêneros dos usuários;
-- categorização de espetáculos;
-- interações entre usuários e espetáculos.
+- preferências de gêneros dos usuários (`usuario_genero_favorito`);
+- categorização de espetáculos por gênero (`espetaculo_genero`);
+- programação de teatros (`teatro_espetaculo`);
+- interações e listas dos usuários (`interacoes`, `wishlist_curtidas`).
+
+As tabelas `preferencias` e `recomendacoes` sustentam o motor de recomendação personalizada: `preferencias` armazena o perfil de interesse do usuário (cidade, faixa de preço, tags) e `recomendacoes` persiste os resultados gerados pelo modelo de ML, com score de relevância e rastreabilidade temporal.
+
+A conformidade com a LGPD é garantida pelos campos `consentimento_aceito`, `deleted_at`, `anonimizado` e `anonimizado_em` em `usuarios`, além da stored procedure `sp_anonimizar_usuario` e de triggers que automatizam o controle de consentimento e protegem dados anonimizados contra alteração.
 
 A separação das entidades reduz redundâncias, melhora a escalabilidade do sistema e facilita futuras manutenções e expansões do banco de dados.
 
@@ -1515,7 +1576,7 @@ Enumeração que define os tipos possíveis de interação de um usuário com um
 
 ## 14. Diagrama de Componentes
 
-O diagrama de componentes abaixo representa a estrutura da aplicação seguindo o padrão arquitetural MVVM no cliente (React Native) e SOA no servidor (ASP.NET Core), com dois mecanismos de persistência: um banco de dados relacional PostgreSQL para dados estruturados e transacionais e um Storage Bucket para armazenamento de eventos de comportamento, vetores latentes do modelo SVD e assets de mídia.
+O diagrama de componentes abaixo representa a estrutura da aplicação seguindo o padrão arquitetural MVVM no cliente (React Native) e SOA no servidor (ASP.NET Core), com dois mecanismos de persistência: um banco de dados relacional PostgreSQL para dados estruturados e transacionais e um banco de dados MongoDB para dados não relacionais e eventos de comportamento.
 
 <div align="center">
   <sub>Imagem 12 - Diagrama de Componentes UML</sub><br>
@@ -1531,9 +1592,10 @@ O diagrama possui quatro packages:
  
 - **Presentation**: agrupa os componentes da camada de apresentação do app React Native (MVVM)
 - **Service | ASP.NET Core**: agrupa os serviços do backend
-- **Data**: agrupa os componentes da camada de acesso a dados
+- **Data**: agrupa os componentes da camada de acesso a dados, incluindo o Repository e os DataSources
 - **External**: agrupa os serviços externos consumidos pelo backend
-PostgreSQL e Storage Bucket ficam **fora de qualquer package** pois são infraestrutura externa — não fazem parte do código da aplicação.
+
+PostgreSQL e MongoDB ficam **fora de qualquer package** pois são infraestrutura externa — não fazem parte do código da aplicação.
  
 ---
  
@@ -1545,27 +1607,26 @@ Componentes são representados por um retângulo com o ícone de componente no c
 |---|---|---|
 | View | «component» | Presentation |
 | ViewModel | «component» | Presentation |
-| Repository | «component» | Presentation |
-| API Gateway | «service» | Service \| ASP.NET Core |
+| Repository | «component» | Data |
+| Backend API | «service» | Service \| ASP.NET Core |
 | Backend Services | «service» | Service \| ASP.NET Core |
-| Recommendation Service | «service» | Service \| ASP.NET Core |
+| Inference Service | «service» | Service \| ASP.NET Core |
 | Training Job | «job» | Service \| ASP.NET Core |
-| PostgresDataSource | «dataSource» | Data |
-| BucketDataSource | «dataSource» | Data |
-| CDN Imagens | «external» | External |
+| PostgreDataSource | «dataSource» | Data |
+| MongoDataSource | «dataSource» | Data |
 | ViaCEP | «external» | External |
 | PostgreSQL | «database» | — (externo) |
-| Storage Bucket | «artifact» | — (externo) |
+| MongoDB | «database» | — (externo) |
  
 **Sobre os estereótipos:**
  
-- `«component»`: unidade de software com responsabilidade própria dentro da aplicação cliente.
+- `«component»`: unidade de software com responsabilidade própria dentro da aplicação.
 - `«service»`: serviço do backend exposto via HTTP, com responsabilidade bem definida.
 - `«job»`: processo executado periodicamente de forma assíncrona, sem exposição via HTTP.
 - `«dataSource»`: adaptador que encapsula os detalhes de acesso a uma fonte de dados externa.
 - `«external»`: serviço de terceiros consumido pelo backend via HTTP.
 - `«database»`: banco de dados externo ao código da aplicação.
-- `«artifact»`: recurso implantado externamente, como um bucket de storage.
+
 ---
  
 ### Interfaces
@@ -1574,60 +1635,60 @@ As interfaces são representadas pelo padrão **ball-and-socket**:
  
 - **Bolinha (provided interface)** — linha reta saindo do componente com um círculo na ponta. Indica que o componente fornece aquele contrato.
 - **Semicírculo aberto (required interface)** — linha reta saindo do componente com um semicírculo na ponta. Indica que o componente precisa daquele contrato para funcionar.
+
 O encaixe entre o semicírculo e a bolinha representa a satisfação do contrato — o componente que precisa encontra o componente que fornece.
  
-O diagrama possui cinco interfaces:
+O diagrama possui seis interfaces:
  
 | Interface | Fornecida por | Consumida por |
 |---|---|---|
+| IApi | Backend API | ViewModel |
 | IRepository | Repository | ViewModel |
-| IApiGateway | API Gateway | Repository |
-| IBackendService | Backend Services | API Gateway |
-| IRecommendationService | Recommendation Service | API Gateway |
-| IPostgresDataSource | PostgresDataSource | Backend Services, Training Job, Recommendation Service |
-| IBucketDataSource | BucketDataSource | Backend Services, Training Job, Recommendation Service |
+| IBackendService | Backend Services | Backend API |
+| IRecommendationService | Inference Service | Backend API |
+| IPostgres | PostgreDataSource | Backend Services, Training Job, Inference Service |
+| IMongo | MongoDataSource | Backend Services, Training Job, Inference Service |
  
-O `Repository` está no centro do cliente: fornece a bolinha `IRepository` para o ViewModel e consome a bolinha `IApiGateway` do API Gateway por meio do seu semicírculo — abstraindo todas as chamadas de rede.
+O `ViewModel` consome dois contratos: `IApi` para comunicação com o servidor (via Backend API) e `IRepository` para acesso a dados persistidos localmente (via Repository na camada Data).
  
-`IPostgresDataSource` e `IBucketDataSource` são consumidas por três componentes cada — `Backend Services`, `Training Job` e `Recommendation Service` — pois todos precisam acessar dados persistidos, cada um com finalidades distintas.
+`IPostgres` e `IMongo` são consumidas por três componentes cada — `Backend Services`, `Training Job` e `Inference Service` — pois todos precisam acessar dados persistidos, cada um com finalidades distintas.
 
-### Responsabilidades do Storage Bucket
- 
-O Storage Bucket possui responsabilidade tripla, organizada internamente por prefixos de path:
- 
-| Path | Conteúdo | Escrito por | Lido por |
-|---|---|---|---|
-| `/media/` | Assets de mídia (imagens de eventos e atrações) | Backend Services | CDN Imagens |
-| `/events/` | Eventos brutos de comportamento (cliques, visualizações, compras) | Backend Services | Training Job |
-| `/model/` | Vetores latentes do modelo SVD (matrizes usuário × fator, item × fator) | Training Job | Recommendation Service |
- 
 ### Responsabilidades do PostgreSQL
  
-O PostgreSQL armazena exclusivamente dados transacionais e os hiperparâmetros do modelo SVD:
+O PostgreSQL armazena dados estruturados e transacionais:
  
 | Conteúdo | Escrito por | Lido por |
 |---|---|---|
 | Dados transacionais (usuários, pedidos, produtos, eventos) | Backend Services | Backend Services |
-| Hiperparâmetros SVD (n_fatores, learning_rate, epochs, versão, data_treino) | Training Job | Recommendation Service, Training Job |
+| Hiperparâmetros do modelo (n_fatores, learning_rate, epochs, versão, data_treino) | Training Job | Inference Service, Training Job |
+
+### Responsabilidades do MongoDB
+ 
+O MongoDB armazena dados não relacionais e de alta variabilidade:
+ 
+| Conteúdo | Escrito por | Lido por |
+|---|---|---|
+| Eventos de comportamento (cliques, visualizações, compras) | Backend Services | Training Job |
+| Vetores latentes do modelo (matrizes usuário × fator, item × fator) | Training Job | Inference Service |
 
 ### Decisões
 
-**Por que o ball-and-socket foi usado entre ViewModel e Repository?**
-O ViewModel não depende da implementação concreta do Repository — ele depende apenas do contrato `IRepository`. O ball-and-socket torna esse contrato visível no diagrama, o que uma seta tracejada simples não expressa.
+**Por que o ball-and-socket foi usado entre ViewModel e IApi/IRepository?**
+O ViewModel não depende de implementações concretas — ele depende apenas dos contratos `IApi` e `IRepository`. O ball-and-socket torna esses contratos visíveis no diagrama, o que setas tracejadas simples não expressam.
  
-**Por que o Repository passou a consumir IApiGateway em vez de IPostgresDataSource e IBucketDataSource?**
-O app React Native roda no dispositivo do usuário — nunca acessa banco de dados diretamente. Todo acesso a dados passa pela API do servidor. O Repository no cliente abstrai as chamadas HTTP para o API Gateway, não o acesso direto a fontes de dados. `IPostgresDataSource` e `IBucketDataSource` existem apenas no servidor.
+**Por que o Repository foi posicionado na camada Data?**
+O Repository é responsável por orquestrar o acesso a dados persistidos localmente. Posicioná-lo na camada Data centraliza toda a lógica de persistência em um único lugar, mantendo o ViewModel focado exclusivamente na lógica de apresentação. O acesso ao servidor ocorre via `IApi`, consumida diretamente pelo ViewModel.
  
-**Por que IPostgresDataSource e IBucketDataSource têm múltiplos consumidores?**
-Backend Services, Training Job e Recommendation Service têm necessidades distintas de acesso a dados, mas compartilham as mesmas fontes. Centralizar o acesso nos DataSources evita duplicação de lógica de conexão e mantém um único ponto de configuração para cada tecnologia de persistência.
+**Por que IPostgres e IMongo têm múltiplos consumidores?**
+Backend Services, Training Job e Inference Service têm necessidades distintas de acesso a dados, mas compartilham as mesmas fontes. Centralizar o acesso nos DataSources evita duplicação de lógica de conexão e mantém um único ponto de configuração para cada tecnologia de persistência.
  
-**Por que o Training Job usa seta tracejada simples em vez de ball-and-socket para o Recommendation Service?**
-O Training Job não consome uma interface fornecida pelo Recommendation Service — ele é acionado pelo próprio Recommendation Service periodicamente. A seta tracejada representa uma dependência de acionamento, não um contrato de interface.
+**Por que o Training Job usa seta tracejada simples em vez de ball-and-socket para o Inference Service?**
+O Training Job não consome uma interface fornecida pelo Inference Service — ele é acionado pelo próprio Inference Service periodicamente. A seta tracejada representa uma dependência de acionamento, não um contrato de interface.
  
-**Por que o SVD Model Store (.zip) foi removido?**
-O modelo SVD é composto por duas partes com naturezas distintas: hiperparâmetros (dados estruturados, poucos campos) e vetores latentes (arrays densos e pesados). Separar essas partes nos storages já existentes — PostgreSQL e Storage Bucket respectivamente — elimina um componente desnecessário e aproveita a infraestrutura já presente.
+**Por que o Storage Bucket foi substituído pelo MongoDB?**
+O MongoDB oferece flexibilidade para armazenar tanto eventos de comportamento quanto vetores latentes do modelo em formato de documento, eliminando a necessidade de um storage de arquivos separado. Isso simplifica a infraestrutura, mantém todos os dados dentro de um sistema de banco de dados gerenciado e facilita consultas sobre os dados armazenados.
  
-**Por que PostgreSQL e Storage Bucket ficam fora dos packages?**
+**Por que PostgreSQL e MongoDB ficam fora dos packages?**
 Packages representam agrupamentos do código da aplicação. Infraestrutura externa não pertence a nenhuma camada do sistema — colocá-la dentro de um package seria incorreto semanticamente.
 
 ## 15. Diagrama de Casos de Uso
@@ -1718,6 +1779,168 @@ O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visual
 O diagrama de implantação apresenta a arquitetura física de referência do Portal Aventura. Ele reúne os ambientes, componentes e comunicações previstos para aplicativo mobile, backend, recomendação, treinamento, persistência e serviços externos. O desenho representa a direção arquitetural do projeto, não uma declaração de que todos os nós estejam publicados.
  
 <div align="center">
+  <sub>Imagem 13 - Diagrama de Implantação UML</sub><br>
+  <img src="../assets/Diagrama-de-implantacao.drawio.png" width="100%" alt="Diagrama de Implantação UML"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+
+### Ambientes
+ 
+#### Aplicação Mobile
+ 
+Representa o aplicativo executado em dispositivos Android.
+ 
+**Componentes Implantados:**
+ 
+| Componente | Descrição |
+|------------|------------|
+| App Bundle (.apk) | Pacote distribuído para instalação do aplicativo móvel |
+| AsyncStorage | Armazenamento local utilizado para persistência de dados temporários e configurações do usuário |
+ 
+**Tecnologias:**
+ 
+- Android
+- React Native Runtime
+**Comunicação:**
+ 
+| Destino | Protocolo |
+|----------|-----------|
+| API Gateway | HTTPS (TCP 443) |
+| Deep Links | HTTPS (TCP 443) |
+ 
+---
+ 
+#### Ambiente de Servidor
+ 
+Responsável pelo processamento das regras de negócio, autenticação, gerenciamento de usuários, recomendação de eventos e integração com serviços externos.
+ 
+**Componentes:**
+ 
+- API Gateway
+- Backend ASP.NET Core
+- Sistema de Recomendação
+---
+ 
+**API Gateway:**
+ 
+O API Gateway funciona como ponto único de entrada para as requisições realizadas pelo aplicativo móvel.
+ 
+Artefato Implantado:
+ 
+| Artefato | Descrição |
+|-----------|------------|
+| Gateway Service | Serviço responsável pelo roteamento das requisições para os serviços internos |
+ 
+Responsabilidades:
+ 
+- Receber requisições do aplicativo móvel
+- Encaminhar chamadas para o backend
+- Centralizar o acesso aos serviços internos
+- Aplicar políticas de segurança e controle de acesso
+Comunicação:
+ 
+| Origem | Destino | Protocolo |
+|---------|---------|------------|
+| Mobile App | API Gateway | HTTPS (TCP 443) |
+| API Gateway | Backend ASP.NET Core | TCP 8080 |
+ 
+---
+ 
+**Backend ASP.NET Core:**
+ 
+Representa o núcleo da aplicação, responsável pelas regras de negócio e gerenciamento das funcionalidades disponibilizadas ao usuário.
+ 
+Módulos Implantados:
+- **Autenticação:** Responsável pelo gerenciamento de login, registro e validação de credenciais.
+- **Usuários:** Responsável pelo gerenciamento dos dados dos usuários da plataforma.
+- **Espetáculos:** Responsável pela consulta, cadastro e gerenciamento dos eventos e espetáculos disponíveis.
+- **Interações:** Responsável pelo registro das ações realizadas pelos usuários, utilizadas posteriormente pelo sistema de recomendação.
+- **Geolocalização:** Responsável pelo tratamento de dados geográficos e busca de eventos com base na localização do usuário.
+Comunicação do Backend:
+ 
+| Destino | Protocolo |
+|----------|-----------|
+| PostgreSQL | TCP 5432 |
+| MongoDB | TCP 27017 |
+| ViaCEP | HTTPS (TCP 443) |
+ 
+---
+ 
+**Sistema de Recomendação:**
+ 
+Componente especializado na geração de recomendações personalizadas para os usuários.
+ 
+Artefato Implantado:
+ 
+| Artefato | Descrição |
+|-----------|------------|
+| Recommendation Engine (Inference Service) | Serviço responsável pela inferência e geração de recomendações personalizadas com base nas interações dos usuários |
+ 
+Responsabilidades:
+ 
+- Processar histórico de interações
+- Gerar recomendações personalizadas via inferência (Inference Service)
+- Disponibilizar recomendações para o backend
+Comunicação:
+ 
+| Origem | Destino | Protocolo |
+|--------|----------|-----------|
+| Sistema de Recomendação | PostgreSQL | TCP 5432 |
+| Sistema de Recomendação | MongoDB | TCP 27017 |
+ 
+---
+ 
+ 
+#### Infraestrutura de Dados
+ 
+Camada responsável pelo armazenamento persistente das informações do sistema.
+ 
+**PostgreSQL:**
+ 
+Banco de dados relacional utilizado pela aplicação.
+ 
+Funções:
+ 
+- Armazenamento de usuários
+- Armazenamento de eventos
+- Armazenamento de interações
+- Persistência das informações de autenticação
+- Base para geração de recomendações
+Porta Utilizada:
+ 
+| Serviço | Porta |
+|----------|--------|
+| PostgreSQL | TCP 5432 |
+ 
+---
+ 
+**MongoDB:**
+ 
+Banco de dados não relacional utilizado pela aplicação.
+ 
+Funções:
+ 
+- Armazenamento de dados não estruturados ou semiestruturados da plataforma
+Porta Utilizada:
+ 
+| Serviço | Porta |
+|----------|--------|
+| MongoDB | TCP 27017 |
+ 
+---
+
+#### Serviços Externos
+ 
+Serviços de terceiros consumidos pela plataforma.
+ 
+**ViaCEP:**
+ 
+Serviço utilizado para consulta de informações de endereço a partir do CEP informado pelo usuário.
+ 
+Comunicação:
+ 
+- HTTPS (TCP 443)
+
   <sub>Imagem 14 - Diagrama de Implantação UML</sub><br>
   <img src="../assets/Diagrama-de-implantacao.drawio.png" width="100%" alt="Diagrama de Implantação UML do Portal Aventura"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>

@@ -265,7 +265,7 @@ docker compose -f docker-compose-db.yml down -v
 
 ## 7. Dicionário de Dados
 
-Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventura Teatros, com base nos arquivos `01_create_database.sql` e `02_sprint4_improvements.sql`.
+Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventura Teatros, com base nos arquivos `01_create_database.sql` e `01b_sprint4_improvements.sql`.
 
 **Tipos personalizados (ENUMs):**
 - `tipo_interacao`: `'Clique'`, `'Acesso'`, `'TempoDeTela'`
@@ -429,7 +429,7 @@ Tabela que unifica wishlist e curtidas do usuário em espetáculos.
 
 ### 7.12 Objetos de Banco — Sprint 4
 
-Objetos criados em `02_sprint4_improvements.sql`.
+Objetos criados em `01b_sprint4_improvements.sql`.
 
 #### Índices
 
@@ -756,7 +756,7 @@ Os testes de carga realizados com `pgbench` forneceram evidências quantitativas
 
 ### 10.1 Contexto
 
-O schema definido na Sprint 3 (`01_create_database.sql`) foi auditado na Sprint 4 e identificou-se a necessidade de novos campos, correções de qualidade e objetos de banco para suportar integração com ViaCEP, conformidade com a LGPD e o motor de recomendação por ML. Todas as evoluções foram concentradas em `02_sprint4_improvements.sql` — um script idempotente e re-executável —, mantendo o script original sem modificações estruturais adicionais.
+O schema definido na Sprint 3 (`01_create_database.sql`) foi auditado na Sprint 4 e identificou-se a necessidade de novos campos, correções de qualidade e objetos de banco para suportar integração com ViaCEP, conformidade com a LGPD e o motor de recomendação por ML. Todas as evoluções foram concentradas em `01b_sprint4_improvements.sql` — um script idempotente e re-executável —, mantendo o script original sem modificações estruturais adicionais.
 
 ---
 
@@ -810,13 +810,13 @@ Como parte da Sprint 4, colunas de data/hora que usavam `TIMESTAMP` (sem fuso) f
 | data_expiracao | interacoes | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
 | data_atualizacao | preferencias | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
 | data_geracao | recomendacoes | TIMESTAMPTZ (corrigido em `01_create_database.sql`) |
-| data_consentimento | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
-| deleted_at | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
-| data_inicio | espetaculos | TIMESTAMPTZ (corrigido em `01_create_database.sql` e migrado em `02_sprint4_improvements.sql`) |
-| data_fim | espetaculos | TIMESTAMPTZ (corrigido em `01_create_database.sql` e migrado em `02_sprint4_improvements.sql`) |
-| anonimizado_em | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
-| visualizada_em | recomendacoes | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
-| data_atualizacao | usuarios | TIMESTAMPTZ (novo — adicionado em `02_sprint4_improvements.sql`) |
+| data_consentimento | usuarios | TIMESTAMPTZ (novo — adicionado em `01b_sprint4_improvements.sql`) |
+| deleted_at | usuarios | TIMESTAMPTZ (novo — adicionado em `01b_sprint4_improvements.sql`) |
+| data_inicio | espetaculos | TIMESTAMPTZ (corrigido em `01_create_database.sql` e migrado em `01b_sprint4_improvements.sql`) |
+| data_fim | espetaculos | TIMESTAMPTZ (corrigido em `01_create_database.sql` e migrado em `01b_sprint4_improvements.sql`) |
+| anonimizado_em | usuarios | TIMESTAMPTZ (novo — adicionado em `01b_sprint4_improvements.sql`) |
+| visualizada_em | recomendacoes | TIMESTAMPTZ (novo — adicionado em `01b_sprint4_improvements.sql`) |
+| data_atualizacao | usuarios | TIMESTAMPTZ (novo — adicionado em `01b_sprint4_improvements.sql`) |
 
 ---
 
@@ -888,7 +888,7 @@ Novos índices sem predecessor no Sprint 3:
 
 ### 10.7 Estado Sprint 3 → Sprint 4
 
-| Tabela | Sprint 3 (`01_create_database.sql`) | Sprint 4 (adições via `02_sprint4_improvements.sql`) |
+| Tabela | Sprint 3 (`01_create_database.sql`) | Sprint 4 (adições via `01b_sprint4_improvements.sql`) |
 |---|---|---|
 | usuarios | id, nome, email, senha_hash, idade, data_cadastro | + cep, logradouro, numero, complemento, bairro, cidade; + consentimento_aceito, data_consentimento, deleted_at, anonimizado, anonimizado_em; + ml_id; + data_atualizacao; + triggers `trg_bloquear_update_anonimizado`, `trg_usuarios_update`, `trg_sincronizar_data_consentimento` |
 | teatros | id, nome, endereco, cidade, horario_funcionamento | + índice `idx_teatros_cidade` |

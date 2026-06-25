@@ -4237,7 +4237,6 @@ Com base no IA4People, a plataforma apresenta boa aderência inicial aos princí
 
 ## 23. Desenvolvimento do Projeto — Sprint 5
 
-<<<<<<< HEAD
 ### 23.1 Integração no Backend com o MongoDB
 
 #### 23.1.1 Dependência e configuração da conexão com o Mongo
@@ -4400,9 +4399,6 @@ As variáveis são carregadas pelo `Program.cs` a partir de um arquivo `.env` na
 **Conclusão:** a integração foi implementada de forma aditiva (mantendo o fallback local existente) e com separação de camadas consistente com o restante do projeto (Domínio/Infraestrutura/Repositório/Serviço/Controller no backend; Service/Componente/Tela no frontend). Os principais riscos — vínculo por nome e escala do fallback de busca — já estão documentados em comentários no próprio código-fonte, o que indica que foram decisões conscientes da equipe, não descuidos.
 
 #### 23.6 Testes unitários do frontend (Sprint 5)
-=======
-### 23.1 Testes unitários do frontend (Sprint 5)
->>>>>>> 2452b2e9f1c23204efa12bfb24802bc72aa544e8
 
 Na Sprint 5, a suíte de testes unitários do frontend foi expandida para cobrir a totalidade das camadas de `services` e `viewmodels` da aplicação React Native, eliminando as exclusões de cobertura que existiam desde a Sprint 4 e fechando lacunas pontuais nos arquivos já testados anteriormente. A suíte continua localizada em `src/frontend/mobile-app-aventura/tests` e é executada com Jest.
 
@@ -4432,7 +4428,7 @@ npm test
 
 O threshold mínimo de cobertura configurado no `package.json` (`coverageThreshold.global`) aumentou para 90% para `statements` e `lines`, valor amplamente superado pelo resultado obtido.
 
-### 23.2 Testes unitários do Backend (Sprint 5)
+### 23.7 Testes unitários do Backend (Sprint 5)
 
 Na Sprint 5, a suíte de testes unitários do backend, localizada em `src/backend/BackEnd.Aventura.Tests`, foi revisada com foco na elevação da cobertura de linha para ≥ 90%, partindo da baseline de 85,62% e do gate de 70% herdados da Sprint 3. A revisão foi orientada pelo próprio relatório de cobertura (`coverlet`/`cobertura.xml`): a partir dele foram identificadas todas as classes e branches ainda sem cobertura, e novos testes foram escritos especificamente para fechar essas lacunas — constructors com argumentos nulos, validações de borda, caminhos de exceção e overloads pouco exercitados.
 

@@ -4136,6 +4136,24 @@ npm test -- --runTestsByPath tests/AppJourney.e2e.test.js
 
 
 
+
+
+
+#### 21.9.4 Critérios de sucesso
+
+
+| Critério | Resultado esperado |
+|---|---|
+| Isolamento | Cada cenário deve iniciar sem depender de estado deixado por testes anteriores |
+| Autenticação | Endpoints protegidos devem retornar `401` sem token e funcionar com JWT válido |
+| Persistência | Dados criados no fluxo devem ser refletidos nas consultas posteriores |
+| Contratos | DTOs retornados pelo backend devem ser consumidos corretamente pelo frontend |
+| Cenários negativos | Entradas inválidas devem retornar `400`, duplicidades `409`, recursos inexistentes `404` e sessão inválida `401` |
+| Recomendações | Recomendações persistidas devem respeitar ordenação por score, e o fallback por gêneros deve funcionar quando não houver recomendação salva |
+| Experiência mobile | Serviços do app devem lidar corretamente com sessão, cache, busca, recomendações, wishlist local e expiração de autenticação |
+
+
+
 ## 22. Análise de Impactos Éticos IA4People
 
 Esta seção analisa os impactos éticos do projeto a partir do framework IA4People, citado na literatura original como AI4People. O framework propõe que sistemas baseados em inteligência artificial sejam avaliados por cinco princípios: beneficência, não maleficência, autonomia, justiça e explicabilidade. No contexto da solução, essa análise é relevante porque a plataforma usa dados pessoais, preferências culturais, CEP, histórico de interação e recomendações automatizadas para influenciar a descoberta de espetáculos.

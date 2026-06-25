@@ -380,6 +380,39 @@ public class EvaluatorEvaluateWithPredictorTests
     }
 
     [Fact]
+    public void PerfectPredictor_YieldsNonNegativeRankingMetrics()
+    {
+        float? predict(int _, string item) => item == "ItemC" ? 5f : 1f;
+
+        var report = Evaluator.EvaluateWithPredictor(
+            predict, TrainRows(), TestByUser(), ItemCats, CategoryAffinity, topK: 2);
+
+        report.SvdRanking.PrecisionAtK.Should().BeGreaterThanOrEqualTo(0.0);
+        report.SvdRanking.RecallAtK.Should().BeGreaterThanOrEqualTo(0.0);
+        report.SvdRanking.CategoryPrecisionAtK.Should().BeGreaterThanOrEqualTo(0.0);
+        report.HybridRanking.PrecisionAtK.Should().BeGreaterThanOrEqualTo(0.0);
+        report.HybridRanking.RecallAtK.Should().BeGreaterThanOrEqualTo(0.0);
+        report.HybridRanking.CategoryPrecisionAtK.Should().BeGreaterThanOrEqualTo(0.0);
+    }
+
+    [Fact]
+    public void MaxRankingUsers_LimitsUsersEvaluatedInRanking()
+    {
+        float? predict(int _, string item) => item == "ItemC" ? 5f : 1f;
+        var twoUserTest = new Dictionary<int, List<CsvRatingRow>>
+        {
+            [1] = [Row(1, "ItemC", "Opera", 3f)],
+            [2] = [Row(2, "ItemA", "Teatro", 3f)],
+        };
+
+        var report = Evaluator.EvaluateWithPredictor(
+            predict, TrainRows(), twoUserTest, ItemCats, CategoryAffinity,
+            topK: 1, maxRankingUsers: 1);
+
+        report.UsersEvaluated.Should().Be(1);
+    }
+
+    [Fact]
     public void EmptyTestSet_YieldsUsersEvaluated0_AndZeroMetrics()
     {
         float? predict(int _, string __) => 3f;

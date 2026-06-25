@@ -10,10 +10,12 @@ namespace BackEnd.Aventura.Extensions
         public static IServiceCollection AddAventuraInfrastructure(this IServiceCollection services)
         {
             services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
+            services.AddSingleton<IMongoConnectionFactory, MongoConnectionFactory>();
             services.AddExceptionHandler<GlobalExceptionHandler>();
             services.AddProblemDetails();
 
             services.AddScoped<IEspetaculoRepository, EspetaculoRepository>();
+            services.AddScoped<IEspetaculoImagemRepository, EspetaculoImagemRepository>();
             services.AddScoped<ITeatroRepository, TeatroRepository>();
             services.AddScoped<IPreferenciasRepository, PreferenciasRepository>();
             services.AddScoped<IWishlistRepository, WishlistRepository>();
@@ -27,6 +29,7 @@ namespace BackEnd.Aventura.Extensions
         public static IServiceCollection AddAventuraApplication(this IServiceCollection services)
         {
             services.AddScoped<IEspetaculoService, EspetaculoService>();
+            services.AddScoped<IEspetaculoImagemService, EspetaculoImagemService>();
             services.AddScoped<ITeatroService, TeatroService>();
             services.AddScoped<IPreferenciasService, PreferenciasService>();
             services.AddScoped<IWishlistService, WishlistService>();

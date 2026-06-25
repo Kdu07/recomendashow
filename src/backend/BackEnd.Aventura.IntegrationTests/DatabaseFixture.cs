@@ -24,7 +24,7 @@ public class DatabaseFixture : IAsyncLifetime
         await _container.DisposeAsync();
     }
 
-    private async Task ApplyScriptAsync(string fileName)
+    public async Task ApplyScriptAsync(string fileName)
     {
         var path = Path.Combine(FindSqlDirectory(), fileName);
         var sql = await File.ReadAllTextAsync(path);

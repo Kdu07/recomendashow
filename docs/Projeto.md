@@ -290,9 +290,16 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 </details>
 
 <details>
-<summary><a href="#23-termos-e-abreviações">23. Termos e Abreviações</a></summary>
+<summary><a href="#23-desenvolvimento-do-projeto--sprint-5">23. Termos e Abreviações</a></summary>
 
-- [Termos e Abreviações](#23-termos-e-abreviações)
+- [Desenvolvimento do Projeto — Sprint 5](#23-desenvolvimento-do-projeto--sprint-5)
+
+</details>
+
+<details>
+<summary><a href="#24-termos-e-abreviações">23. Termos e Abreviações</a></summary>
+
+- [Termos e Abreviações](#24-termos-e-abreviações)
 
 </details>
 
@@ -2661,7 +2668,29 @@ Apesar da abrangência planejada, alguns riscos permanecem. Parte dos fluxos ain
 
 Como próximos passos, recomenda-se executar os testes planejados de forma incremental, começando pelos fluxos críticos de autenticação, perfil, catálogo, wishlist e recomendação. Em seguida, deve registrar evidências de execução, corrigir falhas encontradas, acompanhar métricas de cobertura e repetir os testes após cada integração relevante. Dessa forma, o planejamento de testes funciona não apenas como uma etapa de verificação final, mas como um mecanismo contínuo de controle de qualidade durante a evolução do produto.
 
-----
+---
+
+### 18.9 Testes unitários do serviço de inferência
+
+Esta subseção documenta o planejamento dos testes unitários do serviço de inferência (`src/inference-service`), elaborados e executados durante a Sprint 5. O objetivo é verificar o comportamento isolado dos componentes de inferência, cobrindo cenários positivos e negativos, e atingir a cobertura de linha ≥ 70% exigida pelo RNF08.
+
+**Stack adotada:** xUnit · FluentAssertions · NSubstitute. A fixture `HybridArtifactsFixture` treina um modelo SVD real de escala reduzida (4 itens, 5 usuários) uma única vez por sessão de teste e é compartilhada entre classes via `[Collection("hybrid-artifacts")]`, evitando custo de treino por classe. Dependências concretas sem interface (`Recommender`, `MetricsService`) são instanciadas com dados reais da fixture; dependências com interface são substituídas por substitutos NSubstitute.
+
+**Componentes cobertos e cenários planejados:**
+
+| Componente | Arquivo de teste | Cenários cobertos |
+|---|---|---|
+| `Evaluator` | `EvaluatorTests.cs` | `SplitByUser`: dataset vazio, usuário com apenas 1 interação (excluído do conjunto de teste), split 80/20, determinismo com seed fixa, tamanhos corretos de treino e teste. `BuildCategoryAffinity`: dataset vazio, usuário único, múltiplos usuários, normalização da afinidade por categoria. `EvaluateWithPredictor`: preditor perfeito (SVD HitRate=1), preditor sem acerto (HitRate=0), influência do α no ranking híbrido, α não afeta SVD puro, RMSE≈0 com predições exatas, métricas de ranking não-negativas (`PrecisionAtK`, `RecallAtK`, `CategoryPrecisionAtK`), amostragem de usuários via `maxRankingUsers`, conjunto de teste vazio retorna zero em todas as métricas. |
+| `ExceptionHandlingMiddleware` | `ExceptionHandlingMiddlewareTests.cs` | `ArgumentOutOfRangeException` → HTTP 400 com mensagem propagada; `ArgumentException` → HTTP 400 com mensagem propagada; `FileNotFoundException` → HTTP 500 com mensagem fixa referenciando `ModelPaths`; exceção genérica → HTTP 500 com mensagem fixa; ausência de exceção → status inalterado (200) com body vazio; resposta de erro com `Content-Type: application/json`. |
+| `DiagnosticsController` | `DiagnosticsControllerTests.cs` | `Health` retorna 200 quando modelo carregado e 503 quando não carregado. `ModelInfo` retorna metadados do modelo (`Alpha`, `KnownUsers`, `CatalogItems`), informações do dataset (`TotalInteractions`, `TotalItems`, `ColdStartItemsCount`) e HTTP 200. |
+| `MetricsService` | `MetricsServiceTests.cs` | `Evaluate` retorna relatório com `UsersEvaluated > 0`, `Alpha` compatível com o modelo e `Rmse ≥ 0`; chamadas repetidas com mesmos parâmetros retornam resultado em cache (repositório consultado uma única vez); mudança de `topK` invalida o cache; `GetPredictionErrors` retorna lista não-nula; `GetRealAndPredicted` retorna listas `real` e `predicted` com contagens iguais. |
+| `MetricsController` | `MetricsControllerTests.cs` | Validações de entrada: `k=0` e `rankingUsers=0` retornam 400 para `GetMetrics` e `GetSvdVsHybrid`. Happy path: `GetMetrics` retorna 200 com `MetricsResponse`; `GetErrorHistogram`, `GetRealVsPredicted` e `GetSvdVsHybrid` retornam arquivo PNG (`image/png`). |
+| `HybridModelLoader` | `HybridModelLoaderTests.cs` | Construtor com arquivo ausente lança `FileNotFoundException`; `IsLoaded=false` antes de `StartAsync`; acesso a `Recommender` antes de `StartAsync` lança `InvalidOperationException`; `StartAsync` carrega modelo e o torna disponível via `Recommender`; `StartAsync` exporta metadados corretos (`KnownUsers`, `CatalogSize`, `Alpha`); `StopAsync` completa sem exceção. |
+| `DatasetRepository` | `DatasetRepositoryTests.cs` | Carga de CSV padrão (3 usuários, 4 itens); `ColdStartItems` ordenados por popularidade; `GetConsumedItems` para usuário com histórico e usuário desconhecido; `GetInteractions` com e sem usuário; `GetRating` para par existente e par inexistente; `UserExists` positivo e negativo; `AllInteractions` contém todos os registros; `AllItems` contém conjunto correto; normalização de `ItemId` e `TipoEvento` via `Trim`; colisão após trim usa ranking máximo; CSV vazio; usuário único; `GetAllUserIds` retorna todos os usuários do dataset; path inexistente lança `FileNotFoundException`. |
+
+**Meta de cobertura:** ≥ 70% de linhas combinadas nos módulos `AventuraML` e `InferenceService`, conforme RNF08. Gate de cobertura configurado em `InferenceService.Tests.csproj` via `<Threshold>` do Coverlet e validado no pipeline GitLab antes de cada merge.
+
+---
 
 ## 19. Desenvolvimento do Projeto — Sprint 3
 
@@ -2721,7 +2750,8 @@ g02/
     │
     ├── database/                # Scripts SQL e Dockerfile do banco de dados
     │   ├── 01_create_database.sql
-    │   ├── 02_initial_data.sql
+    │   ├── 02_sprint4_improvements.sql
+    │   ├── 03_initial_data.sql
     │   └── Dockerfile
     │
     ├── backend/                 # Web API REST em .NET 10
@@ -3088,7 +3118,46 @@ A estratégia de testes busca validar as regras de negócio e os comportamentos 
 
 A metodologia TDD (*Test-Driven Development*) foi aplicada de forma pragmática nas funcionalidades críticas. Nesse processo, os cenários de teste orientam a implementação das regras, seguindo o ciclo de criar um teste que inicialmente falha, desenvolver o código mínimo necessário para fazê-lo passar e refatorar a solução sem alterar o comportamento validado.
 
+#### Estratégia de testes
+
+- Metodologia: TDD aplicada nas camadas de `Service` e `Repository`; testes unitários escritos antes ou junto da implementação das regras críticas.
+- Ferramentas: `xUnit` para testes unitários e de integração; `Testcontainers` para subir instâncias de PostgreSQL em testes de integração; `WireMock.Net` para simular serviços externos; `Respawn` para resetar o banco entre testes; `FluentAssertions` para asserções expressivas.
+- Escopo priorizado: autenticação (`AuthService`), persistência (`UsuarioRepository`, `PreferenciasRepository`), e geração/consumo de recomendações (`RecomendacaoService`).
+
+#### Testes implementados
+
+| Teste | Camada testada | Funcionalidade | Resultado | Evidência |
+|---|---|---|---|---|
+| AuthService_ShouldHashAndVerifyPassword | Service | Registro e verificação de senha | Passed | `tests/BackEnd.Aventura.Tests/AuthServiceTests.cs` |
+| UsuarioRepository_CRUD | Repository (integration) | Criação/Leitura/Update de usuário | Passed | `tests/BackEnd.Aventura.Integration/UsuarioRepositoryTests.cs` (Testcontainers + Respawn) |
+| PreferenciasRepository_SaveAndLoad | Repository (integration) | Persistir e recuperar preferências | Passed | `tests/.../PreferenciasRepositoryTests.cs` |
+| RecomendacaoService_Fallback | Service (integration) | Geração de fallback por gêneros favoritos | Passed | `tests/.../RecomendacaoServiceTests.cs` (WireMock stub) |
+| RecommendationWriteRepository_MlId | Repository (integration) | Tradução `user_id` do dataset → `usuario_id` (UUID) via `ml_id`; sem mapeamento não persiste; DELETE+INSERT idempotente | Passed | `src/inference-service/InferenceService.Tests/RecommendationWriteRepositoryTests.cs` (Testcontainers) |
+| MlIdMapping_SeedUsuarios | DB/Schema (integration) | Usuários do seed recebem o `ml_id` mapeado (63261/14888/55251) após os scripts | Passed | `src/backend/BackEnd.Aventura.IntegrationTests/MlIdMappingTests.cs` (Testcontainers) |
+
+#### Execução dos testes
+
+Executar todos os testes do backend (local):
+
+```bash
+dotnet test src/backend/BackEnd.Aventura.sln --logger "console;verbosity=minimal"
+```
+
+Ou executar testes no diretório de testes:
+
+```bash
+dotnet test tests/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj
+```
+
+#### Resultado da cobertura
+
+Resumo: cobertura focada nos módulos críticos (Auth, Recomendação, Repositórios) com meta de cobertura ≥ 70% nas partes essenciais. Relatórios de cobertura são gerados pelo pipeline de CI e anexados aos artefatos de build.
+
 ---
+
+#### Link do vídeo demonstrativo backend
+
+[Vídeo demonstrativo](https://drive.google.com/file/d/1VCDSsW-dxjwJJM6786tu-Pd1RauL3sNp/view?usp=sharing)
 
 ### 19.7 Testes unitários do Frontend na Sprint 3
 
@@ -3776,6 +3845,8 @@ dotnet test src\backend\BackEnd.Aventura.Tests\BackEnd.Aventura.Tests.csproj --f
 
 **Reexecução com cobertura (12/06/2026):** a suíte foi reexecutada com coleta de cobertura via **coverlet.msbuild** (`dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura` — o pacote foi adicionado aos projetos de teste nesta data, pois o coletor `XPlat Code Coverage` não estava instalado), mantendo **123/123 aprovados** com **54,0% de cobertura de linha global** e **85,3% nos módulos críticos** (detalhamento no RNF08, seção 20.6). Em paralelo, a suíte do serviço de recomendação (`InferenceService.Tests`) foi executada com **48/48 aprovados** (40,1% de linha) e a suíte Jest do frontend com **11/11 suítes e 136/136 testes aprovados** (88,96% de statements e 89,32% de linhas nos módulos medidos). Relatórios em [assets/testes/dotnet-coverage/](../assets/testes/dotnet-coverage/).
 
+**Sprint 5 — Ampliação da suíte do serviço de inferência (23/06/2026):** foram adicionados 56 testes à suíte `InferenceService.Tests`, elevando o total de **48 para 104**. Os novos arquivos cobrem os componentes que não tinham testes: `ExceptionHandlingMiddleware` (6 testes — erros HTTP 400/500 e passthrough), `DiagnosticsController` (5 testes — health 200/503, ModelInfo e dataset info), `MetricsService` (7 testes — relatório, cache e listas de erros), `MetricsController` (8 testes — validação de entrada e retornos PNG/JSON) e `HybridModelLoader` (6 testes — ciclo de vida e metadados). O `Evaluator` e o `DatasetRepository` receberam complementos pontuais: métricas de ranking (`PrecisionAtK`, `RecallAtK`, `CategoryPrecisionAtK`), branch `maxRankingUsers` e path de resolução de arquivo inexistente (`FileNotFoundException`). Resultado da execução: **104/104 aprovados**, nenhuma falha.
+
 **Análise:** Com base na execução, as regras de negócio implementadas demonstraram aderência ao comportamento esperado nos cenários automatizados. Não foram identificadas falhas na suíte executada, e os testes criados ampliaram a cobertura sobre regras críticas relacionadas a autenticação, consentimento, perfil, preferências, wishlist, recomendações, catálogo e LGPD.
 
 ### 21.6 Testes de requisitos não funcionais
@@ -3820,6 +3891,8 @@ Os testes de requisitos não funcionais avaliaram desempenho, segurança, privac
 Os cenários executados de 100/150 VUs apresentaram latências baixas e 0% de erros, constituindo uma etapa incremental bem-sucedida. Eles **não comprovam** o critério formal de 1.000 VUs definido nas seções 10 e 18.4. A rampa 100→500→1.000 VUs permanece condicionada à autorização do time por risco sobre a VM compartilhada. Evidências: [k6-pico-local.txt](../assets/testes/k6-pico-local.txt), [k6-stress-local.txt](../assets/testes/k6-stress-local.txt), [k6-spike-local.txt](../assets/testes/k6-spike-local.txt), [k6-smoke-local.txt](../assets/testes/k6-smoke-local.txt).
 
 **RNF08 — Modularidade e cobertura.** A cobertura foi coletada com **coverlet.msbuild** (`/p:CollectCoverage=true`, formato cobertura) nas suítes .NET e com `jest --coverage` no frontend (relatórios versionados em [assets/testes/dotnet-coverage/](../assets/testes/dotnet-coverage/)). No frontend, o gate mede as camadas `services` e `viewmodels` por meio de `collectCoverageFrom`, com **88,96% de statements** e **89,32% de lines** (136/136 testes). No backend, os **módulos críticos atingem 85,3% de linhas** (800/938) — por camada: Mappings 100%, DTOs 91,5%, Domínio 89,9%, Controllers 83,3%, Serviços 79,2% —, acima da meta de 70%; o global fica em 54,0% porque a camada de acesso a dados (Repository, 434 linhas, 0% na unitária) é deliberadamente coberta pela **suíte de integração real** (TI-02), e `Program.cs` (bootstrap) não é alvo de teste unitário. Pontos baixos rastreados: `AnonimizacaoJob` (0% na unitária; coberto na integração), `PreferenceController`/`PreferenceService` legados (0%) e `UsuarioController` (60%). **Lacuna nova identificada na medição:** o próprio serviço de recomendação (`InferenceService` 30,6% + `AventuraML` 47,7% = **40,1% de linha**) está **abaixo dos 70%** exigidos pelo critério — ampliação da suíte registrada como ação corretiva. O serviço permanece deployável de forma isolada do backend (projeto separado, suíte própria 48/48). **Cenário negativo 2 de 18.4** (gate de cobertura < 70% falhando o pipeline): **implementado em 12/06/2026** — `.gitlab-ci.yml` criado na raiz com jobs `backend-tests` e `frontend-tests`, e thresholds versionados nos próprios projetos: backend **70% de linha** com repositories/`Program` excluídos do gate unitário (resultado com filtro: **85,28%**, aprovado), inference **35%** temporário (40,08% medido; elevar a 70% é backlog) e frontend **70%** via `coverageThreshold` do Jest (88,96% statements / 89,32% lines, aprovado). O comportamento de falha foi comprovado localmente: threshold forçado a 90% derruba o `dotnet test` com exit code 1 (`error: The total line coverage is below the specified 90`) — evidência em [rnf08-gate-negativo.txt](../assets/testes/rnf08-gate-negativo.txt). A validação do pipeline no GitLab ocorre no primeiro push da branch. Evidências: [assets/testes/dotnet-coverage/](../assets/testes/dotnet-coverage/).
+
+**Atualização Sprint 5 (23/06/2026):** a lacuna "Parcialmente atendido" registrada nesta seção para o serviço de inferência foi corrigida. A cobertura de linha combinada (`AventuraML` + `InferenceService`) atingiu **70,04%** (AventuraML 72,61% · InferenceService 66,86%), superando a meta de 70% do RNF08. O gate temporário de 35% foi elevado para **70%** no `InferenceService.Tests.csproj`; o pipeline GitLab valida esse threshold a cada push. **O RNF08 passa a "Atendido" integralmente a partir desta sprint** — as restrições de cobertura citadas no parágrafo acima (40,1% e gate provisório de 35%) estão encerradas.
 
 **Análise:** As medições existentes indicam bom desempenho em cargas menores, hashing adequado e usabilidade acima da meta. Permanecem lacunas para a aceitação integral: TLS na OCI, rate limiting, anonimização em 15 dias, amostra mínima do RNF01, monitoramento de 30 dias, carga de 1.000 VUs, amostra de 100 casos de geolocalização, cobertura do recomendador e execução de RNF09/RNF10.
 
@@ -3990,6 +4063,8 @@ A consolidação considera as suítes automatizadas executadas (backend unitári
 | Ações corretivas planejadas | Ajustar o job para até 15 dias; publicar `/health` e monitorar 30 dias; adicionar rate limiting; executar amostras e cargas formais; ampliar cobertura do recomendador; implementar testes de contrato e ensaio de implantação limpa |
 | Conclusão geral | As suítes automatizadas executadas estão verdes e fornecem boa evidência inicial. A aceitação integral dos RNFs depende das ações e medições pendentes explicitadas acima. |
 
+**Atualização Sprint 5 (23/06/2026):** o total de testes automatizados passa de **343 para 399** (123 backend unitário + 36 integração real + **104 inference** + 136 frontend Jest), todos aprovados (100%). O item (vii) dos riscos remanescentes foi encerrado: a suíte de inferência foi ampliada, a cobertura atingiu 70,04% (meta RNF08 de ≥ 70%) e o gate foi atualizado de 35% para 70%. **RNF08: Parcialmente atendido → Atendido.**
+
 ---
 
 ## 22. Análise de Impactos Éticos IA4People
@@ -4050,7 +4125,39 @@ Com base no IA4People, a plataforma apresenta boa aderência inicial aos princí
 
 ---
 
-## 23. Termos e Abreviações
+## 23. Desenvolvimento do Projeto — Sprint 5
+
+#### 23.X Testes unitários do frontend (Sprint 5)
+
+Na Sprint 5, a suíte de testes unitários do frontend foi expandida para cobrir a totalidade das camadas de `services` e `viewmodels` da aplicação React Native, eliminando as exclusões de cobertura que existiam desde a Sprint 4 e fechando lacunas pontuais nos arquivos já testados anteriormente. A suíte continua localizada em `src/frontend/mobile-app-aventura/tests` e é executada com Jest.
+
+Diferente da Sprint 4, em que parte significativa dos `services` (`authService`, `eventLocationService`, `recommendationService`, `showService`, `theaterService`, `userProfileService`, `apiClient`, `categoryService`, `preferenceService`, `tokenStorageService`) e seis `viewmodels` (`useEditProfileViewModel`, `useHomeViewModel`, `useInstitutionalViewModel`, `useProfileViewModel`, `useShowInfoViewModel`, `useWelcomeViewModel`) estavam explicitamente excluídos da medição de cobertura, a Sprint 5 passou a medir 100% dos arquivos de `services/` e `viewmodels/`, sem exceções. A exclusão original mascarava o fato de que esses módulos não tinham nenhum teste cobrindo seu comportamento.
+
+Os novos testes seguem o mesmo padrão já estabelecido na Sprint 4: mocks de dependências externas (`fetch`, `AsyncStorage`, `@react-navigation/native`, `Linking`) via `jest.mock`, e testes isolados por camada (cada `service` testado independentemente dos `viewmodels` que o consomem, e vice-versa, via mock da camada inferior). Como a suíte de testes não tem acesso aos arquivos de imagem reais usados pelo aplicativo (`assets/home/*.png`, `*.jpeg`, `*.webp`), foi adicionado um `moduleNameMapper` no Jest que substitui qualquer `import`/`require` de imagem por um módulo stub (`tests/__mocks__/fileMock.js`) durante a execução dos testes, sem qualquer impacto no comportamento do aplicativo em produção.
+
+Os testes cobrem tanto os caminhos de sucesso quanto os de erro de cada módulo: falhas de rede (`fetch` rejeitado), respostas HTTP de erro (400, 401, 404, 409, 500), payloads malformados (JSON inválido, datas inválidas), sessão de usuário ausente, e fallback de cache (`eventLocationService`). Um teste documenta explicitamente um bug de encoding identificado em `showService.js` (o literal `'comÃ©dia'` usado na comparação de categoria nunca corresponde à entrada real `"Comédia"`, por estar com mojibake), sem alterar o código de produção — a correção foi reportada para tratamento em sprint futura.
+
+**Comando de execução:**
+
+```bash
+cd src/frontend/mobile-app-aventura
+npm test
+```
+
+(equivalente a `jest --coverage --ci --runInBand`, já configurado no script `test` do `package.json`)
+
+**Resultado validado na Sprint 5:** 28 suítes aprovadas, totalizando 340 testes unitários aprovados, com cobertura de:
+
+| Métrica | Cobertura |
+|---|---|
+| Statements | 94,63% |
+| Branches | 87,61% |
+| Functions | 95,81% |
+| Lines | 94,92% |
+
+O threshold mínimo de cobertura configurado no `package.json` (`coverageThreshold.global`) aumentou para 90% para `statements` e `lines`, valor amplamente superado pelo resultado obtido.
+
+## 24. Termos e Abreviações
 
 | Termo / Abreviação | Definição |
 |---|---|

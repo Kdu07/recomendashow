@@ -1004,7 +1004,7 @@ Este modelo garante **clareza visual**, boa escalabilidade para consultas de rec
 ### 12.4 Diagrama Conceitual
 
 <div align="center">
-<sub>Imagem 09 - Diagrama conceitual</sub><br>
+<sub>Imagem 10 - Diagrama Conceitual</sub><br>
   <img src="../assets/diagrama-logico.png" width="100%" alt="Diagrama conceitual do banco"><br>
   <sup>Source: Material produced by the authors, 2026.</sup>
 </div>
@@ -1212,7 +1212,7 @@ A separação das entidades reduz redundâncias, melhora a escalabilidade do sis
 O diagrama de classes representa o modelo de domínio de um sistema de gerenciamento de teatro, espetáculos e recomendações personalizadas. O sistema registra interações, além de permitir que usuários descubram espetáculos, gerenciem listas de desejos e recebam recomendações baseadas em seu comportamento e preferências.
 
 <div align="center">
-<sub>Imagem 09 - Diagrama de Classes UML</sub><br>
+<sub>Imagem 11 - Diagrama de Classes UML</sub><br>
   <img src="../assets/diagrama-classes-mod6.drawio.png" width="100%" alt="Diagrama de Classes UML"><br>
   <sup>Source: Material produced by the authors, 2026.</sup>
 </div>
@@ -1400,7 +1400,7 @@ Enumeração que define os tipos possíveis de interação de um usuário com um
 O diagrama de componentes abaixo representa a estrutura da aplicação seguindo o padrão arquitetural MVVM no cliente (React Native) e SOA no servidor (ASP.NET Core), com dois mecanismos de persistência: um banco de dados relacional PostgreSQL para dados estruturados e transacionais e um banco de dados MongoDB para dados não relacionais e eventos de comportamento.
 
 <div align="center">
-  <sub>Imagem 10 - Diagrama de Componentes UML</sub><br>
+  <sub>Imagem 12 - Diagrama de Componentes UML</sub><br>
   <img src="../assets/diagrama-de-componentes.drawio.png" width="100%" alt="Diagrama de Componentes UML"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
@@ -1596,10 +1596,11 @@ O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visual
 O diagrama de implantação abaixo apresenta a arquitetura física do Portal Aventura, destacando os ambientes de execução, os componentes implantados e suas comunicações. A solução é composta pelo aplicativo móvel, API Gateway, Backend ASP.NET Core, Training Job, Sistema de Recomendação, banco de dados PostgreSQL, banco de dados MongoDB e serviços externos. As conexões entre os componentes utilizam protocolos como HTTPS e TCP, garantindo a comunicação entre os serviços da plataforma.
  
 <div align="center">
-  <sub>Imagem 10 - Diagrama de Implantação UML</sub><br>
+  <sub>Imagem 13 - Diagrama de Implantação UML</sub><br>
   <img src="../assets/Diagrama-de-implantacao.drawio.png" width="100%" alt="Diagrama de Implantação UML"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
+
 ### Ambientes
  
 #### Aplicação Mobile
@@ -1690,20 +1691,19 @@ Artefato Implantado:
  
 | Artefato | Descrição |
 |-----------|------------|
-| Recommendation Engine | Motor responsável pela geração de recomendações com base nas interações dos usuários |
+| Recommendation Engine (Inference Service) | Serviço responsável pela inferência e geração de recomendações personalizadas com base nas interações dos usuários |
  
 Responsabilidades:
  
 - Processar histórico de interações
-- Gerar recomendações personalizadas
+- Gerar recomendações personalizadas via inferência (Inference Service)
 - Disponibilizar recomendações para o backend
-- Consumir modelos treinados pelo Training Job
 Comunicação:
  
 | Origem | Destino | Protocolo |
 |--------|----------|-----------|
-
 | Sistema de Recomendação | PostgreSQL | TCP 5432 |
+| Sistema de Recomendação | MongoDB | TCP 27017 |
  
 ---
  

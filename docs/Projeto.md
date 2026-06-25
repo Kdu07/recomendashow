@@ -171,7 +171,7 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 </details>
 
 <details>
-<summary><a href="#14-diagrama-de-componentes">14. Diagrama de Componentes</a></summary>
+<summary><a href="#14-Diagrama-de-componentes">14. Diagrama de Componentes</a></summary>
 
 - [Packages](#packages)
 - [Componentes](#componentes)
@@ -275,7 +275,8 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 - [21.6 Testes de requisitos não funcionais](#216-testes-de-requisitos-não-funcionais)
 - [21.7 Testes de usabilidade](#217-testes-de-usabilidade)
 - [21.8 Testes de APIs externas](#218-testes-de-apis-externas)
-- [21.9 Análise consolidada dos resultados](#219-análise-consolidada-dos-resultados)
+- [21.9 Testes End-to-End (E2E)](#219-testes-end-to-end-e2e)
+- [21.10 Análise consolidada dos resultados](#2110-análise-consolidada-dos-resultados)
 
 </details>
 
@@ -1193,7 +1194,16 @@ O modelo conceitual de dados representa a estruturação dos dados seguindo as r
 
 ### 12.4.1 Dicionário de Dados e Mapeamento
 
-A conversão do modelo lógico para o modelo conceitual foi realizada mapeando cada entidade conceitual para uma tabela relacional e transformando relacionamentos Muitos-para-Muitos (N:N) em tabelas associativas.
+A conversão do modelo lógico para o modelo relacional foi realizada mapeando cada entidade para uma tabela e transformando relacionamentos Muitos-para-Muitos (N:N) em tabelas associativas. O banco de dados utiliza **PostgreSQL** com chaves primárias do tipo **UUID** (`gen_random_uuid()`).
+
+---
+
+### Tipos Enumerados (ENUM)
+
+| Tipo | Valores | Uso |
+| :--- | :--- | :--- |
+| `tipo_interacao` | `'Clique'`, `'Acesso'`, `'TempoDeTela'` | Campo `tipo` em `interacoes` |
+| `tipo_lista` | `'curtida'`, `'wishlist'` | Campo `tipo` em `wishlist_curtidas` |
 
 ---
 
@@ -1201,126 +1211,178 @@ A conversão do modelo lógico para o modelo conceitual foi realizada mapeando c
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **USUARIOS** | `Id` | INT | PK, AI | Identificador único do usuário. |
-| | `Nome` | VARCHAR(100) | NN | Nome completo do usuário. |
-| | `Email` | VARCHAR(100) | UNIQUE, NN | E-mail utilizado para autenticação. |
-| | `Senha` | VARCHAR(255) | NN | Hash da senha de acesso. |
-| | `Idade` | INT | - | Idade do usuário. |
+| **usuarios** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único do usuário. |
+| | `nome` | VARCHAR(100) | NN | Nome completo do usuário. |
+| | `email` | VARCHAR(255) | UNIQUE, NN | E-mail utilizado para autenticação. |
+| | `senha_hash` | TEXT | NN | Hash da senha de acesso. |
+| | `idade` | INT | CHECK(idade >= 13) | Idade do usuário (mínimo 13 anos). |
+| | `data_nascimento` | DATE | - | Data de nascimento do usuário. |
+| | `data_cadastro` | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | Data e hora do cadastro. |
+| | `data_atualizacao` | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | Data da última atualização do perfil. |
+| | `cep` | VARCHAR(9) | - | CEP do endereço do usuário. |
+| | `logradouro` | VARCHAR(255) | - | Logradouro (preenchido via ViaCEP). |
+| | `numero` | VARCHAR(10) | - | Número do endereço. |
+| | `complemento` | VARCHAR(255) | - | Complemento do endereço. |
+| | `bairro` | VARCHAR(100) | - | Bairro do endereço. |
+| | `cidade` | VARCHAR(100) | - | Cidade do usuário. |
+| | `consentimento_aceito` | BOOLEAN | DEFAULT FALSE | Registro de aceite dos termos (LGPD). |
+| | `data_consentimento` | TIMESTAMPTZ | - | Data/hora do aceite do consentimento. |
+| | `deleted_at` | TIMESTAMPTZ | - | Soft-delete: data de exclusão lógica (LGPD). |
+| | `anonimizado` | BOOLEAN | DEFAULT FALSE | Indica se os dados foram anonimizados (LGPD). |
+| | `anonimizado_em` | TIMESTAMPTZ | - | Data/hora da anonimização dos dados. |
+| | `ml_id` | SERIAL | UNIQUE | Identificador sequencial para integração com o modelo de ML. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **GENEROS** | `id` | INT | PK, AI | Identificador único do gênero. |
-| | `Nome` | VARCHAR(50) | NN | Nome do gênero artístico. |
+| **generos** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único do gênero. |
+| | `nome` | VARCHAR(50) | UNIQUE, NN | Nome do gênero artístico. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **TEATROS** | `id` | INT | PK, AI | Identificador único do teatro. |
-| | `Nome` | VARCHAR(100) | NN | Nome do teatro ou espaço cultural. |
-| | `Cidade` | VARCHAR(100) | NN | Cidade onde o teatro está localizado. |
-| | `Estado` | VARCHAR(50) | NN | Estado onde o teatro está localizado. |
-| | `Rua` | VARCHAR(150) | NN | Nome da rua do teatro. |
-| | `Numero` | VARCHAR(20) | NN | Número do endereço do teatro. |
-| | `Horario_func` | VARCHAR(100) | - | Horário de funcionamento do teatro. |
-| | `Descricao` | TEXT | - | Descrição geral do teatro. |
-| | `Imagem` | VARCHAR(255) | - | URL ou caminho da imagem do teatro. |
+| **teatros** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único do teatro. |
+| | `nome` | VARCHAR(150) | UNIQUE, NN | Nome do teatro ou espaço cultural. |
+| | `endereco` | VARCHAR(255) | - | Endereço completo do teatro. |
+| | `cidade` | VARCHAR(100) | - | Cidade onde o teatro está localizado. |
+| | `horario_funcionamento` | VARCHAR(100) | - | Horário de funcionamento do teatro. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **ESPETACULOS** | `id` | INT | PK, AI | Identificador único do espetáculo. |
-| | `Nome` | VARCHAR(150) | NN | Nome do espetáculo. |
-| | `link_ingresso` | VARCHAR(255) | - | Link para compra de ingressos. |
-| | `Descricao` | TEXT | - | Descrição detalhada do espetáculo. |
-| | `Imagem` | VARCHAR(255) | - | URL ou caminho da imagem do espetáculo. |
+| **espetaculos** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único do espetáculo. |
+| | `nome` | VARCHAR(150) | UNIQUE, NN | Nome do espetáculo. |
+| | `tipo_evento` | VARCHAR(80) | - | Tipo do evento (ex: peça, musical, ópera). |
+| | `descricao` | TEXT | - | Descrição detalhada do espetáculo. |
+| | `url_bilheteria` | TEXT | - | URL para compra de ingressos. |
+| | `data_inicio` | TIMESTAMPTZ | NN | Data e hora de início das apresentações. |
+| | `data_fim` | TIMESTAMPTZ | NN | Data e hora de encerramento. CHECK(data_fim > data_inicio). |
+| | `valor_ingresso` | DECIMAL(10,2) | CHECK(valor_ingresso >= 0) | Valor do ingresso em reais. |
 
 ---
 
-### B. Tabelas Associativas e Operacionais
+### B. Tabelas de Preferências e Recomendações
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **ESP_GEN** | `id_esp` | INT | FK, PK(1/2) | Espetáculo relacionado ao gênero. |
-| | `id_gen` | INT | FK, PK(2/2) | Gênero associado ao espetáculo. |
-
----
-
-| Tabela | Coluna | Tipo | Restrição | Descrição |
-| :--- | :--- | :--- | :--- | :--- |
-| **GEN_FAV** | `id_usu` | INT | FK, PK(1/2) | Usuário que favoritou o gênero. |
-| | `id_gen` | INT | FK, PK(2/2) | Gênero marcado como preferência pelo usuário. |
-
----
-
-| Tabela | Coluna | Tipo | Restrição | Descrição |
-| :--- | :--- | :--- | :--- | :--- |
-| **TEAT_ESPET** | `id_teat` | INT | FK, PK(1/2) | Teatro onde o espetáculo ocorre. |
-| | `id_espet` | INT | FK, PK(2/2) | Espetáculo vinculado ao teatro. |
+| **preferencias** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único do registro. |
+| | `usuario_id` | UUID | FK → usuarios.id, UNIQUE, ON DELETE CASCADE | Usuário dono das preferências (relação 1:1). |
+| | `cidade` | VARCHAR(100) | - | Cidade preferida pelo usuário. |
+| | `tags` | TEXT[] | - | Array de tags de interesse do usuário. |
+| | `faixa_preco_min` | DECIMAL(10,2) | - | Preço mínimo de interesse. |
+| | `faixa_preco_max` | DECIMAL(10,2) | - | Preço máximo de interesse. |
+| | `receber_notificacoes` | BOOLEAN | DEFAULT TRUE | Opt-in para notificações. |
+| | `data_atualizacao` | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | Última atualização (gerenciada por trigger). |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **CURT_WISH** | `id_usu` | INT | FK, PK(1/2) | Usuário que realizou a interação. |
-| | `id_esp` | INT | FK, PK(2/2) | Espetáculo alvo da interação. |
-| | `tipo` | ENUM('curtida', 'wishlist') | NN | Tipo de interação realizada pelo usuário. |
+| **recomendacoes** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único da recomendação. |
+| | `usuario_id` | UUID | FK → usuarios.id, NN, ON DELETE CASCADE | Usuário que recebeu a recomendação. |
+| | `espetaculo_id` | UUID | FK → espetaculos.id, NN, ON DELETE CASCADE | Espetáculo recomendado. |
+| | `score` | DECIMAL(4,2) | CHECK(score >= 0 AND score <= 1) | Pontuação de relevância (0 a 1). |
+| | `motivo` | TEXT | - | Justificativa textual da recomendação. |
+| | `data_geracao` | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | Data/hora de geração da recomendação. |
+| | `visualizada_em` | TIMESTAMPTZ | - | Data/hora em que o usuário visualizou. |
+| | - | - | UNIQUE(usuario_id, espetaculo_id) | Evita recomendações duplicadas por usuário. |
+
+---
+
+### C. Tabelas Associativas e Operacionais
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **espetaculo_genero** | `espetaculo_id` | UUID | FK → espetaculos.id, PK(1/2), ON DELETE CASCADE | Espetáculo associado ao gênero. |
+| | `genero_id` | UUID | FK → generos.id, PK(2/2), ON DELETE CASCADE | Gênero associado ao espetáculo. |
 
 ---
 
 | Tabela | Coluna | Tipo | Restrição | Descrição |
 | :--- | :--- | :--- | :--- | :--- |
-| **INTERAÇÕES_USU** | `id` | INT | PK, AI | Identificador único do evento registrado. |
-| | `id_usu` | INT | FK, NN | Usuário que realizou a interação. |
-| | `id_esp` | INT | FK, NN | Espetáculo relacionado à interação. |
-| | `tipo` | VARCHAR(50) | NN | Tipo de evento/interação realizada. |
-| | `temp_pagi` | INT | - | Tempo de permanência na página (segundos). |
+| **usuario_genero_favorito** | `usuario_id` | UUID | FK → usuarios.id, PK(1/2), ON DELETE CASCADE | Usuário que favoritou o gênero. |
+| | `genero_id` | UUID | FK → generos.id, PK(2/2), ON DELETE CASCADE | Gênero marcado como preferência. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **teatro_espetaculo** | `teatro_id` | UUID | FK → teatros.id, PK(1/2), ON DELETE RESTRICT | Teatro onde o espetáculo ocorre. |
+| | `espetaculo_id` | UUID | FK → espetaculos.id, PK(2/2), ON DELETE CASCADE | Espetáculo vinculado ao teatro. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **wishlist_curtidas** | `usuario_id` | UUID | FK → usuarios.id, PK(1/3), ON DELETE CASCADE | Usuário que realizou a interação. |
+| | `espetaculo_id` | UUID | FK → espetaculos.id, PK(2/3), ON DELETE CASCADE | Espetáculo alvo da interação. |
+| | `tipo` | tipo_lista | PK(3/3), NN | Tipo de interação: `'curtida'` ou `'wishlist'`. |
+| | `adicionado_em` | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | Data/hora em que o item foi adicionado. |
+
+---
+
+| Tabela | Coluna | Tipo | Restrição | Descrição |
+| :--- | :--- | :--- | :--- | :--- |
+| **interacoes** | `id` | UUID | PK, DEFAULT gen_random_uuid() | Identificador único da interação. |
+| | `usuario_id` | UUID | FK → usuarios.id, NN, ON DELETE CASCADE | Usuário que realizou a interação. |
+| | `espetaculo_id` | UUID | FK → espetaculos.id, NN, ON DELETE CASCADE | Espetáculo relacionado à interação. |
+| | `tipo` | tipo_interacao | NN | Tipo: `'Clique'`, `'Acesso'` ou `'TempoDeTela'`. |
+| | `pontuacao` | DECIMAL(4,2) | CHECK(pontuacao >= 0 AND pontuacao <= 10) | Pontuação atribuída à interação. |
+| | `data_registro` | TIMESTAMPTZ | DEFAULT CURRENT_TIMESTAMP | Data/hora do registro da interação. |
+| | `data_expiracao` | TIMESTAMPTZ | CHECK(data_expiracao > data_registro) | Data/hora de expiração do registro. |
 
 ---
 
 ### 12.4.2 Definição de Chaves e Integridade Referencial
 
 ### Chaves Primárias (PK)
-As chaves primárias foram definidas para garantir a unicidade de cada registro. Nas tabelas associativas (`ESP_GEN`, `GEN_FAV`, `TEAT_ESPET`, `CURT_WISH`), utilizam-se chaves compostas pelos IDs das entidades relacionadas para evitar duplicidade de associações.
+Todas as tabelas utilizam **UUID** gerado automaticamente (`gen_random_uuid()`) como chave primária, garantindo unicidade global sem dependência de sequências numéricas. Nas tabelas associativas (`espetaculo_genero`, `usuario_genero_favorito`, `teatro_espetaculo`), utilizam-se chaves compostas pelos UUIDs das entidades relacionadas para evitar duplicidade de associações. A tabela `wishlist_curtidas` possui chave composta tripla `(usuario_id, espetaculo_id, tipo)`, permitindo que o mesmo usuário tenha um espetáculo tanto em curtidas quanto em wishlist.
 
 ### Chaves Estrangeiras (FK)
-As chaves estrangeiras garantem a integridade referencial, assegurando que as associações entre usuários, espetáculos, teatros e gêneros apontem apenas para registros existentes.
+As chaves estrangeiras garantem a integridade referencial. A política `ON DELETE CASCADE` é aplicada em entidades dependentes do usuário (interações, preferências, recomendações). A relação `teatro_espetaculo` usa `ON DELETE RESTRICT` para proteger teatros de exclusão acidental enquanto possuem espetáculos vinculados.
 
 ### Relacionamentos implementados
-- **Usuários e Interações**: Um usuário pode gerar múltiplos registros de interação e eventos de navegação (`1:N`).
-- **Gêneros Favoritos**: Relação `N:N` que permite ao usuário filtrar sua experiência com base em múltiplos interesses.
-- **Espetáculos e Teatros**: Relação `N:N` via `TEAT_ESPET`, permitindo que uma produção ocorra em diferentes locais e que um teatro receba diversos eventos.
-- **Categorização Multifacetada**: Através da `ESP_GEN`, um espetáculo pode ser associado a diversos gêneros simultaneamente.
+- **Usuários e Interações**: Um usuário pode gerar múltiplos registros de interação (`1:N` via `interacoes`).
+- **Usuários e Preferências**: Relação `1:1` — cada usuário possui exatamente um registro de preferências (`preferencias`).
+- **Usuários e Recomendações**: Um usuário pode receber múltiplas recomendações (`1:N` via `recomendacoes`), com unicidade por par `(usuario_id, espetaculo_id)`.
+- **Gêneros Favoritos**: Relação `N:N` via `usuario_genero_favorito`, permitindo múltiplos interesses por usuário.
+- **Espetáculos e Teatros**: Relação `N:N` via `teatro_espetaculo`, permitindo que uma produção ocorra em diferentes locais e que um teatro receba diversos eventos.
+- **Categorização Multifacetada**: Via `espetaculo_genero`, um espetáculo pode ser associado a diversos gêneros simultaneamente.
 
 ---
 
 ### 12.4.3 Regras de Normalização Aplicadas
 
-O modelo conceitual segue os princípios da Terceira Forma Normal (3FN).
+O modelo segue os princípios da Terceira Forma Normal (3FN).
 
 ### Primeira Forma Normal (1FN)
-Todos os atributos possuem valores atômicos. Colunas como `tipo` em `CURT_WISH` utilizam ENUM para padronização, evitando dados multivalorados.
+Todos os atributos possuem valores atômicos. Os tipos ENUM (`tipo_interacao`, `tipo_lista`) garantem padronização dos valores permitidos. A exceção intencional é o campo `tags` em `preferencias` (tipo `TEXT[]`), que utiliza array nativo do PostgreSQL para representar múltiplos interesses sem criar tabela auxiliar.
 
 ### Segunda Forma Normal (2FN)
-Não existem dependências parciais. Em tabelas com chaves compostas, os atributos dependem da junção completa das chaves estrangeiras.
+Não existem dependências parciais. Em tabelas com chaves compostas, todos os atributos não-chave dependem da junção completa das chaves estrangeiras que formam a PK.
 
 ### Terceira Forma Normal (3FN)
-Não há dependências transitivas. Atributos descritivos (como os detalhes de endereço em `TEATROS`) dependem exclusivamente da PK daquela tabela.
+Não há dependências transitivas. Atributos descritivos de cada entidade dependem exclusivamente de sua própria PK. Os dados de endereço do usuário foram mantidos em `usuarios` pois caracterizam diretamente aquele registro.
 
 ---
 
 ### 12.4.4 Justificativa e Rastreabilidade
 
-O modelo conceitual foi estruturado para manter fidelidade ao modelo lógico, garantindo consistência entre as regras de negócio e a implementação relacional.
+O modelo foi estruturado para manter fidelidade ao modelo lógico, garantindo consistência entre as regras de negócio e a implementação relacional no PostgreSQL.
 
-As tabelas associativas permitem representar corretamente relacionamentos Muitos-para-Muitos, como:
+As tabelas associativas representam corretamente relacionamentos Muitos-para-Muitos:
 
-- preferências de gêneros dos usuários;
-- categorização de espetáculos;
-- interações entre usuários e espetáculos.
+- preferências de gêneros dos usuários (`usuario_genero_favorito`);
+- categorização de espetáculos por gênero (`espetaculo_genero`);
+- programação de teatros (`teatro_espetaculo`);
+- interações e listas dos usuários (`interacoes`, `wishlist_curtidas`).
+
+As tabelas `preferencias` e `recomendacoes` sustentam o motor de recomendação personalizada: `preferencias` armazena o perfil de interesse do usuário (cidade, faixa de preço, tags) e `recomendacoes` persiste os resultados gerados pelo modelo de ML, com score de relevância e rastreabilidade temporal.
+
+A conformidade com a LGPD é garantida pelos campos `consentimento_aceito`, `deleted_at`, `anonimizado` e `anonimizado_em` em `usuarios`, além da stored procedure `sp_anonimizar_usuario` e de triggers que automatizam o controle de consentimento e protegem dados anonimizados contra alteração.
 
 A separação das entidades reduz redundâncias, melhora a escalabilidade do sistema e facilita futuras manutenções e expansões do banco de dados.
 
@@ -1514,7 +1576,7 @@ Enumeração que define os tipos possíveis de interação de um usuário com um
 
 ## 14. Diagrama de Componentes
 
-O diagrama de componentes abaixo representa a estrutura da aplicação seguindo o padrão arquitetural MVVM no cliente (React Native) e SOA no servidor (ASP.NET Core), com dois mecanismos de persistência: um banco de dados relacional PostgreSQL para dados estruturados e transacionais e um Storage Bucket para armazenamento de eventos de comportamento, vetores latentes do modelo SVD e assets de mídia.
+O diagrama de componentes abaixo representa a estrutura da aplicação seguindo o padrão arquitetural MVVM no cliente (React Native) e SOA no servidor (ASP.NET Core), com dois mecanismos de persistência: um banco de dados relacional PostgreSQL para dados estruturados e transacionais e um banco de dados MongoDB para dados não relacionais e eventos de comportamento.
 
 <div align="center">
   <sub>Imagem 12 - Diagrama de Componentes UML</sub><br>
@@ -1530,9 +1592,10 @@ O diagrama possui quatro packages:
  
 - **Presentation**: agrupa os componentes da camada de apresentação do app React Native (MVVM)
 - **Service | ASP.NET Core**: agrupa os serviços do backend
-- **Data**: agrupa os componentes da camada de acesso a dados
+- **Data**: agrupa os componentes da camada de acesso a dados, incluindo o Repository e os DataSources
 - **External**: agrupa os serviços externos consumidos pelo backend
-PostgreSQL e Storage Bucket ficam **fora de qualquer package** pois são infraestrutura externa — não fazem parte do código da aplicação.
+
+PostgreSQL e MongoDB ficam **fora de qualquer package** pois são infraestrutura externa — não fazem parte do código da aplicação.
  
 ---
  
@@ -1544,27 +1607,26 @@ Componentes são representados por um retângulo com o ícone de componente no c
 |---|---|---|
 | View | «component» | Presentation |
 | ViewModel | «component» | Presentation |
-| Repository | «component» | Presentation |
-| API Gateway | «service» | Service \| ASP.NET Core |
+| Repository | «component» | Data |
+| Backend API | «service» | Service \| ASP.NET Core |
 | Backend Services | «service» | Service \| ASP.NET Core |
-| Recommendation Service | «service» | Service \| ASP.NET Core |
+| Inference Service | «service» | Service \| ASP.NET Core |
 | Training Job | «job» | Service \| ASP.NET Core |
-| PostgresDataSource | «dataSource» | Data |
-| BucketDataSource | «dataSource» | Data |
-| CDN Imagens | «external» | External |
+| PostgreDataSource | «dataSource» | Data |
+| MongoDataSource | «dataSource» | Data |
 | ViaCEP | «external» | External |
 | PostgreSQL | «database» | — (externo) |
-| Storage Bucket | «artifact» | — (externo) |
+| MongoDB | «database» | — (externo) |
  
 **Sobre os estereótipos:**
  
-- `«component»`: unidade de software com responsabilidade própria dentro da aplicação cliente.
+- `«component»`: unidade de software com responsabilidade própria dentro da aplicação.
 - `«service»`: serviço do backend exposto via HTTP, com responsabilidade bem definida.
 - `«job»`: processo executado periodicamente de forma assíncrona, sem exposição via HTTP.
 - `«dataSource»`: adaptador que encapsula os detalhes de acesso a uma fonte de dados externa.
 - `«external»`: serviço de terceiros consumido pelo backend via HTTP.
 - `«database»`: banco de dados externo ao código da aplicação.
-- `«artifact»`: recurso implantado externamente, como um bucket de storage.
+
 ---
  
 ### Interfaces
@@ -1573,60 +1635,60 @@ As interfaces são representadas pelo padrão **ball-and-socket**:
  
 - **Bolinha (provided interface)** — linha reta saindo do componente com um círculo na ponta. Indica que o componente fornece aquele contrato.
 - **Semicírculo aberto (required interface)** — linha reta saindo do componente com um semicírculo na ponta. Indica que o componente precisa daquele contrato para funcionar.
+
 O encaixe entre o semicírculo e a bolinha representa a satisfação do contrato — o componente que precisa encontra o componente que fornece.
  
-O diagrama possui cinco interfaces:
+O diagrama possui seis interfaces:
  
 | Interface | Fornecida por | Consumida por |
 |---|---|---|
+| IApi | Backend API | ViewModel |
 | IRepository | Repository | ViewModel |
-| IApiGateway | API Gateway | Repository |
-| IBackendService | Backend Services | API Gateway |
-| IRecommendationService | Recommendation Service | API Gateway |
-| IPostgresDataSource | PostgresDataSource | Backend Services, Training Job, Recommendation Service |
-| IBucketDataSource | BucketDataSource | Backend Services, Training Job, Recommendation Service |
+| IBackendService | Backend Services | Backend API |
+| IRecommendationService | Inference Service | Backend API |
+| IPostgres | PostgreDataSource | Backend Services, Training Job, Inference Service |
+| IMongo | MongoDataSource | Backend Services, Training Job, Inference Service |
  
-O `Repository` está no centro do cliente: fornece a bolinha `IRepository` para o ViewModel e consome a bolinha `IApiGateway` do API Gateway por meio do seu semicírculo — abstraindo todas as chamadas de rede.
+O `ViewModel` consome dois contratos: `IApi` para comunicação com o servidor (via Backend API) e `IRepository` para acesso a dados persistidos localmente (via Repository na camada Data).
  
-`IPostgresDataSource` e `IBucketDataSource` são consumidas por três componentes cada — `Backend Services`, `Training Job` e `Recommendation Service` — pois todos precisam acessar dados persistidos, cada um com finalidades distintas.
+`IPostgres` e `IMongo` são consumidas por três componentes cada — `Backend Services`, `Training Job` e `Inference Service` — pois todos precisam acessar dados persistidos, cada um com finalidades distintas.
 
-### Responsabilidades do Storage Bucket
- 
-O Storage Bucket possui responsabilidade tripla, organizada internamente por prefixos de path:
- 
-| Path | Conteúdo | Escrito por | Lido por |
-|---|---|---|---|
-| `/media/` | Assets de mídia (imagens de eventos e atrações) | Backend Services | CDN Imagens |
-| `/events/` | Eventos brutos de comportamento (cliques, visualizações, compras) | Backend Services | Training Job |
-| `/model/` | Vetores latentes do modelo SVD (matrizes usuário × fator, item × fator) | Training Job | Recommendation Service |
- 
 ### Responsabilidades do PostgreSQL
  
-O PostgreSQL armazena exclusivamente dados transacionais e os hiperparâmetros do modelo SVD:
+O PostgreSQL armazena dados estruturados e transacionais:
  
 | Conteúdo | Escrito por | Lido por |
 |---|---|---|
 | Dados transacionais (usuários, pedidos, produtos, eventos) | Backend Services | Backend Services |
-| Hiperparâmetros SVD (n_fatores, learning_rate, epochs, versão, data_treino) | Training Job | Recommendation Service, Training Job |
+| Hiperparâmetros do modelo (n_fatores, learning_rate, epochs, versão, data_treino) | Training Job | Inference Service, Training Job |
+
+### Responsabilidades do MongoDB
+ 
+O MongoDB armazena dados não relacionais e de alta variabilidade:
+ 
+| Conteúdo | Escrito por | Lido por |
+|---|---|---|
+| Eventos de comportamento (cliques, visualizações, compras) | Backend Services | Training Job |
+| Vetores latentes do modelo (matrizes usuário × fator, item × fator) | Training Job | Inference Service |
 
 ### Decisões
 
-**Por que o ball-and-socket foi usado entre ViewModel e Repository?**
-O ViewModel não depende da implementação concreta do Repository — ele depende apenas do contrato `IRepository`. O ball-and-socket torna esse contrato visível no diagrama, o que uma seta tracejada simples não expressa.
+**Por que o ball-and-socket foi usado entre ViewModel e IApi/IRepository?**
+O ViewModel não depende de implementações concretas — ele depende apenas dos contratos `IApi` e `IRepository`. O ball-and-socket torna esses contratos visíveis no diagrama, o que setas tracejadas simples não expressam.
  
-**Por que o Repository passou a consumir IApiGateway em vez de IPostgresDataSource e IBucketDataSource?**
-O app React Native roda no dispositivo do usuário — nunca acessa banco de dados diretamente. Todo acesso a dados passa pela API do servidor. O Repository no cliente abstrai as chamadas HTTP para o API Gateway, não o acesso direto a fontes de dados. `IPostgresDataSource` e `IBucketDataSource` existem apenas no servidor.
+**Por que o Repository foi posicionado na camada Data?**
+O Repository é responsável por orquestrar o acesso a dados persistidos localmente. Posicioná-lo na camada Data centraliza toda a lógica de persistência em um único lugar, mantendo o ViewModel focado exclusivamente na lógica de apresentação. O acesso ao servidor ocorre via `IApi`, consumida diretamente pelo ViewModel.
  
-**Por que IPostgresDataSource e IBucketDataSource têm múltiplos consumidores?**
-Backend Services, Training Job e Recommendation Service têm necessidades distintas de acesso a dados, mas compartilham as mesmas fontes. Centralizar o acesso nos DataSources evita duplicação de lógica de conexão e mantém um único ponto de configuração para cada tecnologia de persistência.
+**Por que IPostgres e IMongo têm múltiplos consumidores?**
+Backend Services, Training Job e Inference Service têm necessidades distintas de acesso a dados, mas compartilham as mesmas fontes. Centralizar o acesso nos DataSources evita duplicação de lógica de conexão e mantém um único ponto de configuração para cada tecnologia de persistência.
  
-**Por que o Training Job usa seta tracejada simples em vez de ball-and-socket para o Recommendation Service?**
-O Training Job não consome uma interface fornecida pelo Recommendation Service — ele é acionado pelo próprio Recommendation Service periodicamente. A seta tracejada representa uma dependência de acionamento, não um contrato de interface.
+**Por que o Training Job usa seta tracejada simples em vez de ball-and-socket para o Inference Service?**
+O Training Job não consome uma interface fornecida pelo Inference Service — ele é acionado pelo próprio Inference Service periodicamente. A seta tracejada representa uma dependência de acionamento, não um contrato de interface.
  
-**Por que o SVD Model Store (.zip) foi removido?**
-O modelo SVD é composto por duas partes com naturezas distintas: hiperparâmetros (dados estruturados, poucos campos) e vetores latentes (arrays densos e pesados). Separar essas partes nos storages já existentes — PostgreSQL e Storage Bucket respectivamente — elimina um componente desnecessário e aproveita a infraestrutura já presente.
+**Por que o Storage Bucket foi substituído pelo MongoDB?**
+O MongoDB oferece flexibilidade para armazenar tanto eventos de comportamento quanto vetores latentes do modelo em formato de documento, eliminando a necessidade de um storage de arquivos separado. Isso simplifica a infraestrutura, mantém todos os dados dentro de um sistema de banco de dados gerenciado e facilita consultas sobre os dados armazenados.
  
-**Por que PostgreSQL e Storage Bucket ficam fora dos packages?**
+**Por que PostgreSQL e MongoDB ficam fora dos packages?**
 Packages representam agrupamentos do código da aplicação. Infraestrutura externa não pertence a nenhuma camada do sistema — colocá-la dentro de um package seria incorreto semanticamente.
 
 ## 15. Diagrama de Casos de Uso
@@ -1717,6 +1779,168 @@ O caso de uso "Acessar link de compra" possui relação `<<extend>>` com "Visual
 O diagrama de implantação apresenta a arquitetura física de referência do Portal Aventura. Ele reúne os ambientes, componentes e comunicações previstos para aplicativo mobile, backend, recomendação, treinamento, persistência e serviços externos. O desenho representa a direção arquitetural do projeto, não uma declaração de que todos os nós estejam publicados.
  
 <div align="center">
+  <sub>Imagem 13 - Diagrama de Implantação UML</sub><br>
+  <img src="../assets/Diagrama-de-implantacao.drawio.png" width="100%" alt="Diagrama de Implantação UML"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
+
+### Ambientes
+ 
+#### Aplicação Mobile
+ 
+Representa o aplicativo executado em dispositivos Android.
+ 
+**Componentes Implantados:**
+ 
+| Componente | Descrição |
+|------------|------------|
+| App Bundle (.apk) | Pacote distribuído para instalação do aplicativo móvel |
+| AsyncStorage | Armazenamento local utilizado para persistência de dados temporários e configurações do usuário |
+ 
+**Tecnologias:**
+ 
+- Android
+- React Native Runtime
+**Comunicação:**
+ 
+| Destino | Protocolo |
+|----------|-----------|
+| API Gateway | HTTPS (TCP 443) |
+| Deep Links | HTTPS (TCP 443) |
+ 
+---
+ 
+#### Ambiente de Servidor
+ 
+Responsável pelo processamento das regras de negócio, autenticação, gerenciamento de usuários, recomendação de eventos e integração com serviços externos.
+ 
+**Componentes:**
+ 
+- API Gateway
+- Backend ASP.NET Core
+- Sistema de Recomendação
+---
+ 
+**API Gateway:**
+ 
+O API Gateway funciona como ponto único de entrada para as requisições realizadas pelo aplicativo móvel.
+ 
+Artefato Implantado:
+ 
+| Artefato | Descrição |
+|-----------|------------|
+| Gateway Service | Serviço responsável pelo roteamento das requisições para os serviços internos |
+ 
+Responsabilidades:
+ 
+- Receber requisições do aplicativo móvel
+- Encaminhar chamadas para o backend
+- Centralizar o acesso aos serviços internos
+- Aplicar políticas de segurança e controle de acesso
+Comunicação:
+ 
+| Origem | Destino | Protocolo |
+|---------|---------|------------|
+| Mobile App | API Gateway | HTTPS (TCP 443) |
+| API Gateway | Backend ASP.NET Core | TCP 8080 |
+ 
+---
+ 
+**Backend ASP.NET Core:**
+ 
+Representa o núcleo da aplicação, responsável pelas regras de negócio e gerenciamento das funcionalidades disponibilizadas ao usuário.
+ 
+Módulos Implantados:
+- **Autenticação:** Responsável pelo gerenciamento de login, registro e validação de credenciais.
+- **Usuários:** Responsável pelo gerenciamento dos dados dos usuários da plataforma.
+- **Espetáculos:** Responsável pela consulta, cadastro e gerenciamento dos eventos e espetáculos disponíveis.
+- **Interações:** Responsável pelo registro das ações realizadas pelos usuários, utilizadas posteriormente pelo sistema de recomendação.
+- **Geolocalização:** Responsável pelo tratamento de dados geográficos e busca de eventos com base na localização do usuário.
+Comunicação do Backend:
+ 
+| Destino | Protocolo |
+|----------|-----------|
+| PostgreSQL | TCP 5432 |
+| MongoDB | TCP 27017 |
+| ViaCEP | HTTPS (TCP 443) |
+ 
+---
+ 
+**Sistema de Recomendação:**
+ 
+Componente especializado na geração de recomendações personalizadas para os usuários.
+ 
+Artefato Implantado:
+ 
+| Artefato | Descrição |
+|-----------|------------|
+| Recommendation Engine (Inference Service) | Serviço responsável pela inferência e geração de recomendações personalizadas com base nas interações dos usuários |
+ 
+Responsabilidades:
+ 
+- Processar histórico de interações
+- Gerar recomendações personalizadas via inferência (Inference Service)
+- Disponibilizar recomendações para o backend
+Comunicação:
+ 
+| Origem | Destino | Protocolo |
+|--------|----------|-----------|
+| Sistema de Recomendação | PostgreSQL | TCP 5432 |
+| Sistema de Recomendação | MongoDB | TCP 27017 |
+ 
+---
+ 
+ 
+#### Infraestrutura de Dados
+ 
+Camada responsável pelo armazenamento persistente das informações do sistema.
+ 
+**PostgreSQL:**
+ 
+Banco de dados relacional utilizado pela aplicação.
+ 
+Funções:
+ 
+- Armazenamento de usuários
+- Armazenamento de eventos
+- Armazenamento de interações
+- Persistência das informações de autenticação
+- Base para geração de recomendações
+Porta Utilizada:
+ 
+| Serviço | Porta |
+|----------|--------|
+| PostgreSQL | TCP 5432 |
+ 
+---
+ 
+**MongoDB:**
+ 
+Banco de dados não relacional utilizado pela aplicação.
+ 
+Funções:
+ 
+- Armazenamento de dados não estruturados ou semiestruturados da plataforma
+Porta Utilizada:
+ 
+| Serviço | Porta |
+|----------|--------|
+| MongoDB | TCP 27017 |
+ 
+---
+
+#### Serviços Externos
+ 
+Serviços de terceiros consumidos pela plataforma.
+ 
+**ViaCEP:**
+ 
+Serviço utilizado para consulta de informações de endereço a partir do CEP informado pelo usuário.
+ 
+Comunicação:
+ 
+- HTTPS (TCP 443)
+
   <sub>Imagem 14 - Diagrama de Implantação UML</sub><br>
   <img src="../assets/Diagrama-de-implantacao.drawio.png" width="100%" alt="Diagrama de Implantação UML do Portal Aventura"><br>
   <sup>Fonte: Material produzido pelos autores, 2026.</sup>
@@ -4009,7 +4233,116 @@ Com 55 testes aprovados e 100% de cobertura nos serviços responsáveis pela int
 
 **Validação complementar com chamadas reais:** Além da suíte automatizada com mocks, os três casos planejados em 18.6 foram executados via requisição HTTP real contra a API: CEP válido `01310-100` (HTTP 200, JSON com `logradouro: Avenida Paulista`), CEP malformado `123` (barrado pelo cliente antes da chamada de rede) e CEP inexistente `99999-999` (HTTP 200 com corpo `{erro:true}`, tratado pelo cliente com "CEP não encontrado."). A execução real confirmou que o ViaCEP não usa 404 para CEP inexistente e que a latência é variável (primeira chamada ~5,8 s, provavelmente cold start/DNS). Evidência em [assets/testes/viacep-resultados.json](../assets/testes/viacep-resultados.json).
 
-### 21.9 Análise consolidada dos resultados
+### 21.9 Testes End-to-End (E2E)
+
+
+Na Sprint 5, foram adicionados testes End-to-End para validar fluxos completos do RecomendaShow atravessando múltiplas camadas da aplicação. O objetivo desta suíte é complementar os testes unitários, de integração e de requisitos não funcionais, verificando se as principais jornadas do usuário funcionam de ponta a ponta de forma coerente com a proposta do produto.
+
+
+A estratégia foi dividida em duas frentes:
+
+
+| Frente E2E | Arquivo | Escopo validado | Tipo de ambiente |
+|---|---|---|---|
+| E2E backend/API | `src/backend/BackEnd.Aventura.IntegrationTests/EndToEndApplicationTests.cs` | Executa a API ASP.NET Core com banco PostgreSQL real via Testcontainers, validando autenticação, catálogo, preferências, recomendações, wishlist, perfil, teatros, health check e isolamento entre usuários. | Aplicação backend real + banco real isolado em container |
+| E2E mobile/services | `src/frontend/mobile-app-aventura/tests/AppJourney.e2e.test.js` | Simula a jornada do app React Native por meio dos serviços consumidos pela interface, validando cadastro, sessão, ViaCEP, cache VHS, onboarding, perfil, busca, recomendações, teatros, bilheteria, wishlist local e expiração de sessão. | Jest com `fetch`, sessão e armazenamento simulados |
+
+
+#### 21.9.1 Objetivo dos testes E2E
+
+
+Os testes E2E foram criados para responder a três perguntas principais:
+
+
+1. O usuário consegue percorrer os fluxos centrais do produto sem inconsistências entre API, banco, serviços e regras de negócio?
+2. Os cenários negativos mais importantes retornam códigos HTTP e mensagens compatíveis com o comportamento esperado pela aplicação?
+3. A experiência mobile consome corretamente os contratos da API, mesmo quando os testes são executados sem emulador ou dependência de serviços externos reais?
+
+
+Dessa forma, os E2E não substituem as suítes unitárias ou de integração já existentes. Eles funcionam como uma camada de validação transversal, concentrada nas jornadas que conectam diferentes funcionalidades do sistema.
+
+
+#### 21.9.2 Fluxos E2E cobertos no backend
+
+
+Os testes E2E de backend foram incluídos na suíte de integração existente, aproveitando a infraestrutura já preparada com `WebApplicationFactory`, `Testcontainers.PostgreSql`, `Respawn`, `Npgsql`, `xUnit` e `FluentAssertions`. Cada teste reinicia o estado do banco antes da execução, garantindo isolamento entre cenários.
+
+
+| ID | Fluxo validado | Cobertura funcional |
+|---|---|---|
+| E2E-01 | Usuário novo completa onboarding, descobre espetáculo, favorita e segue para bilheteria | Cadastro, autenticação, perfil, preferências, gêneros, catálogo, busca, detalhe do espetáculo, teatro, wishlist e URL de bilheteria |
+| E2E-02 | Usuário recorrente recebe recomendações persistidas e remove item da wishlist | Recomendações ordenadas por score, motivo da recomendação, wishlist, duplicidade e remoção |
+| E2E-03 | Autenticação protege recursos, perfil é atualizado e conta encerrada bloqueia novo login | JWT, proteção de endpoint, atualização de usuário, exclusão lógica e bloqueio de login |
+| E2E-04 | Cadastro e login rejeitam entradas inválidas | Consentimento ausente, menor de idade, e-mail duplicado, senha incorreta e ausência de vazamento de detalhes internos |
+| E2E-05 | Catálogo, busca e detalhe tratam filtros e recursos inexistentes | Busca por nome, busca por gênero, resultado vazio, espetáculo inexistente e teatro inexistente |
+| E2E-06 | Recomendação usa fallback por gêneros favoritos | Preferências do usuário, gêneros favoritos e recomendação sem registros persistidos pelo motor |
+| E2E-07 | Recomendação valida limites e estado vazio | Limite zero, limite acima de 50, usuário sem recomendações e acesso anônimo |
+| E2E-08 | Wishlist cobre estados de sucesso e erro | Lista vazia, item inexistente, adição, duplicidade, remoção e remoção inexistente |
+| E2E-09 | Preferências suportam criação automática e atualização parcial | Preferências iniciais, gêneros, tags, cidade, faixa de preço, notificações e validação de faixa inválida |
+| E2E-10 | Health check é público e endpoints de negócio continuam protegidos | `/health` anônimo e proteção de catálogo, gêneros e teatros |
+| E2E-11 | Dados permanecem isolados entre usuários | Recomendações e wishlist separadas por conta, evitando vazamento entre usuários |
+
+
+**Comando de execução:**
+
+
+```bash
+dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.IntegrationTests.csproj --filter Category=E2E
+```
+
+
+**Pré-condições:** Docker em execução, SDK .NET disponível no ambiente e acesso aos scripts SQL em `src/database`. O banco é criado em container temporário e reiniciado entre testes por meio da fixture de integração.
+
+#### 21.9.3 Fluxos E2E cobertos no frontend mobile
+
+
+Os testes E2E do frontend foram implementados com Jest, sem depender de emulador mobile. A suíte usa os serviços reais da aplicação e substitui as dependências externas por mocks controlados: `fetch`, armazenamento de autenticação, `AsyncStorage` e navegação. Essa abordagem permite validar a jornada que a interface consome, mantendo execução determinística no pipeline.
+
+
+| Fluxo validado | Cobertura funcional |
+|---|---|
+| Consulta de CEP | Sanitização do CEP, chamada ViaCEP simulada, preenchimento de endereço e cache VHS com `MISS` na primeira chamada e `HIT` na segunda |
+| Cadastro e sessão | Cadastro com payload no formato consumido pelo backend, normalização da resposta e persistência da sessão |
+| Perfil | Leitura de perfil autenticado e atualização de dados pessoais/endereço |
+| Onboarding | Salvamento de categorias, cidade e frequência com mapeamento para preferências do backend |
+| Catálogo e busca | Carregamento de espetáculos, busca por nome/gênero e transformação do DTO em estrutura usada pela tela |
+| Detalhe e bilheteria | Mapeamento de preço, datas, descrição e URL de compra externa |
+| Wishlist local | Adição, prevenção de duplicidade, toggle, remoção e consulta de favorito no armazenamento local |
+| Teatros | Listagem de teatros e espetáculos vinculados a um teatro |
+| Recomendações | Consumo do endpoint de recomendação e mapeamento de score/motivo para o card exibido no app |
+| Encerramento de conta | Chamada de exclusão e bloqueio de login posterior |
+| Expiração de sessão | Tratamento de `401` em endpoint protegido, limpeza de autenticação e acionamento de navegação para sessão expirada |
+
+
+**Comando de execução:**
+
+
+```bash
+cd src/frontend/mobile-app-aventura
+npm test -- --runTestsByPath tests/AppJourney.e2e.test.js
+```
+
+
+
+
+
+
+
+#### 21.9.4 Critérios de sucesso
+
+
+| Critério | Resultado esperado |
+|---|---|
+| Isolamento | Cada cenário deve iniciar sem depender de estado deixado por testes anteriores |
+| Autenticação | Endpoints protegidos devem retornar `401` sem token e funcionar com JWT válido |
+| Persistência | Dados criados no fluxo devem ser refletidos nas consultas posteriores |
+| Contratos | DTOs retornados pelo backend devem ser consumidos corretamente pelo frontend |
+| Cenários negativos | Entradas inválidas devem retornar `400`, duplicidades `409`, recursos inexistentes `404` e sessão inválida `401` |
+| Recomendações | Recomendações persistidas devem respeitar ordenação por score, e o fallback por gêneros deve funcionar quando não houver recomendação salva |
+| Experiência mobile | Serviços do app devem lidar corretamente com sessão, cache, busca, recomendações, wishlist local e expiração de autenticação |
+
+### 21.10 Análise consolidada dos resultados
+
 
 A consolidação considera as suítes automatizadas executadas (backend unitário, integração real, inference e frontend), os testes manuais/instrumentados de RNF e os casos de API externa.
 
@@ -4094,7 +4427,168 @@ Com base no IA4People, a plataforma apresenta boa aderência inicial aos princí
 
 ## 23. Desenvolvimento do Projeto — Sprint 5
 
-#### 23.1 Testes unitários do frontend (Sprint 5)
+### 23.1 Integração no Backend com o MongoDB
+
+#### 23.1.1 Dependência e configuração da conexão com o Mongo
+
+**Componentes:** `BackEnd.Aventura.csproj`, `IMongoConnectionFactory.cs`, `MongoConnectionFactory.cs`.
+
+**Como funciona:** o driver oficial (`MongoDB.Driver` 3.9.0) foi adicionado ao projeto principal. `IMongoConnectionFactory` expõe um único método, `GetDatabase()`, isolando o restante da aplicação dos detalhes de configuração — o mesmo padrão já usado para o Postgres (`IDbConnectionFactory`). A implementação resolve a conexão em ordem de prioridade: (1) connection string explícita (`ConnectionStrings:MongoConnection` ou `MONGO_CONNECTION_STRING`); (2) variáveis individuais — `MONGO_HOST`, `MONGO_PORT` (padrão `27017`), `MONGO_USER`, `MONGO_PASSWORD`, `MONGO_AUTH_SOURCE` (padrão `admin`). O nome do banco vem de `MONGO_DATABASE` (padrão `aventura_ml`).
+
+**Decisão de design:** se nem a connection string nem host/usuário/senha estiverem configurados, o construtor lança `InvalidOperationException` imediatamente — falha rápido na inicialização da aplicação, em vez de falhar silenciosamente só na primeira chamada ao Mongo. A classe é registrada como **singleton** no `DependencyInjection.cs`, seguindo a recomendação do próprio driver de reaproveitar uma única instância de `MongoClient`.
+
+**Evidências:** `BackEnd.Aventura.csproj` (linha do `PackageReference`); `MongoConnectionFactory.cs` (método `BuildClientSettings`); `DependencyInjection.cs` (`AddSingleton<IMongoConnectionFactory, MongoConnectionFactory>()`).
+
+**Análise:** a configuração via variáveis de ambiente segue o padrão já adotado pelo restante do backend (carregadas via `.env` no `Program.cs`), o que mantém consistência com a forma como o Postgres e o JWT já são configurados. O ponto de atenção é que, hoje, não existe nenhum mecanismo de *retry*/circuit breaker caso o Mongo esteja temporariamente indisponível — uma falha de rede no momento da consulta sobe como exceção não tratada especificamente (cai no branch genérico do `GlobalExceptionHandler`, HTTP 500).
+
+#### 23.1.2 Domínio — `EspetaculoImagem`
+
+**Como funciona:** classe imutável e simples, com três propriedades (`Conteudo: Stream`, `ContentType: string`, `NomeArquivo: string`). É o contrato que carrega o resultado da busca no Mongo até o controller, que o usa diretamente em `File(imagem.Conteudo, imagem.ContentType, imagem.NomeArquivo)`.
+
+**Evidências:** `EspetaculoImagem.cs`.
+
+**Análise:** por ser um tipo de domínio simples (sem lógica), não havia necessidade de teste unitário dedicado a ele — o que é coerente com o restante do código.
+
+#### 23.1.3 Repositório — regra de negócio de busca da imagem
+
+**Componentes:** `EspetaculoImagemRepository.cs`.
+
+**Como funciona:** a busca acontece em duas etapas. (1) **Correspondência exata** — filtro `metadata.espetaculo_nome == nome`, caminho rápido para quando o nome cadastrado no Mongo é idêntico ao do Postgres. (2) **Fallback tolerante** — se a etapa 1 não encontrar nada, o repositório varre os documentos do bucket comparando uma versão **normalizada** do nome (minúscula, sem acento, sem pontuação, hífen/underscore tratados como espaço) contra cada candidato, aceitando igualdade normalizada ou um nome ser prefixo do outro **respeitando limite de palavra** (mínimo de 3 caracteres de prefixo, para evitar que `"elis"` combine com `"elisabete"`). Quando há mais de um candidato compatível, prevalece o de maior sobreposição.
+
+**Por que essa regra existe:** o nome do espetáculo pode estar escrito de forma levemente diferente entre os dois bancos (ex.: `"Mamma Mia"` vs `"Mamma Mia!"`, ou `"Viva"` vs `"Viva – A Vida é Uma Festa In Concert"`). Sem o fallback, qualquer divergência de grafia resultaria em "imagem não encontrada" mesmo a imagem existindo.
+
+**Evidências:** `EspetaculoImagemRepository.cs` (métodos `FindFileInfo`, `Normalize`, `StartsWithWholeWord`).
+
+**Análise / risco conhecido:** o próprio código deixa registrado, em comentário, que o fallback faz uma varredura completa do bucket — aceitável na escala atual (dezenas de imagens), mas que não escala bem se o catálogo crescer muito; nesse cenário, persistir o nome já normalizado como campo indexado seria a melhoria natural. Esse trecho também é o que mais concentra risco de regressão silenciosa (um nome que hoje combina por prefixo pode parar de combinar se o texto for editado no Postgres ou no Mongo) e, como já registrado na seção de testes, ainda não tem um arquivo de teste unitário dedicado — só é exercitado indiretamente via `EspetaculoImagemServiceTests`, que usa nomes idênticos.
+
+#### 23.1.4 Serviço — orquestração entre Postgres e Mongo
+
+**Componentes:** `EspetaculoImagemService.cs`.
+
+**Como funciona:**
+
+```csharp
+public EspetaculoImagem GetImagem(Guid espetaculoId)
+{
+    var espetaculo = _espetaculoService.GetById(espetaculoId); // Postgres
+    var imagem = _imagemRepository.GetByEspetaculoNome(espetaculo.Nome); // Mongo
+    if (imagem is null)
+        throw new NotFoundException($"Imagem do espetáculo '{espetaculo.Nome}' não encontrada.");
+    return imagem;
+}
+```
+
+Recebe um `Guid` (ID do espetáculo no Postgres), resolve o `Nome` via `IEspetaculoService` (já existente) e só então consulta o Mongo. Se o espetáculo não existir, a exceção já vem do serviço de espetáculos; se existir mas não tiver imagem, uma `NotFoundException` é lançada aqui.
+
+**Evidências:** `EspetaculoImagemService.cs`.
+
+**Análise:** esse é o ponto de integração entre os dois bancos. A dependência em `IEspetaculoService` (em vez de acessar o Postgres diretamente) mantém a separação de camadas do projeto e evita duplicar a lógica de "espetáculo não encontrado".
+
+#### 23.1.5 Controller — endpoint público de imagem
+
+**Como funciona:** novo endpoint `GET /api/Espetaculo/{id}/imagem`, marcado com `[AllowAnonymous]` — diferente dos demais endpoints de `EspetaculoController`, que herdam a política de autenticação global do `Program.cs`. Erros de "não encontrado" resultam em 404, via `GlobalExceptionHandler`.
+
+**Por que é público:** a URL do endpoint é usada diretamente como `source.uri` em componentes `<Image>` do app (ver X.4.1), e o `<Image>` nativo do React Native não envia header `Authorization` nas requisições que dispara para carregar a imagem.
+
+**Evidências:** `EspetaculoController.cs` (método `GetImagem`).
+
+**Análise / risco aceito:** tornar o endpoint público é uma troca deliberada — qualquer pessoa com o `id` de um espetáculo consegue baixar a imagem sem autenticação. Como a imagem em si não é um dado sensível (é um pôster público do espetáculo), esse risco foi considerado aceitável, mas vale registrar explicitamente como uma decisão de design, não um descuido.
+
+### 23.2 Integração no Frontend com o MongoDB
+
+#### 23.2.1 `showService.js` — montagem da URL e fallback
+
+**Como funciona:** duas funções concentram a lógica nova — `getShowImageUrl(dto)` monta `${API_BASE}/api/Espetaculo/{id}/imagem` quando o DTO tem `id`; `getFallbackImage(dto)` é o comportamento **anterior** à integração (mapa de regex → imagem local em `assets/home`), mantido como rede de segurança. `getShowImage(dto)` decide entre as duas: se há `id`, usa a URL remota; senão, usa o mapa local.
+
+```javascript
+function getShowImage(dto) {
+  const url = getShowImageUrl(dto);
+  return url ? { uri: url } : getFallbackImage(dto);
+}
+```
+
+`getShowImage` é usado em `mapDtoToHomeEvent` (telas de listagem) e em `mapDtoToShowInfo` (`heroImage` da tela de detalhes).
+
+**Evidências:** `showService.js` (funções `getShowImageUrl`, `getFallbackImage`, `getShowImage`).
+
+**Análise:** ao manter `getFallbackImage` em vez de removê-lo, a integração com o Mongo foi feita de forma **aditiva** — nenhum dado mockado ou de teste que não tenha `id` deixa de exibir alguma imagem. Essa função hoje só é alcançada quando o DTO não tem `id`, o que na prática deve ser raro em produção (todo espetáculo vindo da API tem `id`).
+
+#### 23.2.2 `FallbackImage.js` — componente novo
+
+**Como funciona:**
+
+```javascript
+export default function FallbackImage({ source, fallbackSource = DEFAULT_FALLBACK, ...props }) {
+  const [hasError, setHasError] = useState(false);
+  const isRemote = Boolean(source) && typeof source === 'object' && 'uri' in source;
+  let resolvedSource = source;
+  if (isRemote && hasError) resolvedSource = fallbackSource;
+
+  return (
+    <Image
+      {...props}
+      source={resolvedSource}
+      onError={isRemote ? () => setHasError(true) : props.onError}
+    />
+  );
+}
+```
+
+Wrapper de `<Image>` que troca automaticamente para uma imagem local (`assets/home/amazonica.jpeg`, por padrão) quando o carregamento da imagem remota falha. A lógica só entra em ação quando a fonte é remota (`{ uri }`); imagens locais (`require(...)`) passam direto.
+
+**Por que esse componente existe:** sem ele, qualquer falha na URL do Mongo (espetáculo sem imagem cadastrada, backend fora do ar, rede instável no celular) apareceria como um ícone de imagem quebrada para o usuário. É a peça que torna o consumo da URL do Mongo **resiliente** no app.
+
+**Evidências:** `FallbackImage.js`.
+
+**Análise:** é um componente puro de UI, sem chamadas de rede próprias — só reage ao evento `onError` do `<Image>` nativo. Não há, hoje, nenhum teste de componente cobrindo esse `onError` (ver lacuna registrada na seção de testes); a cobertura existente é apenas indireta, sobre os dados que `showService.js` produz.
+
+#### 23.2.3 Onde o componente passou a ser usado
+
+| Componente | Tela/uso | Prop consumida |
+|---|---|---|
+| `PosterCard.js` | Cards de pôster em listagens/carrosséis | `image` (de `mapDtoToHomeEvent`) |
+| `ShowHero.js` | Banner no topo da tela de detalhes do espetáculo | `heroImage` (de `mapDtoToShowInfo`) |
+
+**Análise:** em ambos os casos, o componente de UI não sabe (nem precisa saber) se a imagem vem do Mongo ou é um fallback local — recebe um `source` já resolvido por `showService.js`. Essa separação de responsabilidades (decisão de fonte da imagem fica no service; o componente só renderiza e trata erro) facilita testar cada parte isoladamente.
+
+### 23.3 Fluxo de ponta a ponta
+
+1. App pede a lista/detalhe de espetáculos (`GET /api/Espetaculo` ou `/{id}`) — retorna só dados do Postgres, sem a imagem em si.
+2. `showService.js` monta `image`/`heroImage` como `{ uri: '<API_BASE>/api/Espetaculo/<id>/imagem' }`.
+3. `PosterCard`/`ShowHero` renderizam `<FallbackImage source={{ uri }} />`.
+4. O React Native faz, por conta própria, um `GET` para essa URL — sem token, pois o endpoint é `[AllowAnonymous]`.
+5. `EspetaculoController.GetImagem` → `EspetaculoImagemService.GetImagem(id)`: busca o espetáculo no Postgres (404 se não existir) → usa o `Nome` para buscar no GridFS (exata + fallback normalizado).
+6. Encontrando, o controller devolve o stream com o `Content-Type` correto; o RN renderiza normalmente.
+7. Não encontrando (404) ou falhando a requisição por qualquer motivo de rede, o `onError` do `FallbackImage` dispara e a imagem local padrão aparece no lugar.
+
+### 23.4 Configuração necessária / variáveis de ambiente
+
+| Variável | Obrigatória? | Padrão | Descrição |
+|---|---|---|---|
+| `MONGO_CONNECTION_STRING` ou `ConnectionStrings:MongoConnection` | Não (alternativa às de baixo) | — | Connection string completa; tem prioridade sobre as demais |
+| `MONGO_HOST` | Sim, se não houver connection string | — | Host do MongoDB |
+| `MONGO_PORT` | Não | `27017` | Porta |
+| `MONGO_USER` | Sim, se não houver connection string | — | Usuário |
+| `MONGO_PASSWORD` | Sim, se não houver connection string | — | Senha |
+| `MONGO_AUTH_SOURCE` | Não | `admin` | Banco usado para autenticação |
+| `MONGO_DATABASE` | Não | `aventura_ml` | Banco com o bucket GridFS das imagens |
+
+As variáveis são carregadas pelo `Program.cs` a partir de um arquivo `.env` na raiz do repositório (mesmo mecanismo já usado para Postgres/JWT), e referenciadas também pelo `docker-compose-back.yml`.
+
+### 23.5 Análise consolidada — riscos, limitações e decisões de design
+
+| Ponto | Descrição | Tipo |
+|---|---|---|
+| Vínculo por nome, não por ID | A ligação entre Postgres e Mongo depende do nome do espetáculo estar coerente entre os dois bancos | Risco conhecido (mitigado pelo fallback normalizado) |
+| Fallback varre o bucket inteiro | Aceitável na escala atual; não persiste nome normalizado indexado | Limitação de escala, registrada em comentário no código |
+| Endpoint de imagem é público | Decisão deliberada, exigida pelo `<Image>` do React Native | Decisão de design (risco aceito) |
+| Sem cache HTTP/CDN | Cada exibição gera uma nova requisição ao backend → GridFS | Melhoria futura recomendada |
+| Sem retry/circuit breaker para o Mongo | Falha de conexão sobe como erro 500 genérico | Melhoria futura recomendada |
+| `EspetaculoImagemRepository` sem teste unitário dedicado | O algoritmo de normalização/match de nomes só é exercitado indiretamente | Lacuna de teste (ver seção de Execução de Testes) |
+
+**Conclusão:** a integração foi implementada de forma aditiva (mantendo o fallback local existente) e com separação de camadas consistente com o restante do projeto (Domínio/Infraestrutura/Repositório/Serviço/Controller no backend; Service/Componente/Tela no frontend). Os principais riscos — vínculo por nome e escala do fallback de busca — já estão documentados em comentários no próprio código-fonte, o que indica que foram decisões conscientes da equipe, não descuidos.
+
+### 23.6 Testes unitários do frontend (Sprint 5)
 
 Na Sprint 5, a suíte de testes unitários do frontend foi expandida para cobrir a totalidade das camadas de `services` e `viewmodels` da aplicação React Native, eliminando as exclusões de cobertura que existiam desde a Sprint 4 e fechando lacunas pontuais nos arquivos já testados anteriormente. A suíte continua localizada em `src/frontend/mobile-app-aventura/tests` e é executada com Jest.
 
@@ -4124,9 +4618,41 @@ npm test
 
 O threshold mínimo de cobertura configurado no `package.json` (`coverageThreshold.global`) aumentou para 90% para `statements` e `lines`, valor amplamente superado pelo resultado obtido.
 
+### 23.7 Testes unitários do Backend (Sprint 5)
+
+Na Sprint 5, a suíte de testes unitários do backend, localizada em `src/backend/BackEnd.Aventura.Tests`, foi revisada com foco na elevação da cobertura de linha para ≥ 90%, partindo da baseline de 85,62% e do gate de 70% herdados da Sprint 3. A revisão foi orientada pelo próprio relatório de cobertura (`coverlet`/`cobertura.xml`): a partir dele foram identificadas todas as classes e branches ainda sem cobertura, e novos testes foram escritos especificamente para fechar essas lacunas — constructors com argumentos nulos, validações de borda, caminhos de exceção e overloads pouco exercitados.
+
+Diferente da Sprint 3, em que autenticação (`AuthService`), domínio de usuário (`Usuario`, `UsuarioService`, `UsuarioController`), domínio de preferências (`Preferencias`, `PreferenciasService`), domínio de catálogo (`Teatro`, `Espetaculo`, `Recomendacao`, `RecomendacaoService`) e infraestrutura (`DbConnectionFactory`, `GlobalExceptionHandler`) ainda tinham branches de erro e caminhos de validação sem teste correspondente, a Sprint 5 fechou essas lacunas e passou a tratar também o `AnonimizacaoJob` — job de anonimização LGPD até então nunca exercitado como classe —, agora validado por uma suíte de integração dedicada (`src/backend/BackEnd.Aventura.IntegrationTests`) contra uma instância real de PostgreSQL.
+
+Os testes unitários e de integração que já cobriam a mesma classe foram consolidados nos arquivos existentes (um arquivo de teste por classe de produção), sem duplicação. Na suíte unitária (`xUnit`, `Moq`, `coverlet`), dependências externas continuam isoladas via mocks de interfaces; a nova suíte de integração acrescenta `Testcontainers.PostgreSql` (uma instância real de PostgreSQL por execução), `Microsoft.AspNetCore.Mvc.Testing` (`WebApplicationFactory`), `WireMock.Net` (simulação de serviços externos), `Respawn` (reset de banco entre testes) e `FluentAssertions`.
+
+O gate de cobertura, configurado em `BackEnd.Aventura.Tests.csproj` e ativo apenas quando o build roda com `/p:CollectCoverage=true`, passou a excluir explicitamente apenas as classes que dependem diretamente de uma conexão `Npgsql` real e por isso não são mockáveis sem banco: `Repository.*`, `Infrastructure.Persistence.*` (ex.: `EspetaculoMapper`), `Services.AnonimizacaoJob` e `Program`. Essas classes não ficam sem teste — são validadas pela suíte de integração contra PostgreSQL real, incluindo triggers de banco e schema, e simplesmente não entram no cálculo do gate unitário.
+
+Durante a revisão, foi identificado e removido código morto: `PreferenceService`/`PreferenceController`/`IPreferenceService` (namespace em inglês, com `userId: int`) era uma implementação legada nunca consumida, mantida em paralelo à implementação real `PreferenciasService`/`PreferenciasController` (`usuarioId: Guid`, persistida em Postgres). A ausência de uso foi confirmada por busca textual no repositório do frontend mobile, que só consome a rota `/api/Preferencias/{usuarioId}`. Em vez de escrever testes para mascarar esse código morto, os três arquivos e o respectivo registro em `Program.cs` foram removidos.
+
+**Comando de execução:**
+
+```bash
+# Testes unitários, com relatório de cobertura (gate de 90% aplicado)
+dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput=./coverage/
+
+# Testes de integração (requer Docker em execução — sobe um container PostgreSQL via Testcontainers)
+dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.IntegrationTests.csproj
+```
+
+**Resultado validado na Sprint 5:** 30 suítes aprovadas (uma por classe de produção testada), totalizando 173 testes unitários aprovados (0 falhas), além de 26 testes de integração aprovados separadamente, com cobertura de:
+
+| Métrica | Antes (Sprint 3) | Depois (Sprint 5) |
+|---|---|---|
+| Linha | 85,62% | 97,58% |
+| Branch | — | 96,52% |
+| Método | — | 96,95% |
+
+O threshold mínimo de cobertura configurado no gate (`Threshold` / `ThresholdType=line`) subiu de 70% para 90%, valor superado com margem — o ganho veio principalmente de classes que estavam em 0% de cobertura e de branches de erro (e-mail duplicado, idade abaixo do mínimo, conta encerrada, configuração ausente) sem caso de teste correspondente.
+
 ---
 
-#### 23.2 Testes do motor de recomendação (Sprint 5)
+### 23.8 Testes do motor de recomendação (Sprint 5)
 
 Na Sprint 5, o motor de recomendação ganhou uma suíte de testes unitários própria, cobrindo os dois módulos C# que o compõem: `AventuraML` (`src/ml` — pré-processamento, treino do SVD, recomendação híbrida, avaliação e benchmark) e `InferenceService` (`src/inference-service` — carregamento do modelo, serviço de inferência, batch de recomendações, métricas, diagnósticos e geração de gráficos). O objetivo foi verificar o comportamento isolado de cada componente, cobrindo caminhos de sucesso e de erro, e atingir a cobertura de linha **≥ 70%** exigida pelo RNF08. O planejamento detalhado dos componentes e cenários está documentado na seção 18.9; esta subseção registra o resultado consolidado da execução na Sprint 5.
 
@@ -4152,6 +4678,8 @@ dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 | **Combinado** | **84,15%** | **65,99%** |
 
 O resultado supera com folga a meta de 70% de linhas estabelecida pelo RNF08 para os módulos críticos do serviço de recomendação, atendendo ao critério de aceitação de cobertura ≥ 70% verificado no pipeline de CI.
+
+---
 
 ## 24. Termos e Abreviações
 

@@ -6,7 +6,7 @@ namespace BackEnd.Aventura.IntegrationTests;
 /// <summary>
 /// Verifica o mapeamento usuário do sistema -> user_id do dataset (coluna ml_id),
 /// definido pelos UPDATEs no fim de 02_sprint4_improvements.sql.
-/// A fixture aplica só 01 + 02_sprint4 (sem seed); aqui aplicamos 02_initial_data
+/// A fixture aplica só 01 + 02_sprint4 (sem seed); aqui aplicamos 03_initial_data
 /// (cria alex/maria/joao) e reaplicamos o script de melhorias (idempotente) para
 /// exercitar os UPDATEs de mapeamento sobre os usuários reais do seed.
 /// </summary>
@@ -20,7 +20,7 @@ public class MlIdMappingTests
     [Fact]
     public async Task UsuariosDoSeed_RecebemMlIdDoUserIdDoDataset()
     {
-        await _fixture.ApplyScriptAsync("02_initial_data.sql");
+        await _fixture.ApplyScriptAsync("03_initial_data.sql");
         await _fixture.ApplyScriptAsync("02_sprint4_improvements.sql");
 
         var esperado = new Dictionary<string, int>

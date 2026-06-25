@@ -80,3 +80,4 @@ ehthumbs.db
 Desktop.ini
 # Relatorios coverlet gerados na raiz dos projetos de teste
 **/coverage.cobertura.xml
+**/coverage.json

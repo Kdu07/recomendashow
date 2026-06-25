@@ -58,6 +58,8 @@ public sealed class RecommendationWriteRepository : IRecommendationWriteReposito
             return;
         }
 
+        bool hasItemDataset = await HasItemDatasetColumnAsync(connection, cancellationToken);
+
         await using var transaction = await connection.BeginTransactionAsync(cancellationToken);
 
         const string deleteSql = "DELETE FROM recomendacoes WHERE usuario_id = @UsuarioId";
@@ -67,11 +69,36 @@ public sealed class RecommendationWriteRepository : IRecommendationWriteReposito
             await deleteCommand.ExecuteNonQueryAsync(cancellationToken);
         }
 
-        const string insertSql = @"
+        // Caminho B: resolve o espetáculo pelo mapeamento item_dataset (nome cru do
+        // show do dataset, como o modelo emite) com normalização defensiva
+        // TRIM+UPPER+unaccent, priorizando-o sobre o casamento por nome "bonito".
+        // Mantém o fallback por e.nome (Caminho A) para não regredir dados já
+        // alinhados. Se a coluna item_dataset ainda não existe (migration não
+        // aplicada), usa apenas o casamento por nome.
+        string insertSql = hasItemDataset
+            ? @"
+INSERT INTO recomendacoes(usuario_id, espetaculo_id, score, motivo, data_geracao)
+SELECT @UsuarioId, m.id, @Score, @Motivo, CURRENT_TIMESTAMP
+FROM (
+    SELECT e.id,
+           CASE
+               WHEN e.item_dataset IS NOT NULL
+                    AND upper(unaccent(btrim(e.item_dataset))) = upper(unaccent(btrim(@EspetaculoNome)))
+                   THEN 0
+               WHEN e.nome = @EspetaculoNome THEN 1
+               ELSE NULL
+           END AS match_rank
+    FROM espetaculos e
+) m
+WHERE m.match_rank IS NOT NULL
+ORDER BY m.match_rank
+LIMIT 1"
+            : @"
 INSERT INTO recomendacoes(usuario_id, espetaculo_id, score, motivo, data_geracao)
 SELECT @UsuarioId, e.id, @Score, @Motivo, CURRENT_TIMESTAMP
 FROM espetaculos e
-WHERE e.nome = @EspetaculoNome";
+WHERE e.nome = @EspetaculoNome
+LIMIT 1";
 
         int inserted = 0;
         foreach (var recommendation in recommendations)
@@ -92,9 +119,11 @@ WHERE e.nome = @EspetaculoNome";
         if (inserted < recommendations.Count)
         {
             _logger.LogWarning(
-                "Persistidas {Inserted}/{Total} recomendações. Alguns espetáculos retornados pelo modelo não existem em espetaculos.nome.",
+                "Persistidas {Inserted}/{Total} recomendações para o usuário {UserId}. " +
+                "Alguns shows retornados pelo modelo não têm espetáculo mapeado (espetaculos.item_dataset) nem nome correspondente.",
                 inserted,
-                recommendations.Count);
+                recommendations.Count,
+                userId);
         }
     }
 
@@ -120,6 +149,23 @@ SELECT EXISTS (
     FROM information_schema.tables
     WHERE table_schema = 'public'
       AND table_name = 'recomendacoes'
+)";
+
+        await using var command = new NpgsqlCommand(sql, connection);
+        return await command.ExecuteScalarAsync(cancellationToken) is true;
+    }
+
+    private static async Task<bool> HasItemDatasetColumnAsync(
+        NpgsqlConnection connection,
+        CancellationToken cancellationToken)
+    {
+        const string sql = @"
+SELECT EXISTS (
+    SELECT 1
+    FROM information_schema.columns
+    WHERE table_schema = 'public'
+      AND table_name = 'espetaculos'
+      AND column_name = 'item_dataset'
 )";
 
         await using var command = new NpgsqlCommand(sql, connection);

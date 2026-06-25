@@ -4152,6 +4152,29 @@ npm test -- --runTestsByPath tests/AppJourney.e2e.test.js
 | Recomendações | Recomendações persistidas devem respeitar ordenação por score, e o fallback por gêneros deve funcionar quando não houver recomendação salva |
 | Experiência mobile | Serviços do app devem lidar corretamente com sessão, cache, busca, recomendações, wishlist local e expiração de autenticação |
 
+### 21.10 Análise consolidada dos resultados
+
+
+A consolidação considera as suítes automatizadas executadas (backend unitário, integração real, inference e frontend), os testes manuais/instrumentados de RNF e os casos de API externa.
+
+| Indicador | Resultado |
+|---|---|
+| Total de testes automatizados executados | **343** (123 backend unitário + 36 integração + 48 inference + 136 frontend Jest) |
+| Testes aprovados | **343 / 343 (100%)** nas suítes automatizadas contabilizadas |
+| Testes reprovados | 0 |
+| Execuções pendentes ou limitadas | TLS em produção; anonimização em 15 dias; amostra ampliada do RNF01; uptime de 30 dias; carga de 1.000 VUs; 100 casos de geolocalização; RNF09 e RNF10 |
+| Cobertura de código | Frontend **88,96% statements** e **89,32% lines** nos módulos medidos; backend módulos críticos **85,3%** de linhas (global 54,0% — acesso a dados via integração); serviço de recomendação 40,1% (abaixo da meta, lacuna rastreada) |
+| RNFs avaliados | RNF01–RNF08 com evidência total ou parcial; RNF09 e RNF10 definidos e pendentes de execução |
+| APIs externas | ViaCEP: 3/3 casos com tratamento correto |
+| Usabilidade | SUS 88,5; 40/40 conclusões de tarefa (seção 20.7) |
+| Principais falhas encontradas | Nenhuma falha de regra de negócio. Suítes de frontend estavam desatualizadas em relação à implementação (onboarding/edição via API, busca assíncrona) e foram realinhadas — sem alteração de código de produção |
+| Riscos remanescentes | TLS não verificável na OCI; ausência de rate limiting; job de anonimização ainda configurado para 30 dias; metas ampliadas de desempenho, uptime, carga e geolocalização sem execução completa; cobertura do recomendador em 40,1%; contratos RNF09 e ensaio RNF10 pendentes |
+| Ações corretivas planejadas | Ajustar o job para até 15 dias; publicar `/health` e monitorar 30 dias; adicionar rate limiting; executar amostras e cargas formais; ampliar cobertura do recomendador; implementar testes de contrato e ensaio de implantação limpa |
+| Conclusão geral | As suítes automatizadas executadas estão verdes e fornecem boa evidência inicial. A aceitação integral dos RNFs depende das ações e medições pendentes explicitadas acima. |
+
+**Atualização Sprint 5 (23/06/2026):** o total de testes automatizados passa de **343 para 399** (123 backend unitário + 36 integração real + **104 inference** + 136 frontend Jest), todos aprovados (100%). O item (vii) dos riscos remanescentes foi encerrado: a suíte de inferência foi ampliada, a cobertura atingiu 70,04% (meta RNF08 de ≥ 70%) e o gate foi atualizado de 35% para 70%. **RNF08: Parcialmente atendido → Atendido.**
+
+---
 
 ## 22. Análise de Impactos Éticos IA4People
 

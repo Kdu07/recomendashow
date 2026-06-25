@@ -170,7 +170,7 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 </details>
 
 <details>
-<summary><a href="#14-diagrama-de-componentes">14. Diagrama de Componentes</a></summary>
+<summary><a href="#14-Diagrama-de-componentes">14. Diagrama de Componentes</a></summary>
 
 - [Packages](#packages)
 - [Componentes](#componentes)
@@ -1397,7 +1397,7 @@ Enumeração que define os tipos possíveis de interação de um usuário com um
 
 ## 14. Diagrama de Componentes
 
-O diagrama de componentes abaixo representa a estrutura da aplicação seguindo o padrão arquitetural MVVM no cliente (React Native) e SOA no servidor (ASP.NET Core), com dois mecanismos de persistência: um banco de dados relacional PostgreSQL para dados estruturados e transacionais e um Storage Bucket para armazenamento de eventos de comportamento, vetores latentes do modelo SVD e assets de mídia.
+O diagrama de componentes abaixo representa a estrutura da aplicação seguindo o padrão arquitetural MVVM no cliente (React Native) e SOA no servidor (ASP.NET Core), com dois mecanismos de persistência: um banco de dados relacional PostgreSQL para dados estruturados e transacionais e um banco de dados MongoDB para dados não relacionais e eventos de comportamento.
 
 <div align="center">
   <sub>Imagem 10 - Diagrama de Componentes UML</sub><br>
@@ -1413,9 +1413,10 @@ O diagrama possui quatro packages:
  
 - **Presentation**: agrupa os componentes da camada de apresentação do app React Native (MVVM)
 - **Service | ASP.NET Core**: agrupa os serviços do backend
-- **Data**: agrupa os componentes da camada de acesso a dados
+- **Data**: agrupa os componentes da camada de acesso a dados, incluindo o Repository e os DataSources
 - **External**: agrupa os serviços externos consumidos pelo backend
-PostgreSQL e Storage Bucket ficam **fora de qualquer package** pois são infraestrutura externa — não fazem parte do código da aplicação.
+
+PostgreSQL e MongoDB ficam **fora de qualquer package** pois são infraestrutura externa — não fazem parte do código da aplicação.
  
 ---
  
@@ -1427,27 +1428,26 @@ Componentes são representados por um retângulo com o ícone de componente no c
 |---|---|---|
 | View | «component» | Presentation |
 | ViewModel | «component» | Presentation |
-| Repository | «component» | Presentation |
-| API Gateway | «service» | Service \| ASP.NET Core |
+| Repository | «component» | Data |
+| Backend API | «service» | Service \| ASP.NET Core |
 | Backend Services | «service» | Service \| ASP.NET Core |
-| Recommendation Service | «service» | Service \| ASP.NET Core |
+| Inference Service | «service» | Service \| ASP.NET Core |
 | Training Job | «job» | Service \| ASP.NET Core |
-| PostgresDataSource | «dataSource» | Data |
-| BucketDataSource | «dataSource» | Data |
-| CDN Imagens | «external» | External |
+| PostgreDataSource | «dataSource» | Data |
+| MongoDataSource | «dataSource» | Data |
 | ViaCEP | «external» | External |
 | PostgreSQL | «database» | — (externo) |
-| Storage Bucket | «artifact» | — (externo) |
+| MongoDB | «database» | — (externo) |
  
 **Sobre os estereótipos:**
  
-- `«component»`: unidade de software com responsabilidade própria dentro da aplicação cliente.
+- `«component»`: unidade de software com responsabilidade própria dentro da aplicação.
 - `«service»`: serviço do backend exposto via HTTP, com responsabilidade bem definida.
 - `«job»`: processo executado periodicamente de forma assíncrona, sem exposição via HTTP.
 - `«dataSource»`: adaptador que encapsula os detalhes de acesso a uma fonte de dados externa.
 - `«external»`: serviço de terceiros consumido pelo backend via HTTP.
 - `«database»`: banco de dados externo ao código da aplicação.
-- `«artifact»`: recurso implantado externamente, como um bucket de storage.
+
 ---
  
 ### Interfaces
@@ -1456,60 +1456,60 @@ As interfaces são representadas pelo padrão **ball-and-socket**:
  
 - **Bolinha (provided interface)** — linha reta saindo do componente com um círculo na ponta. Indica que o componente fornece aquele contrato.
 - **Semicírculo aberto (required interface)** — linha reta saindo do componente com um semicírculo na ponta. Indica que o componente precisa daquele contrato para funcionar.
+
 O encaixe entre o semicírculo e a bolinha representa a satisfação do contrato — o componente que precisa encontra o componente que fornece.
  
-O diagrama possui cinco interfaces:
+O diagrama possui seis interfaces:
  
 | Interface | Fornecida por | Consumida por |
 |---|---|---|
+| IApi | Backend API | ViewModel |
 | IRepository | Repository | ViewModel |
-| IApiGateway | API Gateway | Repository |
-| IBackendService | Backend Services | API Gateway |
-| IRecommendationService | Recommendation Service | API Gateway |
-| IPostgresDataSource | PostgresDataSource | Backend Services, Training Job, Recommendation Service |
-| IBucketDataSource | BucketDataSource | Backend Services, Training Job, Recommendation Service |
+| IBackendService | Backend Services | Backend API |
+| IRecommendationService | Inference Service | Backend API |
+| IPostgres | PostgreDataSource | Backend Services, Training Job, Inference Service |
+| IMongo | MongoDataSource | Backend Services, Training Job, Inference Service |
  
-O `Repository` está no centro do cliente: fornece a bolinha `IRepository` para o ViewModel e consome a bolinha `IApiGateway` do API Gateway por meio do seu semicírculo — abstraindo todas as chamadas de rede.
+O `ViewModel` consome dois contratos: `IApi` para comunicação com o servidor (via Backend API) e `IRepository` para acesso a dados persistidos localmente (via Repository na camada Data).
  
-`IPostgresDataSource` e `IBucketDataSource` são consumidas por três componentes cada — `Backend Services`, `Training Job` e `Recommendation Service` — pois todos precisam acessar dados persistidos, cada um com finalidades distintas.
+`IPostgres` e `IMongo` são consumidas por três componentes cada — `Backend Services`, `Training Job` e `Inference Service` — pois todos precisam acessar dados persistidos, cada um com finalidades distintas.
 
-### Responsabilidades do Storage Bucket
- 
-O Storage Bucket possui responsabilidade tripla, organizada internamente por prefixos de path:
- 
-| Path | Conteúdo | Escrito por | Lido por |
-|---|---|---|---|
-| `/media/` | Assets de mídia (imagens de eventos e atrações) | Backend Services | CDN Imagens |
-| `/events/` | Eventos brutos de comportamento (cliques, visualizações, compras) | Backend Services | Training Job |
-| `/model/` | Vetores latentes do modelo SVD (matrizes usuário × fator, item × fator) | Training Job | Recommendation Service |
- 
 ### Responsabilidades do PostgreSQL
  
-O PostgreSQL armazena exclusivamente dados transacionais e os hiperparâmetros do modelo SVD:
+O PostgreSQL armazena dados estruturados e transacionais:
  
 | Conteúdo | Escrito por | Lido por |
 |---|---|---|
 | Dados transacionais (usuários, pedidos, produtos, eventos) | Backend Services | Backend Services |
-| Hiperparâmetros SVD (n_fatores, learning_rate, epochs, versão, data_treino) | Training Job | Recommendation Service, Training Job |
+| Hiperparâmetros do modelo (n_fatores, learning_rate, epochs, versão, data_treino) | Training Job | Inference Service, Training Job |
+
+### Responsabilidades do MongoDB
+ 
+O MongoDB armazena dados não relacionais e de alta variabilidade:
+ 
+| Conteúdo | Escrito por | Lido por |
+|---|---|---|
+| Eventos de comportamento (cliques, visualizações, compras) | Backend Services | Training Job |
+| Vetores latentes do modelo (matrizes usuário × fator, item × fator) | Training Job | Inference Service |
 
 ### Decisões
 
-**Por que o ball-and-socket foi usado entre ViewModel e Repository?**
-O ViewModel não depende da implementação concreta do Repository — ele depende apenas do contrato `IRepository`. O ball-and-socket torna esse contrato visível no diagrama, o que uma seta tracejada simples não expressa.
+**Por que o ball-and-socket foi usado entre ViewModel e IApi/IRepository?**
+O ViewModel não depende de implementações concretas — ele depende apenas dos contratos `IApi` e `IRepository`. O ball-and-socket torna esses contratos visíveis no diagrama, o que setas tracejadas simples não expressam.
  
-**Por que o Repository passou a consumir IApiGateway em vez de IPostgresDataSource e IBucketDataSource?**
-O app React Native roda no dispositivo do usuário — nunca acessa banco de dados diretamente. Todo acesso a dados passa pela API do servidor. O Repository no cliente abstrai as chamadas HTTP para o API Gateway, não o acesso direto a fontes de dados. `IPostgresDataSource` e `IBucketDataSource` existem apenas no servidor.
+**Por que o Repository foi posicionado na camada Data?**
+O Repository é responsável por orquestrar o acesso a dados persistidos localmente. Posicioná-lo na camada Data centraliza toda a lógica de persistência em um único lugar, mantendo o ViewModel focado exclusivamente na lógica de apresentação. O acesso ao servidor ocorre via `IApi`, consumida diretamente pelo ViewModel.
  
-**Por que IPostgresDataSource e IBucketDataSource têm múltiplos consumidores?**
-Backend Services, Training Job e Recommendation Service têm necessidades distintas de acesso a dados, mas compartilham as mesmas fontes. Centralizar o acesso nos DataSources evita duplicação de lógica de conexão e mantém um único ponto de configuração para cada tecnologia de persistência.
+**Por que IPostgres e IMongo têm múltiplos consumidores?**
+Backend Services, Training Job e Inference Service têm necessidades distintas de acesso a dados, mas compartilham as mesmas fontes. Centralizar o acesso nos DataSources evita duplicação de lógica de conexão e mantém um único ponto de configuração para cada tecnologia de persistência.
  
-**Por que o Training Job usa seta tracejada simples em vez de ball-and-socket para o Recommendation Service?**
-O Training Job não consome uma interface fornecida pelo Recommendation Service — ele é acionado pelo próprio Recommendation Service periodicamente. A seta tracejada representa uma dependência de acionamento, não um contrato de interface.
+**Por que o Training Job usa seta tracejada simples em vez de ball-and-socket para o Inference Service?**
+O Training Job não consome uma interface fornecida pelo Inference Service — ele é acionado pelo próprio Inference Service periodicamente. A seta tracejada representa uma dependência de acionamento, não um contrato de interface.
  
-**Por que o SVD Model Store (.zip) foi removido?**
-O modelo SVD é composto por duas partes com naturezas distintas: hiperparâmetros (dados estruturados, poucos campos) e vetores latentes (arrays densos e pesados). Separar essas partes nos storages já existentes — PostgreSQL e Storage Bucket respectivamente — elimina um componente desnecessário e aproveita a infraestrutura já presente.
+**Por que o Storage Bucket foi substituído pelo MongoDB?**
+O MongoDB oferece flexibilidade para armazenar tanto eventos de comportamento quanto vetores latentes do modelo em formato de documento, eliminando a necessidade de um storage de arquivos separado. Isso simplifica a infraestrutura, mantém todos os dados dentro de um sistema de banco de dados gerenciado e facilita consultas sobre os dados armazenados.
  
-**Por que PostgreSQL e Storage Bucket ficam fora dos packages?**
+**Por que PostgreSQL e MongoDB ficam fora dos packages?**
 Packages representam agrupamentos do código da aplicação. Infraestrutura externa não pertence a nenhuma camada do sistema — colocá-la dentro de um package seria incorreto semanticamente.
 
 ## 15. Diagrama de Casos de Uso

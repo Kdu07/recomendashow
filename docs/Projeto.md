@@ -4237,7 +4237,168 @@ Com base no IA4People, a plataforma apresenta boa aderência inicial aos princí
 
 ## 23. Desenvolvimento do Projeto — Sprint 5
 
-### 23.1 Testes unitários do frontend (Sprint 5)
+### 23.1 Integração no Backend com o MongoDB
+
+#### 23.1.1 Dependência e configuração da conexão com o Mongo
+
+**Componentes:** `BackEnd.Aventura.csproj`, `IMongoConnectionFactory.cs`, `MongoConnectionFactory.cs`.
+
+**Como funciona:** o driver oficial (`MongoDB.Driver` 3.9.0) foi adicionado ao projeto principal. `IMongoConnectionFactory` expõe um único método, `GetDatabase()`, isolando o restante da aplicação dos detalhes de configuração — o mesmo padrão já usado para o Postgres (`IDbConnectionFactory`). A implementação resolve a conexão em ordem de prioridade: (1) connection string explícita (`ConnectionStrings:MongoConnection` ou `MONGO_CONNECTION_STRING`); (2) variáveis individuais — `MONGO_HOST`, `MONGO_PORT` (padrão `27017`), `MONGO_USER`, `MONGO_PASSWORD`, `MONGO_AUTH_SOURCE` (padrão `admin`). O nome do banco vem de `MONGO_DATABASE` (padrão `aventura_ml`).
+
+**Decisão de design:** se nem a connection string nem host/usuário/senha estiverem configurados, o construtor lança `InvalidOperationException` imediatamente — falha rápido na inicialização da aplicação, em vez de falhar silenciosamente só na primeira chamada ao Mongo. A classe é registrada como **singleton** no `DependencyInjection.cs`, seguindo a recomendação do próprio driver de reaproveitar uma única instância de `MongoClient`.
+
+**Evidências:** `BackEnd.Aventura.csproj` (linha do `PackageReference`); `MongoConnectionFactory.cs` (método `BuildClientSettings`); `DependencyInjection.cs` (`AddSingleton<IMongoConnectionFactory, MongoConnectionFactory>()`).
+
+**Análise:** a configuração via variáveis de ambiente segue o padrão já adotado pelo restante do backend (carregadas via `.env` no `Program.cs`), o que mantém consistência com a forma como o Postgres e o JWT já são configurados. O ponto de atenção é que, hoje, não existe nenhum mecanismo de *retry*/circuit breaker caso o Mongo esteja temporariamente indisponível — uma falha de rede no momento da consulta sobe como exceção não tratada especificamente (cai no branch genérico do `GlobalExceptionHandler`, HTTP 500).
+
+#### 23.1.2 Domínio — `EspetaculoImagem`
+
+**Como funciona:** classe imutável e simples, com três propriedades (`Conteudo: Stream`, `ContentType: string`, `NomeArquivo: string`). É o contrato que carrega o resultado da busca no Mongo até o controller, que o usa diretamente em `File(imagem.Conteudo, imagem.ContentType, imagem.NomeArquivo)`.
+
+**Evidências:** `EspetaculoImagem.cs`.
+
+**Análise:** por ser um tipo de domínio simples (sem lógica), não havia necessidade de teste unitário dedicado a ele — o que é coerente com o restante do código.
+
+#### 23.1.3 Repositório — regra de negócio de busca da imagem
+
+**Componentes:** `EspetaculoImagemRepository.cs`.
+
+**Como funciona:** a busca acontece em duas etapas. (1) **Correspondência exata** — filtro `metadata.espetaculo_nome == nome`, caminho rápido para quando o nome cadastrado no Mongo é idêntico ao do Postgres. (2) **Fallback tolerante** — se a etapa 1 não encontrar nada, o repositório varre os documentos do bucket comparando uma versão **normalizada** do nome (minúscula, sem acento, sem pontuação, hífen/underscore tratados como espaço) contra cada candidato, aceitando igualdade normalizada ou um nome ser prefixo do outro **respeitando limite de palavra** (mínimo de 3 caracteres de prefixo, para evitar que `"elis"` combine com `"elisabete"`). Quando há mais de um candidato compatível, prevalece o de maior sobreposição.
+
+**Por que essa regra existe:** o nome do espetáculo pode estar escrito de forma levemente diferente entre os dois bancos (ex.: `"Mamma Mia"` vs `"Mamma Mia!"`, ou `"Viva"` vs `"Viva – A Vida é Uma Festa In Concert"`). Sem o fallback, qualquer divergência de grafia resultaria em "imagem não encontrada" mesmo a imagem existindo.
+
+**Evidências:** `EspetaculoImagemRepository.cs` (métodos `FindFileInfo`, `Normalize`, `StartsWithWholeWord`).
+
+**Análise / risco conhecido:** o próprio código deixa registrado, em comentário, que o fallback faz uma varredura completa do bucket — aceitável na escala atual (dezenas de imagens), mas que não escala bem se o catálogo crescer muito; nesse cenário, persistir o nome já normalizado como campo indexado seria a melhoria natural. Esse trecho também é o que mais concentra risco de regressão silenciosa (um nome que hoje combina por prefixo pode parar de combinar se o texto for editado no Postgres ou no Mongo) e, como já registrado na seção de testes, ainda não tem um arquivo de teste unitário dedicado — só é exercitado indiretamente via `EspetaculoImagemServiceTests`, que usa nomes idênticos.
+
+#### 23.1.4 Serviço — orquestração entre Postgres e Mongo
+
+**Componentes:** `EspetaculoImagemService.cs`.
+
+**Como funciona:**
+
+```csharp
+public EspetaculoImagem GetImagem(Guid espetaculoId)
+{
+    var espetaculo = _espetaculoService.GetById(espetaculoId); // Postgres
+    var imagem = _imagemRepository.GetByEspetaculoNome(espetaculo.Nome); // Mongo
+    if (imagem is null)
+        throw new NotFoundException($"Imagem do espetáculo '{espetaculo.Nome}' não encontrada.");
+    return imagem;
+}
+```
+
+Recebe um `Guid` (ID do espetáculo no Postgres), resolve o `Nome` via `IEspetaculoService` (já existente) e só então consulta o Mongo. Se o espetáculo não existir, a exceção já vem do serviço de espetáculos; se existir mas não tiver imagem, uma `NotFoundException` é lançada aqui.
+
+**Evidências:** `EspetaculoImagemService.cs`.
+
+**Análise:** esse é o ponto de integração entre os dois bancos. A dependência em `IEspetaculoService` (em vez de acessar o Postgres diretamente) mantém a separação de camadas do projeto e evita duplicar a lógica de "espetáculo não encontrado".
+
+#### 23.1.5 Controller — endpoint público de imagem
+
+**Como funciona:** novo endpoint `GET /api/Espetaculo/{id}/imagem`, marcado com `[AllowAnonymous]` — diferente dos demais endpoints de `EspetaculoController`, que herdam a política de autenticação global do `Program.cs`. Erros de "não encontrado" resultam em 404, via `GlobalExceptionHandler`.
+
+**Por que é público:** a URL do endpoint é usada diretamente como `source.uri` em componentes `<Image>` do app (ver X.4.1), e o `<Image>` nativo do React Native não envia header `Authorization` nas requisições que dispara para carregar a imagem.
+
+**Evidências:** `EspetaculoController.cs` (método `GetImagem`).
+
+**Análise / risco aceito:** tornar o endpoint público é uma troca deliberada — qualquer pessoa com o `id` de um espetáculo consegue baixar a imagem sem autenticação. Como a imagem em si não é um dado sensível (é um pôster público do espetáculo), esse risco foi considerado aceitável, mas vale registrar explicitamente como uma decisão de design, não um descuido.
+
+### 23.2 Integração no Frontend com o MongoDB
+
+#### 23.2.1 `showService.js` — montagem da URL e fallback
+
+**Como funciona:** duas funções concentram a lógica nova — `getShowImageUrl(dto)` monta `${API_BASE}/api/Espetaculo/{id}/imagem` quando o DTO tem `id`; `getFallbackImage(dto)` é o comportamento **anterior** à integração (mapa de regex → imagem local em `assets/home`), mantido como rede de segurança. `getShowImage(dto)` decide entre as duas: se há `id`, usa a URL remota; senão, usa o mapa local.
+
+```javascript
+function getShowImage(dto) {
+  const url = getShowImageUrl(dto);
+  return url ? { uri: url } : getFallbackImage(dto);
+}
+```
+
+`getShowImage` é usado em `mapDtoToHomeEvent` (telas de listagem) e em `mapDtoToShowInfo` (`heroImage` da tela de detalhes).
+
+**Evidências:** `showService.js` (funções `getShowImageUrl`, `getFallbackImage`, `getShowImage`).
+
+**Análise:** ao manter `getFallbackImage` em vez de removê-lo, a integração com o Mongo foi feita de forma **aditiva** — nenhum dado mockado ou de teste que não tenha `id` deixa de exibir alguma imagem. Essa função hoje só é alcançada quando o DTO não tem `id`, o que na prática deve ser raro em produção (todo espetáculo vindo da API tem `id`).
+
+#### 23.2.2 `FallbackImage.js` — componente novo
+
+**Como funciona:**
+
+```javascript
+export default function FallbackImage({ source, fallbackSource = DEFAULT_FALLBACK, ...props }) {
+  const [hasError, setHasError] = useState(false);
+  const isRemote = Boolean(source) && typeof source === 'object' && 'uri' in source;
+  let resolvedSource = source;
+  if (isRemote && hasError) resolvedSource = fallbackSource;
+
+  return (
+    <Image
+      {...props}
+      source={resolvedSource}
+      onError={isRemote ? () => setHasError(true) : props.onError}
+    />
+  );
+}
+```
+
+Wrapper de `<Image>` que troca automaticamente para uma imagem local (`assets/home/amazonica.jpeg`, por padrão) quando o carregamento da imagem remota falha. A lógica só entra em ação quando a fonte é remota (`{ uri }`); imagens locais (`require(...)`) passam direto.
+
+**Por que esse componente existe:** sem ele, qualquer falha na URL do Mongo (espetáculo sem imagem cadastrada, backend fora do ar, rede instável no celular) apareceria como um ícone de imagem quebrada para o usuário. É a peça que torna o consumo da URL do Mongo **resiliente** no app.
+
+**Evidências:** `FallbackImage.js`.
+
+**Análise:** é um componente puro de UI, sem chamadas de rede próprias — só reage ao evento `onError` do `<Image>` nativo. Não há, hoje, nenhum teste de componente cobrindo esse `onError` (ver lacuna registrada na seção de testes); a cobertura existente é apenas indireta, sobre os dados que `showService.js` produz.
+
+#### 23.2.3 Onde o componente passou a ser usado
+
+| Componente | Tela/uso | Prop consumida |
+|---|---|---|
+| `PosterCard.js` | Cards de pôster em listagens/carrosséis | `image` (de `mapDtoToHomeEvent`) |
+| `ShowHero.js` | Banner no topo da tela de detalhes do espetáculo | `heroImage` (de `mapDtoToShowInfo`) |
+
+**Análise:** em ambos os casos, o componente de UI não sabe (nem precisa saber) se a imagem vem do Mongo ou é um fallback local — recebe um `source` já resolvido por `showService.js`. Essa separação de responsabilidades (decisão de fonte da imagem fica no service; o componente só renderiza e trata erro) facilita testar cada parte isoladamente.
+
+### 23.3 Fluxo de ponta a ponta
+
+1. App pede a lista/detalhe de espetáculos (`GET /api/Espetaculo` ou `/{id}`) — retorna só dados do Postgres, sem a imagem em si.
+2. `showService.js` monta `image`/`heroImage` como `{ uri: '<API_BASE>/api/Espetaculo/<id>/imagem' }`.
+3. `PosterCard`/`ShowHero` renderizam `<FallbackImage source={{ uri }} />`.
+4. O React Native faz, por conta própria, um `GET` para essa URL — sem token, pois o endpoint é `[AllowAnonymous]`.
+5. `EspetaculoController.GetImagem` → `EspetaculoImagemService.GetImagem(id)`: busca o espetáculo no Postgres (404 se não existir) → usa o `Nome` para buscar no GridFS (exata + fallback normalizado).
+6. Encontrando, o controller devolve o stream com o `Content-Type` correto; o RN renderiza normalmente.
+7. Não encontrando (404) ou falhando a requisição por qualquer motivo de rede, o `onError` do `FallbackImage` dispara e a imagem local padrão aparece no lugar.
+
+### 23.4 Configuração necessária / variáveis de ambiente
+
+| Variável | Obrigatória? | Padrão | Descrição |
+|---|---|---|---|
+| `MONGO_CONNECTION_STRING` ou `ConnectionStrings:MongoConnection` | Não (alternativa às de baixo) | — | Connection string completa; tem prioridade sobre as demais |
+| `MONGO_HOST` | Sim, se não houver connection string | — | Host do MongoDB |
+| `MONGO_PORT` | Não | `27017` | Porta |
+| `MONGO_USER` | Sim, se não houver connection string | — | Usuário |
+| `MONGO_PASSWORD` | Sim, se não houver connection string | — | Senha |
+| `MONGO_AUTH_SOURCE` | Não | `admin` | Banco usado para autenticação |
+| `MONGO_DATABASE` | Não | `aventura_ml` | Banco com o bucket GridFS das imagens |
+
+As variáveis são carregadas pelo `Program.cs` a partir de um arquivo `.env` na raiz do repositório (mesmo mecanismo já usado para Postgres/JWT), e referenciadas também pelo `docker-compose-back.yml`.
+
+### 23.5 Análise consolidada — riscos, limitações e decisões de design
+
+| Ponto | Descrição | Tipo |
+|---|---|---|
+| Vínculo por nome, não por ID | A ligação entre Postgres e Mongo depende do nome do espetáculo estar coerente entre os dois bancos | Risco conhecido (mitigado pelo fallback normalizado) |
+| Fallback varre o bucket inteiro | Aceitável na escala atual; não persiste nome normalizado indexado | Limitação de escala, registrada em comentário no código |
+| Endpoint de imagem é público | Decisão deliberada, exigida pelo `<Image>` do React Native | Decisão de design (risco aceito) |
+| Sem cache HTTP/CDN | Cada exibição gera uma nova requisição ao backend → GridFS | Melhoria futura recomendada |
+| Sem retry/circuit breaker para o Mongo | Falha de conexão sobe como erro 500 genérico | Melhoria futura recomendada |
+| `EspetaculoImagemRepository` sem teste unitário dedicado | O algoritmo de normalização/match de nomes só é exercitado indiretamente | Lacuna de teste (ver seção de Execução de Testes) |
+
+**Conclusão:** a integração foi implementada de forma aditiva (mantendo o fallback local existente) e com separação de camadas consistente com o restante do projeto (Domínio/Infraestrutura/Repositório/Serviço/Controller no backend; Service/Componente/Tela no frontend). Os principais riscos — vínculo por nome e escala do fallback de busca — já estão documentados em comentários no próprio código-fonte, o que indica que foram decisões conscientes da equipe, não descuidos.
+
+#### 23.6 Testes unitários do frontend (Sprint 5)
 
 Na Sprint 5, a suíte de testes unitários do frontend foi expandida para cobrir a totalidade das camadas de `services` e `viewmodels` da aplicação React Native, eliminando as exclusões de cobertura que existiam desde a Sprint 4 e fechando lacunas pontuais nos arquivos já testados anteriormente. A suíte continua localizada em `src/frontend/mobile-app-aventura/tests` e é executada com Jest.
 
@@ -4267,7 +4428,7 @@ npm test
 
 O threshold mínimo de cobertura configurado no `package.json` (`coverageThreshold.global`) aumentou para 90% para `statements` e `lines`, valor amplamente superado pelo resultado obtido.
 
-### 23.2 Testes unitários do Backend (Sprint 5)
+### 23.7 Testes unitários do Backend (Sprint 5)
 
 Na Sprint 5, a suíte de testes unitários do backend, localizada em `src/backend/BackEnd.Aventura.Tests`, foi revisada com foco na elevação da cobertura de linha para ≥ 90%, partindo da baseline de 85,62% e do gate de 70% herdados da Sprint 3. A revisão foi orientada pelo próprio relatório de cobertura (`coverlet`/`cobertura.xml`): a partir dele foram identificadas todas as classes e branches ainda sem cobertura, e novos testes foram escritos especificamente para fechar essas lacunas — constructors com argumentos nulos, validações de borda, caminhos de exceção e overloads pouco exercitados.
 

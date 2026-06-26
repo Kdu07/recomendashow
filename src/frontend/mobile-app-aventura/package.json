@@ -35,6 +35,7 @@
     "@babel/preset-react": "^7.29.7",
     "@testing-library/react": "^16.3.2",
     "babel-jest": "^30.4.1",
+    "babel-preset-expo": "^56.0.15",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "react-test-renderer": "19.1.0"
@@ -59,9 +60,6 @@
       "\\.(png|jpe?g|webp|avif|gif|svg)$": "<rootDir>/tests/__mocks__/fileMock.js"
     },
     "rootDir": ".",
-    "setupFiles": [
-      "<rootDir>/jest.setup.js"
-    ],
     "modulePaths": [
       "<rootDir>"
     ],

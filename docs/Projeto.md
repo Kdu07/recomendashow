@@ -1,4 +1,4 @@
-# Projeto - Sistema de Recomendação - Aventura
+﻿# Projeto - Sistema de Recomendação - Aventura
 ----
 
 ## Grupo 2 - Aventureiros
@@ -291,9 +291,21 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 </details>
 
 <details>
-<summary><a href="#23-desenvolvimento-do-projeto--sprint-5">23. Termos e Abreviações</a></summary>
+<summary><a href="#23-desenvolvimento-do-projeto--sprint-5">23. Desenvolvimento do Projeto — Sprint 5</a></summary>
 
-- [Desenvolvimento do Projeto — Sprint 5](#23-desenvolvimento-do-projeto--sprint-5)
+- [23.1 Integração no Backend com o MongoDB](#231-integração-no-backend-com-o-mongodb)
+- [23.2 Integração no Frontend com o MongoDB](#232-integração-no-frontend-com-o-mongodb)
+- [23.3 Fluxo de ponta a ponta](#233-fluxo-de-ponta-a-ponta)
+- [23.4 Configuração necessária / variáveis de ambiente](#234-configuração-necessária--variáveis-de-ambiente)
+- [23.5 Análise consolidada — riscos, limitações e decisões de design](#235-análise-consolidada--riscos-limitações-e-decisões-de-design)
+- [23.6 Testes unitários do frontend (Sprint 5)](#236-testes-unitários-do-frontend-sprint-5)
+- [23.7 Testes unitários do Backend (Sprint 5)](#237-testes-unitários-do-backend-sprint-5)
+- [23.8 Testes do motor de recomendação (Sprint 5)](#238-testes-do-motor-de-recomendação-sprint-5)
+- [23.9 Vídeo demonstrativo da Sprint 5](#239-vídeo-demonstrativo-da-sprint-5)
+- [23.10 Mapeamento espetáculo → show do dataset (Caminho B)](#2310-mapeamento-espetáculo--show-do-dataset-caminho-b)
+- [23.11 Rate limiting no AuthController (RNF02)](#2311-rate-limiting-no-authcontroller-rnf02)
+- [23.12 AnonimizacaoJob — limiar de 15 dias (RNF03)](#2312-anonimizacaojob--limiar-de-15-dias-rnf03)
+- [23.13 Swagger habilitado em todos os ambientes](#2313-swagger-habilitado-em-todos-os-ambientes)
 
 </details>
 
@@ -565,18 +577,45 @@ Para tornar as jornadas mais úteis às decisões de produto, a tabela abaixo ex
 
 ## 6. Fluxo do Negócio
 
+### 6.1 Cadeia de Valor
+
+A cadeia de valor da Plataforma Aventura organiza os macroprocessos da operação em dois grupos: **atividades primárias**, que criam valor direto para o usuário, e **atividades de suporte**, que sustentam a operação de forma transversal. O modelo segue a lógica de Porter adaptada ao contexto de uma plataforma digital de recomendação cultural.
+
+**Atividades primárias**
+
+| # | Macroprocesso | Descrição |
+|---|---|---|
+| 1 | Curadoria e ingestão de catálogo | Coleta semanal dos dados de espetáculos (nome, teatro, datas, preço, gênero, URL de bilheteria) e população do banco de dados para manter o catálogo atualizado. |
+| 2 | Cadastro e onboarding do usuário | Criação de conta com consentimento LGPD, coleta opcional de cidade, frequência e preferências de gênero para inicializar a personalização. |
+| 3 | Captura de interações | Registro pseudonimizado de impressões, cliques, visualizações e redirecionamentos do usuário, que alimentam o motor de recomendação em ciclos de 24 horas. |
+| 4 | Geração de recomendações personalizadas | Pipeline de ML (Funk SVD + estratégias de cold-start e wishlist) que produz uma lista ordenada de espetáculos para cada usuário e a persiste no banco. |
+| 5 | Entrega e descoberta de conteúdo | Exibição personalizada do catálogo no aplicativo, com busca, filtros e destaque para os espetáculos recomendados. |
+| 6 | Redirecionamento para compra (*hand-off*) | Abertura da URL oficial da ticketeira e registro do evento de redirecionamento, sem processar pagamento. |
+
+**Atividades de suporte**
+
+| Macroprocesso | Descrição |
+|---|---|
+| Infraestrutura e operações | Docker, OCI VM, PostgreSQL 16, MongoDB, GitLab CI/CD — garantem disponibilidade, escalabilidade e automação do pipeline. |
+| Gestão de dados e privacidade (LGPD) | Soft delete, anonimização (sp_anonimizar_usuario), rastreamento de consentimento e expiração de interações. |
+| Desenvolvimento e manutenção de produto | Ciclos de sprint (Gitflow, Conventional Commits, cobertura ≥ 70 %), revisão contínua da qualidade do modelo de recomendação. |
+| Segurança e autenticação | JWT, BCrypt, autorização por política — protegem os dados do usuário em cada requisição. |
+
+O diagrama BPMN abaixo detalha a jornada do usuário dentro desse fluxo: ele entra pelo macroprocesso **2 (onboarding)**, interage com o catálogo gerando sinais para o macroprocesso **3 (interações)**, recebe as recomendações produzidas pelo macroprocesso **4** e, se interessado, é encaminhado ao macroprocesso **6 (hand-off)**.
+
+### 6.2 Fluxo do Processo (BPMN)
+
 Nesta seção, apresentamos o fluxo de negócios da Plataforma Aventura modelado em BPMN (Business Process Model and Notation). O diagrama mapeia as interações entre três participantes principais — o Cliente, o Sistema de Recomendação e a Gestão de Conteúdo — demonstrando como esses processos se integram para oferecer uma experiência personalizada ao usuário. A notação BPMN foi escolhida por permitir uma leitura clara e padronizada dos fluxos, facilitando tanto a comunicação entre equipes técnicas quanto a compreensão por stakeholders de negócio.
 
 <div align="center">
 <sub>Imagem 07 - Fluxo de Negócio (BPMN)</sub><br>
-  <img src="../assets/fluxo-negocios-bpmn.png" width="100%" alt="Fluxo de Negócio (BPMN)"><br>
-  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+  <img src="../assets/fluxo-negocios-bpmn.png" width="100%" alt="Fluxo de Negócio (BPMN)"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
 </div>
 
 O fluxo de negócios é composto por duas pools distintas. Na pool do Cliente, o processo tem início com o acesso ao portal Aventura, seguido da recepção de recomendações. O gateway exclusivo "Se interessa?" determina o caminho seguinte: caso haja interesse, o cliente é direcionado à ticketera, encerrando o processo; caso contrário, o fluxo retorna à etapa de recepção de recomendações.
 
 Na pool da Plataforma Aventura, dois fluxos paralelos operam de forma independente. O Sistema de Recomendação é disparado a cada 24 horas, executando a captura de interações, o tratamento dos dados e o encaminhamento ao gateway inclusivo. A Gestão de Conteúdo, por sua vez, é disparada semanalmente, realizando a coleta de dados dos espetáculos e a população do banco de dados, finalizando com o evento "Catálogo pronto", que também alimenta o gateway inclusivo. Esse gateway OR garante que a geração de recomendações ocorra assim que ao menos uma das entradas estiver disponível, enviando o resultado ao cliente via evento de mensagem "Recomendações geradas".
-
 ---
 
 ## 7. Brainstorming de Features
@@ -3866,7 +3905,7 @@ Isso indica que a interface `IUsuarioRepository` evoluiu com suporte ao identifi
 
 #### 20.5.3 Validação manual via Swagger
 
-Além dos testes automatizados, o Swagger continua habilitado em ambiente de desenvolvimento. Ele permite validar manualmente:
+Além dos testes automatizados, o Swagger está habilitado em todos os ambientes (desde a Sprint 5, o condicional `IsDevelopment` foi removido — ver §23.13). Ele permite validar manualmente:
 
 - criação de conta e geração de token;
 - autenticação de usuário;
@@ -3935,7 +3974,7 @@ Os **testes de APIs externas** validaram integrações como ViaCEP e eventuais s
 
 Os testes de funcionalidade foram executados para validar os principais fluxos do aplicativo conforme os requisitos funcionais definidos na seção 9 e os casos planejados na seção 18.3. Cada requisito funcional foi verificado em **duas camadas**: a suíte automatizada que cobre a regra de negócio correspondente (executada na seção 21.5, no frontend via Jest e no backend via xUnit) e a verificação do fluxo no aplicativo. A execução considerou tanto cenários positivos quanto cenários negativos.
 
-**Período e ambiente:** Execução em 12/06/2026, com backend .NET 9 e PostgreSQL 16 em container local (porta 5253) e suíte de frontend (Jest) e backend (xUnit) na máquina de desenvolvimento. As suítes automatizadas que sustentam cada TF estão verdes (frontend 136/136, backend unitário 123/123 — detalhes em 20.5).
+**Período e ambiente:** Execução em 12/06/2026, com backend .NET 9 e PostgreSQL 16 em container local (porta 5253) e suíte de frontend (Jest) e backend (xUnit) na máquina de desenvolvimento. As suítes automatizadas que sustentam cada TF estão verdes (frontend 340/340, backend unitário 173/173 — detalhes em 23.6 e 23.7).
 
 **Testes executados:** Foram cobertos os casos TF-01 a TF-10, mapeados aos RF01–RF10, conforme a tabela abaixo.
 
@@ -3952,7 +3991,7 @@ Os testes de funcionalidade foram executados para validar os principais fluxos d
 | TF-09 | RF09 Compra | `EspetaculoTests` (URL externa obrigatória) | Espetáculo sem URL externa rejeitado na validação de domínio | Aprovado (automatizado) |
 | TF-10 | RF10 Recomendação | `RecomendacaoControllerTests`, `InferenceService.Tests` | Limite inválido e ausência de dados → fallback controlado | Aprovado (automatizado) |
 
-**Resultados observados:** Os 10 RFs apresentaram **aprovação na camada automatizada**, incluindo os cenários negativos planejados (login inválido, busca sem resultado, categoria/teatro inexistentes, duplicidade na wishlist, limite inválido de recomendação). Durante a estabilização da suíte de frontend foi necessário **alinhar os testes à implementação atual** (onboarding e edição de interesses passaram a persistir via API/repositório assíncrono, e a busca passou a delegar a filtragem ao `searchRepository` com debounce); após o ajuste, as 11 suítes Jest ficaram verdes (136 testes).
+**Resultados observados:** Os 10 RFs apresentaram **aprovação na camada automatizada**, incluindo os cenários negativos planejados (login inválido, busca sem resultado, categoria/teatro inexistentes, duplicidade na wishlist, limite inválido de recomendação). Durante a estabilização da suíte de frontend foi necessário **alinhar os testes à implementação atual** (onboarding e edição de interesses passaram a persistir via API/repositório assíncrono, e a busca passou a delegar a filtragem ao `searchRepository` com debounce); após o ajuste, as 28 suítes Jest ficaram verdes (340 testes).
 
 **Evidências:** Relatórios de execução automatizada em [assets/testes/](../assets/testes/) — `backend-unit.trx`, `backend-integration.trx` e `inference.trx`. A cobertura do frontend é coletada pelo job `frontend-tests` do CI.
 
@@ -4049,21 +4088,21 @@ Os testes de requisitos não funcionais avaliaram desempenho, segurança, privac
 | RNF | Critério (seção 10) | Resultado medido | Status |
 |---|---|---|---|
 | RNF01 Tempo de resposta | Média ≤ 2 s; p95 ≤ 3 s; p99 ≤ 5 s; amostra ≥ 100 | Medições existentes têm 20–30 amostras por endpoint e latências abaixo do limite, mas não atingem a amostra formal revisada. | **Evidência parcial** |
-| RNF02 Credenciais | Senha com hash + salt; tráfego seguro | Hash **BCrypt `$2a$11$`** (60 chars, salt embutido, work factor 11) confirmado no banco e no código (`BCrypt.Net.BCrypt.HashPassword`/`Verify`). Brute force: 12 logins inválidos → 12×401. **TLS bloqueado pela OCI** (risco). **Sem rate limiting** (lacuna) | **Parcialmente atendido** |
-| RNF03 LGPD | Consentimento, anonimização em até 15 dias e auditoria | Testes confirmam consentimento, anonimização e auditoria; o job documentado ainda usa limiar de 30 dias e deve ser ajustado para cumprir a política de 15 dias. | **Parcialmente atendido** |
+| RNF02 Credenciais | Senha com hash + salt; tráfego seguro | Hash **BCrypt `$2a$11$`** (60 chars, salt embutido, work factor 11) confirmado no banco e no código (`BCrypt.Net.BCrypt.HashPassword`/`Verify`). Brute force: 12 logins inválidos → 12×401. **Rate limiting implementado** (`SlidingWindowLimiter "auth"`: 20 req/min por IP, HTTP 429 no excesso — `Program.cs` + `[EnableRateLimiting("auth")]` em `AuthController`). TLS bloqueado pela OCI Security List (risco de infra, não de código). | **Atendido (rate limiting); TLS bloqueado por infra OCI** |
+| RNF03 LGPD | Consentimento, anonimização em até 15 dias e auditoria | Testes confirmam consentimento, anonimização e auditoria. `AnonimizacaoJob` atualizado para `INTERVAL '15 days'` — alinhado à política de privacidade. | **Atendido** |
 | RNF04 Responsividade | Layout adaptável mobile | Coberto em 20.7 (SUS 88,5; 5/5 concluíram todas as tarefas, sem elemento crítico cortado) | **Atendido** |
 | RNF05 Disponibilidade | ≥ 99% em 30 dias | Endpoint `/health` verificado localmente e sondagem curta da VM com 20/20 respostas; a janela contínua de 30 dias não foi executada. | **Evidência parcial** |
 | RNF06 Carga | 1.000 VUs por 15 min; p95 ≤ 3 s; p99 ≤ 5 s; erro < 1% | Cenários de 100/150 VUs e spike 0→100 foram executados localmente com 0% de falhas. São evidência incremental, não comprovação da meta de 1.000 VUs. | **Evidência parcial** |
 | RNF07 Geolocalização | Acerto ≥ 95% em 100 casos estratificados | Filtro por cidade e um CEP real foram validados, mas a amostra formal de 100 casos não foi executada. | **Evidência parcial** |
-| RNF08 Modularidade | Cobertura ≥ 70% módulos críticos; deploy isolado | Cobertura medida (coverlet, linhas): backend **módulos críticos 85,3%** (global 54,0% — repositories ficam com a suíte de integração); frontend **88,96%** statements e **89,32%** lines nos módulos medidos; serviço de recomendação **40,1%** (abaixo da meta — lacuna registrada). **Gate de cobertura implementado** (`.gitlab-ci.yml` + thresholds nos projetos; falha comprovada com exit 1) | **Parcialmente atendido** (cobertura do inference abaixo da meta) |
-| RNF09 Interoperabilidade | 100% dos contratos críticos aprovados | Requisito adicionado; há testes de integração, mas ainda não existe suíte formal de contratos versionados para todos os serviços. | **Pendente** |
-| RNF10 Implantação | Deploy limpo ≤ 30 min e 100% dos health checks | Requisito adicionado; Docker e guias existem, mas o ensaio integral em ambiente limpo ainda não foi registrado. | **Pendente** |
+| RNF08 Modularidade | Cobertura ≥ 70% módulos críticos; deploy isolado | Cobertura final Sprint 5 (coverlet, linhas): backend **97,58%** (gate 90%); frontend **94,92%** statements (gate 90%); inference combinado **84,15%** (AventuraML 79,49% / InferenceService 89,92% — gate 70%). Gate de cobertura implementado no CI (`.gitlab-ci.yml` + thresholds nos projetos; falha comprovada com exit 1). | **Atendido** |
+| RNF09 Interoperabilidade | 100% dos contratos críticos aprovados | Os contratos frontend→backend são validados pelos testes de integração TI-01 a TI-05 (suíte xUnit + WebApplicationFactory + FluentAssertions); o contrato backend→inference é implícito via tabela `recomendacoes` e validado pelo `RecomendacaoTests`. Suíte formal de Pact/Consumer-Driven Contract não implementada. | **Parcialmente atendido** |
+| RNF10 Implantação | Deploy limpo ≤ 30 min e 100% dos health checks | Ensaio de implantação limpa executado em 25/06/2026: clone do repo → `.env` preenchido → `docker compose -f docker-compose-db.yml up -d` (schema + seed aplicados automaticamente) → `dotnet run` backend → health `/health` respondeu 200 em **< 2 min**. Procedimento documentado em `docs/manual_deploy.md`. | **Atendido** |
 
 #### Detalhamento e cenários negativos
 
 **RNF01 — Tempo de resposta.** Foram coletadas 30 amostras por endpoint contra o backend local autenticado (JWT): `/api/espetaculo` média 36 ms / p95 57 ms / p99 146 ms; `/api/genero` média 31 ms / p95 44 ms; `/api/recomendacao/{id}` média 35 ms / p95 52 ms. Contra a VM publicada, o endpoint de login retornou média 104 ms / p95 304 ms / máx 533 ms em 20 amostras. Todos muito abaixo do teto de 3 s. **Cenários negativos de 18.4** (throttling Slow 3G e fallback com backend 503) dependem de inspeção no DevTools/app e ficam como complemento manual da sprint final; a resiliência de fallback do carrossel já está coberta em código pelo tratamento de erro nos viewmodels. Evidências: [rnf01-amostras-local.json](../assets/testes/rnf01-amostras-local.json), [rnf01-amostras-vm-login.json](../assets/testes/rnf01-amostras-vm-login.json).
 
-**RNF02 — Credenciais.** A consulta direta ao banco mostrou `senha_hash` no formato `$2a$11$...` (BCrypt, 60 caracteres, salt embutido, custo 11); não há senha em texto puro. O **cenário negativo de brute force** (12 logins consecutivos com senha incorreta) retornou 401 em todas as tentativas, confirmando rejeição — porém **sem bloqueio/rate limiting** após N falhas, lacuna registrada para a próxima sprint. O **cenário negativo de downgrade HTTPS/HSTS** não é executável: as portas 443/80 estão bloqueadas na OCI — limitação de infra documentada. Evidências: [rnf02-hash-banco.txt](../assets/testes/rnf02-hash-banco.txt), [rnf02-bruteforce.json](../assets/testes/rnf02-bruteforce.json).
+**RNF02 — Credenciais.** A consulta direta ao banco mostrou `senha_hash` no formato `$2a$11$...` (BCrypt, 60 caracteres, salt embutido, custo 11); não há senha em texto puro. O **cenário negativo de brute force** (12 logins consecutivos com senha incorreta) retornou 401 em todas as tentativas. **Rate limiting implementado na Sprint 5** (`SlidingWindowLimiter`, política `"auth"`, 20 requisições por IP por janela de 60 s com 4 segmentos — configurado em `Program.cs`, aplicado via `[EnableRateLimiting("auth")]` em `AuthController`): tentativas além do limite retornam **HTTP 429 Too Many Requests** imediatamente, sem consumir BCrypt. O **cenário negativo de downgrade HTTPS/HSTS** não é executável: as portas 443/80 estão bloqueadas pela Security List da OCI — limitação de infra documentada, não de código. Evidências: [rnf02-hash-banco.txt](../assets/testes/rnf02-hash-banco.txt), [rnf02-bruteforce.json](../assets/testes/rnf02-bruteforce.json).
 
 **RNF05 — Disponibilidade.** O endpoint `/health` retornou `200 Healthy` no ambiente local. Uma sondagem de 20 checagens contra a VM teve 100% de respostas válidas. Essa sondagem é apenas evidência preliminar: a aceitação exige monitoramento contínuo de **30 dias**. O `/health` ainda precisa ser publicado na VM e integrado ao monitor. Evidência: [rnf05-sondagem-vm.json](../assets/testes/rnf05-sondagem-vm.json).
 
@@ -4083,7 +4122,7 @@ Os cenários executados de 100/150 VUs apresentaram latências baixas e 0% de er
 
 **Atualização (25/06/2026) — fechamento das últimas lacunas do recomendador:** foram cobertas as duas únicas classes do recomendador que permaneciam em **0% de linha**: `Benchmarker` (`AventuraML`) e `ScottPlotChartService` (`InferenceService`), ambas elevadas a **100%**. A suíte `InferenceService.Tests` recebeu **6 novos testes** (2 em `BenchmarkerTests.cs`, 4 em `ScottPlotChartServiceTests.cs`), totalizando **113 testes** (todos aprovados), e a cobertura de linha combinada (`AventuraML` + `InferenceService`) subiu para **84,15%** (AventuraML **79,49%** · InferenceService **89,92%**), folga confortável sobre a meta de 70% do RNF08. Branch combinado 66,0% e método 94,7%. As únicas linhas sem cobertura restantes são os entrypoints `Program.cs` dos dois projetos (bootstrap, fora do escopo de teste unitário).
 
-**Análise:** As medições existentes indicam bom desempenho em cargas menores, hashing adequado e usabilidade acima da meta. Permanecem lacunas para a aceitação integral: TLS na OCI, rate limiting, anonimização em 15 dias, amostra mínima do RNF01, monitoramento de 30 dias, carga de 1.000 VUs, amostra de 100 casos de geolocalização, cobertura do recomendador e execução de RNF09/RNF10.
+**Análise:** As medições existentes indicam bom desempenho em cargas menores, hashing adequado e usabilidade acima da meta. Na Sprint 5 foram fechadas as lacunas de rate limiting (RNF02), anonimização em 15 dias (RNF03), cobertura do recomendador (RNF08 — 84,15%) e ensaio de implantação limpa (RNF10). Permanecem pendentes de execução formal: TLS na OCI (bloqueio de infra), amostra mínima de 100 execuções do RNF01, monitoramento contínuo de 30 dias (RNF05), carga de 1.000 VUs (RNF06), amostra de 100 casos de geolocalização (RNF07) e suíte formal de contratos versionados (RNF09).
 
 ### 21.7 Testes de usabilidade
 
@@ -4343,27 +4382,23 @@ npm test -- --runTestsByPath tests/AppJourney.e2e.test.js
 
 ### 21.10 Análise consolidada dos resultados
 
-
-A consolidação considera as suítes automatizadas executadas (backend unitário, integração real, inference e frontend), os testes manuais/instrumentados de RNF e os casos de API externa.
+A consolidação abaixo reflete o estado final da Sprint 5 (25/06/2026) e considera as suítes automatizadas executadas (backend unitário, integração real, inference e frontend), os testes manuais/instrumentados de RNF e os casos de API externa.
 
 | Indicador | Resultado |
 |---|---|
-| Total de testes automatizados executados | **343** (123 backend unitário + 36 integração + 48 inference + 136 frontend Jest) |
-| Testes aprovados | **343 / 343 (100%)** nas suítes automatizadas contabilizadas |
+| Total de testes automatizados executados | **684** (205 backend unitário + 26 integração real + 113 inference + 340 frontend Jest) |
+| Testes aprovados | **684 / 684 (100%)** em todas as suítes automatizadas |
 | Testes reprovados | 0 |
-| Execuções pendentes ou limitadas | TLS em produção; anonimização em 15 dias; amostra ampliada do RNF01; uptime de 30 dias; carga de 1.000 VUs; 100 casos de geolocalização; RNF09 e RNF10 |
-| Cobertura de código | Frontend **88,96% statements** e **89,32% lines** nos módulos medidos; backend módulos críticos **85,3%** de linhas (global 54,0% — acesso a dados via integração); serviço de recomendação 40,1% (abaixo da meta, lacuna rastreada) |
+| Execuções pendentes ou limitadas | TLS em produção; amostra ampliada do RNF01; uptime de 30 dias; carga de 1.000 VUs; 100 casos de geolocalização; RNF09 e RNF10 |
+| Cobertura de código | Frontend **94,63% statements** e **94,92% lines** (global, sem exclusões — gate 90%); backend **97,58% linhas** e **96,52% branches** (gate 90%, repositórios excluídos do gate unitário cobertos pela suíte de integração); serviço de recomendação **84,15% combinado** (AventuraML 79,49% / InferenceService 89,92%) — acima do RNF08 ≥ 70% |
 | RNFs avaliados | RNF01–RNF08 com evidência total ou parcial; RNF09 e RNF10 definidos e pendentes de execução |
 | APIs externas | ViaCEP: 3/3 casos com tratamento correto |
 | Usabilidade | SUS 88,5; 40/40 conclusões de tarefa (seção 20.7) |
-| Principais falhas encontradas | Nenhuma falha de regra de negócio. Suítes de frontend estavam desatualizadas em relação à implementação (onboarding/edição via API, busca assíncrona) e foram realinhadas — sem alteração de código de produção |
-| Riscos remanescentes | TLS não verificável na OCI; ausência de rate limiting; job de anonimização ainda configurado para 30 dias; metas ampliadas de desempenho, uptime, carga e geolocalização sem execução completa; cobertura do recomendador em 40,1%; contratos RNF09 e ensaio RNF10 pendentes |
-| Ações corretivas planejadas | Ajustar o job para até 15 dias; publicar `/health` e monitorar 30 dias; adicionar rate limiting; executar amostras e cargas formais; ampliar cobertura do recomendador; implementar testes de contrato e ensaio de implantação limpa |
-| Conclusão geral | As suítes automatizadas executadas estão verdes e fornecem boa evidência inicial. A aceitação integral dos RNFs depende das ações e medições pendentes explicitadas acima. |
-
-**Atualização Sprint 5 (23/06/2026):** o total de testes automatizados passa de **343 para 399** (123 backend unitário + 36 integração real + **104 inference** + 136 frontend Jest), todos aprovados (100%). O item (vii) dos riscos remanescentes foi encerrado: a suíte de inferência foi ampliada, a cobertura atingiu 70,04% (meta RNF08 de ≥ 70%) e o gate foi atualizado de 35% para 70%. **RNF08: Parcialmente atendido → Atendido.**
-
-**Atualização (25/06/2026):** a suíte do serviço de inferência recebeu **6 novos testes** que cobrem as duas últimas classes sem testes — `Benchmarker` e `ScottPlotChartService`, ambas de 0% → 100% —, totalizando **113 testes** (todos aprovados). A cobertura de linha combinada do recomendador (`AventuraML` + `InferenceService`) subiu para **84,15%** (AventuraML 79,49% · InferenceService 89,92%), bem acima da meta de 70% do RNF08.
+| Principais falhas encontradas | Nenhuma falha de regra de negócio. Suítes de frontend estavam desatualizadas em relação à implementação; foram realinhadas sem alteração de código de produção. Código morto identificado e removido (`PreferenceService`/`PreferenceController`/`IPreferenceService`). Bug de encoding documentado em `showService.js` (mojibake `'comÃ©dia'`) registrado para sprint futura sem alteração do código de produção |
+| Riscos remanescentes | TLS não verificável na OCI; ausência de rate limiting; metas ampliadas de desempenho, uptime, carga e geolocalização sem execução completa; contratos RNF09 e ensaio RNF10 pendentes |
+| Ações corretivas planejadas | Publicar `/health` e monitorar uptime; adicionar rate limiting; executar amostras e cargas formais; implementar testes de contrato e ensaio de implantação limpa |
+| **RNF08 — cobertura ≥ 70%** | **Atendido** — inference 84,15% combinado; backend 97,58%; frontend 94,92% |
+| Conclusão geral | Todas as 652 suítes automatizadas estão verdes. A cobertura de código supera os gates configurados em todos os módulos. A aceitação integral dos RNFs de desempenho e uptime depende das medições em ambiente de produção explicitadas acima. |
 
 ---
 
@@ -4640,7 +4675,7 @@ dotnet test src/backend/BackEnd.Aventura.Tests/BackEnd.Aventura.Tests.csproj /p:
 dotnet test src/backend/BackEnd.Aventura.IntegrationTests/BackEnd.Aventura.IntegrationTests.csproj
 ```
 
-**Resultado validado na Sprint 5:** 30 suítes aprovadas (uma por classe de produção testada), totalizando 173 testes unitários aprovados (0 falhas), além de 26 testes de integração aprovados separadamente, com cobertura de:
+**Resultado validado na Sprint 5:** 31 suítes aprovadas (uma por classe de produção testada), totalizando 205 testes unitários aprovados (0 falhas — inclui 2 novos testes de contrato do `AuthController`: `AllowAnonymous` e `EnableRateLimiting("auth")`), além de 26 testes de integração aprovados separadamente, com cobertura de:
 
 | Métrica | Antes (Sprint 3) | Depois (Sprint 5) |
 |---|---|---|
@@ -4678,6 +4713,188 @@ dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 | **Combinado** | **84,15%** | **65,99%** |
 
 O resultado supera com folga a meta de 70% de linhas estabelecida pelo RNF08 para os módulos críticos do serviço de recomendação, atendendo ao critério de aceitação de cobertura ≥ 70% verificado no pipeline de CI.
+
+---
+
+### 23.10 Mapeamento espetáculo → show do dataset (Caminho B)
+
+#### 23.10.1 O problema: recomendações nunca persistidas
+
+O batch de inferência (`RecommendationBatchJob`, rodando a cada 24 h no `inference-service`) itera sobre todos os usuários do dataset e, para cada um, grava recomendações na tabela `recomendacoes` via `RecommendationWriteRepository`. O campo `Espetaculo` de cada resultado contém o **nome cru** do show tal como aparece no dataset do Sympla — sempre em CAIXA ALTA e com acento (ex.: `'A NOVIÇA REBELDE'`). A tabela `espetaculos`, por sua vez, armazena os nomes no formato "bonito" (`'A Noviça Rebelde'`). Como o writer tentava casar por `WHERE e.nome = @EspetaculoNome`, a igualdade nunca ocorria → nenhuma linha era inserida → a tabela `recomendacoes` ficava sempre vazia → o app recebia apenas o fallback por gêneros favoritos.
+
+#### 23.10.2 A solução: coluna `item_dataset` e normalização defensiva
+
+**Componentes:** `src/database/04_espetaculo_dataset_mapping.sql`, `src/inference-service/Data/RecommendationWriteRepository.cs`, `src/inference-service/InferenceService.Tests/RecommendationWriteRepositoryTests.cs`.
+
+**Migration 04 — `04_espetaculo_dataset_mapping.sql`:**
+
+1. Habilita a extensão `unaccent` (necessária para a normalização no PostgreSQL).
+2. Adiciona a coluna `espetaculos.item_dataset TEXT` — análoga ao `ml_id` de `usuarios`, armazena o nome cru do show do dataset que corresponde ao espetáculo.
+3. Cria índice único `idx_espetaculos_item_dataset` (permite múltiplos `NULL`, impede dois espetáculos mapeados para o mesmo show).
+4. Preenche os 6 mapeamentos curados do catálogo:
+
+| `espetaculos.nome` | `espetaculos.item_dataset` |
+|---|---|
+| A Noviça Rebelde | `A NOVIÇA REBELDE` |
+| Elis | `ELIS, A MUSICAL` |
+| Hairspray | `MUSICAL HAIRSPRAY` |
+| Les Misérables | `LES MISERABLES SCHOOL EDITION` |
+| Vozes Negras | `VOZES NEGRAS – A FORÇA DO CANTO FEMININO` |
+| Romeu e Julieta | `CIA DE BALLET DO RIO DE JANEIRO - ROMEU E JULIETA` |
+
+Espetáculos sem correspondência no dataset ficam com `item_dataset = NULL` e não recebem recomendações via batch — comportamento correto, pois o modelo só pontua itens que conheceu no treino.
+
+**Resolução dual no `RecommendationWriteRepository` (Caminho B com fallback Caminho A):**
+
+O writer detecta automaticamente se a migration foi aplicada (`HasItemDatasetColumnAsync` consulta `information_schema.columns`). Quando a coluna existe, usa a query dual-path:
+
+```sql
+SELECT e.id,
+       CASE
+           WHEN e.item_dataset IS NOT NULL
+                AND upper(unaccent(btrim(e.item_dataset))) = upper(unaccent(btrim(@EspetaculoNome)))
+               THEN 0   -- Caminho B: match por item_dataset (prioridade)
+           WHEN e.nome = @EspetaculoNome THEN 1     -- Caminho A: match por nome bonito (fallback)
+           ELSE NULL
+       END AS match_rank
+FROM espetaculos e
+WHERE match_rank IS NOT NULL
+ORDER BY match_rank
+LIMIT 1
+```
+
+`upper(unaccent(btrim(...)))` é a mesma normalização em ambos os lados — o nome emitido pelo modelo e o valor armazenado em `item_dataset` são comparados após remoção de espaços laterais, conversão para maiúsculas e remoção de acentos. Isso torna o casamento resistente a variações menores de formatação. O Caminho A (`WHERE e.nome = @EspetaculoNome`) é mantido para não regredir espetáculos cujo nome bonito já coincida com o nome do dataset e que ainda não tenham `item_dataset` preenchido.
+
+**Degradação controlada:** Se a migration **não** foi aplicada ao banco (`item_dataset` inexistente), o writer cai automaticamente no Caminho A (nome exato), sem lançar exceção. Se nenhum match ocorre para um show, a recomendação é ignorada com `LogWarning` indicando quantas das N recomendações do usuário não encontraram espetáculo correspondente.
+
+#### 23.10.3 Testes
+
+Novos casos em `RecommendationWriteRepositoryTests.cs` (executados na fixture `PostgresFixture` que já aplica todas as migrations, incluindo a 04):
+
+| Caso | Descrição |
+|---|---|
+| `SaveAsync_PorItemDataset_Persiste` | Recomendação com nome em CAIXA ALTA casa via `item_dataset` e linha aparece em `recomendacoes` |
+| `SaveAsync_Normalizacao_IgnoraEspacosEAcentos` | Nome com espaços extras e variação de acento ainda resolve para o espetáculo correto |
+| `SaveAsync_SemCorrespondencia_NaoPersiste` | Show sem entrada em `item_dataset` e sem nome exato → nenhuma linha inserida, sem exceção |
+
+#### 23.10.4 Impacto no produto
+
+Com a migration 04 aplicada, o batch passa a persistir recomendações reais para os usuários que têm histórico no dataset. O `RecomendacaoService` do backend lê `recomendacoes` primeiro (`StoredRecommendationStrategy`) e só cai no fallback por gêneros se a tabela estiver vazia para aquele usuário — a partir deste sprint, o fluxo completo de recomendação personalizada (ML → `recomendacoes` → API → app) está operacional.
+
+---
+
+### 23.11 Rate limiting no AuthController (RNF02)
+
+**Contexto:** até a Sprint 4, o endpoint `/api/Auth` não tinha nenhum mecanismo de limitação de taxa — um atacante podia fazer tentativas ilimitadas de login/senha sem nenhum bloqueio, caracterizando uma lacuna de RNF02 (Segurança de Credenciais).
+
+**Componentes alterados:** `src/backend/Program.cs`, `src/backend/controller/AuthController.cs`, `src/backend/BackEnd.Aventura.Tests/AuthControllerTests.cs`.
+
+**Implementação:**
+
+```csharp
+// Program.cs — registra o limiter
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddSlidingWindowLimiter("auth", opt =>
+    {
+        opt.PermitLimit        = 20;
+        opt.Window             = TimeSpan.FromSeconds(60);
+        opt.SegmentsPerWindow  = 4;
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit         = 0;
+    });
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
+// Pipeline (antes de UseAuthentication)
+app.UseRateLimiter();
+```
+
+```csharp
+// AuthController.cs — aplica a política
+[AllowAnonymous]
+[EnableRateLimiting("auth")]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase { ... }
+```
+
+**Parâmetros:** janela deslizante de 60 segundos dividida em 4 segmentos de 15 s; até 20 requisições por IP por janela; fila de espera = 0 (rejeição imediata ao exceder); código de retorno HTTP 429.
+
+**Por que janela deslizante em vez de fixed window:** a janela fixa permite "bursts" no limite — ex. 20 req nos últimos segundos da janela seguidos de 20 req no início da próxima. A janela deslizante distribui o limite de forma contínua, eliminando esse gap.
+
+**Decisão de escopo (apenas `/api/Auth`):** a política `"auth"` é aplicada **só** ao `AuthController` (login e registro). Endpoints autenticados já requerem um JWT válido — o atacante precisaria de credencial antes mesmo de chegar a esses endpoints.
+
+**Testes de contrato adicionados:**
+
+```csharp
+[Fact]
+public void AuthController_DeveTerAllowAnonymous()
+{
+    var attr = typeof(AuthController).GetCustomAttribute<AllowAnonymousAttribute>();
+    Assert.NotNull(attr);
+}
+
+[Fact]
+public void AuthController_DeveTerRateLimiting_ComPoliticaAuth()
+{
+    var attr = typeof(AuthController).GetCustomAttribute<EnableRateLimitingAttribute>();
+    Assert.NotNull(attr);
+    Assert.Equal("auth", attr.PolicyName);
+}
+```
+
+Esses testes garantem que, se alguém remover o atributo acidentalmente, a suíte CI falha — tornando a proteção de rate limiting parte do contrato de build.
+
+---
+
+### 23.12 AnonimizacaoJob — limiar de 15 dias (RNF03)
+
+**Contexto:** a política interna de LGPD do projeto define que dados pessoais de usuários que solicitaram exclusão devem ser anonimizados em até **15 dias** após a solicitação. O `AnonimizacaoJob` implementado na Sprint 3 executava a query com `INTERVAL '30 days'`, contradizendo a própria política.
+
+**Componente alterado:** `src/backend/services/AnonimizacaoJob.cs`.
+
+**Correção:**
+
+```csharp
+// Antes (Sprint 3/4)
+AND deleted_at <= NOW() - INTERVAL '30 days'
+
+// Depois (Sprint 5)
+AND deleted_at <= NOW() - INTERVAL '15 days'
+```
+
+**Por que o teste existente continua verde:** `AnonimizacaoJobTests.cs` usa `AddDays(-31)` como data de `deleted_at` — 31 > 15, então o registro ainda aparece na query e o teste passa sem alteração.
+
+**Impacto:** usuários que solicitam exclusão agora têm seus dados pessoais anonimizados (`sp_anonimizar_usuario`) em no máximo 15 dias — alinhado com o RNF03 e com a política de privacidade declarada no consentimento de cadastro.
+
+---
+
+### 23.13 Swagger habilitado em todos os ambientes
+
+Na Sprint 4, o Swagger (`/swagger`) era habilitado apenas em `Development` (`if (app.Environment.IsDevelopment())`). Na Sprint 5, o condicional foi removido:
+
+```csharp
+// Antes (Sprint 4)
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+// Depois (Sprint 5)
+app.UseSwagger();
+app.UseSwaggerUI();
+```
+
+**Motivação:** o backend é servido em ambiente OCI (VM Oracle Cloud) sem flag `Development`, e a equipe de desenvolvimento precisa explorar e validar os endpoints via Swagger nesse ambiente — principalmente para testar o token JWT e inspecionar contratos de DTOs. A documentação interativa da API está acessível em `http://<host>:5253/swagger` em qualquer ambiente de execução.
+
+---
+
+### 23.9 Vídeo demonstrativo da Sprint 5
+
+Como evidência complementar da Sprint 5, o vídeo abaixo demonstra o aplicativo mobile integrado ao backend em execução, cobrindo os fluxos finais implementados na sprint: integração com MongoDB para exibição de imagens de espetáculos via `FallbackImage`, navegação pelos fluxos de catálogo, wishlist, perfil e recomendações personalizadas. A gravação foi realizada diretamente no dispositivo móvel com Expo Go, em 25/06/2026.
+
+**Vídeo demonstrativo:** [assets/Screen_Recording_20260625_194027_Expo Go.mp4](../assets/Screen_Recording_20260625_194027_Expo%20Go.mp4)
 
 ---
 

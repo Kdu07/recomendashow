@@ -53,6 +53,15 @@ try
 
     Console.WriteLine("Arquivo 3 executado");
 
+    var sql4 = File.ReadAllText(
+        "../src/database/04_espetaculo_dataset_mapping.sql"
+    );
+
+    await new NpgsqlCommand(sql4, conn)
+        .ExecuteNonQueryAsync();
+
+    Console.WriteLine("Arquivo 4 executado");
+
     var command = new NpgsqlCommand(
         "SELECT COUNT(*) FROM usuarios",
         conn

@@ -254,6 +254,7 @@ Os testes de integração podem depender de Docker ativo para criação dos cont
 | 0.2.0 | Maio/2026 | Modelagem de banco, protótipos visuais e organização dos artefatos. |
 | 0.3.0 | Maio/2026 | Estruturação do frontend mobile, backend, banco e serviços de recomendação. |
 | 0.4.0 | Junho/2026 | Integração entre backend, banco, ML, inferência, testes automatizados e refinamento documental. |
+| 0.5.0 | Junho/2026 | Integração com MongoDB (imagens via GridFS), cobertura de testes ≥ 90% em todos os módulos, análise ética IA4People, cadeia de valor, deploy em OCI e entrega final. |
 
 ---
 

@@ -1,8 +1,11 @@
 using System;
+using System.Reflection;
 using BackEnd.Aventura.Controller;
 using BackEnd.Aventura.Dto;
 using BackEnd.Aventura.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Moq;
 using Xunit;
 
@@ -68,6 +71,21 @@ namespace BackEnd.Aventura.Tests
             var problem = Assert.IsType<ProblemDetails>(actionResult.Value);
             Assert.Equal(401, problem.Status);
             Assert.Equal("E-mail ou senha inválidos.", problem.Detail);
+        }
+
+        [Fact]
+        public void AuthController_DeveTerAllowAnonymous()
+        {
+            var attr = typeof(AuthController).GetCustomAttribute<AllowAnonymousAttribute>();
+            Assert.NotNull(attr);
+        }
+
+        [Fact]
+        public void AuthController_DeveTerRateLimiting_ComPoliticaAuth()
+        {
+            var attr = typeof(AuthController).GetCustomAttribute<EnableRateLimitingAttribute>();
+            Assert.NotNull(attr);
+            Assert.Equal("auth", attr.PolicyName);
         }
     }
 }

@@ -128,6 +128,9 @@ public class UsuarioPersistenciaTests : IAsyncLifetime
         var espId = await DbSeedHelper.InsertEspetaculoAsync(conn, "Cats");
 
         _api.HttpClient.SetBearerToken(userId);
+        var warmup = await _api.HttpClient.GetAsync($"/api/espetaculo/{espId}");
+        warmup.StatusCode.Should().Be(HttpStatusCode.OK);
+
         var sw = System.Diagnostics.Stopwatch.StartNew();
         var r  = await _api.HttpClient.GetAsync($"/api/espetaculo/{espId}");
         sw.Stop();

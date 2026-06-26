@@ -6,6 +6,24 @@ Este guia consolida os padrões de desenvolvimento adotados no projeto **Recomen
 
 ---
 
+## Sumário
+
+1. [Objetivo do Guia](#1-objetivo-do-guia)
+2. [Estrutura de Pastas](#2-estrutura-de-pastas)
+3. [Padrão de Branches](#3-padrão-de-branches)
+4. [Padrão de Commits](#4-padrão-de-commits)
+5. [Padrão de Nomenclatura](#5-padrão-de-nomenclatura)
+6. [Arquitetura em Camadas](#6-arquitetura-em-camadas)
+7. [Controllers, Services e Repositories](#7-controllers-services-e-repositories)
+8. [DTOs e Mappers](#8-dtos-e-mappers)
+9. [Tratamento de Erros](#9-tratamento-de-erros)
+10. [Testes](#10-testes)
+11. [Padrões de Projeto Aplicados](#11-padrões-de-projeto-aplicados)
+12. [Definition of Ready e Definition of Done](#12-definition-of-ready-e-definition-of-done)
+13. [Referências Internas](#referências-internas)
+
+---
+
 ## 2. Estrutura de Pastas
 
 A organização do repositório separa documentação, aplicação, banco de dados, treinamento, inferência e assets.
@@ -174,7 +192,7 @@ test(recommendation): cover fallback behavior
 - Tabelas e colunas seguem o padrão `snake_case`.
 - Chaves primárias usam `id`.
 - Chaves estrangeiras usam o padrão `entidade_id`.
-- Scripts SQL são versionados por ordem de execução, como `01_create_database.sql` e `02_initial_data.sql`.
+- Scripts SQL são versionados por ordem de execução, como `01_create_database.sql`, `02_sprint4_improvements.sql` e `03_initial_data.sql`.
 
 ---
 
@@ -351,7 +369,10 @@ Esta seção separa padrões de projeto GoF de padrões arquiteturais para evita
 
 | Tipo | Padrão | Implementação | Justificativa |
 |---|---|---|---|
-| Criacional | Factory | `src/backend/infrastructure/DbConnectionFactory.cs` | Centraliza a criação de `NpgsqlConnection`, encapsula a construção da string de conexão e permite fallback entre `appsettings` e variáveis de ambiente. |
+| Criacional | Factory | `src/backend/infrastructure/DbConnectionFactory.cs` | Centraliza a criação de `NpgsqlConnection`, encapsula a montagem da string de conexão PostgreSQL e permite fallback entre `appsettings` e variáveis de ambiente. |
+| Criacional | Factory | `src/backend/infrastructure/MongoConnectionFactory.cs` | Centraliza a criação do cliente/base MongoDB, aceita connection string explícita ou configuração por variáveis de ambiente e evita espalhar detalhes de infraestrutura pelas camadas de aplicação. |
+
+Factories devem ser usadas quando a criação de uma dependência exigir configuração, validação ou adaptação de ambiente. No projeto, controllers, services e repositories não instanciam conexões diretamente; eles dependem dos contratos `IDbConnectionFactory` e `IMongoConnectionFactory`, registrados em `DependencyInjection.cs`.
 
 ### Padrões estruturais ou arquiteturais usados
 
@@ -367,9 +388,18 @@ Esta seção separa padrões de projeto GoF de padrões arquiteturais para evita
 
 | Tipo | Padrão | Implementação | Justificativa |
 |---|---|---|---|
-| Comportamental | Strategy | `IRecommendationStrategy`, `StoredRecommendationStrategy` e `FavoriteGenresRecommendationStrategy` | Permite alternar a origem das recomendações sem alterar o contrato público de `RecomendacaoService`. Primeiro são buscadas recomendações persistidas; se não houver resultado, aplica-se fallback por gêneros favoritos. |
+| Comportamental | Strategy | `IRecommendationStrategy`, `StoredRecommendationStrategy`, `WishlistGenresRecommendationStrategy` e `FavoriteGenresRecommendationStrategy` | Permite alternar a origem das recomendações sem alterar o contrato público de `RecomendacaoService`. Primeiro são buscadas recomendações persistidas, depois recomendações derivadas dos gêneros da wishlist e, por fim, fallback por gêneros favoritos. |
 
-O uso de Strategy separa cada algoritmo de recomendação em uma classe própria. Assim, novas estratégias, como cold-start, recomendação por conteúdo ou recomendação colaborativa, podem ser adicionadas sem concentrar todas as decisões dentro de `RecomendacaoService`.
+O uso de Strategy separa cada algoritmo de recomendação em uma classe própria. O `RecomendacaoService` recebe `IEnumerable<IRecommendationStrategy>`, percorre as estratégias na ordem de registro em `DependencyInjection.cs` e aplica o pós-processamento comum para remover itens já salvos na wishlist, reforçar gêneros da wishlist e respeitar o limite solicitado. Assim, novas estratégias, como cold-start, recomendação por conteúdo ou recomendação colaborativa, podem ser adicionadas sem concentrar todas as decisões dentro de `RecomendacaoService`.
+
+Regras para novas estratégias:
+
+- Implementar `IRecommendationStrategy`.
+- Definir um `Name` estável e descritivo.
+- Retornar `RecomendacaoItemDto` já mapeado para o contrato da API.
+- Manter a estratégia focada em uma origem ou critério de recomendação.
+- Registrar a classe em `AddAventuraApplication` na ordem de prioridade desejada.
+- Cobrir o comportamento com testes unitários de service/strategy e, quando houver SQL, testes de integração.
 
 ---
 

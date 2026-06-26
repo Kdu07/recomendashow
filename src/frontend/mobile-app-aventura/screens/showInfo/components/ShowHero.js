@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import FallbackImage from '../../../components/FallbackImage';
 
 export default function ShowHero({ heroImage }) {
   return (
     <View style={styles.container}>
-      <Image source={heroImage} style={styles.image} resizeMode="cover" />
+      <FallbackImage source={heroImage} style={styles.image} resizeMode="cover" />
     </View>
   );
 }

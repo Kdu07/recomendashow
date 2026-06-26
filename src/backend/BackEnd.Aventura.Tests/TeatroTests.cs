@@ -26,5 +26,40 @@ namespace BackEnd.Aventura.Tests
             t.AdicionarEspetaculo(e1);
             Assert.Throws<InvalidOperationException>(() => t.AdicionarEspetaculo(e2));
         }
+
+        [Fact]
+        public void AdicionarEspetaculo_Null_Throws()
+        {
+            var t = new Teatro(Guid.NewGuid(), "Teatro X", "Rua A", "Cidade", "9-18");
+            Assert.Throws<ArgumentNullException>(() => t.AdicionarEspetaculo(null!));
+        }
+
+        [Fact]
+        public void Constructor_NullNome_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new Teatro(Guid.NewGuid(), null!, "Rua A", "Cidade", "9-18"));
+        }
+
+        [Fact]
+        public void Constructor_NullEndereco_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new Teatro(Guid.NewGuid(), "Teatro X", null!, "Cidade", "9-18"));
+        }
+
+        [Fact]
+        public void Constructor_NullCidade_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new Teatro(Guid.NewGuid(), "Teatro X", "Rua A", null!, "9-18"));
+        }
+
+        [Fact]
+        public void Constructor_NullHorarioFuncionamento_Throws()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+                new Teatro(Guid.NewGuid(), "Teatro X", "Rua A", "Cidade", null!));
+        }
     }
 }

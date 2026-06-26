@@ -97,7 +97,11 @@ chore/atualizacao-dependencias
 
 **Abaixo segue diagrama que simplifica o fluxo:**
 
-<img src="../assets/mermaid-diagram-Wsk9JrR0UmTfhp85LXe6k-low (1).png">
+<div align="center">
+  <sub>Imagem 01 - Fluxo simplificado de branches</sub><br>
+  <img src="../assets/mermaid-diagram-Wsk9JrR0UmTfhp85LXe6k-low (1).png" width="100%" alt="Fluxo simplificado de branches"><br>
+  <sup>Fonte: Material produzido pelos autores, 2026.</sup>
+</div>
 
 # 2 - Convenções para nomeação
 

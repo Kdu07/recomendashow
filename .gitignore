@@ -20,6 +20,7 @@ deploy/deploy.config
 #  Node / npm / Expo / React Native  (src/frontend)
 # ============================================================
 node_modules/
+package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -80,3 +81,4 @@ ehthumbs.db
 Desktop.ini
 # Relatorios coverlet gerados na raiz dos projetos de teste
 **/coverage.cobertura.xml
+**/coverage.json

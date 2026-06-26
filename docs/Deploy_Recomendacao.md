@@ -72,7 +72,7 @@ As escolhas abaixo foram tomadas para uma VM `E2.1.Micro` de 1 GB de RAM e para 
 | Exposição | nginx + HTTPS com certificado self-signed | Não há domínio definido; o serviço nunca fica exposto direto |
 | Autenticação | Endpoints **sem auth** por enquanto (decisão de 11/06/2026) | Risco aceito; mitigação pronta no §8. `[equipe: registrar no texto a justificativa da decisão — por que o risco do /api/metrics foi aceito nesta sprint]` |
 | CI/CD | Nenhum; script manual `deploy/deploy.ps1` | Deploy ainda não é rotina; ver evolução no §9 |
-| Mapeamento D4 | Fora deste deploy | Solução (`ml_user_mapping`) agendada para a próxima sprint, ver §8 e §9 |
+| Mapeamento D4 | Resolvido via coluna `ml_id` em `usuarios` (populada no script do banco) | Não foi a tabela `ml_user_mapping`; os 3 usuários do seed são mapeados a `user_id` do dataset, ver §8 e §9 |
 
 ## 4. Artefatos no repositório
 
@@ -130,7 +130,7 @@ Verificação fim-a-fim depois do deploy:
 
 - Health: `curl -k https://<VM_HOST>/api/diagnostics/health` → 200 com o modelo carregado.
 - Métricas: `curl -k "https://<VM_HOST>/api/metrics?k=10&rankingUsers=200"`.
-- Persistência: `SELECT count(*), max(data_geracao) FROM recomendacoes;` — **0 é o esperado até a D4** (ver §8).
+- Persistência: `SELECT count(*), max(data_geracao) FROM recomendacoes;` — em banco recriado com o seed, o batch grava recomendações para os **3 usuários mapeados** (`ml_id` 63261/14888/55251); **0** só se o banco não tiver o seed/mapeamento (ver §8).
 
 ## 7. Operação
 
@@ -172,11 +172,13 @@ Mitigação já aplicada: swap de 2 GB (bootstrap). Se persistir: subir `mem_lim
 
 ### Tabela `recomendacoes` vazia
 
-**Pendência D4, não bug de deploy.** Hoje não existe mapeamento `user_id` do dataset ↔ `usuarios.id` (UUID); o writer resolve `usuario_id` como null e sai sem inserir, logando `"Não foi possível persistir…"`. A solução (`ml_user_mapping` + ajuste no `ResolveUsuarioIdAsync`) está agendada para a próxima sprint. Diagnóstico:
+**Quase sempre é falta do mapeamento/seed, não bug de deploy.** O writer traduz o `user_id` do dataset para `usuarios.id` (UUID) pela coluna `ml_id`; se nenhum usuário tiver o `ml_id` correspondente, ele resolve `usuario_id` como null e sai sem inserir, logando `"Não foi possível persistir…"`. Para gravar, é preciso: **(1)** o seed (`02_initial_data.sql`) ter criado os usuários e **(2)** os `UPDATE` de mapeamento no fim de `02_sprint4_improvements.sql` terem rodado — o que exige **banco recriado do zero** (`docker compose -f docker-compose-db.yml down -v && up -d --build`). Diagnóstico:
 
 ```sql
-SELECT to_regclass('public.ml_user_mapping') AS tabela_mapeamento;  -- null até a D4
-SELECT count(*), max(data_geracao) FROM recomendacoes;              -- 0 esperado até a D4
+-- Os 3 usuários do seed devem aparecer com ml_id mapeado:
+SELECT email, ml_id FROM usuarios WHERE ml_id IN (63261, 14888, 55251);
+-- Após o batch, a contagem deve ser > 0 (recomendações dos usuários mapeados):
+SELECT count(*), max(data_geracao) FROM recomendacoes;
 ```
 
 ### Erro de conexão com o Postgres
@@ -194,7 +196,7 @@ Inofensivo. `Program.cs` chama `UseHttpsRedirection()`, mas atrás do nginx o se
 ## 9. Pendências e evoluções
 
 - **Security List 80/443** [PENDENTE]: bloqueia o acesso público à VM de inferência; depende da console OCI.
-- **D4 — `ml_user_mapping`** [PLANEJADO, próxima sprint]: habilita a persistência real em `recomendacoes` e fecha o ciclo batch → backend.
+- **D4 — mapeamento `user_id` ↔ `usuarios.id`** [RESOLVIDO]: feito via coluna `ml_id` (`UPDATE` no fim de `02_sprint4_improvements.sql`) para os 3 usuários do seed — habilita a persistência real em `recomendacoes` e fecha o ciclo batch → backend. Evolução futura: mapear por identidade real os usuários autenticados em escala (não só o seed).
 - **HTTPS de verdade** [PLANEJADO]: quando houver domínio (ou via `sslip.io` sobre o IP), trocar o self-signed por Let's Encrypt; clientes deixam de precisar de `-k`.
 - **Registry** [PLANEJADO]: se o deploy virar rotina, substituir `docker save`/`scp` (~400–600 MB por deploy) por um registry e `docker pull` na VM.
 - **CI/CD** [PLANEJADO]: hoje o deploy é manual por decisão (§3); automatizar quando houver pipeline.
@@ -211,4 +213,4 @@ Como este deploy atende os requisitos já definidos no [Projeto.md](./Projeto.md
 | RNF08 — modularidade do serviço de recomendação | Deploy independente: nada do backend/frontend muda ou cai quando o motor é reimplantado (§1, §3) |
 | RNF05 — disponibilidade da plataforma | `restart: unless-stopped`, `HEALTHCHECK`, smoke test com retry (§4–§5) |
 | RNF06 — capacidade sob carga | Limites explícitos (`mem_limit: 600m`, swap 2 GB) e risco do `/api/metrics` documentado (§8) |
-| RF10 / RF02 — recomendações personalizadas e regionais | São servidas pela tabela `recomendacoes` que o batch deste serviço alimenta (completo após a D4, §9) |
+| RF10 / RF02 — recomendações personalizadas e regionais | São servidas pela tabela `recomendacoes` que o batch deste serviço alimenta; com a D4 resolvida (§9), a persistência já ocorre para os usuários mapeados |

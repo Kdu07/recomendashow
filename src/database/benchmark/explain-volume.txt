@@ -1,0 +1,72 @@
+# EXPLAIN ANALYZE - Volume Realista
+
+## 1. Recomendações por usuário - idx_recomendacoes_usuario_score
+
+Limit  (cost=0.41..30.70 rows=50 width=97) (actual time=2.679..3.333 rows=50 loops=1)
+  Buffers: shared hit=9
+  ->  Index Scan using idx_recomendacoes_usuario_score on recomendacoes  (cost=0.41..889.47 rows=1468 width=97) (actual time=2.678..3.326 rows=50 loops=1)
+        Index Cond: (usuario_id = '606f6cae-1d85-46b0-aa6f-dc5fabad9037'::uuid)
+        Buffers: shared hit=9
+Planning:
+  Buffers: shared hit=25
+Planning Time: 15.508 ms
+Execution Time: 4.761 ms
+
+## 2. Espetáculos por cidade - idx_teatros_cidade
+
+Nested Loop  (cost=51.00..210.95 rows=173 width=152) (actual time=60.709..192.344 rows=268 loops=1)
+  Buffers: shared hit=890
+  ->  Hash Join  (cost=50.72..153.16 rows=173 width=16) (actual time=59.445..88.057 rows=268 loops=1)
+        Hash Cond: (te.teatro_id = t.id)
+        Buffers: shared hit=86
+        ->  Seq Scan on teatro_espetaculo te  (cost=0.00..89.02 rows=5102 width=32) (actual time=0.643..14.401 rows=5102 loops=1)
+              Buffers: shared hit=38
+        ->  Hash  (cost=49.45..49.45 rows=102 width=16) (actual time=58.142..58.143 rows=102 loops=1)
+              Buckets: 1024  Batches: 1  Memory Usage: 13kB
+              Buffers: shared hit=48
+              ->  Bitmap Heap Scan on teatros t  (cost=2.17..49.45 rows=102 width=16) (actual time=3.028..57.383 rows=102 loops=1)
+                    Recheck Cond: ((cidade)::text = 'São Paulo'::text)
+                    Heap Blocks: exact=46
+                    Buffers: shared hit=48
+                    ->  Bitmap Index Scan on idx_teatros_cidade  (cost=0.00..2.15 rows=102 width=0) (actual time=1.833..1.833 rows=102 loops=1)
+                          Index Cond: ((cidade)::text = 'São Paulo'::text)
+                          Buffers: shared hit=2
+  ->  Index Scan using espetaculos_pkey on espetaculos e  (cost=0.28..0.33 rows=1 width=152) (actual time=0.380..0.380 rows=1 loops=268)
+        Index Cond: (id = te.espetaculo_id)
+        Buffers: shared hit=804
+Planning:
+  Buffers: shared hit=93
+Planning Time: 35.625 ms
+Execution Time: 192.606 ms
+
+## 3. Espetáculos por intervalo de datas - idx_espetaculos_datas
+
+Index Scan using idx_espetaculos_datas on espetaculos  (cost=0.29..163.86 rows=221 width=152) (actual time=0.044..7.936 rows=200 loops=1)
+  Index Cond: ((data_inicio >= CURRENT_DATE) AND (data_fim <= (CURRENT_DATE + '90 days'::interval)))
+  Buffers: shared hit=220
+Planning:
+  Buffers: shared hit=3
+Planning Time: 0.214 ms
+Execution Time: 7.976 ms
+
+## 4. Interações por usuário - idx_interacoes_usuario_expiracao
+
+Limit  (cost=0.41..9.51 rows=50 width=74) (actual time=0.182..25.407 rows=50 loops=1)
+  Buffers: shared hit=53
+  ->  Index Scan Backward using idx_interacoes_usuario_expiracao on interacoes  (cost=0.41..921.05 rows=5060 width=74) (actual time=0.180..25.390 rows=50 loops=1)
+        Index Cond: (usuario_id = '606f6cae-1d85-46b0-aa6f-dc5fabad9037'::uuid)
+        Buffers: shared hit=53
+Planning:
+  Buffers: shared hit=20
+Planning Time: 2.720 ms
+Execution Time: 26.704 ms
+
+## 5. Wishlist por usuário - idx_wishlist_usuario
+
+Index Scan using idx_wishlist_usuario on wishlist_curtidas  (cost=0.28..117.27 rows=2000 width=44) (actual time=1.233..20.025 rows=2000 loops=1)
+  Index Cond: (usuario_id = '606f6cae-1d85-46b0-aa6f-dc5fabad9037'::uuid)
+  Buffers: shared hit=22
+Planning:
+  Buffers: shared hit=9
+Planning Time: 0.722 ms
+Execution Time: 20.168 ms

@@ -6,5 +6,6 @@ namespace BackEnd.Aventura.Repository
         bool RemoveItem(Guid usuarioId, Guid espetaculoId);
         bool ContainsItem(Guid usuarioId, Guid espetaculoId);
         IReadOnlyList<Guid> GetItemIds(Guid usuarioId);
+        IReadOnlyList<string> GetGenerosDaWishlist(Guid usuarioId);
     }
 }

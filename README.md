@@ -1,3 +1,11 @@
+# Inteli - Instituto de Tecnologia e Liderança
+
+<div align="center">
+  <img src="assets/logo.png" alt="Logo do Inteli" width="320">
+</div>
+
+---
+
 # RecomendaShow
 
 ## Grupo 2 - Aventureiros
@@ -142,16 +150,18 @@ g02/
 
 Crie um arquivo `.env` na raiz do projeto a partir de `.env.example` e preencha as credenciais do ambiente desejado. Não versionar valores reais de usuário, senha ou conexão.
 
-Para o banco local via Docker, o `docker-compose-db.yml` espera as seguintes variáveis:
+Para o banco local via Docker e para a execução da API, o `.env.example` já traz os nomes esperados pelo projeto. Ajuste os valores conforme o seu ambiente local:
 
 ```env
 POSTGRES_USER=<usuario_local>
 POSTGRES_PASSWORD=<senha_local>
 POSTGRES_DB=<nome_do_banco>
+POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
 MONGO_USER=<usuario_local>
 MONGO_PASSWORD=<senha_local>
 MONGO_PORT=27017
+JWT_KEY=<chave_local_com_pelo_menos_32_caracteres>
 ```
 
 O `.env` contém credenciais e não deve ser versionado. Use apenas valores locais de desenvolvimento e nunca credenciais de produção no repositório.
@@ -165,7 +175,7 @@ O `.env` contém credenciais e não deve ser versionado. Use apenas valores loca
 Sobe PostgreSQL e MongoDB localmente:
 
 ```bash
-docker compose -f docker-compose-db.yml up --build
+docker compose --env-file .env -f docker-compose-db.yml up --build
 ```
 
 Para aplicar os scripts em um banco remoto, use o `DbRunner` conforme as instruções da documentação completa do banco.
@@ -173,16 +183,17 @@ Para aplicar os scripts em um banco remoto, use o `DbRunner` conforme as instru�
 ### Backend
 
 ```bash
-cd src/backend
-dotnet restore
-dotnet run
+dotnet restore src/backend/BackEnd.Aventura.csproj
+dotnet run --project src/backend/BackEnd.Aventura.csproj --launch-profile http
 ```
+
+A API sobe em `http://localhost:5253` no perfil `http`.
 
 ### Frontend Mobile
 
 ```bash
 cd src/frontend/mobile-app-aventura
-npm install
+npm ci
 npm start
 ```
 
@@ -206,10 +217,10 @@ dotnet run train
 
 ### Serviço de Inferência
 
-```bash
-cd src/inference-service
-dotnet restore
-dotnet run
+```powershell
+$env:ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=aventura;Username=postgres;Password=postgres"
+dotnet restore src/inference-service/InferenceService.csproj
+dotnet run --project src/inference-service/InferenceService.csproj
 ```
 
 O serviço carrega os artefatos do modelo, executa o batch de recomendações e expõe endpoints de métricas e diagnóstico.
@@ -243,6 +254,7 @@ Os testes de integração podem depender de Docker ativo para criação dos cont
 | 0.2.0 | Maio/2026 | Modelagem de banco, protótipos visuais e organização dos artefatos. |
 | 0.3.0 | Maio/2026 | Estruturação do frontend mobile, backend, banco e serviços de recomendação. |
 | 0.4.0 | Junho/2026 | Integração entre backend, banco, ML, inferência, testes automatizados e refinamento documental. |
+| 0.5.0 | Junho/2026 | Integração com MongoDB (imagens via GridFS), cobertura de testes ≥ 90% em todos os módulos, análise ética IA4People, cadeia de valor, deploy em OCI e entrega final. |
 
 ---
 

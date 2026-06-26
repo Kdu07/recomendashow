@@ -4,16 +4,18 @@ Navegação central dos documentos do projeto G02 — Aventureiros.
 
 ## Documentos principais
 
-| Documento | Conteúdo |
-|---|---|
-| [Projeto.md](./Projeto.md) | Documentação principal: contexto, problema, requisitos, BPMN, personas, BMC, arquitetura, UML, banco, linguagens, testes (planejamento e execução), desenvolvimento Sprint 3–5, ética e glossário |
-| [Modelo_Recomendacao.md](./Modelo_Recomendacao.md) | Pipeline de dados, algoritmo Funk SVD, comparação com KNN, equações de atualização SGD, artefatos gerados e inferência em produção |
-| [GuiaPadroesDesenvolvimento.md](./GuiaPadroesDesenvolvimento.md) | Padrões de pastas, branches, commits, nomenclatura, camadas, tratamento de erros, testes, padrões de projeto (Factory, Strategy, Repository, MVVM), DoR e DoD |
-| [GestaoProjeto.md](./GestaoProjeto.md) | Retrospectivas das Sprints 1–5, planejamentos, métricas evolutivas, análise post-mortem |
-| [Gestao_Projeto_Configuracao.md](./Gestao_Projeto_Configuracao.md) | Gitflow, versionamento semântico (SemVer), política de branches, Conventional Commits, Pull Requests |
-| [projeto_visual.md](./projeto_visual.md) | Mobile First, wireframes, mockups de alta fidelidade, guia de estilos (tipografia, paleta, componentes), interações e acessibilidade |
-| [Deploy_Recomendacao.md](./Deploy_Recomendacao.md) | Procedimento técnico de deploy do inference-service na OCI: diagrama, decisões, artefatos, procedimento, verificação, operação e troubleshooting |
-| [manual_deploy.md](./manual_deploy.md) | Manual de implantação simplificado para o parceiro Aventura Teatros |
+| Documento | Descrição | Uso esperado |
+|---|---|---|
+| [Projeto](./Projeto.md) | Documento central do projeto, reunindo contexto do parceiro, problema, requisitos, arquitetura, diagramas, planejamento de testes e evolução da solução. | Consulta principal para entendimento técnico e de negócio. |
+| [Guia de Padrões de Desenvolvimento](./GuiaPadroesDesenvolvimento.md) | Consolida padrões de pastas, branches, commits, nomenclatura, camadas, erros, testes, padrões de projeto, DoR e DoD. | Referência canônica para desenvolvimento, revisão e avaliação dos padrões do projeto. |
+| [Gestão do Projeto](./GestaoProjeto.md) | Consolida retrospectivas, gestão evolutiva, ações de melhoria, evolução das sprints e planejamento revisado da Sprint 5. | Referência para acompanhamento da gestão das sprints. |
+| [Gestão e Configuração](./Gestao_Projeto_Configuracao.md) | Define práticas de versionamento, Gitflow, organização de branches, commits e Pull Requests. | Referência para gestão de configuração e colaboração do grupo. |
+| [Projeto Visual](./projeto_visual.md) | Documenta decisões visuais, identidade, telas, fluxos e referências de interface do produto. | Apoio para avaliação da experiência do usuário e consistência visual. |
+| [Modelo de Recomendação](./Modelo_Recomendacao.md) | Detalha o motor de recomendação híbrido (Funk SVD + afinidade de categoria): pipeline de treino, hiperparâmetros, métricas e contrato com o backend. | Referência técnica do modelo de ML. |
+| [Deploy do Ambiente](./Deploy_Ambiente.md) | Documenta a implantação completa do ambiente de produção: arquitetura das duas VMs OCI, decisão arquitetural, limitações conhecidas, procedimento de deploy de cada componente e operação. | Ponto de entrada para qualquer deploy ou troubleshooting de infraestrutura. |
+| [Deploy do Motor de Recomendação](./Deploy_Recomendacao.md) | Documenta em detalhes a implantação do serviço de inferência: diagrama, decisões, procedimento via deploy.ps1, operação e troubleshooting. | Runbook específico do inference-service; complemento ao Deploy do Ambiente. |
+| [Manual de Implantação](./manual_deploy.md) | Manual simplificado de implantação para uso pelo parceiro Aventura Teatros: pré-requisitos, passo a passo e verificação. | Guia operacional para o parceiro realizar o deploy sem suporte técnico do grupo. |
+| [Marketing e Captação de Prospects](./Marketing_Captacao_Prospects.md) | Plano de ações de Inbound, Outbound e Omnichannel, roteiro de vendas outbound B2B com matriz de objeções e simulação de ligação, e estratégia de CRM integrada ao app. | Referência de negócio para captação de prospects e vendas corporativas. |
 
 ## Banco de dados
 
@@ -38,5 +40,7 @@ Navegação central dos documentos do projeto G02 — Aventureiros.
 | Análise ética IA4People | [Projeto.md §22](./Projeto.md) |
 | Gestão e retrospectivas | [GestaoProjeto.md](./GestaoProjeto.md) |
 | Padrões de código e commits | [GuiaPadroesDesenvolvimento.md](./GuiaPadroesDesenvolvimento.md) |
-| Deploy em produção | [Deploy_Recomendacao.md](./Deploy_Recomendacao.md) e [manual_deploy.md](./manual_deploy.md) |
+| Deploy em produção | [Deploy_Ambiente.md](./Deploy_Ambiente.md) e [Deploy_Recomendacao.md](./Deploy_Recomendacao.md) |
+| Manual para o parceiro | [manual_deploy.md](./manual_deploy.md) |
 | Design e interface | [projeto_visual.md](./projeto_visual.md) |
+| Estratégia de negócio e captação | [Marketing_Captacao_Prospects.md](./Marketing_Captacao_Prospects.md) |

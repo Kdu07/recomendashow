@@ -369,7 +369,10 @@ Esta seção separa padrões de projeto GoF de padrões arquiteturais para evita
 
 | Tipo | Padrão | Implementação | Justificativa |
 |---|---|---|---|
-| Criacional | Factory | `src/backend/infrastructure/DbConnectionFactory.cs` | Centraliza a criação de `NpgsqlConnection`, encapsula a construção da string de conexão e permite fallback entre `appsettings` e variáveis de ambiente. |
+| Criacional | Factory | `src/backend/infrastructure/DbConnectionFactory.cs` | Centraliza a criação de `NpgsqlConnection`, encapsula a montagem da string de conexão PostgreSQL e permite fallback entre `appsettings` e variáveis de ambiente. |
+| Criacional | Factory | `src/backend/infrastructure/MongoConnectionFactory.cs` | Centraliza a criação do cliente/base MongoDB, aceita connection string explícita ou configuração por variáveis de ambiente e evita espalhar detalhes de infraestrutura pelas camadas de aplicação. |
+
+Factories devem ser usadas quando a criação de uma dependência exigir configuração, validação ou adaptação de ambiente. No projeto, controllers, services e repositories não instanciam conexões diretamente; eles dependem dos contratos `IDbConnectionFactory` e `IMongoConnectionFactory`, registrados em `DependencyInjection.cs`.
 
 ### Padrões estruturais ou arquiteturais usados
 
@@ -385,9 +388,18 @@ Esta seção separa padrões de projeto GoF de padrões arquiteturais para evita
 
 | Tipo | Padrão | Implementação | Justificativa |
 |---|---|---|---|
-| Comportamental | Strategy | `IRecommendationStrategy`, `StoredRecommendationStrategy` e `FavoriteGenresRecommendationStrategy` | Permite alternar a origem das recomendações sem alterar o contrato público de `RecomendacaoService`. Primeiro são buscadas recomendações persistidas; se não houver resultado, aplica-se fallback por gêneros favoritos. |
+| Comportamental | Strategy | `IRecommendationStrategy`, `StoredRecommendationStrategy`, `WishlistGenresRecommendationStrategy` e `FavoriteGenresRecommendationStrategy` | Permite alternar a origem das recomendações sem alterar o contrato público de `RecomendacaoService`. Primeiro são buscadas recomendações persistidas, depois recomendações derivadas dos gêneros da wishlist e, por fim, fallback por gêneros favoritos. |
 
-O uso de Strategy separa cada algoritmo de recomendação em uma classe própria. Assim, novas estratégias, como cold-start, recomendação por conteúdo ou recomendação colaborativa, podem ser adicionadas sem concentrar todas as decisões dentro de `RecomendacaoService`.
+O uso de Strategy separa cada algoritmo de recomendação em uma classe própria. O `RecomendacaoService` recebe `IEnumerable<IRecommendationStrategy>`, percorre as estratégias na ordem de registro em `DependencyInjection.cs` e aplica o pós-processamento comum para remover itens já salvos na wishlist, reforçar gêneros da wishlist e respeitar o limite solicitado. Assim, novas estratégias, como cold-start, recomendação por conteúdo ou recomendação colaborativa, podem ser adicionadas sem concentrar todas as decisões dentro de `RecomendacaoService`.
+
+Regras para novas estratégias:
+
+- Implementar `IRecommendationStrategy`.
+- Definir um `Name` estável e descritivo.
+- Retornar `RecomendacaoItemDto` já mapeado para o contrato da API.
+- Manter a estratégia focada em uma origem ou critério de recomendação.
+- Registrar a classe em `AddAventuraApplication` na ordem de prioridade desejada.
+- Cobrir o comportamento com testes unitários de service/strategy e, quando houver SQL, testes de integração.
 
 ---
 

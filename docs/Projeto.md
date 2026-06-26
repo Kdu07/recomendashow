@@ -291,9 +291,21 @@ Este documento apresenta a documentação principal do projeto, reunindo context
 </details>
 
 <details>
-<summary><a href="#23-desenvolvimento-do-projeto--sprint-5">23. Termos e Abreviações</a></summary>
+<summary><a href="#23-desenvolvimento-do-projeto--sprint-5">23. Desenvolvimento do Projeto — Sprint 5</a></summary>
 
-- [Desenvolvimento do Projeto — Sprint 5](#23-desenvolvimento-do-projeto--sprint-5)
+- [23.1 Integração no Backend com o MongoDB](#231-integração-no-backend-com-o-mongodb)
+- [23.2 Integração no Frontend com o MongoDB](#232-integração-no-frontend-com-o-mongodb)
+- [23.3 Fluxo de ponta a ponta](#233-fluxo-de-ponta-a-ponta)
+- [23.4 Configuração necessária / variáveis de ambiente](#234-configuração-necessária--variáveis-de-ambiente)
+- [23.5 Análise consolidada — riscos, limitações e decisões de design](#235-análise-consolidada--riscos-limitações-e-decisões-de-design)
+- [23.6 Testes unitários do frontend (Sprint 5)](#236-testes-unitários-do-frontend-sprint-5)
+- [23.7 Testes unitários do Backend (Sprint 5)](#237-testes-unitários-do-backend-sprint-5)
+- [23.8 Testes do motor de recomendação (Sprint 5)](#238-testes-do-motor-de-recomendação-sprint-5)
+- [23.9 Vídeo demonstrativo da Sprint 5](#239-vídeo-demonstrativo-da-sprint-5)
+- [23.10 Mapeamento espetáculo → show do dataset (Caminho B)](#2310-mapeamento-espetáculo--show-do-dataset-caminho-b)
+- [23.11 Rate limiting no AuthController (RNF02)](#2311-rate-limiting-no-authcontroller-rnf02)
+- [23.12 AnonimizacaoJob — limiar de 15 dias (RNF03)](#2312-anonimizacaojob--limiar-de-15-dias-rnf03)
+- [23.13 Swagger habilitado em todos os ambientes](#2313-swagger-habilitado-em-todos-os-ambientes)
 
 </details>
 
@@ -3893,7 +3905,7 @@ Isso indica que a interface `IUsuarioRepository` evoluiu com suporte ao identifi
 
 #### 20.5.3 Validação manual via Swagger
 
-Além dos testes automatizados, o Swagger continua habilitado em ambiente de desenvolvimento. Ele permite validar manualmente:
+Além dos testes automatizados, o Swagger está habilitado em todos os ambientes (desde a Sprint 5, o condicional `IsDevelopment` foi removido — ver §23.13). Ele permite validar manualmente:
 
 - criação de conta e geração de token;
 - autenticação de usuário;
@@ -4701,6 +4713,180 @@ dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura
 | **Combinado** | **84,15%** | **65,99%** |
 
 O resultado supera com folga a meta de 70% de linhas estabelecida pelo RNF08 para os módulos críticos do serviço de recomendação, atendendo ao critério de aceitação de cobertura ≥ 70% verificado no pipeline de CI.
+
+---
+
+### 23.10 Mapeamento espetáculo → show do dataset (Caminho B)
+
+#### 23.10.1 O problema: recomendações nunca persistidas
+
+O batch de inferência (`RecommendationBatchJob`, rodando a cada 24 h no `inference-service`) itera sobre todos os usuários do dataset e, para cada um, grava recomendações na tabela `recomendacoes` via `RecommendationWriteRepository`. O campo `Espetaculo` de cada resultado contém o **nome cru** do show tal como aparece no dataset do Sympla — sempre em CAIXA ALTA e com acento (ex.: `'A NOVIÇA REBELDE'`). A tabela `espetaculos`, por sua vez, armazena os nomes no formato "bonito" (`'A Noviça Rebelde'`). Como o writer tentava casar por `WHERE e.nome = @EspetaculoNome`, a igualdade nunca ocorria → nenhuma linha era inserida → a tabela `recomendacoes` ficava sempre vazia → o app recebia apenas o fallback por gêneros favoritos.
+
+#### 23.10.2 A solução: coluna `item_dataset` e normalização defensiva
+
+**Componentes:** `src/database/04_espetaculo_dataset_mapping.sql`, `src/inference-service/Data/RecommendationWriteRepository.cs`, `src/inference-service/InferenceService.Tests/RecommendationWriteRepositoryTests.cs`.
+
+**Migration 04 — `04_espetaculo_dataset_mapping.sql`:**
+
+1. Habilita a extensão `unaccent` (necessária para a normalização no PostgreSQL).
+2. Adiciona a coluna `espetaculos.item_dataset TEXT` — análoga ao `ml_id` de `usuarios`, armazena o nome cru do show do dataset que corresponde ao espetáculo.
+3. Cria índice único `idx_espetaculos_item_dataset` (permite múltiplos `NULL`, impede dois espetáculos mapeados para o mesmo show).
+4. Preenche os 6 mapeamentos curados do catálogo:
+
+| `espetaculos.nome` | `espetaculos.item_dataset` |
+|---|---|
+| A Noviça Rebelde | `A NOVIÇA REBELDE` |
+| Elis | `ELIS, A MUSICAL` |
+| Hairspray | `MUSICAL HAIRSPRAY` |
+| Les Misérables | `LES MISERABLES SCHOOL EDITION` |
+| Vozes Negras | `VOZES NEGRAS – A FORÇA DO CANTO FEMININO` |
+| Romeu e Julieta | `CIA DE BALLET DO RIO DE JANEIRO - ROMEU E JULIETA` |
+
+Espetáculos sem correspondência no dataset ficam com `item_dataset = NULL` e não recebem recomendações via batch — comportamento correto, pois o modelo só pontua itens que conheceu no treino.
+
+**Resolução dual no `RecommendationWriteRepository` (Caminho B com fallback Caminho A):**
+
+O writer detecta automaticamente se a migration foi aplicada (`HasItemDatasetColumnAsync` consulta `information_schema.columns`). Quando a coluna existe, usa a query dual-path:
+
+```sql
+SELECT e.id,
+       CASE
+           WHEN e.item_dataset IS NOT NULL
+                AND upper(unaccent(btrim(e.item_dataset))) = upper(unaccent(btrim(@EspetaculoNome)))
+               THEN 0   -- Caminho B: match por item_dataset (prioridade)
+           WHEN e.nome = @EspetaculoNome THEN 1     -- Caminho A: match por nome bonito (fallback)
+           ELSE NULL
+       END AS match_rank
+FROM espetaculos e
+WHERE match_rank IS NOT NULL
+ORDER BY match_rank
+LIMIT 1
+```
+
+`upper(unaccent(btrim(...)))` é a mesma normalização em ambos os lados — o nome emitido pelo modelo e o valor armazenado em `item_dataset` são comparados após remoção de espaços laterais, conversão para maiúsculas e remoção de acentos. Isso torna o casamento resistente a variações menores de formatação. O Caminho A (`WHERE e.nome = @EspetaculoNome`) é mantido para não regredir espetáculos cujo nome bonito já coincida com o nome do dataset e que ainda não tenham `item_dataset` preenchido.
+
+**Degradação controlada:** Se a migration **não** foi aplicada ao banco (`item_dataset` inexistente), o writer cai automaticamente no Caminho A (nome exato), sem lançar exceção. Se nenhum match ocorre para um show, a recomendação é ignorada com `LogWarning` indicando quantas das N recomendações do usuário não encontraram espetáculo correspondente.
+
+#### 23.10.3 Testes
+
+Novos casos em `RecommendationWriteRepositoryTests.cs` (executados na fixture `PostgresFixture` que já aplica todas as migrations, incluindo a 04):
+
+| Caso | Descrição |
+|---|---|
+| `SaveAsync_PorItemDataset_Persiste` | Recomendação com nome em CAIXA ALTA casa via `item_dataset` e linha aparece em `recomendacoes` |
+| `SaveAsync_Normalizacao_IgnoraEspacosEAcentos` | Nome com espaços extras e variação de acento ainda resolve para o espetáculo correto |
+| `SaveAsync_SemCorrespondencia_NaoPersiste` | Show sem entrada em `item_dataset` e sem nome exato → nenhuma linha inserida, sem exceção |
+
+#### 23.10.4 Impacto no produto
+
+Com a migration 04 aplicada, o batch passa a persistir recomendações reais para os usuários que têm histórico no dataset. O `RecomendacaoService` do backend lê `recomendacoes` primeiro (`StoredRecommendationStrategy`) e só cai no fallback por gêneros se a tabela estiver vazia para aquele usuário — a partir deste sprint, o fluxo completo de recomendação personalizada (ML → `recomendacoes` → API → app) está operacional.
+
+---
+
+### 23.11 Rate limiting no AuthController (RNF02)
+
+**Contexto:** até a Sprint 4, o endpoint `/api/Auth` não tinha nenhum mecanismo de limitação de taxa — um atacante podia fazer tentativas ilimitadas de login/senha sem nenhum bloqueio, caracterizando uma lacuna de RNF02 (Segurança de Credenciais).
+
+**Componentes alterados:** `src/backend/Program.cs`, `src/backend/controller/AuthController.cs`, `src/backend/BackEnd.Aventura.Tests/AuthControllerTests.cs`.
+
+**Implementação:**
+
+```csharp
+// Program.cs — registra o limiter
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddSlidingWindowLimiter("auth", opt =>
+    {
+        opt.PermitLimit        = 20;
+        opt.Window             = TimeSpan.FromSeconds(60);
+        opt.SegmentsPerWindow  = 4;
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit         = 0;
+    });
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
+// Pipeline (antes de UseAuthentication)
+app.UseRateLimiter();
+```
+
+```csharp
+// AuthController.cs — aplica a política
+[AllowAnonymous]
+[EnableRateLimiting("auth")]
+[Route("api/[controller]")]
+public class AuthController : ControllerBase { ... }
+```
+
+**Parâmetros:** janela deslizante de 60 segundos dividida em 4 segmentos de 15 s; até 20 requisições por IP por janela; fila de espera = 0 (rejeição imediata ao exceder); código de retorno HTTP 429.
+
+**Por que janela deslizante em vez de fixed window:** a janela fixa permite "bursts" no limite — ex. 20 req nos últimos segundos da janela seguidos de 20 req no início da próxima. A janela deslizante distribui o limite de forma contínua, eliminando esse gap.
+
+**Decisão de escopo (apenas `/api/Auth`):** a política `"auth"` é aplicada **só** ao `AuthController` (login e registro). Endpoints autenticados já requerem um JWT válido — o atacante precisaria de credencial antes mesmo de chegar a esses endpoints.
+
+**Testes de contrato adicionados:**
+
+```csharp
+[Fact]
+public void AuthController_DeveTerAllowAnonymous()
+{
+    var attr = typeof(AuthController).GetCustomAttribute<AllowAnonymousAttribute>();
+    Assert.NotNull(attr);
+}
+
+[Fact]
+public void AuthController_DeveTerRateLimiting_ComPoliticaAuth()
+{
+    var attr = typeof(AuthController).GetCustomAttribute<EnableRateLimitingAttribute>();
+    Assert.NotNull(attr);
+    Assert.Equal("auth", attr.PolicyName);
+}
+```
+
+Esses testes garantem que, se alguém remover o atributo acidentalmente, a suíte CI falha — tornando a proteção de rate limiting parte do contrato de build.
+
+---
+
+### 23.12 AnonimizacaoJob — limiar de 15 dias (RNF03)
+
+**Contexto:** a política interna de LGPD do projeto define que dados pessoais de usuários que solicitaram exclusão devem ser anonimizados em até **15 dias** após a solicitação. O `AnonimizacaoJob` implementado na Sprint 3 executava a query com `INTERVAL '30 days'`, contradizendo a própria política.
+
+**Componente alterado:** `src/backend/services/AnonimizacaoJob.cs`.
+
+**Correção:**
+
+```csharp
+// Antes (Sprint 3/4)
+AND deleted_at <= NOW() - INTERVAL '30 days'
+
+// Depois (Sprint 5)
+AND deleted_at <= NOW() - INTERVAL '15 days'
+```
+
+**Por que o teste existente continua verde:** `AnonimizacaoJobTests.cs` usa `AddDays(-31)` como data de `deleted_at` — 31 > 15, então o registro ainda aparece na query e o teste passa sem alteração.
+
+**Impacto:** usuários que solicitam exclusão agora têm seus dados pessoais anonimizados (`sp_anonimizar_usuario`) em no máximo 15 dias — alinhado com o RNF03 e com a política de privacidade declarada no consentimento de cadastro.
+
+---
+
+### 23.13 Swagger habilitado em todos os ambientes
+
+Na Sprint 4, o Swagger (`/swagger`) era habilitado apenas em `Development` (`if (app.Environment.IsDevelopment())`). Na Sprint 5, o condicional foi removido:
+
+```csharp
+// Antes (Sprint 4)
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+// Depois (Sprint 5)
+app.UseSwagger();
+app.UseSwaggerUI();
+```
+
+**Motivação:** o backend é servido em ambiente OCI (VM Oracle Cloud) sem flag `Development`, e a equipe de desenvolvimento precisa explorar e validar os endpoints via Swagger nesse ambiente — principalmente para testar o token JWT e inspecionar contratos de DTOs. A documentação interativa da API está acessível em `http://<host>:5253/swagger` em qualquer ambiente de execução.
 
 ---
 

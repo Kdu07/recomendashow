@@ -2,10 +2,12 @@ using BackEnd.Aventura.Dto;
 using BackEnd.Aventura.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace BackEnd.Aventura.Controller
 {
     [AllowAnonymous]
+    [EnableRateLimiting("auth")]
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {

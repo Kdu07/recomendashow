@@ -1,4 +1,4 @@
-# Banco de Dados - RecomendaShow
+﻿# Banco de Dados - RecomendaShow
 
 ## Sumário
 
@@ -265,7 +265,7 @@ docker compose -f docker-compose-db.yml down -v
 
 ## 7. Dicionário de Dados
 
-Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventura Teatros, com base nos arquivos `01_create_database.sql` e `01b_sprint4_improvements.sql`.
+Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventura Teatros, com base nos arquivos `01_create_database.sql`, `02_sprint4_improvements.sql` e `04_espetaculo_dataset_mapping.sql`.
 
 **Tipos personalizados (ENUMs):**
 - `tipo_interacao`: `'Clique'`, `'Acesso'`, `'TempoDeTela'`
@@ -324,6 +324,7 @@ Esta seção descreve todas as 11 tabelas do schema PostgreSQL do projeto Aventu
 | data_inicio | TIMESTAMPTZ | NOT NULL | — | Data e hora de início do espetáculo |
 | data_fim | TIMESTAMPTZ | NOT NULL, CHECK(data_fim > data_inicio) | — | Data e hora de encerramento; deve ser posterior a `data_inicio` |
 | valor_ingresso | DECIMAL(10,2) | CHECK(valor_ingresso >= 0) | — | Preço do ingresso; não pode ser negativo |
+| item_dataset | TEXT | UNIQUE (idx_espetaculos_item_dataset) | — | Chave de correspondência com o dataset CSV do motor de recomendação; mapeada por `04_espetaculo_dataset_mapping.sql` |
 
 ---
 
@@ -886,20 +887,20 @@ Novos índices sem predecessor no Sprint 3:
 
 ---
 
-### 10.7 Estado Sprint 3 → Sprint 4
+### 10.7 Evolução do schema por sprint
 
-| Tabela | Sprint 3 (`01_create_database.sql`) | Sprint 4 (adições via `01b_sprint4_improvements.sql`) |
-|---|---|---|
-| usuarios | id, nome, email, senha_hash, idade, data_cadastro | + cep, logradouro, numero, complemento, bairro, cidade; + consentimento_aceito, data_consentimento, deleted_at, anonimizado, anonimizado_em; + ml_id; + data_atualizacao; + triggers `trg_bloquear_update_anonimizado`, `trg_usuarios_update`, `trg_sincronizar_data_consentimento` |
-| teatros | id, nome, endereco, cidade, horario_funcionamento | + índice `idx_teatros_cidade` |
-| espetaculos | id, nome, tipo_evento, descricao, url_bilheteria, data_inicio, data_fim, valor_ingresso | + TIMESTAMPTZ em data_inicio e data_fim; + índice `idx_espetaculos_datas` |
-| interacoes | id, usuario_id, espetaculo_id, tipo, pontuacao, data_registro, data_expiracao; índice `idx_interacoes_usuario` | + constraints `chk_pontuacao`, `chk_data_expiracao`; `idx_interacoes_usuario` → `idx_interacoes_usuario_expiracao` |
-| preferencias | id, usuario_id, cidade, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes, data_atualizacao | + trigger `trg_preferencias_update` |
-| wishlist_curtidas | usuario_id, espetaculo_id, tipo | + `adicionado_em`; + índice `idx_wishlist_usuario` |
-| recomendacoes | id, usuario_id, espetaculo_id, score, motivo, data_geracao; índice `idx_recomendacao_usuario` | + `UNIQUE(usuario_id, espetaculo_id)`; + visualizada_em; `idx_recomendacao_usuario` → `idx_recomendacoes_usuario_score` |
-| usuario_genero_favorito | usuario_id, genero_id | sem alterações |
-| espetaculo_genero | espetaculo_id, genero_id | sem alterações |
-| teatro_espetaculo | teatro_id, espetaculo_id | sem alterações |
+| Tabela | Sprint 3 (`01_create_database.sql`) | Sprint 4 (`02_sprint4_improvements.sql`) | Sprint 5 (`04_espetaculo_dataset_mapping.sql`) |
+|---|---|---|---|
+| usuarios | id, nome, email, senha_hash, idade, data_cadastro | + cep, logradouro, numero, complemento, bairro, cidade; + consentimento_aceito, data_consentimento, deleted_at, anonimizado, anonimizado_em; + ml_id; + data_atualizacao; + triggers `trg_bloquear_update_anonimizado`, `trg_usuarios_update`, `trg_sincronizar_data_consentimento` | sem alterações |
+| teatros | id, nome, endereco, cidade, horario_funcionamento | + índice `idx_teatros_cidade` | sem alterações |
+| espetaculos | id, nome, tipo_evento, descricao, url_bilheteria, data_inicio, data_fim, valor_ingresso | + TIMESTAMPTZ em data_inicio e data_fim; + índice `idx_espetaculos_datas` | + `item_dataset TEXT UNIQUE`; + índice `idx_espetaculos_item_dataset`; seed de 6 mapeamentos espetáculo→dataset |
+| interacoes | id, usuario_id, espetaculo_id, tipo, pontuacao, data_registro, data_expiracao; índice `idx_interacoes_usuario` | + constraints `chk_pontuacao`, `chk_data_expiracao`; `idx_interacoes_usuario` → `idx_interacoes_usuario_expiracao` | sem alterações |
+| preferencias | id, usuario_id, cidade, tags, faixa_preco_min, faixa_preco_max, receber_notificacoes, data_atualizacao | + trigger `trg_preferencias_update` | sem alterações |
+| wishlist_curtidas | usuario_id, espetaculo_id, tipo | + `adicionado_em`; + índice `idx_wishlist_usuario` | sem alterações |
+| recomendacoes | id, usuario_id, espetaculo_id, score, motivo, data_geracao; índice `idx_recomendacao_usuario` | + `UNIQUE(usuario_id, espetaculo_id)`; + visualizada_em; `idx_recomendacao_usuario` → `idx_recomendacoes_usuario_score` | sem alterações |
+| usuario_genero_favorito | usuario_id, genero_id | sem alterações | sem alterações |
+| espetaculo_genero | espetaculo_id, genero_id | sem alterações | sem alterações |
+| teatro_espetaculo | teatro_id, espetaculo_id | sem alterações | sem alterações |
 
 ---
 

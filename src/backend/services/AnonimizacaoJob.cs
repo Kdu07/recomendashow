@@ -66,7 +66,7 @@ namespace BackEnd.Aventura.Services
 SELECT id
 FROM usuarios
 WHERE deleted_at IS NOT NULL
-  AND deleted_at <= NOW() - INTERVAL '30 days'
+  AND deleted_at <= NOW() - INTERVAL '15 days'
   AND anonimizado = FALSE";
 
             using var command = new NpgsqlCommand(sql, (NpgsqlConnection)connection);

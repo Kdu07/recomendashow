@@ -36,13 +36,31 @@ try
     Console.WriteLine("Arquivo 1 executado");
 
     var sql2 = File.ReadAllText(
-        "../src/database/02_initial_data.sql"
+        "../src/database/02_sprint4_improvements.sql"
     );
 
     await new NpgsqlCommand(sql2, conn)
         .ExecuteNonQueryAsync();
 
     Console.WriteLine("Arquivo 2 executado");
+
+    var sql3 = File.ReadAllText(
+        "../src/database/03_initial_data.sql"
+    );
+
+    await new NpgsqlCommand(sql3, conn)
+        .ExecuteNonQueryAsync();
+
+    Console.WriteLine("Arquivo 3 executado");
+
+    var sql4 = File.ReadAllText(
+        "../src/database/04_espetaculo_dataset_mapping.sql"
+    );
+
+    await new NpgsqlCommand(sql4, conn)
+        .ExecuteNonQueryAsync();
+
+    Console.WriteLine("Arquivo 4 executado");
 
     var command = new NpgsqlCommand(
         "SELECT COUNT(*) FROM usuarios",

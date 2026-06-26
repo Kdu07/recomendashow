@@ -29,9 +29,12 @@ backend-tests:
 inference-tests:
   stage: test
   image: mcr.microsoft.com/dotnet/sdk:9.0
+  # Exclui testes Category=Integration (Testcontainers/Docker), indisponível neste runner.
+  # Eles rodam localmente; mesma política da suíte de integração do backend.
   script:
     - dotnet test src/inference-service/InferenceService.Tests/InferenceService.Tests.csproj
       /p:CollectCoverage=true
+      --filter 'Category!=Integration'
       --logger "trx;LogFileName=inference.trx"
   coverage: '/Total\s*\|\s*(\d+\.?\d*)%/'
   artifacts:
@@ -46,7 +49,7 @@ frontend-tests:
   image: node:20
   script:
     - cd src/frontend/mobile-app-aventura
-    - npm ci
+    - npm install
     - npm test
   coverage: '/All files\s*\|\s*(\d+\.?\d*)/'
   artifacts:

@@ -35,6 +35,7 @@
     "@babel/preset-react": "^7.29.7",
     "@testing-library/react": "^16.3.2",
     "babel-jest": "^30.4.1",
+    "babel-preset-expo": "^56.0.15",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "react-test-renderer": "19.1.0"
@@ -43,40 +44,22 @@
     "testEnvironment": "jsdom",
     "collectCoverageFrom": [
       "services/**/*.js",
-      "viewmodels/**/*.js",
-      "!services/apiClient.js",
-      "!services/authService.js",
-      "!services/categoryService.js",
-      "!services/eventLocationService.js",
-      "!services/preferenceService.js",
-      "!services/recommendationService.js",
-      "!services/showService.js",
-      "!services/theaterService.js",
-      "!services/tokenStorageService.js",
-      "!services/userProfileService.js",
-      "!viewmodels/useEditProfileViewModel.js",
-      "!viewmodels/useHomeViewModel.js",
-      "!viewmodels/useInstitutionalViewModel.js",
-      "!viewmodels/useProfileViewModel.js",
-      "!viewmodels/useShowInfoViewModel.js",
-      "!viewmodels/useWelcomeViewModel.js"
+      "viewmodels/**/*.js"
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 70,
-        "lines": 70
+        "statements": 90,
+        "lines": 90
       }
     },
     "globals": {
       "__DEV__": true
     },
     "moduleNameMapper": {
-      "^react-native$": "react-native-web"
+      "^react-native$": "react-native-web",
+      "\\.(png|jpe?g|webp|avif|gif|svg)$": "<rootDir>/tests/__mocks__/fileMock.js"
     },
     "rootDir": ".",
-    "setupFiles": [
-      "<rootDir>/jest.setup.js"
-    ],
     "modulePaths": [
       "<rootDir>"
     ],

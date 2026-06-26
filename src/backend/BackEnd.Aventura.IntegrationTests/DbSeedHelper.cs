@@ -64,6 +64,44 @@ VALUES (@Id, @Nome, 'Teatro', 'Descrição de teste', @Url,
         return id;
     }
 
+    public static async Task<Guid> InsertGeneroAsync(NpgsqlConnection conn, string nome)
+    {
+        var id = Guid.NewGuid();
+        const string sql = @"
+INSERT INTO generos (id, nome) VALUES (@Id, @Nome)
+ON CONFLICT (nome) DO UPDATE SET nome = EXCLUDED.nome
+RETURNING id";
+        await using var cmd = new NpgsqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@Id", id);
+        cmd.Parameters.AddWithValue("@Nome", nome);
+        return (Guid)(await cmd.ExecuteScalarAsync())!;
+    }
+
+    public static async Task LinkEspetaculoGeneroAsync(
+        NpgsqlConnection conn, Guid espetaculoId, Guid generoId)
+    {
+        const string sql = @"
+INSERT INTO espetaculo_genero (espetaculo_id, genero_id) VALUES (@E, @G)
+ON CONFLICT (espetaculo_id, genero_id) DO NOTHING";
+        await using var cmd = new NpgsqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@E", espetaculoId);
+        cmd.Parameters.AddWithValue("@G", generoId);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public static async Task InsertWishlistAsync(
+        NpgsqlConnection conn, Guid usuarioId, Guid espetaculoId)
+    {
+        const string sql = @"
+INSERT INTO wishlist_curtidas (usuario_id, espetaculo_id, tipo)
+VALUES (@U, @E, 'wishlist')
+ON CONFLICT (usuario_id, espetaculo_id, tipo) DO NOTHING";
+        await using var cmd = new NpgsqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@U", usuarioId);
+        cmd.Parameters.AddWithValue("@E", espetaculoId);
+        await cmd.ExecuteNonQueryAsync();
+    }
+
     public static async Task<long> CountRowsAsync(
         NpgsqlConnection conn, string tableName, string? where = null)
     {

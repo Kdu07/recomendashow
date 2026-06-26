@@ -1,11 +1,14 @@
 using BackEnd.Aventura.Extensions;
-using BackEnd.Aventura.Services;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 using System.Text;
+using System.Threading.RateLimiting;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -81,7 +84,50 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(new AuthorizeFilter(authenticatedPolicy));
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "RecomendaShow API",
+        Version = "v1",
+        Description = """
+            API REST do sistema de recomendação de espetáculos culturais — Aventura Teatros (G02).
+
+            **Autenticação:** a maioria dos endpoints exige um token JWT.
+            1. Chame `POST /api/auth/login` para obter o token.
+            2. Clique em **Authorize** (cadeado) e cole o token no campo `Bearer <token>`.
+
+            **Rate limiting:** os endpoints `/api/auth/register` e `/api/auth/login` aceitam
+            no máximo 20 requisições por IP a cada 60 s (HTTP 429 no excesso).
+            """
+    });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Cole aqui o token JWT retornado por POST /api/auth/login. Exemplo: eyJhbGci..."
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+            },
+            Array.Empty<string>()
+        }
+    });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+        c.IncludeXmlComments(xmlPath);
+});
 
 // JWT configuration
 var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY")
@@ -111,7 +157,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddSingleton<IPreferenceService, PreferenceService>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -122,6 +167,21 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddRateLimiter(options =>
+{
+    // Sliding window: máx 20 tentativas de login/registro por IP a cada 60 s.
+    // Protege contra brute force sem bloquear uso legítimo (RNF02).
+    options.AddSlidingWindowLimiter("auth", opt =>
+    {
+        opt.PermitLimit = 20;
+        opt.Window = TimeSpan.FromSeconds(60);
+        opt.SegmentsPerWindow = 4;
+        opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        opt.QueueLimit = 0;
+    });
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+});
+
 builder.Services
     .AddAventuraInfrastructure()
     .AddAventuraApplication();
@@ -130,18 +190,12 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseExceptionHandler();
 app.UseCors();
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

@@ -21,14 +21,11 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public void GetById_ExistingUser_ShouldReturnUser()
         {
-            // Arrange
             var usuario = Usuario.Create("João Silva", "joao@example.com", "hash123", 25);
             _repository.Create(usuario);
 
-            // Act
             var response = _service.GetById(usuario.Id);
 
-            // Assert
             Assert.Equal("João Silva", response.Nome);
             Assert.Equal("joao@example.com", response.Email);
             Assert.Equal(25, response.Idade);
@@ -37,10 +34,8 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public void GetById_NonExistentUser_ShouldThrow()
         {
-            // Arrange
             var usuarioId = Guid.NewGuid();
 
-            // Act & Assert
             var ex = Assert.Throws<NotFoundException>(() => _service.GetById(usuarioId));
             Assert.Contains("não encontrado", ex.Message);
         }
@@ -48,7 +43,6 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public void Update_ExistingUserWithValidData_ShouldUpdate()
         {
-            // Arrange
             var usuario = Usuario.Create("João Silva", "joao@example.com", "hash123", 25);
             _repository.Create(usuario);
 
@@ -58,10 +52,8 @@ namespace BackEnd.Aventura.Tests
                 Idade = 26
             };
 
-            // Act
             var response = _service.Update(usuario.Id, updateRequest);
 
-            // Assert
             Assert.Equal("João Silva Updated", response.Nome);
             Assert.Equal(26, response.Idade);
         }
@@ -69,7 +61,6 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public void Update_NonExistentUser_ShouldThrow()
         {
-            // Arrange
             var usuarioId = Guid.NewGuid();
             var updateRequest = new UsuarioUpdateRequest
             {
@@ -77,7 +68,6 @@ namespace BackEnd.Aventura.Tests
                 Idade = 30
             };
 
-            // Act & Assert
             var ex = Assert.Throws<NotFoundException>(() => _service.Update(usuarioId, updateRequest));
             Assert.Contains("não encontrado", ex.Message);
         }
@@ -85,7 +75,6 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public void Update_UserWithInvalidAge_ShouldThrow()
         {
-            // Arrange
             var usuario = Usuario.Create("João Silva", "joao@example.com", "hash123", 25);
             _repository.Create(usuario);
 
@@ -95,14 +84,12 @@ namespace BackEnd.Aventura.Tests
                 Idade = 10 // Invalid age
             };
 
-            // Act & Assert
             Assert.Throws<ArgumentException>(() => _service.Update(usuario.Id, updateRequest));
         }
 
         [Fact]
         public void Update_OnlyName_ShouldUpdateName()
         {
-            // Arrange
             var usuario = Usuario.Create("João Silva", "joao@example.com", "hash123", 25);
             _repository.Create(usuario);
 
@@ -112,10 +99,8 @@ namespace BackEnd.Aventura.Tests
                 Idade = null
             };
 
-            // Act
             var response = _service.Update(usuario.Id, updateRequest);
 
-            // Assert
             Assert.Equal("João Silva Updated", response.Nome);
             Assert.Equal(25, response.Idade);
         }
@@ -123,19 +108,88 @@ namespace BackEnd.Aventura.Tests
         [Fact]
         public void GetById_PreservesAllUserData()
         {
-            // Arrange
             var usuario = Usuario.Create("Maria Santos", "maria@example.com", "hash456", 30);
             _repository.Create(usuario);
 
-            // Act
             var response = _service.GetById(usuario.Id);
 
-            // Assert
             Assert.Equal(usuario.Id, response.Id);
             Assert.Equal("Maria Santos", response.Nome);
             Assert.Equal("maria@example.com", response.Email);
             Assert.Equal(30, response.Idade);
             Assert.Equal(usuario.DataCadastro, response.DataCadastro);
+        }
+
+        [Fact]
+        public void Update_WithNewUniqueEmail_ShouldUpdateEmail()
+        {
+            var usuario = Usuario.Create("João Silva", "joao@example.com", "hash123", 25);
+            _repository.Create(usuario);
+
+            var updateRequest = new UsuarioUpdateRequest
+            {
+                Email = "joao.novo@example.com"
+            };
+
+            var response = _service.Update(usuario.Id, updateRequest);
+
+            Assert.Equal("joao.novo@example.com", response.Email);
+        }
+
+        [Fact]
+        public void Update_WithEmailAlreadyUsedByAnotherUser_ShouldThrowConflict()
+        {
+            var usuario1 = Usuario.Create("João Silva", "joao@example.com", "hash123", 25);
+            var usuario2 = Usuario.Create("Maria Souza", "maria@example.com", "hash456", 30);
+            _repository.Create(usuario1);
+            _repository.Create(usuario2);
+
+            var updateRequest = new UsuarioUpdateRequest
+            {
+                Email = "maria@example.com"
+            };
+
+            var ex = Assert.Throws<ConflictException>(() => _service.Update(usuario1.Id, updateRequest));
+            Assert.Equal("E-mail já cadastrado.", ex.Message);
+        }
+
+        [Fact]
+        public void Update_WithOwnSameEmail_ShouldNotThrowConflict()
+        {
+            var usuario = Usuario.Create("João Silva", "joao@example.com", "hash123", 25);
+            _repository.Create(usuario);
+
+            var updateRequest = new UsuarioUpdateRequest
+            {
+                Email = "joao@example.com",
+                Nome = "João Silva Jr"
+            };
+
+            var response = _service.Update(usuario.Id, updateRequest);
+
+            Assert.Equal("joao@example.com", response.Email);
+            Assert.Equal("João Silva Jr", response.Nome);
+        }
+
+        [Fact]
+        public void SolicitarExclusao_ExistingUser_ShouldMarkDeleted()
+        {
+            var usuario = Usuario.Create("João Silva", "joao@example.com", "hash123", 25);
+            _repository.Create(usuario);
+
+            _service.SolicitarExclusao(usuario.Id);
+
+            var armazenado = _repository.GetById(usuario.Id);
+            Assert.NotNull(armazenado!.DeletedAt);
+        }
+
+        [Fact]
+        public void SolicitarExclusao_NonExistentUser_ShouldThrow()
+        {
+            var usuarioId = Guid.NewGuid();
+
+            var ex = Assert.Throws<NotFoundException>(() => _service.SolicitarExclusao(usuarioId));
+            Assert.Contains("não encontrado", ex.Message);
         }
     }
 }

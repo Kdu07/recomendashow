@@ -77,4 +77,15 @@ public class HybridModelLoaderTests
         loader.Recommender.CatalogSize.Should().Be(4);
         loader.Recommender.Alpha.Should().Be(0.6f);
     }
+
+    [Fact]
+    public async Task StopAsync_CompletesSuccessfully()
+    {
+        var loader = BuildLoader();
+        await loader.StartAsync(CancellationToken.None);
+
+        var act = () => loader.StopAsync(CancellationToken.None);
+
+        await act.Should().NotThrowAsync();
+    }
 }

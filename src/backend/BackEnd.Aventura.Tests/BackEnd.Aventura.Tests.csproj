@@ -13,8 +13,8 @@
        Repositories ficam fora do gate unitário (cobertos pela suíte de integração
        real/TI-02) e Program.cs é bootstrap. Módulos críticos medidos em 85,3% (12/06/2026). -->
   <PropertyGroup Condition="'$(CollectCoverage)' == 'true'">
-    <Exclude>[BackEnd.Aventura]BackEnd.Aventura.Repository.*,[BackEnd.Aventura]Program</Exclude>
-    <Threshold>70</Threshold>
+    <Exclude>[BackEnd.Aventura]BackEnd.Aventura.Repository.*,[BackEnd.Aventura]BackEnd.Aventura.Infrastructure.Persistence.*,[BackEnd.Aventura]BackEnd.Aventura.Services.AnonimizacaoJob,[BackEnd.Aventura]Program</Exclude>
+    <Threshold>90</Threshold>
     <ThresholdType>line</ThresholdType>
     <ThresholdStat>total</ThresholdStat>
     <CoverletOutputFormat>cobertura</CoverletOutputFormat>

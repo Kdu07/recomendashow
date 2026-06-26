@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BackEnd.Aventura.Controller
 {
+    [ApiController]
     [Route("api/[controller]")]
+    [Tags("Gêneros")]
     public class GeneroController : ControllerBase
     {
         private readonly IGeneroService _service;
@@ -13,6 +15,7 @@ namespace BackEnd.Aventura.Controller
             _service = service;
         }
 
+        /// <summary>Retorna todos os gêneros de espetáculos disponíveis no catálogo.</summary>
         [HttpGet]
         [ProducesResponseType(typeof(IReadOnlyList<string>), StatusCodes.Status200OK)]
         public ActionResult<IReadOnlyList<string>> GetAll() =>

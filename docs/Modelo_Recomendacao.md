@@ -1,4 +1,4 @@
-# Modelo de Recomendação — Portal Aventura
+﻿# Modelo de Recomendação — Portal Aventura
 
 ## Sumário
 
@@ -158,21 +158,55 @@ $$\min_{P,Q,b} \sum_{(u,i) \in \mathcal{K}} (r_{ui} - \hat{r}_{ui})^2 + \lambda 
 
 A regularização $\lambda$ é essencial aqui: com dados tão esparsos, sem penalização os vetores latentes tendem a memorizar os poucos casos observados em vez de generalizar padrões.
 
+
+### Atualização por SGD
+
+O modelo é otimizado por gradiente descendente estocástico. A cada par observado $(u, i) \in \mathcal{K}$, o erro residual é calculado e os parâmetros atualizados na direção oposta ao gradiente:
+
+$$e_{ui} = r_{ui} - \hat{r}_{ui}$$
+
+$$b_u \leftarrow b_u + \gamma \left(e_{ui} - \lambda b_u\right)$$
+
+$$b_i \leftarrow b_i + \gamma \left(e_{ui} - \lambda b_i\right)$$
+
+$$p_u \leftarrow p_u + \gamma \left(e_{ui}\, q_i - \lambda p_u\right)$$
+
+$$q_i \leftarrow q_i + \gamma \left(e_{ui}\, p_u - \lambda q_i\right)$$
+
+onde $\gamma$ é a taxa de aprendizado (`LearningRate = 0.01`) e $\lambda$ o coeficiente de regularização L2 (`Lambda = 0.01`). Os termos $-\lambda \theta$ atuam como *weight decay*, impedindo que os vetores latentes cresçam indefinidamente e controlando overfitting em dados tão esparsos. Cada iteração SGD percorre o dataset embaralhado e aplica as quatro atualizações acima para cada interação observada.
 ### Comparação com KNN
 
-O `KNNWithMeans` item-based não aprende parâmetros globais. Para recomendar algo a um usuário, calcula a similaridade de cosseno entre espetáculos usando os vetores de interação e busca os `k` mais próximos. É uma abordagem *memory-based* — os dados de treino precisam estar disponíveis em tempo de inferência.
+#### KNNWithMeans item-based
 
-| Critério | Funk SVD | KNN item-based |
-|---|---|---|
-| Parâmetros aprendidos | $P$, $Q$, $b_u$, $b_i$ (offline) | Nenhum (similaridades calculadas ao treinar) |
-| Dados em inferência | Apenas os vetores aprendidos | Toda a matriz de interações |
-| Alta esparsidade | Lida bem — aprende de cada par observado | Problemático — pares com zero compradores em comum geram similaridade indefinida |
-| Cauda longa | Generaliza via fatores latentes | Espetáculos raros têm vizinhos instáveis |
-| Explicabilidade | Baixa (fatores sem rótulo) | Alta ("porque você viu X, veja Y") |
+O `KNNWithMeans` item-based não aprende parâmetros globais. Para estimar o interesse de um usuário $u$ no espetáculo $i$, busca os $k$ itens mais similares a $i$ que $u$ já consumiu ($N_k(i;u)$) e calcula uma média ponderada corrigida pela média de cada item:
 
-Com ~450 espetáculos e 99,64% de esparsidade, a maioria dos pares compartilha zero ou um comprador em comum. O cosseno fica ruidoso nesses casos. O SVD generaliza porque aprende padrões de nível global — um usuário que foi a shows de Afonso Padilha e Thiago Ventura tem $p_u$ orientado para o "fator stand-up", mesmo que nunca tenha comprado *Bruna Louise - Ela Tá Correndo Atrás*.
+$$\hat{r}_{ui} = \bar{r}_i + \frac{\displaystyle\sum_{j \in N_k(i;\,u)} \mathrm{sim}(i,j)\,(r_{uj} - \bar{r}_j)}{\displaystyle\sum_{j \in N_k(i;\,u)} |\mathrm{sim}(i,j)|}$$
 
-O KNN ainda ganha em um ponto: interpretabilidade. Se o parceiro precisar justificar uma recomendação ("por que esse espetáculo foi sugerido?"), o KNN responde com uma lista de vizinhos similares. O SVD responde com vetores sem rótulo. O KNN foi avaliado na fase de pesquisa (Python) e descartado; não é entregue no pipeline.
+onde $\bar{r}_i$ é o ranking médio do espetáculo $i$ entre todos os seus compradores e $\mathrm{sim}(i,j)$ é a similaridade de cosseno calculada sobre os vetores de interação. É uma abordagem *memory-based* — toda a matriz de interações precisa estar disponível em tempo de inferência.
+
+#### KNNWithMeans user-based
+
+A variante user-based busca os $k$ usuários mais similares a $u$ que tenham consumido $i$ ($N_k(u;i)$) e agrega seus rankings:
+
+$$\hat{r}_{ui} = \bar{r}_u + \frac{\displaystyle\sum_{v \in N_k(u;\,i)} \mathrm{sim}(u,v)\,(r_{vi} - \bar{r}_v)}{\displaystyle\sum_{v \in N_k(u;\,i)} |\mathrm{sim}(u,v)|}$$
+
+Com 68.313 usuários e 99,64 % de esparsidade, o conjunto $N_k(u;i)$ fica vazio para a maioria dos pares: dois usuários raramente compraram o mesmo espetáculo. A predição colapsa para $\bar{r}_u$ (média pessoal) ou é indefinida, tornando o user-based ainda mais instável que o item-based neste dataset.
+
+#### Por que o SVD vence
+
+| Critério | Funk SVD | KNN item-based | KNN user-based |
+|---|---|---|---|
+| Parâmetros aprendidos | $P$, $Q$, $b_u$, $b_i$ (offline) | Nenhum | Nenhum |
+| Dados em inferência | Apenas os vetores aprendidos | Toda a matriz de interações | Toda a matriz de interações |
+| Alta esparsidade | Lida bem — aprende de cada par observado | Problemático — pares sem compradores em comum geram cosseno indefinido | Muito problemático — vizinhos de usuário raramente existem |
+| Cauda longa | Generaliza via fatores latentes | Espetáculos raros têm vizinhos instáveis | Usuários com histórico curto têm vizinhos instáveis |
+| Memória em inferência | $O(N_u k + N_i k)$ | $O(N_u N_i)$ | $O(N_u N_i)$ |
+| RMSE (Python, 80/20) | **0,2953** | 0,3402 | não avaliado (colapso por esparsidade) |
+| Explicabilidade | Baixa (fatores sem rótulo) | Alta ("porque você viu X, veja Y") | Alta ("usuários similares a você gostaram de Y") |
+
+Com ~450 espetáculos e 99,64 % de esparsidade, a maioria dos pares de itens compartilha zero compradores em comum — o cosseno item-based é ruidoso. O SVD generaliza porque aprende padrões globais: um usuário que foi a shows de Afonso Padilha e Thiago Ventura tem $p_u$ orientado para o "fator stand-up", mesmo sem jamais ter comprado *Bruna Louise - Ela Tá Correndo Atrás*.
+
+O KNN item-based ainda ganha em interpretabilidade — se o parceiro precisar justificar uma recomendação, ele responde com vizinhos similares. O SVD responde com vetores sem rótulo. O KNN foi avaliado na fase de pesquisa (Python) e descartado; não é entregue no pipeline.
 
 ---
 
@@ -383,9 +417,11 @@ O modelo também poderia ser avaliado com acurácia/precisão binária usando li
 
 ## 8. Riscos, Limitações e Pendências
 
-### Mapeamento usuário do dataset ↔ usuário do banco (pendência D4 — bloqueia persistência real)
+### Mapeamento usuário do dataset ↔ usuário do banco (D4 — resolvido para a demo via `ml_id`)
 
-O writer resolve `usuarios WHERE ml_id = @userId`, mas `ml_id SERIAL` é um auto-incremento por ordem de inserção **sem relação** com o `user_id` do Sympla no `dataset.csv`. Enquanto esse mapeamento não for definido (decisão de produto adiada — ver `docs/Plano_Migracao_Pipeline_Hibrido.md`, §5.2), o batch roda mas **não grava linhas para os usuários corretos**. O writer já suporta colunas alternativas (`dataset_user_id`, `external_user_id`, ...) para quando a decisão for tomada.
+O writer resolve `usuarios WHERE ml_id = @userId`. A coluna `ml_id` (`SERIAL UNIQUE`) nasce com um auto-incremento por ordem de inserção, **sem relação** com o `user_id` do Sympla no `dataset.csv` — por isso, sozinha, ela não bastava. O mapeamento foi então **definido explicitamente**: no fim de `src/database/02_sprint4_improvements.sql`, três `UPDATE ... WHERE email = ...` associam os usuários do seed a `user_id` do dataset com histórico rico (`alex@email.com → 63261`, `maria@email.com → 14888`, `joao@email.com → 55251`). Com isso o batch passa a **gravar recomendações reais** para esses três usuários (em banco recriado do zero; ver `Deploy_Recomendacao.md` §8). O writer já suporta colunas alternativas (`dataset_user_id`, `external_user_id`, ...) caso o mapeamento mude.
+
+**Limitação:** o `dataset.csv` é anônimo (`user_id` inteiro, sem PII), então isto é uma **atribuição de persona** — cada usuário do seed herda o histórico de um comprador parecido —, não um casamento de identidade real. O mapeamento cobre apenas os usuários do seed; usuários autenticados em geral ainda não recebem `ml_id` mapeado (evolução futura: mapear por identidade real em escala).
 
 ### Thread-safety do PredictionEngine
 

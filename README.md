@@ -261,3 +261,13 @@ Os testes de integração podem depender de Docker ativo para criação dos cont
 ## Licença
 
 <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://git.inteli.edu.br/graduacao/2026-1b/t17/g02">Recomendação de Espetáculos no Portal Aventura</a> by <a href="https://www.inteli.edu.br">Inteli</a>, <a href="https://www.linkedin.com/in/alexsander-dsbarbosa/">Alexsander da Silva Barbosa</a>, <a href="https://www.linkedin.com/in/carlos-quaglia-309088357/">Carlos Eduardo Serrano Quaglia</a>, <a href="https://www.linkedin.com/in/catarina-sayuri/">Catarina Sayuri Arashiro Braga Felipe</a>, <a href="https://www.linkedin.com/in/debora-pereira-nogueira/">Débora Pereira Nogueira</a>, <a href="https://www.linkedin.com/in/isaac-souza-santos/">Isaac Souza Santos</a>, <a href="https://www.linkedin.com/in/nicholas-millani-83a950357/">Nicholas Anantha Krishnan Millani</a>, <a href="https://www.linkedin.com/in/paulo-henrique0601/">Paulo Henrique Bueno Fernandes</a> is licensed under <a href="http://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution 4.0 International</a>.</p>
+
+## Sobre esta cópia
+
+Esta é uma cópia do repositório original do grupo, que fica no GitLab do Inteli. O GitHub não aceita arquivos acima de 100 MB, então três arquivos foram retirados de todo o histórico desta cópia:
+
+- `src/src/models/matriz_item_usuario.joblib` (247 MB)
+- `src/src/models/matriz_usuario_item.joblib` (247 MB)
+- `assets/Screen_Recording_20260625_194027_Expo Go.mp4` (136 MB)
+
+As duas matrizes vinham do recomendador KNN item a item (issue 64 do GitLab) e não são usadas pelo código da branch `main`. Por causa dessa limpeza, os identificadores dos commits daqui são diferentes dos do repositório original.
